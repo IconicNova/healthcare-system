@@ -1,0 +1,537 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Enums
+enum UserRole {
+  SUPER_ADMIN
+  ADMIN
+  MANAGER
+  SUPERVISOR
+  STAFF
+  CLIENT
+}
+
+enum ClientStatus {
+  ACTIVE
+  INACTIVE
+  PENDING
+  ON_HOLD
+}
+
+enum StaffStatus {
+  ACTIVE
+  INACTIVE
+  ON_LEAVE
+  TERMINATED
+}
+
+enum PayType {
+  HOURLY
+  PER_VISIT
+  SALARY
+}
+
+enum VisitStatus {
+  SCHEDULED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+  MISSSED
+}
+
+enum FormStatus {
+  PENDING
+  COMPLETED
+  SUBMITTED
+  APPROVED
+  REJECTED
+}
+
+enum InvoiceStatus {
+  DRAFT
+  SENT
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+enum TimesheetStatus {
+  DRAFT
+  SUBMITTED
+  APPROVED
+  REJECTED
+  PAID
+}
+
+// Models
+
+model Organization {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  phone     String?
+  address   String?
+  city      String?
+  state     String?
+  zipCode   String?
+  status    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  branches  Branch[]
+  users     User[]
+  clients   Client[]
+  staff     Staff[]
+  services  Service[]
+  carePlans CarePlan[]
+  visits    Visit[]
+  invoices  Invoice[]
+  timesheets Timesheet[]
+
+  @@map("organization")
+}
+
+model Branch {
+  id          String   @id @default(uuid())
+  name        String
+  email       String?
+  phone       String?
+  address     String?
+  city        String?
+  state       String?
+  zipCode     String?
+  status      Boolean  @default(true)
+  organizationId String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  users        User[]
+  clients      Client[]
+  staff        Staff[]
+  carePlans    CarePlan[]
+  visits       Visit[]
+  invoices     Invoice[]
+  timesheets   Timesheet[]
+
+  @@unique([organizationId, name])
+  @@map("branch")
+}
+
+model User {
+  id             String     @id @default(uuid())
+  email          String     @unique
+  password       String
+  firstName      String
+  lastName       String
+  role           UserRole   @default(STAFF)
+  status         Boolean    @default(true)
+  avatar         String?
+  organizationId String
+  branchId       String?
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  branch         Branch?      @relation(fields: [branchId], references: [id], onDelete: SetNull)
+  staff          Staff?
+  client         Client?
+  visits         Visit[]
+  invoices       Invoice[]
+  timesheets     Timesheet[]
+  notifications  Notification[]
+  auditLogs      AuditLog[]
+
+  @@unique([organizationId, email])
+  @@map("user")
+}
+
+model Client {
+  id             String       @id @default(uuid())
+  firstName      String
+  lastName       String
+  dateOfBirth    DateTime?
+  gender         String?
+  ssn            String?
+  email          String?
+  phone          String
+  address        String
+  city           String
+  state          String
+  zipCode        String
+  status         ClientStatus @default(PENDING)
+  insuranceType  String?
+  insuranceId    String?
+  organizationId String
+  branchId       String?
+  userId         String?      @unique
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  organization   Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  branch         Branch?        @relation(fields: [branchId], references: [id], onDelete: SetNull)
+  user           User?          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  carePlans      CarePlan[]
+  visits         Visit[]
+  forms          Form[]
+  invoices       Invoice[]
+  emergencyContacts EmergencyContact[]
+  medications    Medication[]
+  medicalHistory MedicalHistory[]
+
+  @@unique([organizationId, email])
+  @@map("client")
+}
+
+model Staff {
+  id             String       @id @default(uuid())
+  firstName      String
+  lastName       String
+  email          String       @unique
+  phone          String
+  role           String
+  payType        PayType      @default(HOURLY)
+  hourlyRate     Float?
+  status         StaffStatus  @default(INACTIVE)
+  licenseNumber  String?
+  licenseExpiry  DateTime?
+  organizationId String
+  branchId       String?
+  userId         String?      @unique
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  organization   Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  branch         Branch?        @relation(fields: [branchId], references: [id], onDelete: SetNull)
+  user           User?          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  carePlans      CarePlan[]
+  visits         Visit[]
+  timesheets     Timesheet[]
+  skills         StaffSkill[]
+  certifications StaffCertification[]
+  availability   StaffAvailability[]
+
+  @@map("staff")
+}
+
+model Service {
+  id             String   @id @default(uuid())
+  name           String
+  description    String?
+  duration       Int?
+  baseRate       Float
+  status         Boolean  @default(true)
+  organizationId String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  carePlans    CarePlan[]
+
+  @@unique([organizationId, name])
+  @@map("service")
+}
+
+model CarePlan {
+  id             String   @id @default(uuid())
+  name           String
+  description    String?
+  startDate      DateTime
+  endDate        DateTime?
+  status         Boolean  @default(true)
+  organizationId String
+  branchId       String?
+  clientId       String
+  staffId        String
+  serviceId      String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  branch       Branch?      @relation(fields: [branchId], references: [id], onDelete: SetNull)
+  client       Client       @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  staff        Staff        @relation(fields: [staffId], references: [id], onDelete: Restrict)
+  service      Service      @relation(fields: [serviceId], references: [id], onDelete: Restrict)
+  visits       Visit[]
+
+  @@map("care_plan")
+}
+
+model Visit {
+  id             String       @id @default(uuid())
+  title          String?
+  description    String?
+  startTime      DateTime
+  endTime        DateTime
+  status         VisitStatus  @default(SCHEDULED)
+  actualStart    DateTime?
+  actualEnd      DateTime?
+  notes          String?
+  organizationId String
+  branchId       String?
+  carePlanId     String?
+  clientId       String
+  staffId        String
+  userId         String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  branch       Branch?      @relation(fields: [branchId], references: [id], onDelete: SetNull)
+  carePlan     CarePlan?    @relation(fields: [carePlanId], references: [id], onDelete: SetNull)
+  client       Client       @relation(fields: [clientId], references: [id], onDelete: Restrict)
+  staff        Staff        @relation(fields: [staffId], references: [id], onDelete: Restrict)
+  user         User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+  visitTasks   VisitTask[]
+  visitNotes   VisitNote[]
+  invoices     Invoice[]
+
+  @@map("visit")
+}
+
+model Invoice {
+  id             String         @id @default(uuid())
+  invoiceNumber  String         @unique
+  amount         Float
+  status         InvoiceStatus  @default(DRAFT)
+  dueDate        DateTime
+  paidDate       DateTime?
+  notes          String?
+  organizationId String
+  branchId       String?
+  clientId       String
+  userId         String?
+  visitId        String?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  branch       Branch?      @relation(fields: [branchId], references: [id], onDelete: SetNull)
+  client       Client       @relation(fields: [clientId], references: [id], onDelete: Restrict)
+  user         User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+  visit        Visit?       @relation(fields: [visitId], references: [id], onDelete: SetNull)
+  invoiceItems InvoiceItem[]
+
+  @@unique([organizationId, invoiceNumber])
+  @@map("invoice")
+}
+
+model Timesheet {
+  id             String          @id @default(uuid())
+  startDate      DateTime
+  endDate        DateTime
+  totalHours     Float
+  status         TimesheetStatus @default(DRAFT)
+  notes          String?
+  organizationId String
+  branchId       String?
+  staffId        String
+  userId         String
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  branch       Branch?      @relation(fields: [branchId], references: [id], onDelete: SetNull)
+  staff        Staff        @relation(fields: [staffId], references: [id], onDelete: Restrict)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Restrict)
+  timesheetEntries TimesheetEntry[]
+
+  @@map("timesheet")
+}
+
+// Supporting Models
+
+model EmergencyContact {
+  id        String   @id @default(uuid())
+  name      String
+  relation  String
+  phone     String
+  email     String?
+  clientId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  client Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  @@map("emergency_contact")
+}
+
+model Medication {
+  id        String   @id @default(uuid())
+  name      String
+  dosage    String
+  frequency String
+  notes     String?
+  clientId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  client Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  @@map("medication")
+}
+
+model MedicalHistory {
+  id        String   @id @default(uuid())
+  condition String
+  diagnosis String?
+  date      DateTime?
+  notes     String?
+  clientId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  client Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  @@map("medical_history")
+}
+
+model Form {
+  id             String      @id @default(uuid())
+  name           String
+  type           String
+  status         FormStatus  @default(PENDING)
+  submittedAt    DateTime?
+  approvedAt     DateTime?
+  rejectedAt     DateTime?
+  rejectionReason String?
+  clientId       String
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  client Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  @@map("form")
+}
+
+model StaffSkill {
+  id        String   @id @default(uuid())
+  name      String
+  level     String?
+  staffId   String
+  createdAt DateTime @default(now())
+
+  staff Staff @relation(fields: [staffId], references: [id], onDelete: Cascade)
+
+  @@unique([staffId, name])
+  @@map("staff_skill")
+}
+
+model StaffCertification {
+  id        String   @id @default(uuid())
+  name      String
+  number    String?
+  issuedBy  String
+  issueDate DateTime
+  expiryDate DateTime?
+  staffId   String
+  createdAt DateTime @default(now())
+
+  staff Staff @relation(fields: [staffId], references: [id], onDelete: Cascade)
+
+  @@map("staff_certification")
+}
+
+model StaffAvailability {
+  id        String   @id @default(uuid())
+  dayOfWeek Int      // 0 = Sunday, 1 = Monday, etc.
+  startTime String
+  endTime   String
+  isAvailable Boolean @default(true)
+  staffId   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  staff Staff @relation(fields: [staffId], references: [id], onDelete: Cascade)
+
+  @@unique([staffId, dayOfWeek])
+  @@map("staff_availability")
+}
+
+model InvoiceItem {
+  id          String @id @default(uuid())
+  description String
+  quantity    Int    @default(1)
+  unitPrice   Float
+  amount      Float
+  invoiceId   String
+  createdAt   DateTime @default(now())
+
+  invoice Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+
+  @@map("invoice_item")
+}
+
+model TimesheetEntry {
+  id            String   @id @default(uuid())
+  date          DateTime
+  hours         Float
+  notes         String?
+  billable      Boolean  @default(true)
+  timesheetId   String
+  createdAt     DateTime @default(now())
+
+  timesheet Timesheet @relation(fields: [timesheetId], references: [id], onDelete: Cascade)
+
+  @@map("timesheet_entry")
+}
+
+model VisitTask {
+  id        String   @id @default(uuid())
+  title     String
+  completed Boolean  @default(false)
+  notes     String?
+  visitId   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  visit Visit @relation(fields: [visitId], references: [id], onDelete: Cascade)
+
+  @@map("visit_task")
+}
+
+model VisitNote {
+  id        String   @id @default(uuid())
+  content   String
+  visitId   String
+  createdAt DateTime @default(now())
+
+  visit Visit @relation(fields: [visitId], references: [id], onDelete: Cascade)
+
+  @@map("visit_note")
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  title     String
+  message   String
+  type      String
+  read      Boolean  @default(false)
+  userId    String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notification")
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  action    String
+  entity    String
+  entityId  String?
+  userId    String
+  changes   String?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  @@map("audit_log")
+}
