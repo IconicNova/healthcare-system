@@ -120,6 +120,7 @@ async function main() {
   // Create Staff Profiles
   const staff1 = await prisma.staff.create({
     data: {
+      employeeId: 'EMP-001',
       firstName: 'Emily',
       lastName: 'Rodriguez',
       email: 'emily.rodriguez@advancedcarepartners.com',
@@ -138,6 +139,7 @@ async function main() {
 
   const staff2 = await prisma.staff.create({
     data: {
+      employeeId: 'EMP-002',
       firstName: 'David',
       lastName: 'Chen',
       email: 'david.chen@advancedcarepartners.com',
@@ -155,6 +157,7 @@ async function main() {
 
   const staff3 = await prisma.staff.create({
     data: {
+      employeeId: 'EMP-003',
       firstName: 'Lisa',
       lastName: 'Johnson',
       email: 'lisa.johnson@advancedcarepartners.com',
@@ -172,6 +175,7 @@ async function main() {
 
   const staff4 = await prisma.staff.create({
     data: {
+      employeeId: 'EMP-004',
       firstName: 'James',
       lastName: 'Williams',
       email: 'james.williams@advancedcarepartners.com',
@@ -189,6 +193,7 @@ async function main() {
 
   const staff5 = await prisma.staff.create({
     data: {
+      employeeId: 'EMP-005',
       firstName: 'Maria',
       lastName: 'Garcia',
       email: 'maria.garcia@advancedcarepartners.com',
@@ -312,6 +317,182 @@ async function main() {
 
   // Get services with IDs
   const serviceList = await prisma.service.findMany({
+    where: { organizationId: organization.id },
+    orderBy: { name: 'asc' },
+  });
+
+  // Create Form Templates with rich schemas
+  const formTemplates = await prisma.formTemplate.createMany({
+    data: [
+      {
+        name: 'Initial Assessment',
+        description: 'Comprehensive initial client assessment form',
+        organizationId: organization.id,
+        category: 'Assessment',
+        isRequired: true,
+        status: true,
+        schema: JSON.stringify({
+          sections: [
+            {
+              name: 'Client Information',
+              fields: [
+                { name: 'clientName', label: 'Client Name', type: 'text', required: true },
+                { name: 'dateOfBirth', label: 'Date of Birth', type: 'date', required: true },
+                { name: 'primaryPhone', label: 'Primary Phone', type: 'tel', required: true },
+              ],
+            },
+            {
+              name: 'Health Status',
+              fields: [
+                { name: 'chiefComplaint', label: 'Chief Complaint', type: 'textarea', required: true },
+                { name: 'medicalHistory', label: 'Medical History', type: 'textarea', required: false },
+                { name: 'currentMedications', label: 'Current Medications', type: 'textarea', required: true },
+                { name: 'allergies', label: 'Allergies', type: 'textarea', required: true },
+              ],
+            },
+            {
+              name: 'Functional Assessment',
+              fields: [
+                { name: 'mobility', label: 'Mobility Level', type: 'select', options: ['Independent', 'Assistive Device', 'Assistance Required', 'Dependent'], required: true },
+                { name: 'adlStatus', label: 'ADL Status', type: 'select', options: ['Independent', 'Partial Assistance', 'Full Assistance'], required: true },
+              ],
+            },
+          ],
+        }),
+      },
+      {
+        name: 'Vital Signs',
+        description: 'Daily vital signs monitoring form',
+        organizationId: organization.id,
+        category: 'Vitals',
+        isRequired: false,
+        status: true,
+        schema: JSON.stringify({
+          sections: [
+            {
+              name: 'Vital Signs',
+              fields: [
+                { name: 'bloodPressure', label: 'Blood Pressure (mmHg)', type: 'text', placeholder: 'e.g., 120/80', required: true },
+                { name: 'heartRate', label: 'Heart Rate (bpm)', type: 'number', required: true },
+                { name: 'temperature', label: 'Temperature (F)', type: 'number', required: true },
+                { name: 'respiratoryRate', label: 'Respiratory Rate', type: 'number', required: true },
+                { name: 'oxygenSaturation', label: 'Oxygen Saturation (%)', type: 'number', required: false },
+                { name: 'painLevel', label: 'Pain Level (0-10)', type: 'number', min: 0, max: 10, required: true },
+              ],
+            },
+            {
+              name: 'Observations',
+              fields: [
+                { name: 'observations', label: 'Clinical Observations', type: 'textarea', required: false },
+              ],
+            },
+          ],
+        }),
+      },
+      {
+        name: 'ADL Assessment',
+        description: 'Activities of Daily Living assessment',
+        organizationId: organization.id,
+        category: 'ADLs',
+        isRequired: false,
+        status: true,
+        schema: JSON.stringify({
+          sections: [
+            {
+              name: 'ADL Assessment',
+              fields: [
+                { name: 'bathing', label: 'Bathing', type: 'select', options: ['Independent', 'Supervision', 'Partial Assist', 'Total Assist'], required: true },
+                { name: 'dressing', label: 'Dressing', type: 'select', options: ['Independent', 'Supervision', 'Partial Assist', 'Total Assist'], required: true },
+                { name: 'toileting', label: 'Toileting', type: 'select', options: ['Independent', 'Supervision', 'Partial Assist', 'Total Assist'], required: true },
+                { name: 'transferring', label: 'Transferring', type: 'select', options: ['Independent', 'Supervision', 'Partial Assist', 'Total Assist'], required: true },
+                { name: 'mobility', label: 'Mobility', type: 'select', options: ['Independent', 'Supervision', 'Partial Assist', 'Total Assist'], required: true },
+                { name: 'continence', label: 'Continence', type: 'select', options: ['Continence', 'Occasional Incontinence', 'Incontinent'], required: true },
+              ],
+            },
+          ],
+        }),
+      },
+      {
+        name: 'Medication Administration Record',
+        description: 'Medication administration documentation',
+        organizationId: organization.id,
+        category: 'Medications',
+        isRequired: true,
+        status: true,
+        schema: JSON.stringify({
+          sections: [
+            {
+              name: 'Medication Details',
+              fields: [
+                { name: 'medicationName', label: 'Medication Name', type: 'text', required: true },
+                { name: 'dosage', label: 'Dosage', type: 'text', required: true },
+                { name: 'route', label: 'Route', type: 'select', options: ['Oral', 'Topical', 'Intravenous', 'Inhalation', 'Other'], required: true },
+                { name: 'administeredTime', label: 'Time Administered', type: 'time', required: true },
+                { name: 'status', label: 'Status', type: 'select', options: ['Administered', 'Held', 'Refused', 'Not Given'], required: true },
+                { name: 'reason', label: 'Reason (if not administered)', type: 'textarea', required: false },
+              ],
+            },
+          ],
+        }),
+      },
+      {
+        name: 'Visit Notes',
+        description: 'General visit documentation',
+        organizationId: organization.id,
+        category: 'Documentation',
+        isRequired: false,
+        status: true,
+        schema: JSON.stringify({
+          sections: [
+            {
+              name: 'Visit Documentation',
+              fields: [
+                { name: 'subjective', label: 'Subjective (Patient Reports)', type: 'textarea', required: false },
+                { name: 'objective', label: 'Objective (Observations)', type: 'textarea', required: false },
+                { name: 'assessment', label: 'Assessment', type: 'textarea', required: true },
+                { name: 'plan', label: 'Plan', type: 'textarea', required: true },
+              ],
+            },
+          ],
+        }),
+      },
+      {
+        name: 'Wound Care Assessment',
+        description: 'Wound care documentation form',
+        organizationId: organization.id,
+        category: 'Wound Care',
+        isRequired: false,
+        status: true,
+        schema: JSON.stringify({
+          sections: [
+            {
+              name: 'Wound Assessment',
+              fields: [
+                { name: 'woundLocation', label: 'Wound Location', type: 'text', required: true },
+                { name: 'woundType', label: 'Wound Type', type: 'select', options: ['Surgical Incision', 'Pressure Ulcer', 'Venous Ulcer', 'Arterial Ulcer', 'Diabetic Ulcer', 'Other'], required: true },
+                { name: 'length', label: 'Length (cm)', type: 'number', required: false },
+                { name: 'width', label: 'Width (cm)', type: 'number', required: false },
+                { name: 'depth', label: 'Depth (cm)', type: 'number', required: false },
+                { name: 'exudate', label: 'Exudate', type: 'select', options: ['None', 'Minimal', 'Moderate', 'Heavy'], required: true },
+                { name: 'odor', label: 'Odor', type: 'select', options: ['None', 'Mild', 'Moderate', 'Strong'], required: true },
+                { name: 'surroundingSkin', label: 'Surrounding Skin Condition', type: 'textarea', required: false },
+              ],
+            },
+            {
+              name: 'Treatment',
+              fields: [
+                { name: 'dressingType', label: 'Dressing Type', type: 'text', required: false },
+                { name: 'treatmentNotes', label: 'Treatment Notes', type: 'textarea', required: false },
+              ],
+            },
+          ],
+        }),
+      },
+    ],
+  });
+
+  // Get form templates with IDs
+  const formTemplateList = await prisma.formTemplate.findMany({
     where: { organizationId: organization.id },
     orderBy: { name: 'asc' },
   });
@@ -876,15 +1057,55 @@ async function main() {
   ];
   await prisma.visitNote.createMany({ data: visitNotes });
 
-  // Create Forms
-  const forms = [
-    { clientId: clientList[0].id, name: 'HIPAA Consent Form', type: 'Consent', status: 'APPROVED', submittedAt: new Date('2024-01-10'), approvedAt: new Date('2024-01-10') },
-    { clientId: clientList[0].id, name: 'Medical Release Authorization', type: 'Authorization', status: 'APPROVED', submittedAt: new Date('2024-01-10'), approvedAt: new Date('2024-01-11') },
-    { clientId: clientList[1].id, name: 'HIPAA Consent Form', type: 'Consent', status: 'APPROVED', submittedAt: new Date('2024-02-01'), approvedAt: new Date('2024-02-01') },
-    { clientId: clientList[2].id, name: 'HIPAA Consent Form', type: 'Consent', status: 'APPROVED', submittedAt: new Date('2024-01-15'), approvedAt: new Date('2024-01-15') },
-    { clientId: clientList[2].id, name: 'Care Plan Authorization', type: 'Authorization', status: 'PENDING', submittedAt: new Date('2024-03-01') },
+  // Create Client Forms (linked to templates)
+  const clientForms = [
+    {
+      templateId: formTemplateList[0].id, // Initial Assessment
+      clientId: clientList[0].id,
+      status: 'APPROVED',
+      submittedAt: new Date('2024-01-10'),
+      approvedAt: new Date('2024-01-10'),
+      formData: JSON.stringify({
+        clientName: 'Margaret Anderson',
+        dateOfBirth: '1945-03-15',
+        primaryPhone: '(555) 345-6001',
+        chiefComplaint: 'Post-hip replacement recovery',
+        mobility: 'Partial Assist',
+        adlStatus: 'Partial Assistance',
+      }),
+    },
+    {
+      templateId: formTemplateList[0].id, // Initial Assessment
+      clientId: clientList[1].id,
+      status: 'APPROVED',
+      submittedAt: new Date('2024-02-01'),
+      approvedAt: new Date('2024-02-01'),
+      formData: JSON.stringify({
+        clientName: 'Robert Harrison',
+        dateOfBirth: '1938-07-22',
+        primaryPhone: '(555) 345-6002',
+        chiefComplaint: 'Cardiac rehabilitation',
+        mobility: 'Supervision',
+        adlStatus: 'Independent',
+      }),
+    },
+    {
+      templateId: formTemplateList[0].id, // Initial Assessment
+      clientId: clientList[2].id,
+      status: 'APPROVED',
+      submittedAt: new Date('2024-01-15'),
+      approvedAt: new Date('2024-01-15'),
+      formData: JSON.stringify({
+        clientName: 'Dorothy Patterson',
+        dateOfBirth: '1952-11-08',
+        primaryPhone: '(555) 345-6003',
+        chiefComplaint: 'Stroke recovery',
+        mobility: 'Assistance Required',
+        adlStatus: 'Full Assistance',
+      }),
+    },
   ];
-  await prisma.form.createMany({ data: forms });
+  await prisma.clientForm.createMany({ data: clientForms });
 
   // Create Invoices
   const invoices = await prisma.invoice.createMany({

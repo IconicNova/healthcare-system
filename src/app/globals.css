@@ -1699,3 +1699,217 @@ a:hover {
     padding: 0;
   }
 }
+
+/* ============================================
+   Staff Profile Styles
+   ============================================ */
+
+.staff-profile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+}
+
+.staff-info-banner {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  color: white;
+  padding: 32px;
+  border-radius: var(--radius-xl);
+  margin-bottom: 24px;
+}
+
+/* Availability Grid */
+.availability-grid {
+  display: grid;
+  grid-template-columns: 150px repeat(7, 1fr);
+  gap: 8px;
+  align-items: center;
+}
+
+.availability-row {
+  display: contents;
+}
+
+.availability-toggle {
+  cursor: pointer;
+  padding: 8px;
+  border-radius: var(--radius-md);
+  transition: background-color var(--transition-fast);
+}
+
+.availability-toggle.available {
+  background-color: var(--color-success-light);
+}
+
+.availability-toggle.unavailable {
+  background-color: var(--color-gray-100);
+}
+
+/* ============================================
+   Scheduling Calendar Styles
+   ============================================ */
+
+.scheduling-calendar .fc {
+  font-family: var(--font-family);
+}
+
+.scheduling-calendar .fc-view-harness {
+  min-height: 500px;
+}
+
+.scheduling-calendar .fc-daygrid-day {
+  padding: 8px;
+}
+
+.scheduling-calendar .fc-daygrid-day:hover {
+  background-color: var(--color-gray-50);
+}
+
+.scheduling-calendar .fc-event {
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 2px 4px;
+  font-size: 12px;
+}
+
+.scheduling-calendar .fc-daygrid-day-events {
+  margin-top: 4px;
+}
+
+.scheduling-calendar .fc-col-header-cell-cushion {
+  padding: 8px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+}
+
+.scheduling-calendar .fc-toolbar-title {
+  font-size: 18px;
+  font-weight: var(--font-weight-semibold);
+}
+
+.scheduling-calendar .fc-button {
+  background-color: white;
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  border-radius: var(--radius-md);
+  text-transform: none;
+}
+
+.scheduling-calendar .fc-button:hover {
+  background-color: var(--color-gray-50);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.scheduling-calendar .fc-button-active {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: white;
+}
+
+.scheduling-calendar .fc-timegrid-slot {
+  height: 50px;
+}
+
+/* ============================================
+   Status Pills
+   ============================================ */
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.status-pill.vacant {
+  background-color: #D1D5DB15;
+  color: #6B7280;
+}
+
+.status-pill.scheduled {
+  background-color: #3B82F615;
+  color: #3B82F6;
+}
+
+.status-pill.clocked-in {
+  background-color: #22C55E15;
+  color: #16A34A;
+}
+
+.status-pill.completed {
+  background-color: #16A34A15;
+  color: #16A34A;
+}
+
+.status-pill.missed {
+  background-color: #EF444415;
+  color: #DC2626;
+}
+
+.status-pill.cancelled {
+  background-color: #9CA3AF15;
+  color: #6B7280;
+}
+
+.status-pill.approved {
+  background-color: #8B5CF615;
+  color: #7C3AED;
+}
+
+.status-pill.late {
+  background-color: #F59E0B15;
+  color: #D97706;
+}
+
+.status-pill.offered {
+  background-color: #06B6D415;
+  color: #0891B2;
+}
+
+.status-pill:hover {
+  transform: scale(1.05);
+}
+
+/* ============================================
+   Searchable Select
+   ============================================ */
+
+.searchable-select {
+  position: relative;
+}
+
+.searchable-select-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: white;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: var(--z-dropdown);
+}
+
+.searchable-select-option {
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.searchable-select-option:hover {
+  background-color: var(--color-gray-50);
+}
+
+.searchable-select-option.selected {
+  background-color: var(--color-primary-lighter);
+  color: white;
+}

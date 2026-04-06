@@ -1,42 +1,47 @@
-'use client';
-
-import { useState, useEffect } from 'react';
-import { Search, X } from 'lucide-react';
+import { Search as SearchIcon, X } from 'lucide-react';
 
 export default function SearchInput({
   placeholder = 'Search...',
-  onSearch,
-  debounceMs = 300,
+  value = '',
+  onChange,
+  style = {},
+  className = '',
 }) {
-  const [value, setValue] = useState('');
-  const [debouncedValue, setDebouncedValue] = useState('');
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedValue(value);
-      onSearch?.(value);
-    }, debounceMs);
-
-    return () => clearTimeout(timer);
-  }, [value, debounceMs, onSearch]);
+  const handleClear = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onChange?.('');
+  };
 
   return (
-    <div className="topbar-search">
-      <Search className="topbar-search-icon" />
+    <div className={`search-input-wrapper ${className}`} style={{ position: 'relative', ...style }}>
+      <SearchIcon
+        size={16}
+        style={{
+          position: 'absolute',
+          left: '12px',
+          top: '50%',
+          transform: 'translateY(-50%)',
+          color: 'var(--color-text-muted)',
+          pointerEvents: 'none',
+        }}
+      />
       <input
         type="text"
-        className="topbar-search-input"
         placeholder={placeholder}
         value={value}
-        onChange={(e) => setValue(e.target.value)}
-        style={{ width: '250px' }}
+        onChange={(e) => onChange?.(e.target.value)}
+        className="input"
+        style={{
+          paddingLeft: '40px',
+          paddingRight: value ? '40px' : '12px',
+          width: '100%',
+        }}
       />
       {value && (
         <button
-          onClick={() => {
-            setValue('');
-            onSearch?.('');
-          }}
+          type="button"
+          onClick={handleClear}
           style={{
             position: 'absolute',
             right: '12px',
@@ -45,10 +50,12 @@ export default function SearchInput({
             background: 'none',
             border: 'none',
             cursor: 'pointer',
+            padding: '4px',
             color: 'var(--color-text-muted)',
+            borderRadius: '50%',
           }}
         >
-          <X size={16} />
+          <X size={14} />
         </button>
       )}
     </div>

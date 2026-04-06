@@ -70,6 +70,22 @@ enum TimesheetStatus {
   PAID
 }
 
+enum MedAdministrationStatus {
+  ADMINISTERED
+  HELD
+  REFUSED
+  NOT_GIVEN
+}
+
+enum Frequency {
+  DAILY
+  WEEKLY
+  BI_WEEKLY
+  MONTHLY
+  AS_NEEDED
+  CUSTOM
+}
+
 // Models
 
 model Organization {
@@ -85,15 +101,16 @@ model Organization {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  branches  Branch[]
-  users     User[]
-  clients   Client[]
-  staff     Staff[]
-  services  Service[]
-  carePlans CarePlan[]
-  visits    Visit[]
-  invoices  Invoice[]
-  timesheets Timesheet[]
+  branches      Branch[]
+  users         User[]
+  clients       Client[]
+  staff         Staff[]
+  services      Service[]
+  carePlans     CarePlan[]
+  visits        Visit[]
+  invoices      Invoice[]
+  timesheets    Timesheet[]
+  formTemplates FormTemplate[]
 
   @@map("organization")
 }
@@ -175,23 +192,49 @@ model Client {
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
 
-  organization   Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  branch         Branch?        @relation(fields: [branchId], references: [id], onDelete: SetNull)
-  user           User?          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization   Organization        @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  branch         Branch?             @relation(fields: [branchId], references: [id], onDelete: SetNull)
+  user           User?               @relation(fields: [userId], references: [id], onDelete: Cascade)
   carePlans      CarePlan[]
   visits         Visit[]
-  forms          Form[]
+  forms          ClientForm[]
   invoices       Invoice[]
   emergencyContacts EmergencyContact[]
   medications    Medication[]
   medicalHistory MedicalHistory[]
+  medicalInfo    ClientMedicalInfo?
 
   @@unique([organizationId, email])
   @@map("client")
 }
 
+model ClientMedicalInfo {
+  id               String   @id @default(uuid())
+  clientId         String   @unique
+  allergies        String?
+  conditions       String?
+  height           Float?
+  weight           Float?
+  bloodType        String?
+  primaryPhysician String?
+  physicianPhone   String?
+  functionalLevel  String?
+  mobilityAid      String?
+  cognitiveStatus  String?
+  skinCondition    String?
+  dietRestrictions String?
+  notes            String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  client Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  @@map("client_medical_info")
+}
+
 model Staff {
   id             String       @id @default(uuid())
+  employeeId     String       @unique
   firstName      String
   lastName       String
   email          String       @unique
@@ -202,38 +245,43 @@ model Staff {
   status         StaffStatus  @default(INACTIVE)
   licenseNumber  String?
   licenseExpiry  DateTime?
+  hireDate       DateTime?
   organizationId String
   branchId       String?
   userId         String?      @unique
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
 
-  organization   Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  branch         Branch?        @relation(fields: [branchId], references: [id], onDelete: SetNull)
-  user           User?          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization   Organization          @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  branch         Branch?               @relation(fields: [branchId], references: [id], onDelete: SetNull)
+  user           User?                 @relation(fields: [userId], references: [id], onDelete: Cascade)
   carePlans      CarePlan[]
   visits         Visit[]
   timesheets     Timesheet[]
   skills         StaffSkill[]
   certifications StaffCertification[]
   availability   StaffAvailability[]
+  medAdministrations MedAdministration[]
 
   @@map("staff")
 }
 
 model Service {
-  id             String   @id @default(uuid())
+  id             String            @id @default(uuid())
   name           String
   description    String?
   duration       Int?
   baseRate       Float
-  status         Boolean  @default(true)
+  status         Boolean           @default(true)
   organizationId String
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
 
-  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  carePlans    CarePlan[]
+  organization     Organization        @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  carePlans        CarePlan[]
+  carePlanServices CarePlanService[]
+  visitServices    Visit[]
+  invoiceItems     InvoiceItem[]
 
   @@unique([organizationId, name])
   @@map("service")
@@ -249,19 +297,39 @@ model CarePlan {
   organizationId String
   branchId       String?
   clientId       String
-  staffId        String
-  serviceId      String
+  staffId        String?
+  serviceId      String?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
-  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  branch       Branch?      @relation(fields: [branchId], references: [id], onDelete: SetNull)
-  client       Client       @relation(fields: [clientId], references: [id], onDelete: Cascade)
-  staff        Staff        @relation(fields: [staffId], references: [id], onDelete: Restrict)
-  service      Service      @relation(fields: [serviceId], references: [id], onDelete: Restrict)
+  organization Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  branch       Branch?            @relation(fields: [branchId], references: [id], onDelete: SetNull)
+  client       Client             @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  staff        Staff?             @relation(fields: [staffId], references: [id], onDelete: SetNull)
+  service      Service?           @relation(fields: [serviceId], references: [id], onDelete: SetNull)
   visits       Visit[]
+  services     CarePlanService[]
 
+  @@unique([organizationId, name])
   @@map("care_plan")
+}
+
+model CarePlanService {
+  id           String   @id @default(uuid())
+  carePlanId   String
+  serviceId    String
+  frequency    Frequency @default(AS_NEEDED)
+  frequencyText String?
+  instructions String?
+  order        Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  carePlan CarePlan @relation(fields: [carePlanId], references: [id], onDelete: Cascade, map: "care_plan_service_fk")
+  service  Service @relation(fields: [serviceId], references: [id], onDelete: Restrict, map: "care_plan_service_service_fk")
+
+  @@unique([carePlanId, serviceId])
+  @@map("care_plan_service")
 }
 
 model Visit {
@@ -277,8 +345,9 @@ model Visit {
   organizationId String
   branchId       String?
   carePlanId     String?
+  serviceId      String?
   clientId       String
-  staffId        String
+  staffId        String?
   userId         String?
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
@@ -286,12 +355,17 @@ model Visit {
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   branch       Branch?      @relation(fields: [branchId], references: [id], onDelete: SetNull)
   carePlan     CarePlan?    @relation(fields: [carePlanId], references: [id], onDelete: SetNull)
+  service      Service?     @relation(fields: [serviceId], references: [id], onDelete: SetNull)
   client       Client       @relation(fields: [clientId], references: [id], onDelete: Restrict)
-  staff        Staff        @relation(fields: [staffId], references: [id], onDelete: Restrict)
+  staff        Staff?       @relation(fields: [staffId], references: [id], onDelete: SetNull)
   user         User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
-  visitTasks   VisitTask[]
-  visitNotes   VisitNote[]
-  invoices     Invoice[]
+  visitTasks       VisitTask[]
+  visitNotes       VisitNote[]
+  invoices         Invoice[]
+  invoiceItems     InvoiceItem[]
+  forms            ClientForm[]
+  medAdministrations MedAdministration[]
+  timesheetEntries TimesheetEntry[]
 
   @@map("visit")
 }
@@ -318,6 +392,7 @@ model Invoice {
   user         User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
   visit        Visit?       @relation(fields: [visitId], references: [id], onDelete: SetNull)
   invoiceItems InvoiceItem[]
+  payments     Payment[]
 
   @@unique([organizationId, invoiceNumber])
   @@map("invoice")
@@ -364,18 +439,45 @@ model EmergencyContact {
 }
 
 model Medication {
-  id        String   @id @default(uuid())
-  name      String
-  dosage    String
-  frequency String
-  notes     String?
-  clientId  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                 String                   @id @default(uuid())
+  name               String
+  dosage             String
+  frequency          String
+  route              String?
+  administrationType String?
+  administrationTiming String?
+  status             String?
+  startDate          DateTime?
+  endDate            DateTime?
+  notes              String?
+  clientId           String
+  createdAt          DateTime                 @default(now())
+  updatedAt          DateTime                 @updatedAt
 
-  client Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  client               Client             @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  medAdministrations   MedAdministration[]
 
   @@map("medication")
+}
+
+model MedAdministration {
+  id             String                   @id @default(uuid())
+  medicationId   String
+  visitId        String?
+  staffId        String
+  administeredAt DateTime
+  status         MedAdministrationStatus  @default(ADMINISTERED)
+  dosage         String?
+  unit           String?
+  reason         String?
+  comment        String?
+  createdAt      DateTime                 @default(now())
+
+  medication Medication @relation(fields: [medicationId], references: [id], onDelete: Restrict)
+  visit      Visit?     @relation(fields: [visitId], references: [id], onDelete: SetNull)
+  staff      Staff      @relation(fields: [staffId], references: [id], onDelete: Restrict)
+
+  @@map("med_administration")
 }
 
 model MedicalHistory {
@@ -393,22 +495,46 @@ model MedicalHistory {
   @@map("medical_history")
 }
 
-model Form {
-  id             String      @id @default(uuid())
+model FormTemplate {
+  id             String   @id @default(uuid())
   name           String
-  type           String
-  status         FormStatus  @default(PENDING)
-  submittedAt    DateTime?
-  approvedAt     DateTime?
-  rejectedAt     DateTime?
+  description    String?
+  schema         Json
+  category       String?
+  isRequired     Boolean  @default(false)
+  status         Boolean  @default(true)
+  organizationId String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  clientForms  ClientForm[]
+
+  @@unique([organizationId, name])
+  @@map("form_template")
+}
+
+model ClientForm {
+  id              String      @id @default(uuid())
+  templateId      String
+  visitId         String?
+  clientId        String
+  formData        Json?
+  status          FormStatus  @default(PENDING)
+  submittedAt     DateTime?
+  submittedBy     String?
+  approvedAt      DateTime?
+  approvedBy      String?
+  rejectedAt      DateTime?
   rejectionReason String?
-  clientId       String
-  createdAt      DateTime    @default(now())
-  updatedAt      DateTime    @updatedAt
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
 
-  client Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  template FormTemplate @relation(fields: [templateId], references: [id], onDelete: Restrict)
+  visit    Visit?       @relation(fields: [visitId], references: [id], onDelete: SetNull)
+  client   Client       @relation(fields: [clientId], references: [id], onDelete: Cascade)
 
-  @@map("form")
+  @@map("client_form")
 }
 
 model StaffSkill {
@@ -462,11 +588,30 @@ model InvoiceItem {
   unitPrice   Float
   amount      Float
   invoiceId   String
+  visitId     String?
+  serviceId   String?
   createdAt   DateTime @default(now())
 
   invoice Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  visit   Visit?  @relation(fields: [visitId], references: [id], onDelete: SetNull)
+  service Service? @relation(fields: [serviceId], references: [id], onDelete: SetNull)
 
   @@map("invoice_item")
+}
+
+model Payment {
+  id              String   @id @default(uuid())
+  invoiceId       String
+  amount          Float
+  paymentMethod   String
+  paymentDate     DateTime
+  referenceNumber String?
+  notes           String?
+  createdAt       DateTime @default(now())
+
+  invoice Invoice @relation(fields: [invoiceId], references: [id], onDelete: Restrict)
+
+  @@map("payment")
 }
 
 model TimesheetEntry {
@@ -476,9 +621,11 @@ model TimesheetEntry {
   notes         String?
   billable      Boolean  @default(true)
   timesheetId   String
+  visitId       String?
   createdAt     DateTime @default(now())
 
   timesheet Timesheet @relation(fields: [timesheetId], references: [id], onDelete: Cascade)
+  visit     Visit?    @relation(fields: [visitId], references: [id], onDelete: SetNull)
 
   @@map("timesheet_entry")
 }

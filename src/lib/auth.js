@@ -97,3 +97,4 @@ export { useSession, getSession } from 'next-auth/react';
 
 // Server-side config export
 export default NextAuthConfig;
+export const authOptions = NextAuthConfig;

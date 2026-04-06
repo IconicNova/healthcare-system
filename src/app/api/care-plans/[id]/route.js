@@ -1,0 +1,177 @@
+import { NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
+import prisma from '@/lib/prisma';
+
+export async function GET(request, { params }) {
+  try {
+    const session = await getServerSession(authOptions);
+
+    if (!session || !session.user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { id } = params;
+
+    const carePlan = await prisma.carePlan.findUnique({
+      where: {
+        id,
+        organizationId: session.user.organizationId,
+      },
+      include: {
+        client: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            phone: true,
+            address: true,
+            city: true,
+            state: true,
+            zipCode: true,
+          },
+        },
+        staff: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            phone: true,
+            role: true,
+          },
+        },
+        services: {
+          include: {
+            service: { select: { id: true, name: true, duration: true, baseRate: true, description: true } },
+          },
+          orderBy: { order: 'asc' },
+        },
+        visits: {
+          select: {
+            id: true,
+            startTime: true,
+            endTime: true,
+            status: true,
+          },
+          orderBy: { startTime: 'desc' },
+          take: 10,
+        },
+      },
+    });
+
+    if (!carePlan) {
+      return NextResponse.json({ error: 'Care plan not found' }, { status: 404 });
+    }
+
+    return NextResponse.json(carePlan);
+  } catch (error) {
+    console.error('Error fetching care plan:', error);
+    return NextResponse.json({ error: 'Failed to fetch care plan' }, { status: 500 });
+  }
+}
+
+export async function PATCH(request, { params }) {
+  try {
+    const session = await getServerSession(authOptions);
+
+    if (!session || !session.user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { id } = params;
+    const body = await request.json();
+
+    const carePlan = await prisma.carePlan.findUnique({
+      where: {
+        id,
+        organizationId: session.user.organizationId,
+      },
+    });
+
+    if (!carePlan) {
+      return NextResponse.json({ error: 'Care plan not found' }, { status: 404 });
+    }
+
+    const { name, description, startDate, endDate, status, clientId, staffId, services } = body;
+
+    const updateData = {};
+    if (name !== undefined) updateData.name = name;
+    if (description !== undefined) updateData.description = description;
+    if (startDate !== undefined) updateData.startDate = new Date(startDate);
+    if (endDate !== undefined) updateData.endDate = endDate ? new Date(endDate) : null;
+    if (status !== undefined) updateData.status = status;
+    if (clientId !== undefined) updateData.clientId = clientId;
+    if (staffId !== undefined) updateData.staffId = staffId || null;
+
+    const updatedCarePlan = await prisma.carePlan.update({
+      where: { id },
+      data: updateData,
+      include: {
+        client: { select: { firstName: true, lastName: true } },
+        staff: { select: { firstName: true, lastName: true } },
+        services: {
+          include: {
+            service: { select: { id: true, name: true, duration: true, baseRate: true } },
+          },
+        },
+      },
+    });
+
+    // Update services if provided
+    if (services && services.length > 0) {
+      // Delete existing services
+      await prisma.carePlanService.deleteMany({
+        where: { carePlanId: id },
+      });
+
+      // Create new services
+      await prisma.carePlanService.createMany({
+        data: services.map(s => ({
+          carePlanId: id,
+          serviceId: s.serviceId,
+          frequency: s.frequency || 'AS_NEEDED',
+          frequencyText: s.frequencyText || null,
+          instructions: s.instructions || null,
+          order: s.order || 0,
+        })),
+      });
+    }
+
+    return NextResponse.json(updatedCarePlan);
+  } catch (error) {
+    console.error('Error updating care plan:', error);
+    return NextResponse.json({ error: 'Failed to update care plan' }, { status: 500 });
+  }
+}
+
+export async function DELETE(request, { params }) {
+  try {
+    const session = await getServerSession(authOptions);
+
+    if (!session || !session.user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { id } = params;
+
+    const carePlan = await prisma.carePlan.findUnique({
+      where: {
+        id,
+        organizationId: session.user.organizationId,
+      },
+    });
+
+    if (!carePlan) {
+      return NextResponse.json({ error: 'Care plan not found' }, { status: 404 });
+    }
+
+    await prisma.carePlan.delete({
+      where: { id },
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error('Error deleting care plan:', error);
+    return NextResponse.json({ error: 'Failed to delete care plan' }, { status: 500 });
+  }
+}

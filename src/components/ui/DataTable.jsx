@@ -8,6 +8,7 @@ export default function DataTable({
   loading = false,
   emptyMessage = 'No data available',
   pagination = null,
+  renderCell = null,
 }) {
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
 
@@ -72,7 +73,7 @@ export default function DataTable({
               <tr key={rowIndex}>
                 {columns.map((column) => (
                   <td key={column.key}>
-                    {column.render ? column.render(row[column.key], row) : row[column.key]}
+                    {renderCell ? renderCell(row, column.key) : column.render ? column.render(row[column.key], row) : row[column.key]}
                   </td>
                 ))}
               </tr>

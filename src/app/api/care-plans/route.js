@@ -1,0 +1,129 @@
+import { NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
+import prisma from '@/lib/prisma';
+
+export async function GET(request) {
+  try {
+    const session = await getServerSession(authOptions);
+
+    if (!session || !session.user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { searchParams } = new URL(request.url);
+    const page = parseInt(searchParams.get('page') || '1');
+    const limit = parseInt(searchParams.get('limit') || '10');
+    const search = searchParams.get('search') || '';
+    const status = searchParams.get('status') || '';
+
+    const skip = (page - 1) * limit;
+
+    const where = {
+      organizationId: session.user.organizationId,
+    };
+
+    if (search) {
+      where.OR = [
+        { name: { contains: search, mode: 'insensitive' } },
+        { description: { contains: search, mode: 'insensitive' } },
+        { client: { firstName: { contains: search, mode: 'insensitive' } } },
+        { client: { lastName: { contains: search, mode: 'insensitive' } } },
+      ];
+    }
+
+    if (status === 'active') {
+      where.status = true;
+    } else if (status === 'inactive') {
+      where.status = false;
+    }
+
+    const [carePlans, total] = await Promise.all([
+      prisma.carePlan.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy: { createdAt: 'desc' },
+        include: {
+          client: { select: { firstName: true, lastName: true } },
+          staff: { select: { firstName: true, lastName: true } },
+          services: {
+            include: {
+              service: { select: { name: true, duration: true } },
+            },
+          },
+        },
+      }),
+      prisma.carePlan.count({ where }),
+    ]);
+
+    return NextResponse.json({
+      carePlans,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
+    });
+  } catch (error) {
+    console.error('Error fetching care plans:', error);
+    return NextResponse.json({ error: 'Failed to fetch care plans' }, { status: 500 });
+  }
+}
+
+export async function POST(request) {
+  try {
+    const session = await getServerSession(authOptions);
+
+    if (!session || !session.user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const body = await request.json();
+    const { name, description, startDate, endDate, status, clientId, staffId, services } = body;
+
+    if (!name || !clientId || !startDate) {
+      return NextResponse.json(
+        { error: 'Name, client, and start date are required' },
+        { status: 400 }
+      );
+    }
+
+    const carePlan = await prisma.carePlan.create({
+      data: {
+        name,
+        description: description || null,
+        startDate: new Date(startDate),
+        endDate: endDate ? new Date(endDate) : null,
+        status: status !== false,
+        organizationId: session.user.organizationId,
+        clientId,
+        staffId: staffId || null,
+        services: services && services.length > 0 ? {
+          create: services.map(s => ({
+            serviceId: s.serviceId,
+            frequency: s.frequency || 'AS_NEEDED',
+            frequencyText: s.frequencyText || null,
+            instructions: s.instructions || null,
+            order: s.order || 0,
+          })),
+        } : undefined,
+      },
+      include: {
+        client: { select: { firstName: true, lastName: true } },
+        staff: { select: { firstName: true, lastName: true } },
+        services: {
+          include: {
+            service: { select: { id: true, name: true, duration: true, baseRate: true } },
+          },
+        },
+      },
+    });
+
+    return NextResponse.json(carePlan, { status: 201 });
+  } catch (error) {
+    console.error('Error creating care plan:', error);
+    return NextResponse.json({ error: 'Failed to create care plan' }, { status: 500 });
+  }
+}

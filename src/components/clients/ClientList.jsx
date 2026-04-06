@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import DataTable from '@/components/ui/DataTable';
 import SearchInput from '@/components/ui/SearchInput';
@@ -72,27 +72,20 @@ export default function ClientList() {
     }
   };
 
-  // Initial fetch
-  fetchData();
+  // Initial fetch and when filters change
+  useEffect(() => {
+    fetchData();
+  }, [pagination.page, pagination.limit, search, statusFilter]);
 
   // Fetch when filters change (with debounce)
-  let debounceTimer;
   const handleSearchChange = (value) => {
     setSearch(value);
-    clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(() => {
-      setPagination(prev => ({ ...prev, page: 1 }));
-    }, 300);
+    setPagination(prev => ({ ...prev, page: 1 }));
   };
 
   const handleStatusChange = (value) => {
     setStatusFilter(value);
     setPagination(prev => ({ ...prev, page: 1 }));
-  };
-
-  // Refetch when pagination or filters change
-  const refetch = () => {
-    fetchData();
   };
 
   const renderCell = (client, key) => {
@@ -187,6 +180,7 @@ export default function ClientList() {
 
   const handlePageChange = (newPage) => {
     setPagination(prev => ({ ...prev, page: newPage }));
+    // fetchData will be called automatically via useEffect
   };
 
   return (
