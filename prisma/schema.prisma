@@ -633,6 +633,7 @@ model TimesheetEntry {
 model VisitTask {
   id        String   @id @default(uuid())
   title     String
+  category  String?
   completed Boolean  @default(false)
   notes     String?
   visitId   String

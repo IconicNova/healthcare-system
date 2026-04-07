@@ -9,9 +9,9 @@ import VisitEditForm from '@/components/scheduling/VisitEditForm';
 import Select from '@/components/ui/Select';
 
 const VIEW_OPTIONS = [
-  { value: 'month', label: 'Month', icon: CalendarIcon },
-  { value: 'week', label: 'Week', icon: Clock },
-  { value: 'day', label: 'Day', icon: List },
+  { value: 'dayGridMonth', label: 'Month', icon: CalendarIcon },
+  { value: 'timeGridWeek', label: 'Week', icon: Clock },
+  { value: 'timeGridDay', label: 'Day', icon: List },
 ];
 
 const STATUS_CONFIG = {
@@ -31,7 +31,7 @@ export default function SchedulingPage() {
   const [branches, setBranches] = useState([]);
   const [statusCounts, setStatusCounts] = useState({});
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [view, setView] = useState('month');
+  const [view, setView] = useState('dayGridMonth');
   const [loading, setLoading] = useState(true);
   const [showVisitForm, setShowVisitForm] = useState(false);
   const [selectedVisit, setSelectedVisit] = useState(null);

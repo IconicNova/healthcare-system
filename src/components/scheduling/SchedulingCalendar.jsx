@@ -16,7 +16,7 @@ const STATUS_COLORS = {
 
 export default function SchedulingCalendar({
   visits = [],
-  view = 'month',
+  view = 'dayGridMonth',
   currentDate,
   onDateChange,
   onViewChange,
@@ -88,7 +88,7 @@ export default function SchedulingCalendar({
           headerToolbar={{
             left: 'prev,next today',
             center: 'title',
-            right: view === 'month' ? 'dayGridMonth,timeGridWeek,timeGridDay' : '',
+            right: view === 'dayGridMonth' ? 'dayGridMonth,timeGridWeek,timeGridDay' : '',
           }}
           events={getEvents()}
           editable={true}
@@ -105,13 +105,13 @@ export default function SchedulingCalendar({
           eventDrop={handleEventDrop}
           dateClick={handleDateClick}
           views={{
-            month: {
+            dayGridMonth: {
               dayHeaderFormat: { weekday: 'short' },
             },
-            week: {
+            timeGridWeek: {
               dayHeaderFormat: { weekday: 'long', month: 'short', day: 'numeric' },
             },
-            day: {
+            timeGridDay: {
               dayHeaderFormat: { weekday: 'long', month: 'short', day: 'numeric' },
             },
           }}

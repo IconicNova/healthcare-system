@@ -15,7 +15,8 @@ import {
   Settings,
   LogOut,
   Menu,
-  X
+  X,
+  ClipboardCheck
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -23,7 +24,8 @@ const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: Home },
   { name: 'Clients', href: '/clients', icon: Users },
   { name: 'Staff', href: '/staff', icon: User },
-  { name: 'Visits', href: '/visits', icon: Calendar },
+  { name: 'Care Delivery', href: '/care-delivery', icon: ClipboardCheck },
+  { name: 'Scheduling', href: '/scheduling', icon: Calendar },
   { name: 'Care Plans', href: '/care-plans', icon: ClipboardList },
   { name: 'Documents', href: '/documents', icon: FileText },
   { name: 'Invoices', href: '/invoices', icon: DollarSign },

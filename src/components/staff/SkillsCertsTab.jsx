@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Plus, X, Edit2, Trash2 } from 'lucide-react';
 import Modal from '@/components/ui/Modal';
 import Input from '@/components/ui/Input';
@@ -56,7 +56,9 @@ export default function SkillsCertsTab({ staffId }) {
     }
   };
 
-  fetchData();
+  useEffect(() => {
+    fetchData();
+  }, [staffId]);
 
   const handleAddSkill = async () => {
     if (!skillForm.name.trim()) return;
