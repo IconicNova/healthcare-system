@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Edit, MoreVertical, Trash2, Upload, X } from 'lucide-react';
 import StatusBadge from '@/components/ui/StatusBadge';
-import Button from '@/components/ui/Button';
+
 import StaffOverviewTab from './StaffOverviewTab';
 import SkillsCertsTab from './SkillsCertsTab';
 import AvailabilityGrid from './AvailabilityGrid';
@@ -115,6 +115,8 @@ export default function StaffProfile({ staffData }) {
       const reader = new FileReader();
       reader.onloadend = () => {
         setAvatarPreview(reader.result);
+        // Auto-upload after preview is set
+        handleAvatarUpload();
       };
       reader.readAsDataURL(file);
     }

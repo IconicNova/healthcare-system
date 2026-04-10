@@ -81,6 +81,8 @@ export default function ClientProfilePage({ params }) {
       const reader = new FileReader();
       reader.onloadend = () => {
         setAvatarPreview(reader.result);
+        // Auto-upload after preview is set
+        handleAvatarUpload();
       };
       reader.readAsDataURL(file);
     }

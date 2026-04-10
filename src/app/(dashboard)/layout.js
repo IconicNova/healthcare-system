@@ -12,7 +12,6 @@ export default function DashboardLayout({ children }) {
   const { status } = useSession();
   const router = useRouter();
   const [isClient, setIsClient] = useState(false);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
@@ -25,12 +24,7 @@ export default function DashboardLayout({ children }) {
     }
   }, [status, router, isClient]);
 
-  // Handle sidebar collapse state change from Sidebar component
-  useEffect(() => {
-    const handleSidebarToggle = () => {
-      // This will be updated when Sidebar emits state
-    };
-  }, []);
+
 
   if (!isClient || status === 'loading') {
     return <LoadingSpinner fullScreen />;
@@ -45,7 +39,7 @@ export default function DashboardLayout({ children }) {
       <Sidebar />
       <div className="dashboard-content" style={{
         flex: 1,
-        marginLeft: sidebarCollapsed ? 'var(--sidebar-collapsed-width)' : 'var(--sidebar-width)',
+        marginLeft: 'var(--sidebar-width)',
         transition: 'margin-left var(--transition-slow) var(--ease-smooth)'
       }}>
         <TopBar onMenuClick={() => setMobileMenuOpen(true)} />

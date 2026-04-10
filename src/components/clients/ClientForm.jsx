@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import Select from '@/components/ui/Select';
-import { Plus, X, Upload, Camera } from 'lucide-react';
+import { Plus, X, Upload } from 'lucide-react';
 import { format } from 'date-fns';
 
 const STATUS_OPTIONS = [
@@ -206,7 +206,6 @@ export default function ClientForm({ client = null, onSuccess, onCancel }) {
     setSaving(true);
     try {
       // Upload avatar first if there's a new one for existing client
-      let avatarId = client?.id;
       if (client?.id && avatarPreview && avatarPreview !== client.avatar) {
         await handleAvatarUpload();
       }
