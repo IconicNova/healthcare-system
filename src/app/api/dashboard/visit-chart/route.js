@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
-import { subDays, startOfWeek, format } from 'date-fns';
+import { subDays, format } from 'date-fns';
 
 export async function GET() {
   try {

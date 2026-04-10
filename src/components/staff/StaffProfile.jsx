@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Edit, MoreVertical, Trash2 } from 'lucide-react';
 import StatusBadge from '@/components/ui/StatusBadge';
@@ -26,9 +26,24 @@ const TABS = [
 
 export default function StaffProfile({ staffData }) {
   const router = useRouter();
+  const menuRef = useRef(null);
   const [activeTab, setActiveTab] = useState('overview');
-  const [loading, setLoading] = useState(false);
   const [showMoreActions, setShowMoreActions] = useState(false);
+  const [, setLoading] = useState(false);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setShowMoreActions(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   if (!staffData) {
     return (
@@ -39,7 +54,8 @@ export default function StaffProfile({ staffData }) {
   }
 
   const handleDeactivate = async () => {
-    if (!confirm('Are you sure you want to deactivate this staff member?')) return;
+    if (!confirm('Are you sure you want to deactivate this staff member? They will be set to INACTIVE status.')) return;
+    setShowMoreActions(false);
     setLoading(true);
     try {
       const response = await fetch(`/api/staff/${staffData.id}`, {
@@ -59,7 +75,8 @@ export default function StaffProfile({ staffData }) {
   };
 
   const handleTerminate = async () => {
-    if (!confirm('Are you sure you want to terminate this staff member?')) return;
+    if (!confirm('Are you sure you want to terminate this staff member? They will be set to TERMINATED status.')) return;
+    setShowMoreActions(false);
     setLoading(true);
     try {
       const response = await fetch(`/api/staff/${staffData.id}`, {
@@ -98,21 +115,26 @@ export default function StaffProfile({ staffData }) {
             </div>
           </div>
 
-          <div style={{ position: 'relative' }} onMouseLeave={() => setShowMoreActions(false)}>
+          <div style={{ display: 'flex', gap: '8px', position: 'relative' }}>
             <button onClick={() => router.push(`/staff/${staffData.id}/edit`)} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 16px', borderRadius: '8px', border: '1px solid var(--color-border)', backgroundColor: 'white', cursor: 'pointer', fontSize: '13px', fontWeight: 500 }}>
               <Edit size={14} /> Edit Profile
             </button>
-            <button onClick={() => setShowMoreActions(!showMoreActions)} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 16px', borderRadius: '8px', border: '1px solid var(--color-border)', backgroundColor: 'white', cursor: 'pointer', fontSize: '13px', fontWeight: 500, marginLeft: '8px' }}>
-              <MoreVertical size={14} /> More
-            </button>
-            {showMoreActions && (
-              <div style={{ position: 'absolute', top: '100%', right: 0, marginTop: '8px', minWidth: '180px', backgroundColor: 'white', border: '1px solid var(--color-border)', borderRadius: '8px', boxShadow: 'var(--shadow-lg)' }}>
-                <button onClick={handleDeactivate} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 16px', width: '100%', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}>Deactivate</button>
-                <button onClick={handleTerminate} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 16px', width: '100%', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', color: 'var(--color-error)' }}>
-                  <Trash2 size={14} /> Terminate
-                </button>
-              </div>
-            )}
+            <div ref={menuRef} style={{ position: 'relative' }}>
+              <button onClick={() => setShowMoreActions(!showMoreActions)} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 16px', borderRadius: '8px', border: '1px solid var(--color-border)', backgroundColor: 'white', cursor: 'pointer', fontSize: '13px', fontWeight: 500 }}>
+                <MoreVertical size={14} /> More
+              </button>
+              {showMoreActions && (
+                <div style={{ position: 'absolute', top: '100%', right: 0, marginTop: '8px', minWidth: '200px', backgroundColor: 'white', border: '1px solid var(--color-border)', borderRadius: '8px', boxShadow: 'var(--shadow-lg)', zIndex: 1000 }}>
+                  <button onClick={handleDeactivate} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 16px', width: '100%', background: 'none', border: 'none', borderBottom: '1px solid var(--color-border)', cursor: 'pointer', textAlign: 'left', fontSize: '14px', color: 'var(--color-text)', transition: 'background-color 0.15s' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-gray-50)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
+                    <span style={{ fontSize: '13px', color: 'var(--color-text-secondary)', lineHeight: 1 }}>Set status to INACTIVE</span>
+                  </button>
+                  <button onClick={handleTerminate} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 16px', width: '100%', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', fontSize: '14px', color: 'var(--color-error)', transition: 'background-color 0.15s' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(239, 68, 68, 0.1)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
+                    <Trash2 size={14} />
+                    <span style={{ fontSize: '13px', color: 'var(--color-error)', lineHeight: 1 }}>Set status to TERMINATED</span>
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

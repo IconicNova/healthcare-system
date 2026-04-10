@@ -10,6 +10,9 @@ const inter = Inter({
 export const metadata = {
   title: "HomeCare Pro - Healthcare Management System",
   description: "Professional home care management platform for healthcare providers",
+  icons: {
+    icon: '/favicon.svg',
+  },
 };
 
 export default function RootLayout({ children }) {

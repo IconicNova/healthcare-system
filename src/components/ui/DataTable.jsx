@@ -57,6 +57,7 @@ export default function DataTable({
                   key={column.key}
                   className={column.sortable ? 'sortable' : ''}
                   onClick={() => column.sortable && handleSort(column.key)}
+                  style={column.width ? { width: column.width } : undefined}
                 >
                   {column.label}
                   {sortConfig.key === column.key && (

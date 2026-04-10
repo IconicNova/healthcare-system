@@ -4,51 +4,35 @@ import { useState } from 'react';
 import { format } from 'date-fns';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
-import { Plus, X, Pill, Activity } from 'lucide-react';
+import { Plus, Pill, Activity } from 'lucide-react';
 
 export default function ClientMedicalTab({ client }) {
-  const [saving, setSaving] = useState(false);
-  const [showMedForm, setShowMedForm] = useState(false);
+    const [showMedForm, setShowMedForm] = useState(false);
   const [showHistoryForm, setShowHistoryForm] = useState(false);
   const [medForm, setMedForm] = useState({ name: '', dosage: '', frequency: '', notes: '' });
   const [historyForm, setHistoryForm] = useState({ condition: '', diagnosis: '', date: '', notes: '' });
-
-  const handleSaveMedical = async () => {
-    setSaving(true);
-    try {
-      const response = await fetch(`/api/clients/${client.id}/medical`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          medications: client.medications?.map(m => m) || [],
-          medicalHistory: client.medicalHistory?.map(h => h) || [],
-        }),
-      });
-      if (response.ok) {
-        // Update local state
-        const data = await response.json();
-        // client.medications = data.medications;
-        // client.medicalHistory = data.medicalHistory;
-      }
-    } catch (error) {
-      console.error('Error saving medical info:', error);
-    } finally {
-      setSaving(false);
-    }
-  };
+  const [saving, setSaving] = useState(false);
 
   const handleAddMedication = () => {
     if (!medForm.name.trim()) return;
+    setSaving(true);
     // In a full implementation, this would add to the medications array
-    setShowMedForm(false);
-    setMedForm({ name: '', dosage: '', frequency: '', notes: '' });
+    setTimeout(() => {
+      setShowMedForm(false);
+      setMedForm({ name: '', dosage: '', frequency: '', notes: '' });
+      setSaving(false);
+    }, 500);
   };
 
   const handleAddHistory = () => {
     if (!historyForm.condition.trim()) return;
+    setSaving(true);
     // In a full implementation, this would add to the medical history array
-    setShowHistoryForm(false);
-    setHistoryForm({ condition: '', diagnosis: '', date: '', notes: '' });
+    setTimeout(() => {
+      setShowHistoryForm(false);
+      setHistoryForm({ condition: '', diagnosis: '', date: '', notes: '' });
+      setSaving(false);
+    }, 500);
   };
 
   return (

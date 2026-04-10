@@ -5,7 +5,7 @@ import { format } from 'date-fns';
 import StatusBadge from '@/components/ui/StatusBadge';
 import Pagination from '@/components/ui/Pagination';
 import SearchInput from '@/components/ui/SearchInput';
-import { FileText, CheckCircle, XCircle, Clock, Eye } from 'lucide-react';
+import { FileText, Eye } from 'lucide-react';
 
 const STATUS_VARIANTS = {
   PENDING: 'default',
@@ -13,14 +13,6 @@ const STATUS_VARIANTS = {
   SUBMITTED: 'primary',
   APPROVED: 'success',
   REJECTED: 'error',
-};
-
-const STATUS_ICONS = {
-  PENDING: Clock,
-  COMPLETED: CheckCircle,
-  SUBMITTED: FileText,
-  APPROVED: CheckCircle,
-  REJECTED: XCircle,
 };
 
 const FORM_TYPES = [
@@ -63,6 +55,7 @@ export default function ClientFormsTab({ clientId }) {
     }
 
     fetchForms();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clientId, pagination.page, typeFilter]);
 
   // Filter by search locally
@@ -148,9 +141,8 @@ export default function ClientFormsTab({ clientId }) {
                 </thead>
                 <tbody>
                   {filteredForms.map((form, index) => {
-                    const StatusIcon = STATUS_ICONS[form.status] || FileText;
-                    return (
-                      <tr key={form.id} style={{ borderBottom: index < filteredForms.length - 1 ? '1px solid var(--color-border)' : 'none' }}>
+                        return (
+                        <tr key={form.id} style={{ borderBottom: index < filteredForms.length - 1 ? '1px solid var(--color-border)' : 'none' }}>
                         <td style={{ padding: '16px 12px' }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                             <div style={{ width: '36px', height: '36px', borderRadius: '8px', backgroundColor: '#e0f2fe', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

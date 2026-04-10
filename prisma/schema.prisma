@@ -22,6 +22,7 @@ enum ClientStatus {
   INACTIVE
   PENDING
   ON_HOLD
+  DISCHARGED
 }
 
 enum StaffStatus {
@@ -38,12 +39,18 @@ enum PayType {
 }
 
 enum VisitStatus {
+  VACANT
   SCHEDULED
+  OFFERED
   IN_PROGRESS
+  CLOCKED_IN
   COMPLETED
+  APPROVED
+  MISSED
+  LATE
   CANCELLED
+  ON_HOLD
   NO_SHOW
-  MISSSED
 }
 
 enum FormStatus {
@@ -58,6 +65,7 @@ enum InvoiceStatus {
   DRAFT
   SENT
   PAID
+  PARTIALLY_PAID
   OVERDUE
   CANCELLED
 }
@@ -86,6 +94,17 @@ enum Frequency {
   CUSTOM
 }
 
+enum InsuranceClaimStatus {
+  PENDING
+  SUBMITTED
+  IN_REVIEW
+  APPROVED
+  DENIED
+  APPEALED
+  PAID
+  VOIDED
+}
+
 // Models
 
 model Organization {
@@ -111,6 +130,7 @@ model Organization {
   invoices      Invoice[]
   timesheets    Timesheet[]
   formTemplates FormTemplate[]
+  insuranceClaims InsuranceClaim[]
 
   @@map("organization")
 }
@@ -203,9 +223,28 @@ model Client {
   medications    Medication[]
   medicalHistory MedicalHistory[]
   medicalInfo    ClientMedicalInfo?
+  documents      Document[]
+  insuranceClaims InsuranceClaim[]
 
   @@unique([organizationId, email])
   @@map("client")
+}
+
+// ─── DOCUMENT MANAGEMENT ───────────────────────────────
+
+model Document {
+  id          String   @id @default(uuid())
+  clientId    String
+  client      Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  name        String
+  type        String
+  url         String
+  size        Int?
+  uploadedBy  String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("document")
 }
 
 model ClientMedicalInfo {
@@ -391,11 +430,41 @@ model Invoice {
   client       Client       @relation(fields: [clientId], references: [id], onDelete: Restrict)
   user         User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
   visit        Visit?       @relation(fields: [visitId], references: [id], onDelete: SetNull)
-  invoiceItems InvoiceItem[]
-  payments     Payment[]
+  invoiceItems    InvoiceItem[]
+  payments        Payment[]
+  insuranceClaims InsuranceClaim[]
 
   @@unique([organizationId, invoiceNumber])
   @@map("invoice")
+}
+
+model InsuranceClaim {
+  id                String               @id @default(uuid())
+  claimNumber       String               @unique
+  invoiceId         String
+  clientId          String
+  insuranceType     String
+  insuranceId       String
+  diagnosisCode     String?
+  authorizationNumber String?
+  serviceDate       DateTime
+  amount            Float
+  approvedAmount    Float?
+  status            InsuranceClaimStatus @default(PENDING)
+  submittedDate     DateTime?
+  responseDate      DateTime?
+  denialReason      String?
+  notes             String?
+  organizationId    String
+  createdAt         DateTime             @default(now())
+  updatedAt         DateTime             @updatedAt
+
+  invoice      Invoice      @relation(fields: [invoiceId], references: [id], onDelete: Restrict)
+  client       Client       @relation(fields: [clientId], references: [id], onDelete: Restrict)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, claimNumber])
+  @@map("insurance_claim")
 }
 
 model Timesheet {

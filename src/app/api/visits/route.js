@@ -99,7 +99,6 @@ export async function POST(request) {
       clientId,
       staffId,
       carePlanId,
-      serviceId,
       branchId,
       startTime,
       endTime,
@@ -149,6 +148,37 @@ export async function POST(request) {
       }));
     }
 
+    // Check for client conflict (prevent duplicate visits for same client at same time)
+    const clientConflicts = await prisma.visit.findMany({
+      where: {
+        clientId,
+        organizationId: session.user.organizationId,
+        status: { not: 'CANCELLED' },
+        OR: [
+          {
+            startTime: { lte: new Date(endTime) },
+            endTime: { gte: new Date(startTime) },
+          },
+        ],
+      },
+    });
+    conflicts = conflicts.concat(
+      clientConflicts.map(v => ({
+        type: 'CLIENT',
+        visitId: v.id,
+        startTime: v.startTime,
+        endTime: v.endTime,
+      }))
+    );
+
+    // If there are any conflicts, return error
+    if (conflicts.length > 0) {
+      return NextResponse.json(
+        { error: 'Time slot conflict detected', conflicts },
+        { status: 409 }
+      );
+    }
+
     // Create visit
     const visit = await prisma.visit.create({
       data: {
@@ -184,8 +214,8 @@ export async function POST(request) {
     });
 
     // Handle recurrence
+    const occurrences = [];
     if (recurrence && recurrence.type && recurrence.type !== 'NONE') {
-      const occurrences = [];
       const baseStart = new Date(startTime);
       const duration = new Date(endTime) - new Date(startTime);
 

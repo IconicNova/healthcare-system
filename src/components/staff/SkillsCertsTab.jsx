@@ -58,6 +58,7 @@ export default function SkillsCertsTab({ staffId }) {
 
   useEffect(() => {
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [staffId]);
 
   const handleAddSkill = async () => {

@@ -35,7 +35,7 @@ export default function CarePlanForm({ isOpen, onClose, onSubmit, clients = [], 
     } else if (!formData.name) {
       resetForm();
     }
-  }, [carePlan, isOpen]);
+  }, [carePlan, isOpen, formData.name]);
 
   const resetForm = () => {
     setFormData({
@@ -174,7 +174,7 @@ export default function CarePlanForm({ isOpen, onClose, onSubmit, clients = [], 
     <div style={{ display: 'grid', gap: '20px' }}>
       <div>
         <Input
-          label="Care Plan Name *"
+          label="Care Plan Name"
           value={formData.name}
           onChange={(e) => handleInputChange('name', e.target.value)}
           placeholder="e.g., Post-Surgery Recovery Plan"
@@ -195,7 +195,7 @@ export default function CarePlanForm({ isOpen, onClose, onSubmit, clients = [], 
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
         <Select
-          label="Client *"
+          label="Client"
           value={formData.clientId}
           onChange={(e) => handleInputChange('clientId', e.target.value)}
           options={clientOptions}
@@ -212,7 +212,7 @@ export default function CarePlanForm({ isOpen, onClose, onSubmit, clients = [], 
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
         <Input
-          label="Start Date *"
+          label="Start Date"
           type="date"
           value={formData.startDate}
           onChange={(e) => handleInputChange('startDate', e.target.value)}

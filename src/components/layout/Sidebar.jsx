@@ -10,13 +10,16 @@ import {
   User,
   Calendar,
   ClipboardList,
-  FileText,
-  DollarSign,
+
   Settings,
   LogOut,
   Menu,
   X,
-  ClipboardCheck
+  ClipboardCheck,
+  Wallet,
+  Clock,
+  PieChart,
+  Bell
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -27,8 +30,11 @@ const navigation = [
   { name: 'Care Delivery', href: '/care-delivery', icon: ClipboardCheck },
   { name: 'Scheduling', href: '/scheduling', icon: Calendar },
   { name: 'Care Plans', href: '/care-plans', icon: ClipboardList },
-  { name: 'Documents', href: '/documents', icon: FileText },
-  { name: 'Invoices', href: '/invoices', icon: DollarSign },
+  { name: 'Billing', href: '/billing', icon: Wallet },
+  { name: 'Payroll', href: '/payroll', icon: Clock },
+  { name: 'Reports', href: '/reports', icon: PieChart },
+  { name: 'Notifications', href: '/notifications', icon: Bell },
+
 ];
 
 const settings = [
@@ -59,14 +65,11 @@ export default function Sidebar() {
             onClick={() => setCollapsed(!collapsed)}
             className="sidebar-toggle"
             style={{
-              position: 'absolute',
-              right: '10px',
-              top: '50%',
-              transform: 'translateY(-50%)',
               background: 'none',
               border: 'none',
               color: 'var(--sidebar-text-muted)',
               cursor: 'pointer',
+              padding: '4px',
             }}
           >
             {collapsed ? <Menu size={20} /> : <X size={20} />}
@@ -85,7 +88,7 @@ export default function Sidebar() {
                 <Link key={item.name} href={item.href} passHref>
                   <button
                     className={`sidebar-item ${isActive ? 'active' : ''}`}
-                    onClick={(e) => {
+                    onClick={() => {
                       if (collapsed) {
                         setCollapsed(false);
                       }

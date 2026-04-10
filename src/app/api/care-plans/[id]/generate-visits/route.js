@@ -45,7 +45,6 @@ export async function POST(request, { params }) {
     const start = new Date(startDate);
     const end = new Date(endDate);
     const visits = [];
-    let visitId = 1;
 
     // Generate visits for each service
     for (const planService of carePlan.services) {

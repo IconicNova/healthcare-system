@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { ListTodo, FileText, ClipboardList, Activity, Pill, Users } from 'lucide-react';
+import { ListTodo, FileText, ClipboardList, Activity, Pill } from 'lucide-react';
 
 const NAV_ITEMS = [
   { value: 'tasks', label: 'Tasks', icon: ListTodo },

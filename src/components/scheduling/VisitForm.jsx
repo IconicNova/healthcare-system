@@ -209,7 +209,7 @@ export default function VisitForm({ isOpen, onClose, onSubmit, clients = [], sta
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
               <div style={{ gridColumn: 'span 2' }}>
                 <Select
-                  label="Client *"
+                  label="Client"
                   value={formData.clientId}
                   onChange={(e) => handleInputChange('clientId', e.target.value)}
                   options={clientOptions}
@@ -225,7 +225,7 @@ export default function VisitForm({ isOpen, onClose, onSubmit, clients = [], sta
               />
 
               <Select
-                label="Service *"
+                label="Service"
                 value={formData.serviceId}
                 onChange={(e) => handleInputChange('serviceId', e.target.value)}
                 options={serviceOptions}
@@ -233,7 +233,7 @@ export default function VisitForm({ isOpen, onClose, onSubmit, clients = [], sta
               />
 
               <Select
-                label="Branch *"
+                label="Branch"
                 value={formData.branchId}
                 onChange={(e) => handleInputChange('branchId', e.target.value)}
                 options={branchOptions}
@@ -257,7 +257,7 @@ export default function VisitForm({ isOpen, onClose, onSubmit, clients = [], sta
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px', marginBottom: '16px' }}>
               <Input
-                label="Date *"
+                label="Date"
                 type="date"
                 value={formData.date}
                 onChange={(e) => handleInputChange('date', e.target.value)}
@@ -265,7 +265,7 @@ export default function VisitForm({ isOpen, onClose, onSubmit, clients = [], sta
               />
 
               <Input
-                label="Start Time *"
+                label="Start Time"
                 type="time"
                 value={formData.startTime}
                 onChange={(e) => handleInputChange('startTime', e.target.value)}
@@ -273,7 +273,7 @@ export default function VisitForm({ isOpen, onClose, onSubmit, clients = [], sta
               />
 
               <Input
-                label="End Time *"
+                label="End Time"
                 type="time"
                 value={formData.endTime}
                 onChange={(e) => handleInputChange('endTime', e.target.value)}

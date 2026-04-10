@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
-import { subMonths, format, startOfMonth } from 'date-fns';
+import { subMonths, format } from 'date-fns';
 
 export async function GET() {
   try {
@@ -39,8 +39,6 @@ export async function GET() {
 
     for (let i = 5; i >= 0; i--) {
       const date = subMonths(now, i);
-      const monthStart = startOfMonth(date);
-      const nextMonthStart = startOfMonth(subMonths(date, -1));
 
       const label = format(date, 'MMM yyyy');
       monthLabels.push(label);

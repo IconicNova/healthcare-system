@@ -3,8 +3,6 @@
 import { useEffect, useState } from 'react';
 import {
   ResponsiveContainer,
-  LineChart,
-  Line,
   XAxis,
   YAxis,
   CartesianGrid,

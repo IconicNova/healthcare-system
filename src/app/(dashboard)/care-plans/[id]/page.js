@@ -18,6 +18,7 @@ export default function CarePlanDetailPage({ params }) {
 
   useEffect(() => {
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.id]);
 
   const fetchData = async () => {
@@ -352,7 +353,7 @@ function getStatusColor(status) {
     COMPLETED: '#16A34A',
     CANCELLED: '#9CA3AF',
     NO_SHOW: '#EF4444',
-    MISSSED: '#EF4444',
+    MISSED: '#EF4444',
   };
   return colors[status] || '#6B7280';
 }

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Plus, Check, Trash2, Edit } from 'lucide-react';
+import { Plus, Trash2 } from 'lucide-react';
 import Modal from '@/components/ui/Modal';
 
 export default function VisitTasksTab({ visitId }) {
@@ -9,8 +9,7 @@ export default function VisitTasksTab({ visitId }) {
   const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
   const [newTask, setNewTask] = useState({ title: '', category: 'General' });
-  const [editingTask, setEditingTask] = useState(null);
-
+  
   const CATEGORIES = ['Assessment', 'Treatment', 'Documentation', 'Education', 'General'];
 
   useEffect(() => {

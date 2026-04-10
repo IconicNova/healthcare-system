@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { Plus, Calendar as CalendarIcon, Clock, List } from 'lucide-react';
 import SchedulingCalendar from '@/components/scheduling/SchedulingCalendar';
 import VisitForm from '@/components/scheduling/VisitForm';
@@ -20,7 +20,7 @@ const STATUS_CONFIG = {
   COMPLETED: { label: 'Completed', color: '#16A34A' },
   CANCELLED: { label: 'Cancelled', color: '#9CA3AF' },
   NO_SHOW: { label: 'No Show', color: '#EF4444' },
-  MISSSED: { label: 'Missed', color: '#EF4444' },
+  MISSED: { label: 'Missed', color: '#EF4444' },
 };
 
 export default function SchedulingPage() {
@@ -42,8 +42,6 @@ export default function SchedulingPage() {
     status: '',
     branchId: '',
   });
-
-  const calendarRef = useRef(null);
 
   // Fetch all data
   useEffect(() => {
@@ -171,6 +169,26 @@ export default function SchedulingPage() {
     setShowEditForm(true);
   };
 
+  const handleDeleteVisit = async () => {
+    if (!window.confirm('Are you sure you want to delete this visit? This action cannot be undone.')) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/visits/${selectedVisit.id}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        setVisits(prev => prev.filter(v => v.id !== selectedVisit.id));
+        setSelectedVisit(null);
+      }
+    } catch (error) {
+      console.error('Error deleting visit:', error);
+      alert('Failed to delete visit');
+    }
+  };
+
   const handleUpdateVisit = async (data) => {
     try {
       const response = await fetch(`/api/visits/${selectedVisit.id}`, {
@@ -213,9 +231,6 @@ export default function SchedulingPage() {
     { value: '', label: 'All Statuses' },
     ...Object.entries(STATUS_CONFIG).map(([value, { label }]) => ({ value, label })),
   ];
-
-  const today = new Date();
-  const monthName = currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
 
   return (
     <div>
@@ -308,25 +323,25 @@ export default function SchedulingPage() {
         <span style={{ fontSize: '13px', color: 'var(--color-text-secondary)', alignSelf: 'center' }}>Filters:</span>
         <Select
           value={filters.staffId}
-          onChange={(e) => handleFilterChange('staffId', e.target.value)}
+          onChange={(value) => handleFilterChange('staffId', value)}
           options={staffOptions}
           style={{ width: '180px' }}
         />
         <Select
           value={filters.clientId}
-          onChange={(e) => handleFilterChange('clientId', e.target.value)}
+          onChange={(value) => handleFilterChange('clientId', value)}
           options={clientOptions}
           style={{ width: '180px' }}
         />
         <Select
           value={filters.branchId}
-          onChange={(e) => handleFilterChange('branchId', e.target.value)}
+          onChange={(value) => handleFilterChange('branchId', value)}
           options={branchOptions}
           style={{ width: '160px' }}
         />
         <Select
           value={filters.status}
-          onChange={(e) => handleFilterChange('status', e.target.value)}
+          onChange={(value) => handleFilterChange('status', value)}
           options={statusOptions}
           style={{ width: '150px' }}
         />
@@ -377,6 +392,7 @@ export default function SchedulingPage() {
           visit={selectedVisit}
           onClose={() => setSelectedVisit(null)}
           onEdit={handleEditVisit}
+          onDelete={handleDeleteVisit}
         />
       )}
 

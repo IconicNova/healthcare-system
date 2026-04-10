@@ -34,7 +34,7 @@ export async function GET(request) {
 
     // Create a map of status counts
     const statusCounts = {};
-    const allStatuses = ['SCHEDULED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED', 'NO_SHOW', 'MISSSED'];
+    const allStatuses = ['SCHEDULED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED', 'NO_SHOW', 'MISSED'];
 
     // Initialize all statuses to 0
     allStatuses.forEach(status => {

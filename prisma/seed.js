@@ -8,48 +8,63 @@ async function main() {
   const password = 'password123';
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  // Create Organization
-  const organization = await prisma.organization.create({
-    data: {
-      name: 'Advanced Care Partners',
-      email: 'info@advancedcarepartners.com',
-      phone: '(555) 123-4567',
-      address: '100 Healthcare Blvd',
-      city: 'Atlanta',
-      state: 'GA',
-      zipCode: '30303',
-      status: true,
-    },
+  // Get or Create Organization
+  let organization = await prisma.organization.findFirst({
+    where: { email: 'info@advancedcarepartners.com' },
   });
+  if (!organization) {
+    organization = await prisma.organization.create({
+      data: {
+        name: 'Advanced Care Partners',
+        email: 'info@advancedcarepartners.com',
+        phone: '(555) 123-4567',
+        address: '100 Healthcare Blvd',
+        city: 'Atlanta',
+        state: 'GA',
+        zipCode: '30303',
+        status: true,
+      },
+    });
+  }
 
-  // Create Branches
-  const atlantaMain = await prisma.branch.create({
-    data: {
-      name: 'Atlanta Main Office',
-      email: 'atlanta@advancedcarepartners.com',
-      phone: '(555) 123-4500',
-      address: '100 Healthcare Blvd',
-      city: 'Atlanta',
-      state: 'GA',
-      zipCode: '30303',
-      organizationId: organization.id,
-      status: true,
-    },
+  // Get or Create Branches
+  let atlantaMain = await prisma.branch.findFirst({
+    where: { email: 'atlanta@advancedcarepartners.com' },
   });
+  if (!atlantaMain) {
+    atlantaMain = await prisma.branch.create({
+      data: {
+        name: 'Atlanta Main Office',
+        email: 'atlanta@advancedcarepartners.com',
+        phone: '(555) 123-4500',
+        address: '100 Healthcare Blvd',
+        city: 'Atlanta',
+        state: 'GA',
+        zipCode: '30303',
+        organizationId: organization.id,
+        status: true,
+      },
+    });
+  }
 
-  const mariettaBranch = await prisma.branch.create({
-    data: {
-      name: 'Marietta Branch',
-      email: 'marietta@advancedcarepartners.com',
-      phone: '(555) 123-4600',
-      address: '2500 Roswell Rd',
-      city: 'Marietta',
-      state: 'GA',
-      zipCode: '30062',
-      organizationId: organization.id,
-      status: true,
-    },
+  let mariettaBranch = await prisma.branch.findFirst({
+    where: { email: 'marietta@advancedcarepartners.com' },
   });
+  if (!mariettaBranch) {
+    mariettaBranch = await prisma.branch.create({
+      data: {
+        name: 'Marietta Branch',
+        email: 'marietta@advancedcarepartners.com',
+        phone: '(555) 123-4600',
+        address: '2500 Roswell Rd',
+        city: 'Marietta',
+        state: 'GA',
+        zipCode: '30062',
+        organizationId: organization.id,
+        status: true,
+      },
+    });
+  }
 
   // Create Users
   const adminUser = await prisma.user.create({
@@ -1261,11 +1276,24 @@ async function main() {
   ];
   await prisma.auditLog.createMany({ data: auditLogs });
 
+  // Create Documents
+  const documents = [
+    { clientId: clientList[0].id, name: 'Medical History.pdf', type: 'Medical Record', url: '/documents/medical-history-ma.pdf', size: 245678, uploadedBy: 'Sarah Mitchell' },
+    { clientId: clientList[0].id, name: 'Insurance Card.pdf', type: 'Insurance', url: '/documents/insurance-card-ma.pdf', size: 123456, uploadedBy: 'Sarah Mitchell' },
+    { clientId: clientList[1].id, name: 'Cardiology Report.pdf', type: 'Medical Record', url: '/documents/cardiology-rh.pdf', size: 345678, uploadedBy: 'Jennifer Davis' },
+    { clientId: clientList[1].id, name: 'Medication List.pdf', type: 'Medical Record', url: '/documents/medication-list-rh.pdf', size: 89012, uploadedBy: 'Jennifer Davis' },
+    { clientId: clientList[2].id, name: 'Stroke Assessment.pdf', type: 'Medical Record', url: '/documents/stroke-assessment-dp.pdf', size: 456789, uploadedBy: 'Robert Wilson' },
+    { clientId: clientList[2].id, name: 'Care Plan.pdf', type: 'Care Plan', url: '/documents/care-plan-dp.pdf', size: 167890, uploadedBy: 'Robert Wilson' },
+    { clientId: clientList[3].id, name: 'Consent Form.pdf', type: 'Legal', url: '/documents/consent-cb.pdf', size: 78901, uploadedBy: 'Sarah Mitchell' },
+    { clientId: clientList[4].id, name: 'Advance Directive.pdf', type: 'Legal', url: '/documents/advance-directive-bc.pdf', size: 134567, uploadedBy: 'Sarah Mitchell' },
+  ];
+  await prisma.document.createMany({ data: documents });
+
   console.log('Database seeded successfully!');
   console.log(`Created: 1 Organization, 2 Branches, 5 Users, 5 Staff, 6 Services`);
   console.log(`Created: 10 Clients, 3 Care Plans, 27+ Visits`);
   console.log(`Created: Emergency contacts, Medications, Medical history, Forms`);
-  console.log(`Created: Invoices, Timesheets, Notifications, Audit logs`);
+  console.log(`Created: Invoices, Timesheets, Notifications, Audit logs, Documents`);
 }
 
 main()

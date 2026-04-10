@@ -93,7 +93,7 @@ export async function PUT(request, { params }) {
     }
 
     // Upsert all availability records in a transaction
-    const result = await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx) => {
       const updates = await Promise.all(
         availability.map(async (day) => {
           const { dayOfWeek, startTime, endTime, isAvailable } = day;

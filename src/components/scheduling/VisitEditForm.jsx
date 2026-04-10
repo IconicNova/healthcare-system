@@ -1,13 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
 import Input from '@/components/ui/Input';
 import Select from '@/components/ui/Select';
 import Button from '@/components/ui/Button';
 import Modal from '@/components/ui/Modal';
 
-export default function VisitEditForm({ isOpen, onClose, onSubmit, visit, clients = [], staff = [], services = [], branches = [], carePlans = [], loading = false }) {
+export default function VisitEditForm({ isOpen, onClose, onSubmit, visit, clients = [], staff = [], services = [], carePlans = [], loading = false }) {
   const [formData, setFormData] = useState({
     clientId: '',
     staffId: '',
@@ -111,7 +110,7 @@ export default function VisitEditForm({ isOpen, onClose, onSubmit, visit, client
     { value: 'COMPLETED', label: 'Completed' },
     { value: 'CANCELLED', label: 'Cancelled' },
     { value: 'NO_SHOW', label: 'No Show' },
-    { value: 'MISSSED', label: 'Missed' },
+    { value: 'MISSED', label: 'Missed' },
   ];
 
   const clientOptions = [
@@ -138,11 +137,6 @@ export default function VisitEditForm({ isOpen, onClose, onSubmit, visit, client
     })),
   ];
 
-  const branchOptions = [
-    { value: '', label: 'Select Branch' },
-    ...branches.map(b => ({ value: b.id, label: b.name })),
-  ];
-
   const carePlanOptions = [
     { value: '', label: 'No Care Plan' },
     ...carePlans.filter(cp => cp.clientId === formData.clientId).map(cp => ({
@@ -157,7 +151,7 @@ export default function VisitEditForm({ isOpen, onClose, onSubmit, visit, client
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
           <div style={{ gridColumn: 'span 2' }}>
             <Select
-              label="Client *"
+              label="Client"
               value={formData.clientId}
               onChange={(e) => handleInputChange('clientId', e.target.value)}
               options={clientOptions}
@@ -173,7 +167,7 @@ export default function VisitEditForm({ isOpen, onClose, onSubmit, visit, client
           />
 
           <Select
-            label="Service *"
+            label="Service"
             value={formData.serviceId}
             onChange={(e) => handleInputChange('serviceId', e.target.value)}
             options={serviceOptions}
@@ -188,7 +182,7 @@ export default function VisitEditForm({ isOpen, onClose, onSubmit, visit, client
           />
 
           <Select
-            label="Status *"
+            label="Status"
             value={formData.status}
             onChange={(e) => handleInputChange('status', e.target.value)}
             options={statusOptions}
@@ -198,7 +192,7 @@ export default function VisitEditForm({ isOpen, onClose, onSubmit, visit, client
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px', marginBottom: '16px' }}>
           <Input
-            label="Date *"
+            label="Date"
             type="date"
             value={formData.date}
             onChange={(e) => handleInputChange('date', e.target.value)}
@@ -206,7 +200,7 @@ export default function VisitEditForm({ isOpen, onClose, onSubmit, visit, client
           />
 
           <Input
-            label="Start Time *"
+            label="Start Time"
             type="time"
             value={formData.startTime}
             onChange={(e) => handleInputChange('startTime', e.target.value)}
@@ -214,7 +208,7 @@ export default function VisitEditForm({ isOpen, onClose, onSubmit, visit, client
           />
 
           <Input
-            label="End Time *"
+            label="End Time"
             type="time"
             value={formData.endTime}
             onChange={(e) => handleInputChange('endTime', e.target.value)}

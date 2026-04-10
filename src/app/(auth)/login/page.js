@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { signIn } from '@/lib/auth';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 import { Heart } from 'lucide-react';
 
 export default function LoginPage() {
@@ -31,7 +30,7 @@ export default function LoginPage() {
         router.push('/dashboard');
         router.refresh();
       }
-    } catch (err) {
+    } catch {
       setError('An error occurred. Please try again.');
     } finally {
       setLoading(false);

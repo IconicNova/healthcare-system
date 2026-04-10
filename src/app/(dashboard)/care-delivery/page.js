@@ -14,8 +14,8 @@ export default function CareDeliveryPage() {
   const [editVisit, setEditVisit] = useState(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [visits, setVisits] = useState([]);
-  const [staff, setStaff] = useState([]);
-
+  const [_staff, setStaff] = useState([]); // eslint-disable-line @typescript-eslint/no-unused-vars
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -255,11 +255,35 @@ export default function CareDeliveryPage() {
       {/* Care Delivery Layout */}
       {selectedClient ? (
         <CareDeliveryLayout client={selectedClient}>
-          {({ activeTab, setActiveTab }) => (
-            <TasksView
-              clientId={selectedClient.id}
-              onEditVisit={handleEditVisit}
-            />
+          {({ activeTab }) => (
+            <>
+              {activeTab === 'tasks' && (
+                <TasksView
+                  clientId={selectedClient.id}
+                  onEditVisit={handleEditVisit}
+                />
+              )}
+              {activeTab === 'progress' && (
+                <div style={{ textAlign: 'center', padding: '60px 20px', color: 'var(--color-text-secondary)' }}>
+                  <p style={{ fontSize: '14px' }}>Progress Notes view - Coming soon</p>
+                </div>
+              )}
+              {activeTab === 'reports' && (
+                <div style={{ textAlign: 'center', padding: '60px 20px', color: 'var(--color-text-secondary)' }}>
+                  <p style={{ fontSize: '14px' }}>Visit Reports view - Coming soon</p>
+                </div>
+              )}
+              {activeTab === 'vitals' && (
+                <div style={{ textAlign: 'center', padding: '60px 20px', color: 'var(--color-text-secondary)' }}>
+                  <p style={{ fontSize: '14px' }}>Vitals view - Coming soon</p>
+                </div>
+              )}
+              {activeTab === 'medications' && (
+                <div style={{ textAlign: 'center', padding: '60px 20px', color: 'var(--color-text-secondary)' }}>
+                  <p style={{ fontSize: '14px' }}>Medications view - Coming soon</p>
+                </div>
+              )}
+            </>
           )}
         </CareDeliveryLayout>
       ) : (
@@ -273,8 +297,7 @@ export default function CareDeliveryPage() {
           borderRadius: '16px',
           border: '1px dashed var(--color-border)',
         }}>
-          <Users size={64} style={{ color: 'var(--color-text-muted)', marginBottom: '20px' }} />
-          <h3 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--color-text)', margin: 0 }}>
+           <h3 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--color-text)', margin: 0 }}>
             Welcome to Care Delivery
           </h3>
           <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)', marginTop: '8px', textAlign: 'center', maxWidth: '300px' }}>

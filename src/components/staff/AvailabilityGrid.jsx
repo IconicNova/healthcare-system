@@ -29,6 +29,7 @@ export default function AvailabilityGrid({ staffId }) {
 
   useEffect(() => {
     fetchAvailability();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [staffId]);
 
   const handleToggleAvailability = (dayOfWeek) => {

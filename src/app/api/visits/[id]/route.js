@@ -29,6 +29,7 @@ export async function GET(request, { params }) {
             state: true,
             zipCode: true,
             phone: true,
+            email: true,
           },
         },
         staff: {
@@ -37,6 +38,16 @@ export async function GET(request, { params }) {
             firstName: true,
             lastName: true,
             phone: true,
+            email: true,
+            role: true,
+          },
+        },
+        service: {
+          select: {
+            id: true,
+            name: true,
+            duration: true,
+            rate: true,
           },
         },
         carePlan: {
@@ -45,11 +56,12 @@ export async function GET(request, { params }) {
             name: true,
           },
         },
-        service: {
+        visitTasks: {
           select: {
             id: true,
-            name: true,
-            baseRate: true,
+            title: true,
+            completed: true,
+            notes: true,
           },
         },
         visitNotes: {
@@ -58,7 +70,15 @@ export async function GET(request, { params }) {
             content: true,
             createdAt: true,
           },
-          orderBy: { createdAt: 'desc' },
+        },
+        medAdmin: {
+          select: {
+            id: true,
+            medicationName: true,
+            dosage: true,
+            administeredAt: true,
+            status: true,
+          },
         },
       },
     });
@@ -85,17 +105,6 @@ export async function PATCH(request, { params }) {
     const { id } = params;
     const body = await request.json();
 
-    const {
-      staffId,
-      startTime,
-      endTime,
-      status,
-      title,
-      description,
-      notes,
-    } = body;
-
-    // Check if visit exists
     const existing = await prisma.visit.findUnique({
       where: {
         id,
@@ -107,54 +116,18 @@ export async function PATCH(request, { params }) {
       return NextResponse.json({ error: 'Visit not found' }, { status: 404 });
     }
 
-    // Validate times if provided
-    if (startTime && endTime && new Date(endTime) <= new Date(startTime)) {
-      return NextResponse.json(
-        { error: 'End time must be after start time' },
-        { status: 400 }
-      );
-    }
-
-    // Check for conflicts if rescheduling
-    let conflicts = [];
-    if (staffId && (startTime || endTime)) {
-      const newStart = startTime ? new Date(startTime) : existing.startTime;
-      const newEnd = endTime ? new Date(endTime) : existing.endTime;
-
-      const staffConflicts = await prisma.visit.findMany({
-        where: {
-          staffId,
-          organizationId: session.user.organizationId,
-          id: { not: id },
-          status: { not: 'CANCELLED' },
-          OR: [
-            {
-              startTime: { lte: newEnd },
-              endTime: { gte: newStart },
-            },
-          ],
-        },
-      });
-      conflicts = staffConflicts.map(v => ({
-        type: 'STAFF',
-        visitId: v.id,
-        startTime: v.startTime,
-        endTime: v.endTime,
-      }));
-    }
-
     const visit = await prisma.visit.update({
       where: { id },
       data: {
-        ...(staffId && { staffId }),
-        ...(startTime && { startTime: new Date(startTime) }),
-        ...(endTime && { endTime: new Date(endTime) }),
-        ...(status && { status }),
-        ...(title !== undefined && { title }),
-        ...(description !== undefined && { description }),
-        ...(notes !== undefined && { notes }),
-        ...(body.actualStart && { actualStart: new Date(body.actualStart) }),
-        ...(body.actualEnd && { actualEnd: new Date(body.actualEnd) }),
+        ...(body.startTime && { startTime: new Date(body.startTime) }),
+        ...(body.endTime && { endTime: new Date(body.endTime) }),
+        ...(body.status && { status: body.status }),
+        ...(body.notes !== undefined && { notes: body.notes }),
+        ...(body.clientId && { clientId: body.clientId }),
+        ...(body.staffId !== undefined && { staffId: body.staffId }),
+        ...(body.serviceId && { serviceId: body.serviceId }),
+        ...(body.carePlanId && { carePlanId: body.carePlanId }),
+        ...(body.branchId !== undefined && { branchId: body.branchId }),
       },
       include: {
         client: {
@@ -162,6 +135,9 @@ export async function PATCH(request, { params }) {
             id: true,
             firstName: true,
             lastName: true,
+            address: true,
+            city: true,
+            state: true,
           },
         },
         staff: {
@@ -169,12 +145,20 @@ export async function PATCH(request, { params }) {
             id: true,
             firstName: true,
             lastName: true,
+            role: true,
+          },
+        },
+        service: {
+          select: {
+            id: true,
+            name: true,
+            duration: true,
           },
         },
       },
     });
 
-    return NextResponse.json({ ...visit, conflicts });
+    return NextResponse.json(visit);
   } catch (error) {
     console.error('Error updating visit:', error);
     return NextResponse.json({ error: 'Failed to update visit' }, { status: 500 });
@@ -191,7 +175,6 @@ export async function DELETE(request, { params }) {
 
     const { id } = params;
 
-    // Check if visit exists
     const existing = await prisma.visit.findUnique({
       where: {
         id,
@@ -203,15 +186,13 @@ export async function DELETE(request, { params }) {
       return NextResponse.json({ error: 'Visit not found' }, { status: 404 });
     }
 
-    // Cancel the visit instead of deleting
-    await prisma.visit.update({
+    await prisma.visit.delete({
       where: { id },
-      data: { status: 'CANCELLED' },
     });
 
-    return NextResponse.json({ message: 'Visit cancelled successfully' });
+    return NextResponse.json({ message: 'Visit deleted successfully' });
   } catch (error) {
-    console.error('Error cancelling visit:', error);
-    return NextResponse.json({ error: 'Failed to cancel visit' }, { status: 500 });
+    console.error('Error deleting visit:', error);
+    return NextResponse.json({ error: 'Failed to delete visit' }, { status: 500 });
   }
 }

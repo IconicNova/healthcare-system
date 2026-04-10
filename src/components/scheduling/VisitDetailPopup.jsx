@@ -1,7 +1,6 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-import { X, Clock, MapPin, User } from 'lucide-react';
+import { X, Clock, MapPin, User, Trash2 } from 'lucide-react';
 
 const STATUS_COLORS = {
   SCHEDULED: '#3B82F6',
@@ -9,12 +8,10 @@ const STATUS_COLORS = {
   COMPLETED: '#16A34A',
   CANCELLED: '#9CA3AF',
   NO_SHOW: '#EF4444',
-  MISSSED: '#EF4444',
+  MISSED: '#EF4444',
 };
 
-export default function VisitDetailPopup({ visit, onClose, onEdit }) {
-  const router = useRouter();
-
+export default function VisitDetailPopup({ visit, onClose, onEdit, onDelete }) {
   if (!visit) return null;
 
   const statusColor = STATUS_COLORS[visit.status] || '#6B7280';
@@ -188,6 +185,25 @@ export default function VisitDetailPopup({ visit, onClose, onEdit }) {
           justifyContent: 'flex-end',
           gap: '12px',
         }}>
+          <button
+            onClick={onDelete}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '8px 16px',
+              borderRadius: '6px',
+              backgroundColor: 'var(--color-error)',
+              color: 'white',
+              border: 'none',
+              cursor: 'pointer',
+              fontSize: '13px',
+              fontWeight: 500,
+            }}
+          >
+            <Trash2 size={14} />
+            Delete
+          </button>
           <button
             onClick={onClose}
             style={{

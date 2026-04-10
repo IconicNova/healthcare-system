@@ -6,10 +6,12 @@ export default function Pagination({
   currentPage = 1,
   totalPages = 1,
   onPageChange,
-  totalItems = 0,
+  total,
+  totalItems: totalItemsProp = 0,
   itemsPerPage = 10,
 }) {
-  const startIndex = (currentPage - 1) * itemsPerPage + 1;
+  const totalItems = total ?? totalItemsProp;
+  const startIndex = totalItems > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0;
   const endIndex = Math.min(currentPage * itemsPerPage, totalItems);
 
   const handlePrev = () => {

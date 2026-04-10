@@ -55,9 +55,9 @@ export async function GET() {
 
     const shifts = upcomingVisits.map(visit => ({
       id: visit.id,
-      clientName: `${visit.client.firstName} ${visit.client.lastName}`,
-      clientAddress: `${visit.client.address}, ${visit.client.city}`,
-      staffName: `${visit.staff.firstName} ${visit.staff.lastName}`,
+      clientName: visit.client ? `${visit.client.firstName} ${visit.client.lastName}` : 'Unknown Client',
+      clientAddress: visit.client ? `${visit.client.address}, ${visit.client.city}` : 'N/A',
+      staffName: visit.staff ? `${visit.staff.firstName} ${visit.staff.lastName}` : 'Unassigned',
       carePlan: visit.carePlan?.name || 'N/A',
       startTime: format(visit.startTime, 'MMM d, yyyy h:mm a'),
       endTime: format(visit.endTime, 'h:mm a'),

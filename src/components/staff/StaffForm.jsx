@@ -15,7 +15,6 @@ export default function StaffForm({ onSuccess, onCancel, branches = [], staffId,
     password: '',
     confirmPassword: '',
     phone: '',
-    address: '',
     branchId: '',
     hireDate: new Date().toISOString().split('T')[0],
     payRate: '',
@@ -118,7 +117,6 @@ export default function StaffForm({ onSuccess, onCancel, branches = [], staffId,
         lastName: formData.lastName,
         email: formData.email,
         phone: formData.phone,
-        address: formData.address || null,
         branchId: formData.branchId,
         hireDate: formData.hireDate,
         payRate: formData.payRate ? parseFloat(formData.payRate) : null,
@@ -187,13 +185,13 @@ export default function StaffForm({ onSuccess, onCancel, branches = [], staffId,
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
           <Input
-            label="First Name *"
+            label="First Name"
             value={formData.firstName}
             onChange={(e) => handleInputChange('firstName', e.target.value)}
             required
           />
           <Input
-            label="Last Name *"
+            label="Last Name"
             value={formData.lastName}
             onChange={(e) => handleInputChange('lastName', e.target.value)}
             required
@@ -202,7 +200,7 @@ export default function StaffForm({ onSuccess, onCancel, branches = [], staffId,
 
         <div style={{ marginTop: '16px' }}>
           <Input
-            label="Email *"
+            label="Email"
             type="email"
             value={formData.email}
             onChange={(e) => handleInputChange('email', e.target.value)}
@@ -212,7 +210,7 @@ export default function StaffForm({ onSuccess, onCancel, branches = [], staffId,
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginTop: '16px' }}>
           <Input
-            label={staffId ? "Password (optional)" : "Password *"}
+            label={staffId ? "Password (optional)" : "Password"}
             type="password"
             value={formData.password}
             onChange={(e) => handleInputChange('password', e.target.value)}
@@ -220,7 +218,7 @@ export default function StaffForm({ onSuccess, onCancel, branches = [], staffId,
             helperText={staffId ? 'Leave blank to keep current password' : 'Minimum 8 characters'}
           />
           <Input
-            label={staffId ? "Confirm Password (optional)" : "Confirm Password *"}
+            label={staffId ? "Confirm Password (optional)" : "Confirm Password"}
             type="password"
             value={formData.confirmPassword}
             onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
@@ -230,7 +228,7 @@ export default function StaffForm({ onSuccess, onCancel, branches = [], staffId,
 
         <div style={{ marginTop: '16px' }}>
           <Select
-            label="Role *"
+            label="Role"
             value={formData.role}
             onChange={(e) => handleInputChange('role', e.target.value)}
             options={roleOptions}
@@ -253,25 +251,17 @@ export default function StaffForm({ onSuccess, onCancel, branches = [], staffId,
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
           <Input
-            label="Phone *"
+            label="Phone"
             value={formData.phone}
             onChange={(e) => handleInputChange('phone', e.target.value)}
             required
           />
           <Select
-            label="Branch *"
+            label="Branch"
             value={formData.branchId}
             onChange={(e) => handleInputChange('branchId', e.target.value)}
             options={branchOptions}
             required
-          />
-        </div>
-
-        <div style={{ marginTop: '16px' }}>
-          <Input
-            label="Address"
-            value={formData.address}
-            onChange={(e) => handleInputChange('address', e.target.value)}
           />
         </div>
 

@@ -27,6 +27,7 @@ const STATUS_VARIANTS = {
   INACTIVE: 'default',
   PENDING: 'warning',
   ON_HOLD: 'error',
+  DISCHARGED: 'default',
 };
 
 export default function ClientProfilePage({ params }) {

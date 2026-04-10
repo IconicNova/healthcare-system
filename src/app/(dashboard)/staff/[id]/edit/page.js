@@ -119,7 +119,6 @@ export default function EditStaffPage({ params }) {
             lastName: staff.lastName,
             email: staff.email,
             phone: staff.phone,
-            address: staff.address || '',
             branchId: staff.branchId || '',
             hireDate: staff.hireDate ? new Date(staff.hireDate).toISOString().split('T')[0] : '',
             payRate: staff.hourlyRate || '',

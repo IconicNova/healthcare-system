@@ -676,6 +676,10 @@ a:hover {
   color: var(--color-text);
 }
 
+.table td:last-child {
+  padding-right: var(--spacing-2);
+}
+
 .table tbody tr:last-child td {
   border-bottom: none;
 }
@@ -1186,6 +1190,7 @@ a:hover {
 .sidebar-logo {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: var(--spacing-3);
   color: var(--color-white);
   font-size: var(--font-size-lg);
@@ -1913,3 +1918,1085 @@ a:hover {
   background-color: var(--color-primary-lighter);
   color: white;
 }
+
+/* ============================================
+   Billing & Payroll Styles
+   ============================================ */
+
+/* Invoice line item row styles */
+.invoice-line-item {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.invoice-line-item:last-child {
+  border-bottom: none;
+}
+
+/* Payment method badge colors */
+.payment-method-badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.payment-method-badge.cash {
+  background: var(--color-success-light);
+  color: var(--color-success);
+}
+
+.payment-method-badge.check {
+  background: var(--color-primary-light);
+  color: white;
+}
+
+.payment-method-badge.card {
+  background: var(--color-info-light);
+  color: var(--color-info);
+}
+
+.payment-method-badge.transfer {
+  background: var(--color-warning-light);
+  color: var(--color-warning);
+}
+
+/* Timesheet entry row alternating bg */
+.timesheet-entry-row:nth-child(even) {
+  background-color: var(--color-background);
+}
+
+/* Pay summary table styles */
+.pay-summary-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.pay-summary-table th {
+  text-align: left;
+  padding: 12px 16px;
+  border-bottom: 2px solid var(--color-border);
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.pay-summary-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.pay-summary-table .totals-row {
+  font-weight: 700;
+  background-color: var(--color-primary-lighter);
+  color: white;
+}
+
+/* Import visits modal checkbox list styles */
+.import-visits-checkbox {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.import-visits-checkbox:hover {
+  border-color: var(--color-primary);
+}
+
+.import-visits-checkbox input {
+  margin-right: 12px;
+}
+
+/* Invoice detail print styles */
+@media print {
+  .invoice-print {
+    display: block !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+}
+
+/* ============================================
+   Toast Notification Styles
+   ============================================ */
+
+.toast-container {
+  position: fixed;
+  top: var(--spacing-4);
+  right: var(--spacing-4);
+  z-index: var(--z-tooltip);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+  max-width: 420px;
+  width: max-content;
+}
+
+.toast {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-3);
+  padding: var(--spacing-4);
+  background-color: white;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  border-left: 4px solid var(--color-gray-400);
+  animation: slideInToast 0.3s ease-out;
+  min-width: 320px;
+  max-width: 400px;
+}
+
+.toast.success {
+  border-left-color: var(--color-success);
+}
+
+.toast.error {
+  border-left-color: var(--color-error);
+}
+
+.toast.warning {
+  border-left-color: var(--color-warning);
+}
+
+.toast.info {
+  border-left-color: var(--color-info);
+}
+
+.toast-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.toast-title {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+  margin-bottom: var(--spacing-1);
+}
+
+.toast-message {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-normal);
+}
+
+.toast-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  background-color: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  border-radius: var(--radius-md);
+  font-size: 18px;
+  line-height: 1;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.toast-close:hover {
+  background-color: var(--color-gray-100);
+  color: var(--color-text);
+}
+
+@keyframes slideInToast {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOutToast {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+/* Toast with icon */
+.toast-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.toast-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.toast.success .toast-icon {
+  color: var(--color-success);
+}
+
+.toast.error .toast-icon {
+  color: var(--color-error);
+}
+
+.toast.warning .toast-icon {
+  color: var(--color-warning);
+}
+
+.toast.info .toast-icon {
+  color: var(--color-info);
+}
+
+/* ============================================
+   Phase 6 - Micro-animations
+   ============================================ */
+
+/* Card hover effect */
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  transition: all var(--transition-base);
+}
+
+/* Button press effect */
+.btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+/* Sidebar nav hover effect */
+.sidebar-item {
+  position: relative;
+  overflow: hidden;
+}
+
+.sidebar-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background-color: var(--color-accent);
+  transform: scaleY(0);
+  transition: transform var(--transition-fast);
+}
+
+.sidebar-item:hover::before {
+  transform: scaleY(1);
+}
+
+/* Table row hover transition */
+.table tbody tr {
+  transition: background-color var(--transition-fast);
+}
+
+/* Status badge pulse animation */
+@keyframes badgePulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.badge-changed {
+  animation: badgePulse 1s ease;
+}
+
+/* Count-up animation for KPI numbers */
+@keyframes countUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.count-up {
+  animation: countUp 0.5s ease-out;
+}
+
+/* ============================================
+   Phase 6 - Notification Styles
+   ============================================ */
+
+.notification-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+  border-radius: var(--radius-md);
+  transition: background-color var(--transition-fast);
+  cursor: pointer;
+}
+
+.notification-item:hover {
+  background-color: var(--color-gray-50);
+}
+
+.notification-item.unread {
+  background-color: var(--color-info-light);
+}
+
+.notification-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: var(--color-gray-100);
+  color: var(--color-text-secondary);
+  flex-shrink: 0;
+}
+
+.notification-icon.alert {
+  background-color: var(--color-error-light);
+  color: var(--color-error);
+}
+
+.notification-icon.visit {
+  background-color: var(--color-info-light);
+  color: var(--color-info);
+}
+
+.notification-icon.form {
+  background-color: var(--color-warning-light);
+  color: var(--color-warning);
+}
+
+.notification-icon.certification {
+  background-color: var(--color-success-light);
+  color: var(--color-success);
+}
+
+.notification-icon.billing {
+  background-color: var(--color-primary-lighter);
+  color: var(--color-primary);
+}
+
+.notification-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.notification-title {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text);
+  margin-bottom: 4px;
+}
+
+.notification-title.unread {
+  font-weight: var(--font-weight-semibold);
+}
+
+.notification-message {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-normal);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.notification-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.notification-time {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.notification-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--color-accent);
+}
+
+/* ============================================
+   Phase 6 - Settings Styles
+   ============================================ */
+
+.settings-container {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 24px;
+  min-height: calc(100vh - var(--topbar-height) - 48px);
+}
+
+.settings-sidebar {
+  background-color: var(--color-white);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  padding: 16px;
+  height: fit-content;
+}
+
+.settings-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+}
+
+.settings-nav-item:hover {
+  background-color: var(--color-gray-50);
+  color: var(--color-text);
+}
+
+.settings-nav-item.active {
+  background-color: var(--color-primary-lighter);
+  color: var(--color-white);
+}
+
+.settings-nav-item-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.settings-content {
+  background-color: var(--color-white);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  padding: 24px;
+}
+
+.settings-section {
+  margin-bottom: 32px;
+}
+
+.settings-section:last-child {
+  margin-bottom: 0;
+}
+
+.settings-section-title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.settings-form-group {
+  margin-bottom: 20px;
+}
+
+.settings-form-label {
+  display: block;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text);
+  margin-bottom: 8px;
+}
+
+.settings-form-help {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  margin-top: 4px;
+}
+
+.settings-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.settings-toggle:last-child {
+  border-bottom: none;
+}
+
+.settings-toggle-label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.settings-toggle-title {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text);
+}
+
+.settings-toggle-description {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+/* Toggle switch */
+.toggle-switch {
+  position: relative;
+  width: 44px;
+  height: 24px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background-color: var(--color-gray-300);
+  border-radius: 24px;
+  transition: background-color var(--transition-fast);
+}
+
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  border-radius: 50%;
+  transition: transform var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+}
+
+.toggle-switch input:checked + .toggle-slider {
+  background-color: var(--color-primary);
+}
+
+.toggle-switch input:checked + .toggle-slider::before {
+  transform: translateX(20px);
+}
+
+.toggle-switch input:disabled + .toggle-slider {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ============================================
+   Phase 6 - Report Chart Styles
+   ============================================ */
+
+.report-chart-container {
+  width: 100%;
+  height: 300px;
+}
+
+.report-summary-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.report-summary-card {
+  background-color: var(--color-gray-50);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  text-align: center;
+}
+
+.report-summary-value {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+  margin-bottom: 4px;
+}
+
+.report-summary-label {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ============================================
+   Phase 6 - EVV Widget Styles
+   ============================================ */
+
+.evv-widget {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  color: white;
+  border-radius: var(--radius-lg);
+  padding: 20px;
+}
+
+.evv-widget-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.evv-widget-icon {
+  width: 40px;
+  height: 40px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.evv-widget-title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  margin: 0;
+}
+
+.evv-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  text-align: center;
+}
+
+.evv-stat-value {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  margin-bottom: 4px;
+}
+
+.evv-stat-label {
+  font-size: var(--font-size-xs);
+  opacity: 0.9;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ============================================
+   Phase 6 - Mobile Responsive Enhancements
+   ============================================ */
+
+@media (max-width: 768px) {
+  /* Mobile sidebar overlay */
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform var(--transition-base);
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: calc(var(--z-fixed) - 1);
+  }
+
+  /* Settings full width on mobile */
+  .settings-container {
+    grid-template-columns: 1fr;
+  }
+
+  .settings-sidebar {
+    display: flex;
+    overflow-x: auto;
+    padding: 8px;
+  }
+
+  .settings-nav {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+
+  .settings-nav-item {
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .settings-nav-item span {
+    display: none;
+  }
+
+  .settings-nav-item-icon {
+    margin: 0 auto;
+  }
+
+  /* Report cards stack on mobile */
+  .report-summary-cards {
+    grid-template-columns: 1fr;
+  }
+
+  /* EVV stats stack on mobile */
+  .evv-stats-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  /* Modal full screen on mobile */
+  .modal {
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+    border-radius: 0;
+  }
+
+  .modal-body {
+    max-height: calc(100vh - 140px);
+  }
+
+  /* Table horizontal scroll */
+  .table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Hamburger button */
+  .hamburger-btn {
+    display: flex !important;
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: none;
+    border-radius: var(--radius-md);
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+  }
+
+  .hamburger-btn:hover {
+    background-color: var(--color-gray-100);
+    color: var(--color-text);
+  }
+}
+
+@media (min-width: 769px) {
+  .hamburger-btn {
+    display: none !important;
+  }
+}
+
+/* ============================================
+   Phase 6 - Print Styles Enhancement
+   ============================================ */
+
+@media print {
+  .sidebar,
+  .topbar,
+  .no-print,
+  .settings-sidebar,
+  .hamburger-btn,
+  .sidebar-overlay {
+    display: none !important;
+  }
+
+  .page-container {
+    padding: 0;
+    padding-top: 0;
+  }
+
+  .settings-container {
+    display: block;
+  }
+
+  .settings-content {
+    box-shadow: none;
+    border: none;
+  }
+
+  /* Hide interactive elements */
+  .btn,
+  .toggle-switch,
+  .dropdown {
+    display: none !important;
+  }
+
+  /* Ensure tables print properly */
+  .table {
+    break-inside: avoid;
+  }
+
+  .table-container {
+    overflow: visible;
+  }
+}
+
+/* ============================================
+   Phase 6 - Compliance Dashboard Styles
+   ============================================ */
+
+.compliance-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.compliance-card {
+  background-color: var(--color-white);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+}
+
+.compliance-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background-color: var(--color-gray-50);
+  border-bottom: 1px solid var(--color-border);
+  cursor: pointer;
+}
+
+.compliance-card-title {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+}
+
+.compliance-card-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 8px;
+  background-color: var(--color-primary);
+  color: white;
+  border-radius: 14px;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+}
+
+.compliance-card-body {
+  padding: 16px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.compliance-card.expanded .compliance-card-body {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.compliance-map-placeholder {
+  background-color: var(--color-gray-100);
+  border-radius: var(--radius-md);
+  padding: 40px;
+  text-align: center;
+  color: var(--color-text-secondary);
+}
+
+/* ============================================
+   Phase 6 - Empty State Enhancements
+   ============================================ */
+
+.empty-state-icon {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 20px;
+  color: var(--color-gray-300);
+}
+
+/* ============================================
+   Phase 6 - Permissions Matrix Styles
+   ============================================ */
+
+.permissions-matrix {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+}
+
+.permissions-matrix th,
+.permissions-matrix td {
+  padding: 12px;
+  text-align: center;
+  border: 1px solid var(--color-border);
+  font-size: var(--font-size-sm);
+}
+
+.permissions-matrix th {
+  background-color: var(--color-gray-50);
+  font-weight: var(--font-weight-semibold);
+}
+
+.permissions-matrix td:first-child {
+  text-align: left;
+  font-weight: var(--font-weight-medium);
+  background-color: var(--color-gray-50);
+}
+
+.permissions-check {
+  color: var(--color-success);
+  font-size: var(--font-size-lg);
+}
+
+.permissions-cross {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-lg);
+}
+
+.permissions-limited {
+  color: var(--color-warning);
+  font-size: var(--font-size-xs);
+}
+
+@media (max-width: 640px) {
+  .compliance-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .permissions-matrix {
+    display: block;
+    overflow-x: auto;
+  }
+}
+
+/* ============================================
+   Insurance Claims Styles
+   ============================================ */
+
+.badge-info {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.badge-primary {
+  background-color: var(--color-primary-lighter);
+  color: white;
+}
+
+/* ============================================
+   Payslip Styles
+   ============================================ */
+
+.payslip-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.payslip-table th {
+  padding: 10px 14px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--color-text-secondary);
+  background-color: var(--color-background);
+  border-bottom: 2px solid var(--color-border);
+}
+
+.payslip-table td {
+  padding: 10px 14px;
+  color: var(--color-text);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.payslip-table tbody tr:hover {
+  background-color: var(--color-background);
+}
+
+.payslip-total-row {
+  background-color: var(--color-background) !important;
+  border-top: 2px solid var(--color-border);
+}
+
+.payslip-total-row td {
+  font-weight: 700;
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+/* Payslip print styles */
+@media print {
+  .payslip-content {
+    padding: 0 !important;
+  }
+
+  .payslip-content .card {
+    border: 1px solid #ddd !important;
+    box-shadow: none !important;
+  }
+
+  .payslip-table th {
+    background-color: #f5f5f5 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .payslip-total-row {
+    background-color: #f5f5f5 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Show payslip content but hide chrome */
+  .modal-backdrop {
+    position: static !important;
+    background: none !important;
+  }
+
+  .modal {
+    position: static !important;
+    box-shadow: none !important;
+    border: none !important;
+    max-height: none !important;
+    width: 100% !important;
+  }
+}
+
+/* ============================================
+   Export Modal Format Card Styles
+   ============================================ */
+
+.export-format-card {
+  padding: 14px 16px;
+  border-radius: 10px;
+  border: 2px solid var(--color-border);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.export-format-card:hover {
+  border-color: var(--color-primary-lighter);
+}
+
+.export-format-card.selected {
+  border-color: var(--color-primary);
+  background-color: rgba(99, 102, 241, 0.05);
+}
+
+.export-format-card.disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+

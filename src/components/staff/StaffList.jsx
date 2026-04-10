@@ -7,10 +7,11 @@ import SearchInput from '@/components/ui/SearchInput';
 import Select from '@/components/ui/Select';
 import Pagination from '@/components/ui/Pagination';
 import StatusBadge from '@/components/ui/StatusBadge';
-import { Plus, User as UserIcon } from 'lucide-react';
+import { Plus, User as UserIcon, Trash2 } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Modal from '@/components/ui/Modal';
 import StaffForm from './StaffForm';
+import { useToast } from '@/components/ui/useToast';
 
 const COLUMNS = [
   { key: 'fullName', label: 'Employee', sortable: true, width: '200px' },
@@ -52,8 +53,9 @@ const ROLE_VARIANTS = {
   STAFF: 'gray',
 };
 
-export default function StaffList({ onAddStaff }) {
+export default function StaffList() {
   const router = useRouter();
+  const toast = useToast();
   const [loading, setLoading] = useState(false);
   const [staff, setStaff] = useState([]);
   const [search, setSearch] = useState('');
@@ -68,6 +70,9 @@ export default function StaffList({ onAddStaff }) {
     totalPages: 0,
   });
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [staffToDelete, setStaffToDelete] = useState(null);
+  const [deleting, setDeleting] = useState(false);
 
   const fetchData = async () => {
     setLoading(true);
@@ -110,6 +115,7 @@ export default function StaffList({ onAddStaff }) {
   useEffect(() => {
     fetchData();
     fetchBranches();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pagination.page, pagination.limit, search, statusFilter, roleFilter, branchFilter]);
 
   // Fetch when filters change
@@ -118,17 +124,20 @@ export default function StaffList({ onAddStaff }) {
     setPagination(prev => ({ ...prev, page: 1 }));
   };
 
-  const handleStatusChange = (value) => {
+  const handleStatusChange = (e) => {
+    const value = e.target?.value || e;
     setStatusFilter(value);
     setPagination(prev => ({ ...prev, page: 1 }));
   };
 
-  const handleRoleChange = (value) => {
+  const handleRoleChange = (e) => {
+    const value = e.target?.value || e;
     setRoleFilter(value);
     setPagination(prev => ({ ...prev, page: 1 }));
   };
 
-  const handleBranchChange = (value) => {
+  const handleBranchChange = (e) => {
+    const value = e.target?.value || e;
     setBranchFilter(value);
     setPagination(prev => ({ ...prev, page: 1 }));
   };
@@ -275,6 +284,25 @@ export default function StaffList({ onAddStaff }) {
             <UserIcon size={12} />
             View Profile
           </button>
+          <button
+            onClick={() => handleDeleteClick(member)}
+            style={{
+              padding: '6px 10px',
+              borderRadius: '6px',
+              border: 'none',
+              backgroundColor: 'var(--color-error)',
+              color: 'white',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+              fontSize: '12px',
+              transition: 'background-color 0.15s ease',
+            }}
+          >
+            <Trash2 size={12} />
+            Remove
+          </button>
         </div>
       );
     }
@@ -294,6 +322,41 @@ export default function StaffList({ onAddStaff }) {
     setIsAddModalOpen(false);
     fetchData();
     fetchBranches();
+  };
+
+  const handleDeleteClick = (member) => {
+    setStaffToDelete(member);
+    setDeleteModalOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!staffToDelete) return;
+
+    setDeleting(true);
+    try {
+      const response = await fetch(`/api/staff/${staffToDelete.id}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        setDeleteModalOpen(false);
+        setStaffToDelete(null);
+        fetchData();
+      } else {
+        const data = await response.json();
+        toast('error', 'Error', data.error || 'Failed to delete staff member');
+      }
+    } catch (error) {
+      console.error('Error deleting staff:', error);
+      toast('error', 'Error', 'Failed to delete staff member');
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteModalOpen(false);
+    setStaffToDelete(null);
   };
 
   const branchOptions = [
@@ -384,6 +447,32 @@ export default function StaffList({ onAddStaff }) {
           onCancel={() => setIsAddModalOpen(false)}
           branches={branches}
         />
+      </Modal>
+
+      {/* Delete Confirmation Modal */}
+      <Modal
+        isOpen={deleteModalOpen}
+        onClose={handleDeleteCancel}
+        title="Remove Staff Member"
+        size="sm"
+      >
+        <div style={{ padding: '20px' }}>
+          <p style={{ fontSize: '14px', color: 'var(--color-text)', marginBottom: '8px' }}>
+            Are you sure you want to remove <strong>{staffToDelete?.firstName} {staffToDelete?.lastName}</strong>?
+          </p>
+          <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginBottom: '20px' }}>
+            This action can be undone by creating a new staff member. Any assigned visits will be unassigned.
+          </p>
+          <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
+            <Button variant="secondary" onClick={handleDeleteCancel}>
+              Cancel
+            </Button>
+            <Button variant="error" onClick={handleDeleteConfirm} loading={deleting}>
+              <Trash2 size={14} />
+              Remove Staff
+            </Button>
+          </div>
+        </div>
       </Modal>
     </div>
   );

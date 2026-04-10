@@ -12,7 +12,6 @@ export default function StaffOverviewTab({ staffData }) {
     punctualityRate: 0,
   });
   const [upcomingVisits, setUpcomingVisits] = useState([]);
-  const [recentActivity, setRecentActivity] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

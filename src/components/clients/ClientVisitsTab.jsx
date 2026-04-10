@@ -1,10 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { format, isToday } from 'date-fns';
+import { format } from 'date-fns';
 import StatusBadge from '@/components/ui/StatusBadge';
 import Pagination from '@/components/ui/Pagination';
-import { Calendar, Clock, User, FileText } from 'lucide-react';
+import { Calendar, Clock, FileText } from 'lucide-react';
 
 const STATUS_VARIANTS = {
   SCHEDULED: 'warning',
@@ -12,7 +12,7 @@ const STATUS_VARIANTS = {
   COMPLETED: 'success',
   CANCELLED: 'error',
   NO_SHOW: 'error',
-  MISSSED: 'error',
+  MISSED: 'error',
 };
 
 export default function ClientVisitsTab({ clientId }) {
@@ -20,6 +20,7 @@ export default function ClientVisitsTab({ clientId }) {
   const [visits, setVisits] = useState([]);
   const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0, totalPages: 0 });
   const [statusFilter, setStatusFilter] = useState('');
+  const [selectedVisit, setSelectedVisit] = useState(null);
 
   const STATUS_OPTIONS = [
     { value: '', label: 'All Statuses' },
@@ -53,6 +54,7 @@ export default function ClientVisitsTab({ clientId }) {
     }
 
     fetchVisits();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clientId, pagination.page, statusFilter]);
 
   const handlePageChange = (page) => {
@@ -174,6 +176,7 @@ export default function ClientVisitsTab({ clientId }) {
                       </td>
                       <td style={{ padding: '16px 12px' }}>
                         <button
+                          onClick={() => setSelectedVisit(visit)}
                           style={{
                             padding: '6px 12px',
                             borderRadius: '6px',
@@ -205,6 +208,72 @@ export default function ClientVisitsTab({ clientId }) {
           onPageChange={handlePageChange}
           total={pagination.total}
         />
+      )}
+
+      {/* Visit Details Modal */}
+      {selectedVisit && (
+        <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0, 0, 0, 0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+          <div className="card" style={{ maxWidth: '600px', width: '90%', maxHeight: '90vh', overflow: 'auto', margin: '16px' }}>
+            <div className="card-body">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                <h3 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--color-text)', margin: 0 }}>
+                  Visit Details
+                </h3>
+                <button
+                  onClick={() => setSelectedVisit(null)}
+                  style={{ padding: '8px', border: 'none', background: 'none', cursor: 'pointer', color: 'var(--color-text-secondary)' }}
+                >
+                  ✕
+                </button>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '20px' }}>
+                <div>
+                  <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '4px' }}>Date & Time</div>
+                  <div style={{ fontSize: '14px', color: 'var(--color-text)' }}>
+                    {format(new Date(selectedVisit.startTime), 'MMM d, yyyy')}
+                    <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginTop: '4px' }}>
+                      {format(new Date(selectedVisit.startTime), 'h:mm a')} - {format(new Date(selectedVisit.endTime), 'h:mm a')}
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '4px' }}>Status</div>
+                  <StatusBadge status={selectedVisit.status} variant={STATUS_VARIANTS[selectedVisit.status] || 'default'} />
+                </div>
+                <div>
+                  <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '4px' }}>Visit Type</div>
+                  <div style={{ fontSize: '14px', color: 'var(--color-text)' }}>{selectedVisit.title || 'Scheduled Visit'}</div>
+                </div>
+                <div>
+                  <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '4px' }}>Assigned Staff</div>
+                  <div style={{ fontSize: '14px', color: 'var(--color-text)' }}>{selectedVisit.staffName || 'Unassigned'}</div>
+                </div>
+              </div>
+
+              {selectedVisit.carePlanName && (
+                <div style={{ marginBottom: '20px' }}>
+                  <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '4px' }}>Care Plan</div>
+                  <div style={{ fontSize: '14px', color: 'var(--color-text)' }}>{selectedVisit.carePlanName}</div>
+                </div>
+              )}
+
+              <div style={{ marginBottom: '20px' }}>
+                <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '8px' }}>Tasks Completed</div>
+                <div style={{ fontSize: '14px', color: 'var(--color-text)' }}>
+                  {selectedVisit.completedTasks}/{selectedVisit.totalTasks} tasks
+                </div>
+              </div>
+
+              {selectedVisit.notes && (
+                <div>
+                  <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '4px' }}>Notes</div>
+                  <div style={{ fontSize: '14px', color: 'var(--color-text)', whiteSpace: 'pre-wrap' }}>{selectedVisit.notes}</div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

@@ -4,6 +4,7 @@ import RevenueChart from '@/components/dashboard/RevenueChart';
 import UpcomingShifts from '@/components/dashboard/UpcomingShifts';
 import RecentInvoices from '@/components/dashboard/RecentInvoices';
 import AlertsPanel from '@/components/dashboard/AlertsPanel';
+import EVVWidget from '@/components/dashboard/EVVWidget';
 
 export default function DashboardPage() {
   return (
@@ -14,7 +15,7 @@ export default function DashboardPage() {
           Dashboard
         </h1>
         <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)', marginTop: '4px' }}>
-          Welcome back! Here's what's happening with your clients today.
+          Welcome back! Here&#39;s what&#39;s happening with your clients today.
         </p>
       </div>
 
@@ -27,11 +28,14 @@ export default function DashboardPage() {
         <RevenueChart />
       </div>
 
-      {/* Bottom Row - Shifts, Invoices, Alerts */}
+      {/* Bottom Row - Shifts, Invoices, Alerts, EVV */}
       <div className="dashboard-bottom-grid">
         <UpcomingShifts />
         <RecentInvoices />
-        <AlertsPanel />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+          <EVVWidget />
+          <AlertsPanel />
+        </div>
       </div>
     </div>
   );

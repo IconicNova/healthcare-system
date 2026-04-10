@@ -1,8 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { Pill, Plus, Clock, CheckCircle, AlertCircle, History } from 'lucide-react';
+import { Pill, Plus, History } from 'lucide-react';
 import Modal from '@/components/ui/Modal';
 
 const STATUS_CONFIG = {
@@ -13,7 +12,6 @@ const STATUS_CONFIG = {
 };
 
 export default function MedicationsPage() {
-  const router = useRouter();
   const [selectedClient, setSelectedClient] = useState(null);
   const [clients, setClients] = useState([]);
   const [medications, setMedications] = useState([]);

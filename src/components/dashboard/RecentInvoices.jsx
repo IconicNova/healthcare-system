@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import StatusBadge from '@/components/ui/StatusBadge';
-import { FileText, ExternalLink } from 'lucide-react';
+import { FileText } from 'lucide-react';
 
 export default function RecentInvoices() {
   const [loading, setLoading] = useState(true);
@@ -64,7 +64,7 @@ export default function RecentInvoices() {
             Recent Invoices
           </h3>
           <a
-            href="/billing/invoices"
+            href="/billing"
             style={{ fontSize: '13px', color: 'var(--color-primary)', textDecoration: 'none', fontWeight: 500 }}
           >
             View All

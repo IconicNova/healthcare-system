@@ -77,7 +77,7 @@ export async function GET(request, { params }) {
     return NextResponse.json({
       visits: visits.map(visit => ({
         ...visit,
-        staffName: `${visit.staff.firstName} ${visit.staff.lastName}`,
+        staffName: visit.staff ? `${visit.staff.firstName} ${visit.staff.lastName}` : null,
         carePlanName: visit.carePlan?.name || null,
         completedTasks: visit.visitTasks.filter(t => t.completed).length,
         totalTasks: visit.visitTasks.length,

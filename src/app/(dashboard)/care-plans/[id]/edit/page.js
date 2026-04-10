@@ -20,6 +20,7 @@ export default function CarePlanEditPage({ params }) {
     fetchData();
     // Small delay to allow modal to render
     setTimeout(() => setShowEditModal(true), 100);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.id]);
 
   const fetchData = async () => {

@@ -25,5 +25,13 @@ export default function EditClientPage({ params }) {
     fetchClient();
   }, [params.id]);
 
+  if (loading) {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '400px' }}>
+        <div className="loading-spinner" />
+      </div>
+    );
+  }
+
   return <ClientForm client={client} />;
 }

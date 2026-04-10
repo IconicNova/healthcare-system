@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useRef, useEffect } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -11,15 +11,13 @@ const STATUS_COLORS = {
   COMPLETED: '#16A34A',
   CANCELLED: '#9CA3AF',
   NO_SHOW: '#EF4444',
-  MISSSED: '#EF4444',
+  MISSED: '#EF4444',
 };
 
 export default function SchedulingCalendar({
   visits = [],
   view = 'dayGridMonth',
   currentDate,
-  onDateChange,
-  onViewChange,
   onEventClick,
   onEventDrop,
   loading = false,
@@ -68,10 +66,18 @@ export default function SchedulingCalendar({
   };
 
   useEffect(() => {
-    if (currentDate && calendarRef.current) {
-      calendarRef.current.gotoDate(currentDate);
+    const api = calendarRef.current?.getApi();
+    if (api && currentDate) {
+      api.gotoDate(currentDate);
     }
   }, [currentDate]);
+
+  useEffect(() => {
+    const api = calendarRef.current?.getApi();
+    if (api && view) {
+      api.changeView(view);
+    }
+  }, [view]);
 
   return (
     <div className="scheduling-calendar" style={{ backgroundColor: 'white', borderRadius: '8px', padding: '16px' }}>
@@ -88,7 +94,7 @@ export default function SchedulingCalendar({
           headerToolbar={{
             left: 'prev,next today',
             center: 'title',
-            right: view === 'dayGridMonth' ? 'dayGridMonth,timeGridWeek,timeGridDay' : '',
+            right: '',
           }}
           events={getEvents()}
           editable={true}
@@ -115,17 +121,30 @@ export default function SchedulingCalendar({
               dayHeaderFormat: { weekday: 'long', month: 'short', day: 'numeric' },
             },
           }}
-          eventContent={(eventInfo) => (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-              <span style={{ fontSize: '12px', fontWeight: 500 }}>
-                {eventInfo.timeText}
-              </span>
-              <span style={{ fontSize: '11px' }}>
-                {eventInfo.event.extendedProps.clientName}
-              </span>
-            </div>
-          )}
-          height="auto"
+          eventContent={(eventInfo) => {
+            // Format time to show full time (e.g., "9:00 AM" instead of "9a")
+            const formatTime = (date) => {
+              const hours = date.getHours();
+              const minutes = date.getMinutes();
+              const ampm = hours >= 12 ? 'PM' : 'AM';
+              const displayHours = hours % 12 || 12;
+              const displayMinutes = minutes < 10 ? '0' + minutes : minutes;
+              return `${displayHours}:${displayMinutes} ${ampm}`;
+            };
+
+            const startTime = eventInfo.event.start ? formatTime(eventInfo.event.start) : '';
+
+            return (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                <span style={{ fontSize: '11px', fontWeight: 600 }}>
+                  {startTime}
+                </span>
+                <span style={{ fontSize: '11px' }}>
+                  {eventInfo.event.extendedProps.clientName}
+                </span>
+              </div>
+            );
+          }}
           scrollTime="08:00:00"
           allDaySlot={false}
         />

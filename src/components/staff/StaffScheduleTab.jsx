@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-export default function StaffScheduleTab({ staffId, staffName }) {
+export default function StaffScheduleTab({ staffId }) {
   const router = useRouter();
   const [visits, setVisits] = useState([]);
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -34,6 +34,7 @@ export default function StaffScheduleTab({ staffId, staffName }) {
 
   useEffect(() => {
     fetchVisits();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [staffId, currentDate]);
 
   const prevMonth = () => {
@@ -103,7 +104,7 @@ export default function StaffScheduleTab({ staffId, staffName }) {
       COMPLETED: '#16A34A',
       CANCELLED: '#9CA3AF',
       NO_SHOW: '#EF4444',
-      MISSSED: '#EF4444',
+      MISSED: '#EF4444',
     };
     return colors[status] || '#6B7280';
   };

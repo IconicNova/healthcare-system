@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Plus, Search } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import DataTable from '@/components/ui/DataTable';
 import SearchInput from '@/components/ui/SearchInput';
 import Select from '@/components/ui/Select';
@@ -88,6 +88,7 @@ export default function CarePlansPage() {
   useEffect(() => {
     fetchData();
     fetchReferenceData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pagination.page, pagination.limit, search, statusFilter]);
 
   const handleSearchChange = (value) => {
@@ -230,9 +231,28 @@ export default function CarePlansPage() {
     setIsAddModalOpen(true);
   };
 
-  const handleAddCarePlanSuccess = () => {
-    setIsAddModalOpen(false);
-    fetchData();
+  const handleCreateCarePlan = async (payload) => {
+    try {
+      const response = await fetch('/api/care-plans', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to create care plan');
+      }
+
+      const result = await response.json();
+      console.log('Care plan created:', result);
+
+      setIsAddModalOpen(false);
+      fetchData();
+    } catch (error) {
+      console.error('Error creating care plan:', error);
+      alert('Failed to create care plan: ' + error.message);
+    }
   };
 
   return (
@@ -289,8 +309,9 @@ export default function CarePlansPage() {
         size="lg"
       >
         <CarePlanForm
-          onSuccess={handleAddCarePlanSuccess}
-          onCancel={() => setIsAddModalOpen(false)}
+          isOpen={isAddModalOpen}
+          onSubmit={handleCreateCarePlan}
+          onClose={() => setIsAddModalOpen(false)}
           clients={clients}
           staff={staff}
           services={services}

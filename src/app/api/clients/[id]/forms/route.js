@@ -30,19 +30,28 @@ export async function GET(request, { params }) {
       return NextResponse.json({ error: 'Client not found' }, { status: 404 });
     }
 
-    const where = { clientId: id };
-    if (type) {
-      where.type = type;
-    }
+    const where = {
+      clientId: id,
+      template: type ? { category: type } : undefined,
+    };
 
     const [forms, total] = await Promise.all([
-      prisma.form.findMany({
+      prisma.clientForm.findMany({
         where,
         skip,
         take: limit,
         orderBy: { createdAt: 'desc' },
+        include: {
+          template: {
+            select: {
+              id: true,
+              name: true,
+              category: true,
+            },
+          },
+        },
       }),
-      prisma.form.count({ where }),
+      prisma.clientForm.count({ where }),
     ]);
 
     return NextResponse.json({

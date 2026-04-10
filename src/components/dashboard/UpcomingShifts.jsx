@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import StatusBadge from '@/components/ui/StatusBadge';
-import { Calendar, MapPin, User } from 'lucide-react';
+import { MapPin, User } from 'lucide-react';
 
 export default function UpcomingShifts() {
   const [loading, setLoading] = useState(true);
@@ -62,7 +62,7 @@ export default function UpcomingShifts() {
             Upcoming Shifts
           </h3>
           <a
-            href="/schedule"
+            href="/scheduling"
             style={{ fontSize: '13px', color: 'var(--color-primary)', textDecoration: 'none', fontWeight: 500 }}
           >
             View All

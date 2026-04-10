@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Plus, CheckCircle, Clock, Calendar, User, MapPin, ChevronRight, Edit } from 'lucide-react';
+import { CheckCircle, Clock, Calendar, User, ChevronRight, Users } from 'lucide-react';
 
 const STATUS_CONFIG = {
   SCHEDULED: { label: 'Scheduled', color: '#3B82F6', bg: '#3B82F615' },
@@ -9,7 +9,7 @@ const STATUS_CONFIG = {
   COMPLETED: { label: 'Completed', color: '#16A34A', bg: '#16A34A15' },
   CANCELLED: { label: 'Cancelled', color: '#9CA3AF', bg: '#9CA3AF15' },
   NO_SHOW: { label: 'No Show', color: '#EF4444', bg: '#EF444415' },
-  MISSSED: { label: 'Missed', color: '#EF4444', bg: '#EF444415' },
+  MISSED: { label: 'Missed', color: '#EF4444', bg: '#EF444415' },
 };
 
 export default function TasksView({ clientId, onEditVisit }) {
@@ -74,14 +74,6 @@ export default function TasksView({ clientId, onEditVisit }) {
       hour: 'numeric',
       minute: '2-digit',
       hour12: true,
-    });
-  };
-
-  const formatDate = (date) => {
-    return new Date(date).toLocaleDateString('en-US', {
-      weekday: 'short',
-      month: 'short',
-      day: 'numeric',
     });
   };
 

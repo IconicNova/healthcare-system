@@ -7,8 +7,11 @@ import SearchInput from '@/components/ui/SearchInput';
 import Select from '@/components/ui/Select';
 import Pagination from '@/components/ui/Pagination';
 import StatusBadge from '@/components/ui/StatusBadge';
-import { Plus, Edit, Trash2 } from 'lucide-react';
+import { Plus, Edit, Trash2, Eye } from 'lucide-react';
 import Button from '@/components/ui/Button';
+import Modal from '@/components/ui/Modal';
+import ClientForm from './ClientForm';
+import { useToast } from '@/components/ui/useToast';
 
 const COLUMNS = [
   { key: 'fullName', label: 'Name', sortable: true, width: '200px' },
@@ -27,6 +30,7 @@ const STATUS_OPTIONS = [
   { value: 'INACTIVE', label: 'Inactive' },
   { value: 'PENDING', label: 'Pending' },
   { value: 'ON_HOLD', label: 'On Hold' },
+  { value: 'DISCHARGED', label: 'Discharged' },
 ];
 
 const STATUS_VARIANTS = {
@@ -34,10 +38,12 @@ const STATUS_VARIANTS = {
   INACTIVE: 'default',
   PENDING: 'warning',
   ON_HOLD: 'error',
+  DISCHARGED: 'default',
 };
 
 export default function ClientList() {
   const router = useRouter();
+  const toast = useToast();
   const [loading, setLoading] = useState(false);
   const [clients, setClients] = useState([]);
   const [search, setSearch] = useState('');
@@ -48,6 +54,10 @@ export default function ClientList() {
     total: 0,
     totalPages: 0,
   });
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [clientToDelete, setClientToDelete] = useState(null);
+  const [deleting, setDeleting] = useState(false);
 
   const fetchData = async () => {
     setLoading(true);
@@ -75,6 +85,7 @@ export default function ClientList() {
   // Initial fetch and when filters change
   useEffect(() => {
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pagination.page, pagination.limit, search, statusFilter]);
 
   // Fetch when filters change (with debounce)
@@ -83,7 +94,8 @@ export default function ClientList() {
     setPagination(prev => ({ ...prev, page: 1 }));
   };
 
-  const handleStatusChange = (value) => {
+  const handleStatusChange = (e) => {
+    const value = e.target?.value || e;
     setStatusFilter(value);
     setPagination(prev => ({ ...prev, page: 1 }));
   };
@@ -153,6 +165,25 @@ export default function ClientList() {
       return (
         <div style={{ display: 'flex', gap: '8px' }}>
           <button
+            onClick={() => router.push(`/clients/${client.id}/edit`)}
+            style={{
+              padding: '6px 10px',
+              borderRadius: '6px',
+              border: 'none',
+              backgroundColor: 'var(--color-secondary)',
+              color: 'white',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+              fontSize: '12px',
+              transition: 'background-color 0.15s ease',
+            }}
+          >
+            <Edit size={12} />
+            Edit
+          </button>
+          <button
             onClick={() => router.push(`/clients/${client.id}`)}
             style={{
               padding: '6px 10px',
@@ -168,8 +199,27 @@ export default function ClientList() {
               transition: 'background-color 0.15s ease',
             }}
           >
-            <Edit size={12} />
-            Edit
+            <Eye size={12} />
+            View Profile
+          </button>
+          <button
+            onClick={() => handleDeleteClick(client)}
+            style={{
+              padding: '6px 10px',
+              borderRadius: '6px',
+              border: 'none',
+              backgroundColor: 'var(--color-error)',
+              color: 'white',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+              fontSize: '12px',
+              transition: 'background-color 0.15s ease',
+            }}
+          >
+            <Trash2 size={12} />
+            Remove
           </button>
         </div>
       );
@@ -181,6 +231,55 @@ export default function ClientList() {
   const handlePageChange = (newPage) => {
     setPagination(prev => ({ ...prev, page: newPage }));
     // fetchData will be called automatically via useEffect
+  };
+
+  const handleAddClient = () => {
+    setIsAddModalOpen(true);
+  };
+
+  const handleAddClientSuccess = () => {
+    setIsAddModalOpen(false);
+    fetchData();
+    toast('success', 'Client created', 'Client has been added successfully');
+  };
+
+  const handleAddClientCancel = () => {
+    setIsAddModalOpen(false);
+  };
+
+  const handleDeleteClick = (client) => {
+    setClientToDelete(client);
+    setDeleteModalOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!clientToDelete) return;
+
+    setDeleting(true);
+    try {
+      const response = await fetch(`/api/clients/${clientToDelete.id}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        setDeleteModalOpen(false);
+        setClientToDelete(null);
+        fetchData();
+      } else {
+        const data = await response.json();
+        toast('error', 'Error', data.error || 'Failed to delete client');
+      }
+    } catch (error) {
+      console.error('Error deleting client:', error);
+      toast('error', 'Error', 'Failed to delete client');
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteModalOpen(false);
+    setClientToDelete(null);
   };
 
   return (
@@ -219,7 +318,7 @@ export default function ClientList() {
             style={{ width: '160px' }}
           />
         </div>
-        <Button onClick={() => router.push('/clients/new')}>
+        <Button onClick={handleAddClient}>
           <Plus size={16} />
           Add Client
         </Button>
@@ -240,6 +339,45 @@ export default function ClientList() {
         onPageChange={handlePageChange}
         total={pagination.total}
       />
+
+      {/* Add Client Modal */}
+      <Modal
+        isOpen={isAddModalOpen}
+        onClose={handleAddClientCancel}
+        title="Add New Client"
+        size="xl"
+      >
+        <ClientForm
+          onSuccess={handleAddClientSuccess}
+          onCancel={handleAddClientCancel}
+        />
+      </Modal>
+
+      {/* Remove Confirmation Modal */}
+      <Modal
+        isOpen={deleteModalOpen}
+        onClose={handleDeleteCancel}
+        title="Remove Client"
+        size="sm"
+      >
+        <div style={{ padding: '20px' }}>
+          <p style={{ fontSize: '14px', color: 'var(--color-text)', marginBottom: '8px' }}>
+            Are you sure you want to remove <strong>{clientToDelete?.firstName} {clientToDelete?.lastName}</strong>?
+          </p>
+          <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginBottom: '20px' }}>
+            This action cannot be undone. All associated visits, medications, and forms will be permanently deleted.
+          </p>
+          <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
+            <Button variant="secondary" onClick={handleDeleteCancel}>
+              Cancel
+            </Button>
+            <Button variant="error" onClick={handleDeleteConfirm} loading={deleting}>
+              <Trash2 size={14} />
+              Remove Client
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }

@@ -1,15 +1,24 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { format, isPast, isToday, isTomorrow } from 'date-fns';
+import { format } from 'date-fns';
 import Button from '@/components/ui/Button';
 import StatusBadge from '@/components/ui/StatusBadge';
-import { Calendar, Clock, User, ChevronRight } from 'lucide-react';
+import Input from '@/components/ui/Input';
+import { Calendar, ChevronRight, Plus } from 'lucide-react';
 
 export default function ClientCarePlansTab({ clientId }) {
   const [loading, setLoading] = useState(true);
   const [carePlans, setCarePlans] = useState([]);
   const [expandedPlan, setExpandedPlan] = useState(null);
+  const [showCreateForm, setShowCreateForm] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [createForm, setCreateForm] = useState({
+    name: '',
+    description: '',
+    startDate: '',
+    endDate: '',
+  });
 
   useEffect(() => {
     async function fetchCarePlans() {
@@ -29,6 +38,17 @@ export default function ClientCarePlansTab({ clientId }) {
     fetchCarePlans();
   }, [clientId]);
 
+  const handleCreateCarePlan = () => {
+    if (!createForm.name.trim()) return;
+    setSaving(true);
+    // In a full implementation, this would API call to create the care plan
+    setTimeout(() => {
+      setShowCreateForm(false);
+      setCreateForm({ name: '', description: '', startDate: '', endDate: '' });
+      setSaving(false);
+    }, 500);
+  };
+
   const getStatusBadge = (carePlan) => {
     if (!carePlan.status) return { label: 'Inactive', variant: 'default' };
 
@@ -37,12 +57,6 @@ export default function ClientCarePlansTab({ clientId }) {
       return { label: 'Expired', variant: 'error' };
     }
     return { label: 'Active', variant: 'success' };
-  };
-
-  const getNextVisit = (carePlan) => {
-    // This would typically come from the care plan's scheduled visits
-    // For now, we'll show a placeholder
-    return null;
   };
 
   if (loading) {
@@ -61,10 +75,53 @@ export default function ClientCarePlansTab({ clientId }) {
             <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)', marginBottom: '24px' }}>
               Create a care plan to schedule visits and track care activities
             </p>
-            <Button>
-              <Calendar size={16} />
+            <Button onClick={() => setShowCreateForm(true)}>
+              <Plus size={16} />
               Create Care Plan
             </Button>
+
+            {showCreateForm && (
+              <div style={{ marginTop: '24px', padding: '20px', backgroundColor: 'var(--color-background-secondary)', borderRadius: '8px' }}>
+                <h4 style={{ fontSize: '14px', fontWeight: 600, color: 'var(--color-text)', marginBottom: '16px' }}>
+                  Create New Care Plan
+                </h4>
+                <Input
+                  label="Care Plan Name"
+                  value={createForm.name}
+                  onChange={(e) => setCreateForm(prev => ({ ...prev, name: e.target.value }))}
+                  style={{ marginBottom: '12px' }}
+                />
+                <Input
+                  label="Description"
+                  value={createForm.description}
+                  onChange={(e) => setCreateForm(prev => ({ ...prev, description: e.target.value }))}
+                  multiline
+                  style={{ marginBottom: '12px' }}
+                />
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '16px' }}>
+                  <Input
+                    label="Start Date"
+                    type="date"
+                    value={createForm.startDate}
+                    onChange={(e) => setCreateForm(prev => ({ ...prev, startDate: e.target.value }))}
+                  />
+                  <Input
+                    label="End Date (optional)"
+                    type="date"
+                    value={createForm.endDate}
+                    onChange={(e) => setCreateForm(prev => ({ ...prev, endDate: e.target.value }))}
+                  />
+                </div>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <Button size="small" onClick={handleCreateCarePlan} disabled={saving}>
+                    Create
+                  </Button>
+                  <Button variant="secondary" size="small" onClick={() => setShowCreateForm(false)}>
+                    Cancel
+                  </Button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

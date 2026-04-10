@@ -2,11 +2,12 @@
 
 import { useSession, signOut } from '@/lib/auth';
 import { getInitials, getRoleDisplayName } from '@/lib/utils';
-import { Search, Bell, Menu, LogOut } from 'lucide-react';
+import { Search, LogOut } from 'lucide-react';
 import { useState } from 'react';
 import Breadcrumb from './Breadcrumb';
+import NotificationDropdown from '@/components/notifications/NotificationDropdown';
 
-export default function TopBar({ title }) {
+export default function TopBar() {
   const { data: session } = useSession();
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -38,10 +39,7 @@ export default function TopBar({ title }) {
         {/* Actions */}
         <div className="topbar-actions">
           {/* Notifications */}
-          <button className="topbar-btn" aria-label="Notifications">
-            <Bell size={20} />
-            <span className="topbar-badge">3</span>
-          </button>
+          <NotificationDropdown />
 
           {/* User Dropdown */}
           <div className="dropdown" style={{ display: 'inline-block' }}>

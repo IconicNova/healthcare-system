@@ -16,7 +16,7 @@ const STATUS_OPTIONS = [
 ];
 
 const GENDER_OPTIONS = [
-  { value: '', label: 'Select Gender' },
+  { value: '', label: 'Select an option' },
   { value: 'Male', label: 'Male' },
   { value: 'Female', label: 'Female' },
   { value: 'Other', label: 'Other' },
@@ -41,7 +41,7 @@ const INITIAL_FORM_STATE = {
   emergencyContacts: [{ name: '', relation: '', phone: '', email: '' }],
 };
 
-export default function ClientForm({ client = null }) {
+export default function ClientForm({ client = null, onSuccess, onCancel }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -143,7 +143,13 @@ export default function ClientForm({ client = null }) {
       }
 
       const result = await response.json();
-      router.push(`/clients/${result.id}`);
+
+      // If onSuccess callback exists (modal mode), use it; otherwise navigate (page mode)
+      if (onSuccess) {
+        onSuccess(result);
+      } else {
+        router.push(`/clients/${result.id}`);
+      }
     } catch (error) {
       console.error('Error saving client:', error);
       setErrors({ submit: error.message });
@@ -156,20 +162,24 @@ export default function ClientForm({ client = null }) {
     return <div>Loading...</div>;
   }
 
+  const isModalMode = !!onSuccess;
+
   return (
-    <div style={{ maxWidth: '800px' }}>
-      <div style={{ marginBottom: '24px' }}>
-        <h1 style={{ fontSize: '28px', fontWeight: 700, color: 'var(--color-text)', margin: 0 }}>
-          {client ? 'Edit Client' : 'Add New Client'}
-        </h1>
-        <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)', marginTop: '4px' }}>
-          {client ? 'Update client information' : 'Enter client details'}
-        </p>
-      </div>
+    <div style={{ maxWidth: isModalMode ? '100%' : '800px' }}>
+      {!isModalMode && (
+        <div style={{ marginBottom: '24px' }}>
+          <h1 style={{ fontSize: '28px', fontWeight: 700, color: 'var(--color-text)', margin: 0 }}>
+            {client ? 'Edit Client' : 'Add New Client'}
+          </h1>
+          <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)', marginTop: '4px' }}>
+            {client ? 'Update client information' : 'Enter client details'}
+          </p>
+        </div>
+      )}
 
       <form onSubmit={handleSubmit}>
-        <div className="card">
-          <div className="card-body">
+        <div className="card" style={{ maxWidth: '100%', overflow: 'hidden' }}>
+          <div className="card-body" style={{ maxHeight: 'calc(90vh - 200px)', overflowY: 'auto' }}>
             {errors.submit && (
               <div style={{ padding: '12px', marginBottom: '16px', backgroundColor: '#fef2f2', border: '1px solid #fecaca', borderRadius: '8px', color: '#dc2626', fontSize: '14px' }}>
                 {errors.submit}
@@ -183,14 +193,14 @@ export default function ClientForm({ client = null }) {
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
               <Input
-                label="First Name *"
+                label="First Name"
                 value={formData.firstName}
                 onChange={(e) => handleChange('firstName', e.target.value)}
                 error={errors.firstName}
                 required
               />
               <Input
-                label="Last Name *"
+                label="Last Name"
                 value={formData.lastName}
                 onChange={(e) => handleChange('lastName', e.target.value)}
                 error={errors.lastName}
@@ -228,7 +238,7 @@ export default function ClientForm({ client = null }) {
                 error={errors.email}
               />
               <Input
-                label="Phone *"
+                label="Phone"
                 value={formData.phone}
                 onChange={(e) => handleChange('phone', e.target.value)}
                 error={errors.phone}
@@ -242,7 +252,7 @@ export default function ClientForm({ client = null }) {
             </h3>
 
             <Input
-              label="Street Address *"
+              label="Street Address"
               value={formData.address}
               onChange={(e) => handleChange('address', e.target.value)}
               error={errors.address}
@@ -252,14 +262,14 @@ export default function ClientForm({ client = null }) {
 
             <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '16px', marginBottom: '16px' }}>
               <Input
-                label="City *"
+                label="City"
                 value={formData.city}
                 onChange={(e) => handleChange('city', e.target.value)}
                 error={errors.city}
                 required
               />
               <Input
-                label="State *"
+                label="State"
                 value={formData.state}
                 onChange={(e) => handleChange('state', e.target.value)}
                 error={errors.state}
@@ -267,7 +277,7 @@ export default function ClientForm({ client = null }) {
                 maxLength={2}
               />
               <Input
-                label="Zip Code *"
+                label="Zip Code"
                 value={formData.zipCode}
                 onChange={(e) => handleChange('zipCode', e.target.value)}
                 error={errors.zipCode}
@@ -353,7 +363,7 @@ export default function ClientForm({ client = null }) {
 
             {/* Actions */}
             <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end', paddingTop: '24px', borderTop: '1px solid var(--color-border)' }}>
-              <Button type="button" variant="secondary" onClick={() => router.back()}>
+              <Button type="button" variant="secondary" onClick={onCancel || (() => router.back())}>
                 Cancel
               </Button>
               <Button type="submit" disabled={saving}>

@@ -2,25 +2,38 @@
 
 import { useState } from 'react';
 
-export default function Tabs({ tabs, defaultTab }) {
-  const [activeTab, setActiveTab] = useState(defaultTab || tabs[0]?.value);
+export default function Tabs({ tabs, defaultTab, activeTab, onTabChange }) {
+  const [internalActiveTab, setInternalActiveTab] = useState(defaultTab || tabs[0]?.id || tabs[0]?.value);
+
+  // Use controlled mode if activeTab prop is provided, otherwise use internal state
+  const currentActiveTab = activeTab !== undefined ? activeTab : internalActiveTab;
+
+  const handleTabChange = (tabId) => {
+    if (onTabChange) {
+      onTabChange(tabId);
+    } else {
+      setInternalActiveTab(tabId);
+    }
+  };
 
   return (
     <>
       <div className="tabs">
-        {tabs.map((tab) => (
-          <button
-            key={tab.value}
-            className={`tab ${activeTab === tab.value ? 'active' : ''} ${tab.disabled ? 'disabled' : ''}`}
-            onClick={() => !tab.disabled && setActiveTab(tab.value)}
-            disabled={tab.disabled}
-          >
-            {tab.icon && <tab.icon size={16} style={{ marginRight: '8px' }} />}
-            {tab.label}
-          </button>
-        ))}
+        {tabs.map((tab) => {
+          const tabId = tab.id || tab.value;
+          return (
+            <button
+              key={tabId}
+              className={`tab ${currentActiveTab === tabId ? 'active' : ''} ${tab.disabled ? 'disabled' : ''}`}
+              onClick={() => !tab.disabled && handleTabChange(tabId)}
+              disabled={tab.disabled}
+            >
+              {tab.icon && <tab.icon size={16} style={{ marginRight: '8px' }} />}
+              {tab.label}
+            </button>
+          );
+        })}
       </div>
-      {tabs.find((tab) => tab.value === activeTab)?.content}
     </>
   );
 }

@@ -459,7 +459,3 @@ export default function FormChartingPage({ params }) {
   );
 }
 
-// Get server side props for initial data fetching
-export async function getServerProps({ params }) {
-  return { params };
-}

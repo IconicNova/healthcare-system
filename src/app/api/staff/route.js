@@ -16,9 +16,9 @@ export async function GET(request) {
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '10');
     const search = searchParams.get('search') || '';
-    const status = searchParams.get('status') || '';
-    const branchId = searchParams.get('branchId') || '';
-    const role = searchParams.get('role') || '';
+    const status = searchParams.get('status');
+    const branchId = searchParams.get('branchId');
+    const role = searchParams.get('role');
     const sort = searchParams.get('sort') || 'createdAt';
     const order = searchParams.get('order') || 'desc';
     const skip = (page - 1) * limit;
@@ -36,15 +36,18 @@ export async function GET(request) {
       ];
     }
 
-    if (status) {
+    // Validate status is a valid StaffStatus enum value
+    if (status && typeof status === 'string' && ['ACTIVE', 'INACTIVE', 'ON_LEAVE', 'TERMINATED'].includes(status)) {
       where.status = status;
     }
 
-    if (branchId) {
+    // Validate branchId is a valid UUID string
+    if (branchId && typeof branchId === 'string' && branchId.length > 0) {
       where.branchId = branchId;
     }
 
-    if (role) {
+    // Validate role is a valid StaffRole enum value
+    if (role && typeof role === 'string' && ['ADMIN', 'MANAGER', 'SUPERVISOR', 'STAFF'].includes(role)) {
       where.role = role;
     }
 
@@ -126,9 +129,7 @@ export async function POST(request) {
       email,
       password,
       phone,
-      address,
       branchId,
-      hireDate,
       payRate,
       payType,
       status,
@@ -213,7 +214,6 @@ export async function POST(request) {
           lastName,
           email,
           phone,
-          address: address || null,
           role,
           payType: payType || 'HOURLY',
           hourlyRate: payRate || null,

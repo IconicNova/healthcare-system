@@ -160,24 +160,56 @@ export async function PATCH(request, { params }) {
 
     // Update user and staff
     const result = await prisma.$transaction(async (tx) => {
-      // Update user
-      const user = await tx.user.update({
-        where: { id: existing.userId },
-        data: {
-          ...(body.email && { email: body.email }),
-          ...(body.firstName && { firstName: body.firstName }),
-          ...(body.lastName && { lastName: body.lastName }),
-          ...userData,
-        },
-        select: {
-          id: true,
-          email: true,
-          firstName: true,
-          lastName: true,
-          role: true,
-          avatar: true,
-        },
-      });
+      let user = null;
+
+      // Update user if it exists
+      if (existing.userId) {
+        user = await tx.user.update({
+          where: { id: existing.userId },
+          data: {
+            ...(body.email && { email: body.email }),
+            ...(body.firstName && { firstName: body.firstName }),
+            ...(body.lastName && { lastName: body.lastName }),
+            ...userData,
+          },
+          select: {
+            id: true,
+            email: true,
+            firstName: true,
+            lastName: true,
+            role: true,
+            avatar: true,
+          },
+        });
+      } else if (body.password) {
+        // Only create user if password is provided (data inconsistency fix)
+        const userDataToCreate = {
+          email: body.email || existing.email,
+          firstName: body.firstName || existing.firstName,
+          lastName: body.lastName || existing.lastName,
+          role: body.role || existing.role,
+          password: await bcrypt.hash(body.password, 10),
+        };
+
+        user = await tx.user.create({
+          data: userDataToCreate,
+          select: {
+            id: true,
+            email: true,
+            firstName: true,
+            lastName: true,
+            role: true,
+            avatar: true,
+          },
+        });
+
+        // Link user to staff
+        await tx.staff.update({
+          where: { id },
+          data: { userId: user.id },
+        });
+      }
+      // If no userId and no password, skip user creation (just update staff record)
 
       // Update staff
       const staff = await tx.staff.update({
@@ -187,7 +219,6 @@ export async function PATCH(request, { params }) {
           ...(body.lastName && { lastName: body.lastName }),
           ...(body.email && { email: body.email }),
           ...(body.phone && { phone: body.phone }),
-          ...(body.address !== undefined && { address: body.address }),
           ...(body.role && { role: body.role }),
           ...(body.payType && { payType: body.payType }),
           ...(body.payRate !== undefined && { hourlyRate: body.payRate }),
@@ -262,25 +293,35 @@ export async function DELETE(request, { params }) {
       return NextResponse.json({ error: 'Staff member not found' }, { status: 404 });
     }
 
-    // Check if staff has related visits
-    const hasVisits = existing.visits.length > 0;
-
-    if (hasVisits) {
-      return NextResponse.json(
-        { error: 'Cannot delete staff member with existing visits. Set status to TERMINATED instead.' },
-        { status: 400 }
-      );
-    }
-
-    // Delete staff and associated user
+    // Delete all related records including visits before deleting staff/user
     await prisma.$transaction(async (tx) => {
-      await tx.user.delete({
-        where: { id: existing.userId },
-      });
+      // Delete all visits assigned to this staff (related records cascade automatically)
+      await tx.visit.deleteMany({ where: { staffId: id } });
 
-      await tx.staff.delete({
-        where: { id },
-      });
+      // Delete all related records
+      await tx.staffSkill.deleteMany({ where: { staffId: id } });
+      await tx.staffCertification.deleteMany({ where: { staffId: id } });
+      await tx.staffAvailability.deleteMany({ where: { staffId: id } });
+      await tx.medAdministration.deleteMany({ where: { staffId: id } });
+      await tx.timesheet.deleteMany({ where: { staffId: id } });
+
+      // Delete associated user if exists - this will cascade delete the staff record
+      if (existing.userId) {
+        // Delete any remaining timesheets associated with this user
+        await tx.timesheet.deleteMany({
+          where: { userId: existing.userId },
+        });
+
+        await tx.user.delete({
+          where: { id: existing.userId },
+        });
+        // Staff is automatically deleted via CASCADE when user is deleted
+      } else {
+        // If no user, delete staff directly
+        await tx.staff.delete({
+          where: { id },
+        });
+      }
     });
 
     return NextResponse.json({ message: 'Staff member deleted successfully' });

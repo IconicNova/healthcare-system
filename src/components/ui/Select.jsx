@@ -5,9 +5,16 @@ export default function Select({
   required = false,
   options = [],
   className = '',
+  onChange,
   ...props
 }) {
   const selectClasses = `select ${error ? 'input-error' : ''} ${className}`;
+
+  const handleChange = (e) => {
+    if (onChange) {
+      onChange(e);
+    }
+  };
 
   return (
     <div className="form-group">
@@ -16,8 +23,8 @@ export default function Select({
           {label}
         </label>
       )}
-      <select className={selectClasses} {...props}>
-        <option value="">Select an option</option>
+      <select className={selectClasses} onChange={handleChange} {...props}>
+        {options.length > 0 && options[0].value === '' ? null : <option value="">Select an option</option>}
         {options.map((option) => (
           <option key={option.value} value={option.value}>
             {option.label}

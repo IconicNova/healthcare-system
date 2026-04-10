@@ -26,6 +26,7 @@ export default function StaffTimesheetsTab({ staffId }) {
 
   useEffect(() => {
     fetchTimesheets();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [staffId]);
 
   const getStatusBadge = (status) => {

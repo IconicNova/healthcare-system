@@ -1,5 +1,5 @@
 import { format } from 'date-fns';
-import { Phone, Mail, MapPin, Calendar, Users, FileText, Clock } from 'lucide-react';
+import { Phone, Mail, MapPin, Calendar, FileText, Clock } from 'lucide-react';
 
 export default function ClientOverviewTab({ client }) {
   const stats = [

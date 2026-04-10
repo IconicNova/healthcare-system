@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, useCallback } from 'react';
+import Toast from './Toast';
 
 const ToastContext = createContext();
 
@@ -8,7 +9,7 @@ export function ToastProvider({ children }) {
   const [toasts, setToasts] = useState([]);
 
   const addToast = useCallback((toast) => {
-    const id = Date.now();
+    const id = Date.now() + Math.random();
     setToasts((prev) => [...prev, { ...toast, id }]);
     setTimeout(() => {
       setToasts((prev) => prev.filter((t) => t.id !== id));
@@ -30,19 +31,14 @@ export function ToastProvider({ children }) {
     <ToastContext.Provider value={toast}>
       {children}
       <div className="toast-container">
-        {toasts.map((toast) => (
-          <div key={toast.id} className={`toast ${toast.type}`}>
-            <div className="toast-content">
-              {toast.title && <div className="toast-title">{toast.title}</div>}
-              {toast.message && <div className="toast-message">{toast.message}</div>}
-            </div>
-            <button
-              className="toast-close"
-              onClick={() => removeToast(toast.id)}
-            >
-              ×
-            </button>
-          </div>
+        {toasts.map((t) => (
+          <Toast
+            key={t.id}
+            type={t.type}
+            title={t.title}
+            message={t.message}
+            onClose={() => removeToast(t.id)}
+          />
         ))}
       </div>
     </ToastContext.Provider>

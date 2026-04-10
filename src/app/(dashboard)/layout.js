@@ -6,9 +6,10 @@ import { useRouter } from 'next/navigation';
 import Sidebar from '@/components/layout/Sidebar';
 import TopBar from '@/components/layout/TopBar';
 import LoadingSpinner from '@/components/layout/LoadingSpinner';
+import ErrorBoundary from '@/components/ErrorBoundary';
 
 export default function DashboardLayout({ children }) {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const router = useRouter();
   const [isClient, setIsClient] = useState(false);
 
@@ -36,7 +37,9 @@ export default function DashboardLayout({ children }) {
       <div style={{ flex: 1, marginLeft: 'var(--sidebar-width)' }}>
         <TopBar />
         <main className="page-container">
-          {children}
+          <ErrorBoundary>
+            {children}
+          </ErrorBoundary>
         </main>
       </div>
     </div>
