@@ -65,7 +65,7 @@ export default function LoginPage() {
           <Heart size={32} color="white" fill="white" />
         </div>
         <h1 style={{ fontSize: '24px', fontWeight: 700, color: 'var(--color-text)' }}>
-          HomeCare Pro
+          Together Care Health Services
         </h1>
         <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)', marginTop: '8px' }}>
           Sign in to your account

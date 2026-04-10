@@ -1685,8 +1685,8 @@ a:hover {
   font-weight: var(--font-weight-bold);
   color: var(--sidebar-text);
   letter-spacing: var(--letter-spacing-tight);
-  white-space: nowrap;
-  overflow: hidden;
+  white-space: normal;
+  overflow: visible;
 }
 
 .sidebar-toggle {

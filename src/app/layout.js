@@ -8,7 +8,7 @@ const inter = Inter({
 });
 
 export const metadata = {
-  title: "HomeCare Pro - Healthcare Management System",
+  title: "Together Care Health Services - Healthcare Management System",
   description: "Professional home care management platform for healthcare providers",
   icons: {
     icon: '/favicon.svg',

@@ -63,7 +63,7 @@ export default function PayslipDetail({ payslip, onClose }) {
                 margin: '0 0 4px',
                 letterSpacing: '-0.5px',
               }}>
-                HomeCare Pro
+                Together Care Health Services
               </h2>
               <div style={{ fontSize: '13px', color: 'var(--color-text-secondary)', lineHeight: '1.6' }}>
                 Home Care Management System<br />

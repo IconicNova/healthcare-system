@@ -55,9 +55,9 @@ export default function Sidebar() {
         <div className="sidebar-header">
           <div className="sidebar-logo">
             <div className="sidebar-logo-icon">
-              <span style={{ fontSize: '14px', fontWeight: 'bold' }}>HC</span>
+              <span style={{ fontSize: '14px', fontWeight: 'bold' }}>TCHS</span>
             </div>
-            {!collapsed && <span>HomeCare Pro</span>}
+            {!collapsed && <span>Together Care Health Services</span>}
           </div>
           <button
             onClick={() => setCollapsed(!collapsed)}
