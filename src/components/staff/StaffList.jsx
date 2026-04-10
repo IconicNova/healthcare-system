@@ -144,24 +144,38 @@ export default function StaffList() {
 
   const renderCell = (member, key) => {
     if (key === 'fullName') {
+      const hasAvatar = member.user?.avatar;
       return (
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <div
-            style={{
-              width: '40px',
-              height: '40px',
-              borderRadius: '50%',
-              backgroundColor: 'var(--color-primary-light)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '14px',
-              fontWeight: 600,
-              color: 'white',
-            }}
-          >
-            {member.firstName?.charAt(0)}{member.lastName?.charAt(0)}
-          </div>
+          {hasAvatar ? (
+            <img
+              src={member.user.avatar}
+              alt={`${member.firstName} ${member.lastName}`}
+              style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '50%',
+                objectFit: 'cover',
+              }}
+            />
+          ) : (
+            <div
+              style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '50%',
+                backgroundColor: 'var(--color-primary-light)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '14px',
+                fontWeight: 600,
+                color: 'white',
+              }}
+            >
+              {member.firstName?.charAt(0)}{member.lastName?.charAt(0)}
+            </div>
+          )}
           <div>
             <div style={{ fontSize: '14px', fontWeight: 500, color: 'var(--color-text)' }}>
               {member.fullName}

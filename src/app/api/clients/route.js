@@ -47,6 +47,7 @@ export async function GET(request) {
           id: true,
           firstName: true,
           lastName: true,
+          avatar: true,
           email: true,
           phone: true,
           address: true,

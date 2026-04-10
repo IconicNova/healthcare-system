@@ -87,6 +87,7 @@ export async function GET(request, { params }) {
 
     return NextResponse.json({
       ...client,
+      avatar: client.avatar,
       fullName: `${client.firstName} ${client.lastName}`,
     });
   } catch (error) {
@@ -248,6 +249,7 @@ export async function PATCH(request, { params }) {
           ssn: true,
           insuranceType: true,
           insuranceId: true,
+          avatar: true,
           createdAt: true,
           updatedAt: true,
           emergencyContacts: {

@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import Select from '@/components/ui/Select';
-import { Plus, X } from 'lucide-react';
+import { Plus, X, Upload, Camera } from 'lucide-react';
 import { format } from 'date-fns';
 
 const STATUS_OPTIONS = [
@@ -26,6 +26,7 @@ const GENDER_OPTIONS = [
 const INITIAL_FORM_STATE = {
   firstName: '',
   lastName: '',
+  avatar: null,
   dateOfBirth: '',
   gender: '',
   ssn: '',
@@ -43,16 +44,20 @@ const INITIAL_FORM_STATE = {
 
 export default function ClientForm({ client = null, onSuccess, onCancel }) {
   const router = useRouter();
+  const fileInputRef = useRef(null);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState(INITIAL_FORM_STATE);
   const [errors, setErrors] = useState({});
+  const [avatarPreview, setAvatarPreview] = useState(null);
+  const [avatarUploading, setAvatarUploading] = useState(false);
 
   useEffect(() => {
     if (client) {
       setFormData({
         firstName: client.firstName || '',
         lastName: client.lastName || '',
+        avatar: client.avatar || null,
         dateOfBirth: client.dateOfBirth ? format(new Date(client.dateOfBirth), 'yyyy-MM-dd') : '',
         gender: client.gender || '',
         ssn: client.ssn || '',
@@ -69,6 +74,7 @@ export default function ClientForm({ client = null, onSuccess, onCancel }) {
           ? client.emergencyContacts
           : [{ name: '', relation: '', phone: '', email: '' }],
       });
+      setAvatarPreview(client.avatar || null);
       setLoading(false);
     }
   }, [client]);
@@ -77,6 +83,80 @@ export default function ClientForm({ client = null, onSuccess, onCancel }) {
     setFormData(prev => ({ ...prev, [field]: value }));
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: '' }));
+    }
+  };
+
+  const handleAvatarSelect = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        setErrors(prev => ({ ...prev, avatar: 'Please select an image file' }));
+        return;
+      }
+
+      // Validate file size (5MB max)
+      if (file.size > 5 * 1024 * 1024) {
+        setErrors(prev => ({ ...prev, avatar: 'Image size must be less than 5MB' }));
+        return;
+      }
+
+      setErrors(prev => ({ ...prev, avatar: '' }));
+
+      // Create preview
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setAvatarPreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleAvatarUpload = async () => {
+    if (!avatarPreview || !client?.id) return null;
+
+    setAvatarUploading(true);
+    try {
+      const response = await fetch(`/api/clients/${client.id}/avatar`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ avatarUrl: avatarPreview }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to upload avatar');
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Error uploading avatar:', error);
+      throw error;
+    } finally {
+      setAvatarUploading(false);
+    }
+  };
+
+  const handleRemoveAvatar = async () => {
+    if (!client?.id) return;
+
+    setAvatarUploading(true);
+    try {
+      const response = await fetch(`/api/clients/${client.id}/avatar`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to remove avatar');
+      }
+
+      setAvatarPreview(null);
+      setFormData(prev => ({ ...prev, avatar: null }));
+    } catch (error) {
+      console.error('Error removing avatar:', error);
+    } finally {
+      setAvatarUploading(false);
     }
   };
 
@@ -125,6 +205,12 @@ export default function ClientForm({ client = null, onSuccess, onCancel }) {
 
     setSaving(true);
     try {
+      // Upload avatar first if there's a new one for existing client
+      let avatarId = client?.id;
+      if (client?.id && avatarPreview && avatarPreview !== client.avatar) {
+        await handleAvatarUpload();
+      }
+
       const endpoint = client ? `/api/clients/${client.id}` : '/api/clients';
       const method = client ? 'PATCH' : 'POST';
 
@@ -143,6 +229,15 @@ export default function ClientForm({ client = null, onSuccess, onCancel }) {
       }
 
       const result = await response.json();
+
+      // If new client with avatar, upload it
+      if (!client && avatarPreview) {
+        await fetch(`/api/clients/${result.id}/avatar`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ avatarUrl: avatarPreview }),
+        });
+      }
 
       // If onSuccess callback exists (modal mode), use it; otherwise navigate (page mode)
       if (onSuccess) {
@@ -186,8 +281,101 @@ export default function ClientForm({ client = null, onSuccess, onCancel }) {
               </div>
             )}
 
+            {/* Profile Picture */}
+            <h3 style={{ fontSize: '14px', fontWeight: 600, color: 'var(--color-text-secondary)', marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+              Profile Picture
+            </h3>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '24px', marginBottom: '24px' }}>
+              <div style={{ position: 'relative', width: '100px', height: '100px' }}>
+                {avatarPreview ? (
+                  <img
+                    src={avatarPreview}
+                    alt="Profile preview"
+                    style={{
+                      width: '100px',
+                      height: '100px',
+                      borderRadius: '50%',
+                      objectFit: 'cover',
+                      border: '3px solid var(--color-border)',
+                    }}
+                  />
+                ) : (
+                  <div style={{
+                    width: '100px',
+                    height: '100px',
+                    borderRadius: '50%',
+                    backgroundColor: 'var(--color-primary-light)',
+                    color: 'white',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '32px',
+                    fontWeight: 600,
+                    border: '3px solid var(--color-border)',
+                  }}>
+                    {(formData.firstName?.charAt(0) || '') + (formData.lastName?.charAt(0) || '')}
+                  </div>
+                )}
+
+                {client && avatarPreview && (
+                  <button
+                    type="button"
+                    onClick={handleRemoveAvatar}
+                    disabled={avatarUploading}
+                    style={{
+                      position: 'absolute',
+                      top: '-8px',
+                      right: '-8px',
+                      width: '28px',
+                      height: '28px',
+                      borderRadius: '50%',
+                      backgroundColor: '#dc2626',
+                      color: 'white',
+                      border: '2px solid white',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      cursor: avatarUploading ? 'not-allowed' : 'pointer',
+                      opacity: avatarUploading ? 0.5 : 1,
+                    }}
+                  >
+                    <X size={14} />
+                  </button>
+                )}
+              </div>
+
+              <div style={{ flex: 1 }}>
+                <div style={{ marginBottom: '12px' }}>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleAvatarSelect}
+                    style={{ display: 'none' }}
+                  />
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={avatarUploading}
+                    style={{ marginRight: '8px' }}
+                  >
+                    <Upload size={14} />
+                    Upload Photo
+                  </Button>
+                  {errors.avatar && (
+                    <span style={{ color: '#dc2626', fontSize: '12px', marginLeft: '8px' }}>{errors.avatar}</span>
+                  )}
+                </div>
+                <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', margin: 0 }}>
+                  Optional. JPG, PNG or GIF. Max size 5MB.
+                </p>
+              </div>
+            </div>
+
             {/* Personal Information */}
-            <h3 style={{ fontSize: '14px', fontWeight: 600, color: 'var(--color-text-secondary-text)', marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+            <h3 style={{ fontSize: '14px', fontWeight: 600, color: 'var(--color-text-secondary)', marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
               Personal Information
             </h3>
 

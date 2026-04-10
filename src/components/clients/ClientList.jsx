@@ -102,24 +102,38 @@ export default function ClientList() {
 
   const renderCell = (client, key) => {
     if (key === 'fullName') {
+      const hasAvatar = client.avatar;
       return (
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <div
-            style={{
-              width: '40px',
-              height: '40px',
-              borderRadius: '50%',
-              backgroundColor: 'var(--color-primary-light)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '14px',
-              fontWeight: 600,
-              color: 'var(--color-primary)',
-            }}
-          >
-            {client.firstName.charAt(0)}{client.lastName.charAt(0)}
-          </div>
+          {hasAvatar ? (
+            <img
+              src={client.avatar}
+              alt={`${client.firstName} ${client.lastName}`}
+              style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '50%',
+                objectFit: 'cover',
+              }}
+            />
+          ) : (
+            <div
+              style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '50%',
+                backgroundColor: 'var(--color-primary-light)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '14px',
+                fontWeight: 600,
+                color: 'white',
+              }}
+            >
+              {client.firstName.charAt(0)}{client.lastName.charAt(0)}
+            </div>
+          )}
           <div>
             <div style={{ fontSize: '14px', fontWeight: 500, color: 'var(--color-text)' }}>
               {client.fullName}

@@ -72,7 +72,7 @@ export default function EVVWidget() {
 
       <div className="evv-stats-grid">
         <div>
-          <div className="evv-stat-value">{data.verified}</div>
+          <div className="evv-stat-value" style={{ color: '#7dd3fc' }}>{data.verified}</div>
           <div className="evv-stat-label">Verified</div>
         </div>
         <div>

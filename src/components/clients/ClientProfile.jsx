@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Tabs from '@/components/ui/Tabs';
 import ClientOverviewTab from './ClientOverviewTab';
@@ -10,7 +10,7 @@ import ClientVisitsTab from './ClientVisitsTab';
 import ClientDocumentsTab from './ClientDocumentsTab';
 import ClientFormsTab from './ClientFormsTab';
 import StatusBadge from '@/components/ui/StatusBadge';
-import { ArrowLeft, Edit } from 'lucide-react';
+import { ArrowLeft, Edit, Upload, X } from 'lucide-react';
 import Button from '@/components/ui/Button';
 
 const TABS = [
@@ -32,10 +32,14 @@ const STATUS_VARIANTS = {
 
 export default function ClientProfilePage({ params }) {
   const router = useRouter();
+  const fileInputRef = useRef(null);
   const { id } = params;
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
   const [client, setClient] = useState(null);
+  const [avatarPreview, setAvatarPreview] = useState(null);
+  const [avatarUploading, setAvatarUploading] = useState(false);
+  const [avatarError, setAvatarError] = useState('');
 
   useEffect(() => {
     async function fetchClient() {
@@ -44,6 +48,9 @@ export default function ClientProfilePage({ params }) {
         if (response.ok) {
           const data = await response.json();
           setClient(data);
+          if (data.avatar) {
+            setAvatarPreview(data.avatar);
+          }
         }
       } catch (error) {
         console.error('Error fetching client:', error);
@@ -58,6 +65,71 @@ export default function ClientProfilePage({ params }) {
   const getInitials = (firstName, lastName) => {
     return `${firstName?.charAt(0) || ''}${lastName?.charAt(0) || ''}`.toUpperCase();
   };
+
+  const handleAvatarSelect = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (!file.type.startsWith('image/')) {
+        setAvatarError('Please select an image file');
+        return;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        setAvatarError('Image size must be less than 5MB');
+        return;
+      }
+      setAvatarError('');
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setAvatarPreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleAvatarUpload = async () => {
+    if (!avatarPreview || !client?.id) return;
+    setAvatarUploading(true);
+    try {
+      const response = await fetch(`/api/clients/${client.id}/avatar`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ avatarUrl: avatarPreview }),
+      });
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to upload avatar');
+      }
+      const result = await response.json();
+      setClient(prev => ({ ...prev, avatar: result.avatar }));
+    } catch (error) {
+      console.error('Error uploading avatar:', error);
+      setAvatarError(error.message);
+    } finally {
+      setAvatarUploading(false);
+    }
+  };
+
+  const handleRemoveAvatar = async () => {
+    if (!client?.id) return;
+    setAvatarUploading(true);
+    try {
+      const response = await fetch(`/api/clients/${client.id}/avatar`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to remove avatar');
+      }
+      setAvatarPreview(null);
+      setClient(prev => ({ ...prev, avatar: null }));
+    } catch (error) {
+      console.error('Error removing avatar:', error);
+    } finally {
+      setAvatarUploading(false);
+    }
+  };
+
+  const displayAvatar = avatarPreview || client?.avatar;
 
   if (loading) {
     return (
@@ -102,21 +174,99 @@ export default function ClientProfilePage({ params }) {
         </button>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <div style={{ display: 'flex', gap: '16px' }}>
-            <div
-              style={{
-                width: '64px',
-                height: '64px',
-                borderRadius: '50%',
-                backgroundColor: 'var(--color-primary-light)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '24px',
-                fontWeight: 600,
-                color: 'var(--color-primary)',
-              }}
-            >
-              {getInitials(client.firstName, client.lastName)}
+            <div style={{ position: 'relative' }}>
+              {displayAvatar ? (
+                <img
+                  src={displayAvatar}
+                  alt={`${client.firstName} ${client.lastName}`}
+                  style={{
+                    width: '64px',
+                    height: '64px',
+                    borderRadius: '50%',
+                    objectFit: 'cover',
+                    border: '3px solid var(--color-border)',
+                  }}
+                />
+              ) : (
+                <div
+                  style={{
+                    width: '64px',
+                    height: '64px',
+                    borderRadius: '50%',
+                    backgroundColor: 'var(--color-primary-light)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '24px',
+                    fontWeight: 600,
+                    color: 'white',
+                    border: '3px solid var(--color-border)',
+                  }}
+                >
+                  {getInitials(client.firstName, client.lastName)}
+                </div>
+              )}
+
+              {/* Upload button overlay */}
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleAvatarSelect}
+                style={{ display: 'none' }}
+              />
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                title="Change photo"
+                style={{
+                  position: 'absolute',
+                  bottom: '0',
+                  right: '0',
+                  width: '24px',
+                  height: '24px',
+                  borderRadius: '50%',
+                  backgroundColor: 'var(--color-primary)',
+                  color: 'white',
+                  border: '2px solid white',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  fontSize: '10px',
+                }}
+              >
+                <Upload size={10} />
+              </button>
+
+              {/* Remove button */}
+              {displayAvatar && (
+                <button
+                  type="button"
+                  onClick={handleRemoveAvatar}
+                  disabled={avatarUploading}
+                  title="Remove photo"
+                  style={{
+                    position: 'absolute',
+                    top: '-4px',
+                    right: '-4px',
+                    width: '20px',
+                    height: '20px',
+                    borderRadius: '50%',
+                    backgroundColor: '#dc2626',
+                    color: 'white',
+                    border: '2px solid white',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: avatarUploading ? 'not-allowed' : 'pointer',
+                    opacity: avatarUploading ? 0.5 : 1,
+                    fontSize: '10px',
+                  }}
+                >
+                  <X size={10} />
+                </button>
+              )}
             </div>
             <div>
               <h1 style={{ fontSize: '28px', fontWeight: 700, color: 'var(--color-text)', margin: 0 }}>
@@ -127,6 +277,9 @@ export default function ClientProfilePage({ params }) {
                 {client.email && <span style={{ fontSize: '14px', color: 'var(--color-text-secondary)' }}>{client.email}</span>}
                 <span style={{ fontSize: '14px', color: 'var(--color-text-secondary)' }}>{client.phone}</span>
               </div>
+              {avatarError && (
+                <p style={{ fontSize: '12px', color: '#dc2626', margin: '4px 0 0 0' }}>{avatarError}</p>
+              )}
             </div>
           </div>
           <Button variant="secondary" onClick={() => router.push(`/clients/${id}/edit`)}>

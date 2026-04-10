@@ -194,6 +194,7 @@ model Client {
   id             String       @id @default(uuid())
   firstName      String
   lastName       String
+  avatar         String?
   dateOfBirth    DateTime?
   gender         String?
   ssn            String?

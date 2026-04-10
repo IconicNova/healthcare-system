@@ -2,12 +2,12 @@
 
 import { useSession, signOut } from '@/lib/auth';
 import { getInitials, getRoleDisplayName } from '@/lib/utils';
-import { Search, LogOut } from 'lucide-react';
+import { Search, LogOut, Menu } from 'lucide-react';
 import { useState } from 'react';
 import Breadcrumb from './Breadcrumb';
 import NotificationDropdown from '@/components/notifications/NotificationDropdown';
 
-export default function TopBar() {
+export default function TopBar({ onMenuClick }) {
   const { data: session } = useSession();
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -19,6 +19,11 @@ export default function TopBar() {
   return (
     <header className="topbar">
       <div className="topbar-left">
+        {/* Mobile Menu Button */}
+        <button className="topbar-menu-btn" onClick={onMenuClick} aria-label="Toggle menu">
+          <Menu size={20} />
+        </button>
+
         {/* Breadcrumb */}
         <Breadcrumb />
       </div>
@@ -42,7 +47,7 @@ export default function TopBar() {
           <NotificationDropdown />
 
           {/* User Dropdown */}
-          <div className="dropdown" style={{ display: 'inline-block' }}>
+          <div className="dropdown">
             <button
               className="topbar-btn"
               onClick={() => setShowUserDropdown(!showUserDropdown)}
@@ -51,6 +56,7 @@ export default function TopBar() {
                 padding: '8px 12px',
                 gap: '8px',
               }}
+              aria-label="User menu"
             >
               <div className="avatar avatar-sm">
                 {getInitials(session?.user?.firstName || '', session?.user?.lastName || '')}
@@ -61,7 +67,8 @@ export default function TopBar() {
             </button>
 
             {showUserDropdown && (
-              <div className="dropdown-menu" style={{ top: '100%', marginTop: '8px' }}>
+              <div className="dropdown-menu">
+                <div className="dropdown-header">Account</div>
                 <div className="dropdown-item" style={{ justifyContent: 'space-between' }}>
                   <span>{session?.user?.email}</span>
                 </div>

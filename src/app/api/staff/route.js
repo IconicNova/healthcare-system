@@ -97,7 +97,9 @@ export async function GET(request) {
       staff: staff.map(s => ({
         ...s,
         fullName: `${s.firstName} ${s.lastName}`,
-        avatar: s.user?.avatar || null,
+        user: {
+          avatar: s.user?.avatar || null,
+        },
         employeeId: generateEmployeeId(s.createdAt),
       })),
       pagination: {

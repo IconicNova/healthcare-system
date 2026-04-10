@@ -10,7 +10,6 @@ import {
   User,
   Calendar,
   ClipboardList,
-
   Settings,
   LogOut,
   Menu,
@@ -34,7 +33,6 @@ const navigation = [
   { name: 'Payroll', href: '/payroll', icon: Clock },
   { name: 'Reports', href: '/reports', icon: PieChart },
   { name: 'Notifications', href: '/notifications', icon: Bell },
-
 ];
 
 const settings = [
@@ -52,25 +50,19 @@ export default function Sidebar() {
 
   return (
     <>
-      <aside className={`sidebar transition-all ${collapsed ? 'collapsed' : ''}`}>
+      <aside className={`sidebar ${collapsed ? 'collapsed' : ''}`}>
         {/* Header */}
         <div className="sidebar-header">
           <div className="sidebar-logo">
             <div className="sidebar-logo-icon">
-              <span style={{ fontSize: '20px', fontWeight: 'bold' }}>HC</span>
+              <span style={{ fontSize: '14px', fontWeight: 'bold' }}>HC</span>
             </div>
             {!collapsed && <span>HomeCare Pro</span>}
           </div>
           <button
             onClick={() => setCollapsed(!collapsed)}
             className="sidebar-toggle"
-            style={{
-              background: 'none',
-              border: 'none',
-              color: 'var(--sidebar-text-muted)',
-              cursor: 'pointer',
-              padding: '4px',
-            }}
+            aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
           >
             {collapsed ? <Menu size={20} /> : <X size={20} />}
           </button>
@@ -88,6 +80,7 @@ export default function Sidebar() {
                 <Link key={item.name} href={item.href} passHref>
                   <button
                     className={`sidebar-item ${isActive ? 'active' : ''}`}
+                    data-tooltip={collapsed ? item.name : undefined}
                     onClick={() => {
                       if (collapsed) {
                         setCollapsed(false);
