@@ -24,8 +24,6 @@ export default function DashboardLayout({ children }) {
     }
   }, [status, router, isClient]);
 
-
-
   if (!isClient || status === 'loading') {
     return <LoadingSpinner fullScreen />;
   }
@@ -35,23 +33,13 @@ export default function DashboardLayout({ children }) {
   }
 
   return (
-    <div className="dashboard-layout" style={{ display: 'flex', minHeight: '100vh', background: 'var(--gradient-surface)' }}>
-      <Sidebar />
-      <div className="dashboard-content" style={{
-        flex: 1,
-        marginLeft: 'var(--sidebar-width)',
-        transition: 'margin-left var(--transition-slow) var(--ease-smooth)'
-      }}>
+    <div className="dashboard-layout">
+      <Sidebar
+        mobileOpen={mobileMenuOpen}
+        onMobileClose={() => setMobileMenuOpen(false)}
+      />
+      <div className="dashboard-content">
         <TopBar onMenuClick={() => setMobileMenuOpen(true)} />
-
-        {/* Mobile Sidebar Backdrop */}
-        {mobileMenuOpen && (
-          <div
-            className="sidebar-backdrop visible"
-            onClick={() => setMobileMenuOpen(false)}
-          />
-        )}
-
         <main className="page-container">
           <ErrorBoundary>
             {children}

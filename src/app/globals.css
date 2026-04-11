@@ -1933,34 +1933,8 @@ a:hover {
   opacity: 1;
 }
 
-/* ─── Mobile Sidebar ─── */
-@media (max-width: 768px) {
-  .sidebar {
-    transform: translateX(-100%);
-    box-shadow: var(--shadow-2xl);
-  }
+/* Mobile Sidebar — handled by Responsive Overhaul v3.0 at end of file */
 
-  .sidebar.open {
-    transform: translateX(0);
-  }
-
-  .sidebar-backdrop {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: calc(var(--z-sidebar) - 1);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity var(--transition-slow) var(--ease-default);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-  }
-
-  .sidebar-backdrop.visible {
-    opacity: 1;
-    pointer-events: all;
-  }
-}
 
 /* ============================================
    TOP BAR — Premium Header v2.0
@@ -2776,26 +2750,7 @@ a:hover {
   }
 }
 
-@media (max-width: 768px) {
-  :root {
-    --sidebar-width: 0;
-  }
-
-  .page-container {
-    padding-left: var(--spacing-4);
-    padding-top: calc(var(--topbar-height) + var(--spacing-4));
-  }
-
-  .grid-cols-2,
-  .grid-cols-3,
-  .grid-cols-4 {
-    grid-template-columns: repeat(1, 1fr);
-  }
-
-  .topbar-search {
-    display: none;
-  }
-}
+/* Old 768px overrides removed — handled by Responsive Overhaul v3.0 at end of file */
 
 @media (min-width: 768px) {
   .md\:grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
@@ -3718,108 +3673,8 @@ a:hover {
    Phase 6 - Mobile Responsive Enhancements
    ============================================ */
 
-@media (max-width: 768px) {
-  /* Mobile sidebar overlay */
-  .sidebar {
-    transform: translateX(-100%);
-    transition: transform var(--transition-base);
-  }
+/* Phase 6 Mobile Responsive — superseded by Responsive Overhaul v3.0 at end of file */
 
-  .sidebar.open {
-    transform: translateX(0);
-  }
-
-  .sidebar-overlay {
-    position: fixed;
-    inset: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: calc(var(--z-fixed) - 1);
-  }
-
-  /* Settings full width on mobile */
-  .settings-container {
-    grid-template-columns: 1fr;
-  }
-
-  .settings-sidebar {
-    display: flex;
-    overflow-x: auto;
-    padding: 8px;
-  }
-
-  .settings-nav {
-    display: flex;
-    gap: 8px;
-    overflow-x: auto;
-    padding-bottom: 4px;
-  }
-
-  .settings-nav-item {
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
-
-  .settings-nav-item span {
-    display: none;
-  }
-
-  .settings-nav-item-icon {
-    margin: 0 auto;
-  }
-
-  /* Report cards stack on mobile */
-  .report-summary-cards {
-    grid-template-columns: 1fr;
-  }
-
-  /* EVV stats stack on mobile */
-  .evv-stats-grid {
-    grid-template-columns: 1fr;
-    gap: 8px;
-  }
-
-  /* Modal full screen on mobile */
-  .modal {
-    width: 100%;
-    height: 100%;
-    max-height: 100%;
-    border-radius: 0;
-  }
-
-  .modal-body {
-    max-height: calc(100vh - 140px);
-  }
-
-  /* Table horizontal scroll */
-  .table-container {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  /* Hamburger button */
-  .hamburger-btn {
-    display: flex !important;
-    width: 40px;
-    height: 40px;
-    border: none;
-    background: none;
-    border-radius: var(--radius-md);
-    color: var(--color-text-secondary);
-    cursor: pointer;
-    transition: background-color var(--transition-fast);
-  }
-
-  .hamburger-btn:hover {
-    background-color: var(--color-gray-100);
-    color: var(--color-text);
-  }
-}
-
-@media (min-width: 769px) {
-  .hamburger-btn {
-    display: none !important;
-  }
-}
 
 /* ============================================
    Phase 6 - Print Styles Enhancement
@@ -7292,5 +7147,925 @@ a:hover {
   width: 1px;
   height: auto;
   margin: 0 var(--spacing-4);
+}
+
+/* ============================================
+   RESPONSIVE OVERHAUL — State-of-the-Art v3.0
+   Mobile-first responsive system
+   ============================================ */
+
+/* ─── Dashboard Layout (CSS classes replacing inline styles) ─── */
+.dashboard-layout {
+  display: flex;
+  min-height: 100vh;
+  background: var(--gradient-surface);
+}
+
+.dashboard-content {
+  flex: 1;
+  margin-left: var(--sidebar-width);
+  transition: margin-left var(--transition-slow) var(--ease-smooth);
+  min-width: 0; /* Prevent flex overflow */
+}
+
+/* When sidebar is collapsed via CSS class */
+.sidebar.collapsed ~ .dashboard-content,
+.sidebar.collapsed + .dashboard-content {
+  margin-left: var(--sidebar-collapsed-width);
+}
+
+/* ─── Mobile Sidebar System ─── */
+/* Desktop: show collapse toggle, hide mobile close */
+.sidebar-toggle-mobile {
+  display: none;
+}
+
+.sidebar-toggle-desktop {
+  display: flex;
+}
+
+/* Mobile sidebar backdrop */
+.sidebar-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: calc(var(--z-sidebar) - 1);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-slow) var(--ease-default);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.sidebar-backdrop.visible {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* ─── KPI Card Styles ─── */
+.kpi-card {
+  transition: box-shadow 0.2s ease;
+}
+
+.kpi-card-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.kpi-card-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  flex: 1;
+}
+
+.kpi-card-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background-color: var(--color-primary-lighter);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.kpi-card-text {
+  min-width: 0;
+}
+
+.kpi-card-title {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.kpi-card-value {
+  font-size: 28px;
+  font-weight: 700;
+  margin: 4px 0 0;
+  word-break: break-word;
+}
+
+.kpi-card-change {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.kpi-card-change-label {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  margin: 0;
+  white-space: nowrap;
+}
+
+/* ─── Dashboard Chart Grid (class-based, used in dashboard page) ─── */
+.dashboard-chart-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-4);
+}
+
+/* ============================================
+   BREAKPOINT: Extra Large (≤1440px)
+   ============================================ */
+@media (max-width: 1440px) {
+  .page-container {
+    padding: var(--spacing-5);
+    padding-top: calc(var(--topbar-height, 64px) + 24px) !important;
+  }
+}
+
+/* ============================================
+   BREAKPOINT: Large Desktop (≤1280px)
+   ============================================ */
+@media (max-width: 1280px) {
+  .dashboard-kpi-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  .dashboard-bottom-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* ============================================
+   BREAKPOINT: Tablet Landscape (≤1024px)
+   ============================================ */
+@media (max-width: 1024px) {
+  .dashboard-kpi-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  .dashboard-chart-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .dashboard-charts-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-bottom-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .topbar-search {
+    width: 200px;
+  }
+
+  .topbar-search:focus-within {
+    width: 240px;
+  }
+
+  /* Settings sidebar narrower */
+  .settings-container {
+    grid-template-columns: 200px 1fr;
+    gap: 16px;
+  }
+
+  /* Availability grid compact */
+  .availability-row {
+    grid-template-columns: 100px 50px 1fr 1fr auto;
+  }
+
+  /* Line item row compact */
+  .line-item-row {
+    grid-template-columns: 2fr 60px 80px 80px auto;
+  }
+
+  /* Invoice header stack */
+  .invoice-header-section {
+    flex-direction: column;
+    gap: var(--spacing-4);
+  }
+}
+
+/* ============================================
+   BREAKPOINT: Tablet Portrait (≤768px)
+   ============================================ */
+@media (max-width: 768px) {
+  /* ─── CSS Variables Override ─── */
+  :root {
+    --container-padding: 1rem;
+    --page-padding: 1rem;
+  }
+
+  /* ─── Sidebar: off-screen, slides in ─── */
+  .sidebar {
+    transform: translateX(-100%);
+    box-shadow: none;
+    width: 280px !important;
+    z-index: var(--z-sidebar);
+  }
+
+  .sidebar.mobile-open {
+    transform: translateX(0);
+    box-shadow: var(--shadow-2xl);
+  }
+
+  .sidebar.collapsed {
+    width: 280px !important;
+  }
+
+  /* On mobile, always show full sidebar, never collapsed */
+  .sidebar.collapsed .sidebar-logo span,
+  .sidebar.collapsed .sidebar-section-title,
+  .sidebar.collapsed .sidebar-item span,
+  .sidebar.collapsed .sidebar-user-info,
+  .sidebar.collapsed .sidebar-footer .sidebar-item span {
+    opacity: 1;
+    width: auto;
+    overflow: visible;
+  }
+
+  .sidebar.collapsed .sidebar-item {
+    justify-content: flex-start;
+    padding: var(--spacing-2-5) var(--spacing-3);
+  }
+
+  .sidebar.collapsed .sidebar-user {
+    justify-content: flex-start;
+  }
+
+  .sidebar.collapsed .sidebar-header {
+    justify-content: space-between;
+    padding: var(--spacing-5) var(--spacing-4);
+  }
+
+  .sidebar.collapsed .sidebar-nav {
+    padding: var(--spacing-3) var(--spacing-2);
+  }
+
+  /* Hide desktop toggle, show mobile close */
+  .sidebar-toggle-desktop {
+    display: none !important;
+  }
+
+  .sidebar-toggle-mobile {
+    display: flex !important;
+  }
+
+  /* ─── Dashboard Content: full width ─── */
+  .dashboard-content {
+    margin-left: 0 !important;
+  }
+
+  /* ─── TopBar: full width, show hamburger ─── */
+  .topbar {
+    left: 0 !important;
+    padding: 0 var(--spacing-3);
+  }
+
+  .topbar-menu-btn {
+    display: flex !important;
+  }
+
+  .topbar-search {
+    display: none !important;
+  }
+
+  /* Hide user name on topbar, keep avatar */
+  .topbar-btn span {
+    display: none;
+  }
+
+  .topbar-btn {
+    padding: 8px !important;
+    gap: 0 !important;
+  }
+
+  /* ─── Page Container ─── */
+  .page-container {
+    padding: var(--spacing-4) !important;
+    padding-top: calc(var(--topbar-height) + var(--spacing-4)) !important;
+  }
+
+  /* ─── Dashboard Grids ─── */
+  .dashboard-kpi-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: var(--spacing-3);
+  }
+
+  .dashboard-chart-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .dashboard-charts-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .dashboard-bottom-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ─── KPI Cards responsive ─── */
+  .kpi-card-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+  }
+
+  .kpi-card-icon svg {
+    width: 20px !important;
+    height: 20px !important;
+  }
+
+  .kpi-card-value {
+    font-size: 22px;
+  }
+
+  .kpi-card-title {
+    font-size: 12px;
+  }
+
+  .kpi-card-change {
+    display: none;
+  }
+
+  .kpi-card .card-body {
+    padding: var(--spacing-3);
+  }
+
+  /* ─── Typography ─── */
+  h1 {
+    font-size: var(--font-size-xl) !important;
+  }
+
+  h2 {
+    font-size: var(--font-size-lg) !important;
+  }
+
+  /* ─── Tables: scrollable ─── */
+  .table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 0 calc(-1 * var(--spacing-4));
+    padding: 0 var(--spacing-4);
+  }
+
+  .table {
+    min-width: 600px;
+  }
+
+  /* ─── Modals: full screen ─── */
+  .modal {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+  }
+
+  .modal-lg,
+  .modal-xl {
+    max-width: 100% !important;
+  }
+
+  .modal-body {
+    max-height: calc(100vh - 140px) !important;
+  }
+
+  .modal-backdrop {
+    align-items: flex-end;
+  }
+
+  /* ─── Cards ─── */
+  .card-header {
+    padding: var(--spacing-3) var(--spacing-4);
+    min-height: 48px;
+    flex-wrap: wrap;
+  }
+
+  .card-body {
+    padding: var(--spacing-4);
+  }
+
+  .card-footer {
+    padding: var(--spacing-3) var(--spacing-4);
+    flex-wrap: wrap;
+  }
+
+  /* ─── Settings Page ─── */
+  .settings-container {
+    grid-template-columns: 1fr !important;
+    gap: 12px;
+  }
+
+  .settings-sidebar {
+    overflow-x: auto;
+    padding: 8px;
+  }
+
+  .settings-nav {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .settings-nav-item {
+    white-space: nowrap;
+    flex-shrink: 0;
+    padding: 8px 12px;
+  }
+
+  .settings-content {
+    padding: 16px;
+  }
+
+  /* ─── Care Delivery Layout ─── */
+  .care-delivery-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  .care-delivery-subnav {
+    position: static;
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    gap: var(--spacing-1);
+    -webkit-overflow-scrolling: touch;
+    padding: var(--spacing-2);
+  }
+
+  .care-delivery-subnav-item {
+    white-space: nowrap;
+    flex-shrink: 0;
+    min-width: auto;
+  }
+
+  /* ─── Scheduling ─── */
+  .scheduling-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--spacing-3);
+  }
+
+  .scheduling-date-label {
+    min-width: auto;
+    font-size: var(--font-size-sm);
+  }
+
+  .scheduling-view-toggle {
+    align-self: center;
+  }
+
+  .scheduling-date-nav {
+    justify-content: center;
+  }
+
+  .scheduling-calendar .fc-scrollgrid {
+    font-size: 11px !important;
+  }
+
+  /* ─── Availability Grid ─── */
+  .availability-row {
+    grid-template-columns: 1fr !important;
+    gap: var(--spacing-2);
+  }
+
+  /* ─── Invoice Responsive ─── */
+  .invoice-from-to {
+    grid-template-columns: 1fr !important;
+    gap: var(--spacing-4);
+  }
+
+  .invoice-header-section {
+    padding: var(--spacing-4);
+    flex-direction: column;
+    gap: var(--spacing-3);
+  }
+
+  .invoice-status-bar {
+    padding: var(--spacing-3) var(--spacing-4);
+    flex-wrap: wrap;
+    gap: var(--spacing-2);
+  }
+
+  .invoice-lines {
+    padding: 0 var(--spacing-3);
+  }
+
+  .invoice-totals {
+    padding: var(--spacing-4) var(--spacing-4);
+  }
+
+  /* Line items stack on mobile */
+  .line-item-row {
+    grid-template-columns: 1fr !important;
+    gap: var(--spacing-2);
+  }
+
+  /* ─── Service Row ─── */
+  .service-row {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ─── Staff Profile ─── */
+  .staff-profile-header {
+    flex-direction: column;
+    gap: var(--spacing-3);
+  }
+
+  .staff-info-banner {
+    padding: var(--spacing-4);
+  }
+
+  /* ─── Compliance Grid ─── */
+  .compliance-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ─── Report Summary Cards ─── */
+  .report-summary-cards {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ─── EVV Stats ─── */
+  .evv-stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+
+  /* ─── Tabs: scrollable ─── */
+  .tabs {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    flex-wrap: nowrap;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+  }
+
+  .tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tab {
+    white-space: nowrap;
+    flex-shrink: 0;
+    padding: var(--spacing-2) var(--spacing-3);
+    font-size: var(--font-size-xs);
+  }
+
+  /* ─── Toast on mobile ─── */
+  .toast-container {
+    left: var(--spacing-3);
+    right: var(--spacing-3);
+    max-width: none;
+    width: auto;
+  }
+
+  .toast {
+    min-width: 0;
+    max-width: none;
+    width: 100%;
+  }
+
+  /* ─── Pagination compact ─── */
+  .pagination {
+    flex-wrap: wrap;
+    gap: var(--spacing-2);
+    padding: var(--spacing-3);
+  }
+
+  .pagination-info {
+    width: 100%;
+    text-align: center;
+    font-size: var(--font-size-xs);
+  }
+
+  .pagination-controls {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* ─── Dropdown: wider on mobile ─── */
+  .dropdown-menu {
+    min-width: 200px;
+    max-width: calc(100vw - 32px);
+  }
+
+  /* ─── Form row single column ─── */
+  .form-row {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ─── Buttons: slightly larger tap targets ─── */
+  .btn {
+    min-height: 40px;
+    padding: var(--spacing-2-5) var(--spacing-4);
+  }
+
+  .btn-sm {
+    min-height: 34px;
+  }
+
+  /* ─── Breadcrumb: truncate on mobile ─── */
+  .breadcrumb {
+    max-width: 200px;
+    overflow: hidden;
+  }
+
+  .breadcrumb-item {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100px;
+  }
+
+  /* ─── Payslip table responsive ─── */
+  .payslip-table {
+    font-size: 11px;
+  }
+
+  .payslip-table th,
+  .payslip-table td {
+    padding: 8px 10px;
+  }
+
+  /* ─── Visit popup: full width on mobile ─── */
+  .visit-popup {
+    min-width: 0;
+    max-width: calc(100vw - 32px);
+    width: calc(100vw - 32px);
+  }
+}
+
+/* ============================================
+   BREAKPOINT: Mobile Large (≤640px)
+   ============================================ */
+@media (max-width: 640px) {
+  .page-container {
+    padding: var(--spacing-3) !important;
+    padding-top: calc(var(--topbar-height) + var(--spacing-3)) !important;
+  }
+
+  /* KPI grid single column on very small */
+  .dashboard-kpi-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: var(--spacing-2);
+  }
+
+  .kpi-card-value {
+    font-size: 20px;
+  }
+
+  .kpi-card-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+  }
+
+  .kpi-card-left {
+    gap: 8px;
+  }
+
+  h1 {
+    font-size: var(--font-size-lg) !important;
+  }
+
+  /* Topbar more compact */
+  .topbar {
+    height: 56px;
+    padding: 0 var(--spacing-2) !important;
+  }
+
+  .topbar-left {
+    gap: var(--spacing-2);
+  }
+
+  .topbar-menu-btn {
+    width: 32px;
+    height: 32px;
+  }
+
+  /* Actions compact */
+  .topbar-actions {
+    gap: var(--spacing-1);
+  }
+
+  .topbar-btn {
+    width: 34px;
+    height: 34px;
+  }
+
+  /* Cards tighter padding */
+  .card-body {
+    padding: var(--spacing-3);
+  }
+
+  .card-header {
+    padding: var(--spacing-2-5) var(--spacing-3);
+    min-height: 40px;
+  }
+
+  /* Chart body compact */
+  .chart-body {
+    padding: var(--spacing-3);
+  }
+
+  .chart-header {
+    padding: var(--spacing-3) var(--spacing-4);
+  }
+
+  /* Empty state compact */
+  .empty-state {
+    padding: var(--spacing-8) var(--spacing-4);
+  }
+
+  .empty-state-icon {
+    width: 56px;
+    height: 56px;
+  }
+
+  /* Compliance */
+  .compliance-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Permissions matrix scroll */
+  .permissions-matrix {
+    display: block;
+    overflow-x: auto;
+  }
+}
+
+/* ============================================
+   BREAKPOINT: Mobile Small (≤480px)
+   ============================================ */
+@media (max-width: 480px) {
+  .dashboard-kpi-grid {
+    grid-template-columns: 1fr !important;
+    gap: var(--spacing-2);
+  }
+
+  .kpi-card-inner {
+    flex-direction: row;
+  }
+
+  .kpi-card-change {
+    display: block;
+  }
+
+  .kpi-card-value {
+    font-size: 24px;
+  }
+
+  .kpi-card-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  /* Single column everything */
+  .grid-cols-2,
+  .grid-cols-3,
+  .grid-cols-4 {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* EVV stats stack fully */
+  .evv-stats-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Breadcrumb hide on very small */
+  .breadcrumb {
+    display: none;
+  }
+
+  /* Only show home icon in topbar-left */
+  .topbar-left {
+    min-width: 0;
+  }
+
+  /* Notification dropdown fit screen */
+  .notification-dropdown {
+    position: fixed !important;
+    left: 8px !important;
+    right: 8px !important;
+    top: 56px !important;
+    width: auto !important;
+    max-width: none !important;
+  }
+}
+
+/* ============================================
+   BREAKPOINT: Desktop Wide (≥1600px)
+   ============================================ */
+@media (min-width: 1600px) {
+  .page-container {
+    padding: var(--spacing-8);
+    padding-top: calc(var(--topbar-height, 64px) + 40px) !important;
+    max-width: 1600px;
+    margin: 0 auto;
+  }
+
+  .dashboard-kpi-grid {
+    grid-template-columns: repeat(4, 1fr) !important;
+  }
+
+  .kpi-card-value {
+    font-size: 32px;
+  }
+}
+
+/* ============================================
+   Touch Device Enhancements
+   ============================================ */
+@media (hover: none) and (pointer: coarse) {
+  /* Larger touch targets */
+  .sidebar-item {
+    padding: var(--spacing-3) var(--spacing-3);
+    min-height: 44px;
+  }
+
+  .btn {
+    min-height: 44px;
+  }
+
+  .tab {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+
+  /* Disable hover-only effects */
+  .card-hover:hover {
+    transform: none;
+  }
+
+  .sidebar-item:hover::before {
+    transform: scaleY(0);
+  }
+
+  .status-pill:hover {
+    transform: none;
+  }
+
+  /* Scrollable containers: momentum scrolling */
+  .table-container,
+  .tabs,
+  .care-delivery-subnav,
+  .settings-nav {
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+  }
+}
+
+/* ============================================
+   Landscape Mobile Fix
+   ============================================ */
+@media (max-height: 500px) and (orientation: landscape) {
+  .sidebar {
+    overflow-y: auto;
+  }
+
+  .sidebar-footer {
+    position: static;
+  }
+
+  .page-container {
+    padding-top: calc(var(--topbar-height) + var(--spacing-2)) !important;
+  }
+
+  .modal {
+    max-height: 100vh !important;
+  }
+
+  .modal-body {
+    max-height: calc(100vh - 120px) !important;
+  }
+}
+
+/* ============================================
+   Safe Area (Notched Phones)
+   ============================================ */
+@supports (padding: env(safe-area-inset-bottom)) {
+  .sidebar {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .page-container {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .modal {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  @media (max-width: 768px) {
+    .topbar {
+      padding-left: max(var(--spacing-3), env(safe-area-inset-left));
+      padding-right: max(var(--spacing-3), env(safe-area-inset-right));
+    }
+  }
 }
 

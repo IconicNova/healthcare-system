@@ -6,42 +6,26 @@ export default function KPICard({ icon: Icon, title, value, change, changeType =
   };
 
   return (
-    <div className="card card-hover" style={{ transition: 'box-shadow 0.2s ease' }}>
+    <div className="card card-hover kpi-card">
       <div className="card-body">
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <div className="kpi-card-inner">
+          <div className="kpi-card-left">
             {Icon && (
-              <div
-                style={{
-                  width: '48px',
-                  height: '48px',
-                  borderRadius: '12px',
-                  backgroundColor: 'var(--color-primary-lighter)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
+              <div className="kpi-card-icon">
                 <Icon size={24} color="white" />
               </div>
             )}
-            <div>
-              <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)', margin: 0 }}>
-                {title}
-              </p>
-              <h3 style={{ fontSize: '28px', fontWeight: 700, margin: '4px 0 0' }}>
-                {value}
-              </h3>
+            <div className="kpi-card-text">
+              <p className="kpi-card-title">{title}</p>
+              <h3 className="kpi-card-value">{value}</h3>
             </div>
           </div>
           {change !== undefined && (
-            <div style={{ textAlign: 'right' }}>
+            <div className="kpi-card-change">
               <p className={`text-sm ${changeColors[changeType]}`} style={{ margin: 0 }}>
                 {changeType === 'positive' ? '↑' : changeType === 'negative' ? '↓' : ''} {change}
               </p>
-              <p style={{ fontSize: '12px', color: 'var(--color-text-muted)', margin: 0 }}>
-                vs last month
-              </p>
+              <p className="kpi-card-change-label">vs last month</p>
             </div>
           )}
         </div>

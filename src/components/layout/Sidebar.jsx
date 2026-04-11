@@ -20,7 +20,7 @@ import {
   PieChart,
   Bell
 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: Home },
@@ -39,18 +39,52 @@ const settings = [
   { name: 'Settings', href: '/settings', icon: Settings },
 ];
 
-export default function Sidebar() {
+export default function Sidebar({ mobileOpen, onMobileClose }) {
   const pathname = usePathname();
   const { data: session } = useSession();
   const [collapsed, setCollapsed] = useState(false);
+
+  // Close mobile sidebar on route change
+  useEffect(() => {
+    if (mobileOpen && onMobileClose) {
+      onMobileClose();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
+
+  // Prevent body scroll when mobile sidebar is open
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [mobileOpen]);
 
   const handleSignOut = async () => {
     await signOut({ redirectTo: '/login' });
   };
 
+  const handleNavClick = () => {
+    // On mobile, close sidebar when navigating
+    if (mobileOpen && onMobileClose) {
+      onMobileClose();
+    }
+  };
+
   return (
     <>
-      <aside className={`sidebar ${collapsed ? 'collapsed' : ''}`}>
+      {/* Mobile Backdrop */}
+      {mobileOpen && (
+        <div
+          className="sidebar-backdrop visible"
+          onClick={onMobileClose}
+          aria-hidden="true"
+        />
+      )}
+
+      <aside className={`sidebar ${collapsed ? 'collapsed' : ''} ${mobileOpen ? 'mobile-open' : ''}`}>
         {/* Header */}
         <div className="sidebar-header">
           <div className="sidebar-logo">
@@ -59,12 +93,21 @@ export default function Sidebar() {
             </div>
             {!collapsed && <span>Together Care Health Services</span>}
           </div>
+          {/* Desktop collapse toggle */}
           <button
             onClick={() => setCollapsed(!collapsed)}
-            className="sidebar-toggle"
+            className="sidebar-toggle sidebar-toggle-desktop"
             aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
           >
             {collapsed ? <Menu size={20} /> : <X size={20} />}
+          </button>
+          {/* Mobile close button */}
+          <button
+            onClick={onMobileClose}
+            className="sidebar-toggle sidebar-toggle-mobile"
+            aria-label="Close menu"
+          >
+            <X size={20} />
           </button>
         </div>
 
@@ -81,11 +124,7 @@ export default function Sidebar() {
                   <button
                     className={`sidebar-item ${isActive ? 'active' : ''}`}
                     data-tooltip={collapsed ? item.name : undefined}
-                    onClick={() => {
-                      if (collapsed) {
-                        setCollapsed(false);
-                      }
-                    }}
+                    onClick={handleNavClick}
                   >
                     <item.icon className="sidebar-item-icon" />
                     {!collapsed && <span>{item.name}</span>}
@@ -100,7 +139,7 @@ export default function Sidebar() {
               <div className="sidebar-section-title">Other</div>
               {settings.map((item) => (
                 <Link key={item.name} href={item.href} passHref>
-                  <button className="sidebar-item">
+                  <button className="sidebar-item" onClick={handleNavClick}>
                     <item.icon className="sidebar-item-icon" />
                     <span>{item.name}</span>
                   </button>
