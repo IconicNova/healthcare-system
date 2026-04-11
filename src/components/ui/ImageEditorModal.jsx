@@ -7,7 +7,6 @@ import Button from './Button';
 
 const CROP_SIZE = 256; // Output canvas size
 const DISPLAY_SIZE = 380; // Display container size (larger like Discord)
-const MIN_ZOOM = 0.5;
 const MAX_ZOOM = 3;
 
 export default function ImageEditorModal({ isOpen, onClose, onApply, imageSrc }) {
@@ -19,6 +18,8 @@ export default function ImageEditorModal({ isOpen, onClose, onApply, imageSrc })
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [zoomInput, setZoomInput] = useState('100');
+  const [minZoom, setMinZoom] = useState(1);
 
   // Load image when src changes
   useEffect(() => {
@@ -26,7 +27,12 @@ export default function ImageEditorModal({ isOpen, onClose, onApply, imageSrc })
       const img = new Image();
       img.onload = () => {
         setImage(img);
-        resetTransform();
+        // Calculate minimum zoom to ensure image always covers the container
+        const scaleToCover = Math.max(DISPLAY_SIZE / img.width, DISPLAY_SIZE / img.height);
+        setMinZoom(scaleToCover);
+        setZoom(scaleToCover);
+        setPosition({ x: 0, y: 0 });
+        setZoomInput(Math.round(scaleToCover * 100).toString());
       };
       img.src = imageSrc;
     }
@@ -35,11 +41,13 @@ export default function ImageEditorModal({ isOpen, onClose, onApply, imageSrc })
   // Reset zoom and position
   const resetTransform = useCallback(() => {
     if (!image) return;
-    // Start at 1x zoom and center the image
-    // The image will be displayed at its natural size scaled to fit the container
-    setZoom(1);
+    // Reset to minimum zoom that covers the container
+    const scaleToCover = Math.max(DISPLAY_SIZE / image.width, DISPLAY_SIZE / image.height);
+    setMinZoom(scaleToCover);
+    setZoom(scaleToCover);
     setPosition({ x: 0, y: 0 });
-  }, []);
+    setZoomInput(Math.round(scaleToCover * 100).toString());
+  }, [image]);
 
   // Mouse handlers for dragging
   const handleMouseDown = (e) => {
@@ -143,10 +151,32 @@ export default function ImageEditorModal({ isOpen, onClose, onApply, imageSrc })
       <div className="image-editor">
         {/* Info bar */}
         <div className="image-editor-info">
-          <span className="image-editor-zoom-indicator">
-            <ZoomIn size={14} />
-            {Math.round(zoom * 100)}%
-          </span>
+          <div className="image-editor-zoom-control">
+            <ZoomIn size={14} className="image-editor-zoom-icon" />
+            <input
+              type="number"
+              min={Math.round(minZoom * 100)}
+              max={Math.round(MAX_ZOOM * 100)}
+              value={zoomInput}
+              onChange={(e) => {
+                const value = parseFloat(e.target.value);
+                if (value >= minZoom && value <= MAX_ZOOM) {
+                  setZoomInput(e.target.value);
+                  setZoom(value);
+                }
+              }}
+              onBlur={() => {
+                setZoomInput(Math.round(zoom * 100).toString());
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.target.blur();
+                }
+              }}
+              className="image-editor-zoom-input"
+            />
+            <span className="image-editor-zoom-percent">%</span>
+          </div>
           <button className="image-editor-reset-btn" onClick={resetTransform} title="Reset (Ctrl+R)">
             <RotateCcw size={16} />
             Reset
@@ -175,14 +205,18 @@ export default function ImageEditorModal({ isOpen, onClose, onApply, imageSrc })
 
         {/* Zoom slider */}
         <div className="image-editor-slider-container">
-          <span className="image-editor-slider-label">0.5x</span>
+          <span className="image-editor-slider-label">{minZoom.toFixed(2)}x</span>
           <input
             type="range"
-            min={MIN_ZOOM}
+            min={minZoom}
             max={MAX_ZOOM}
             step="0.01"
             value={zoom}
-            onChange={(e) => setZoom(parseFloat(e.target.value))}
+            onChange={(e) => {
+              const value = parseFloat(e.target.value);
+              setZoom(value);
+              setZoomInput(Math.round(value * 100).toString());
+            }}
             className="image-editor-slider"
           />
           <span className="image-editor-slider-label">3x</span>
