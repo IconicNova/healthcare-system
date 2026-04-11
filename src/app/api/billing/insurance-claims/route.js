@@ -36,8 +36,10 @@ export async function GET(request) {
     if (search) {
       where.OR = [
         { claimNumber: { contains: search, mode: 'insensitive' } },
-        { client: { firstName: { contains: search, mode: 'insensitive' } } },
-        { client: { lastName: { contains: search, mode: 'insensitive' } } },
+        { client: { OR: [
+          { firstName: { contains: search, mode: 'insensitive' } },
+          { lastName: { contains: search, mode: 'insensitive' } },
+        ] } },
         { insuranceType: { contains: search, mode: 'insensitive' } },
       ];
     }

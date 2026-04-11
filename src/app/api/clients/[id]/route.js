@@ -172,6 +172,7 @@ export async function PATCH(request, { params }) {
           lastName: body.lastName || existing.lastName,
           role: 'CLIENT',
           password: await bcrypt.hash(body.password, 10),
+          organizationId: session.user.organizationId,
         };
 
         user = await tx.user.create({
@@ -189,6 +190,18 @@ export async function PATCH(request, { params }) {
           where: { id },
           data: { userId: user.id },
         });
+      }
+
+      // Validate date of birth if provided
+      if (body.dateOfBirth) {
+        const dob = new Date(body.dateOfBirth);
+        const year = dob.getFullYear();
+        if (isNaN(dob.getTime()) || year < 1900 || year > new Date().getFullYear()) {
+          return NextResponse.json(
+            { error: 'Invalid date of birth. Please enter a valid date.' },
+            { status: 400 }
+          );
+        }
       }
 
       // Update emergency contacts

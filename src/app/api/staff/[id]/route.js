@@ -189,6 +189,7 @@ export async function PATCH(request, { params }) {
           lastName: body.lastName || existing.lastName,
           role: body.role || existing.role,
           password: await bcrypt.hash(body.password, 10),
+          organizationId: session.user.organizationId,
         };
 
         user = await tx.user.create({
@@ -295,10 +296,17 @@ export async function DELETE(request, { params }) {
 
     // Nullify staff on visits instead of deleting them (preserves client care history)
     await prisma.$transaction(async (tx) => {
-      // Unassign visits from this staff (keep visit records for client history/billing)
+      // For active/assignable visits: unassign staff and mark as VACANT
+      const activeStatuses = ['SCHEDULED', 'IN_PROGRESS', 'CLOCKED_IN', 'OFFERED', 'VACANT', 'ON_HOLD', 'LATE'];
       await tx.visit.updateMany({
-        where: { staffId: id },
+        where: { staffId: id, status: { in: activeStatuses } },
         data: { staffId: null, status: 'VACANT' },
+      });
+
+      // For terminal visits (COMPLETED, APPROVED, CANCELLED, etc.): only nullify staffId, preserve status
+      await tx.visit.updateMany({
+        where: { staffId: id, status: { notIn: activeStatuses } },
+        data: { staffId: null },
       });
 
       // Delete all staff-specific records

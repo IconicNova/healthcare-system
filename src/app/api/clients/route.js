@@ -127,6 +127,18 @@ export async function POST(request) {
       );
     }
 
+    // Validate date of birth if provided (prevent wildly invalid years like +020004)
+    if (dateOfBirth) {
+      const dob = new Date(dateOfBirth);
+      const year = dob.getFullYear();
+      if (isNaN(dob.getTime()) || year < 1900 || year > new Date().getFullYear()) {
+        return NextResponse.json(
+          { error: 'Invalid date of birth. Please enter a valid date.' },
+          { status: 400 }
+        );
+      }
+    }
+
     // Check for duplicate email if provided
     if (email) {
       const existing = await prisma.client.findFirst({

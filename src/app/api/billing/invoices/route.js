@@ -37,8 +37,10 @@ export async function GET(request) {
     if (search) {
       where.OR = [
         { invoiceNumber: { contains: search, mode: 'insensitive' } },
-        { client: { firstName: { contains: search, mode: 'insensitive' } } },
-        { client: { lastName: { contains: search, mode: 'insensitive' } } },
+        { client: { OR: [
+          { firstName: { contains: search, mode: 'insensitive' } },
+          { lastName: { contains: search, mode: 'insensitive' } },
+        ] } },
       ];
     }
 
@@ -106,6 +108,8 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
+    const organizationId = session.user.organizationId;
+
     const body = await request.json();
     const { clientId, dueDate, notes, invoiceItems, branchId } = body;
 
@@ -135,6 +139,11 @@ export async function POST(request) {
         { status: 400 }
       );
     }
+
+    // Calculate total amount from invoice items
+    const totalAmount = invoiceItems.reduce((sum, item) => {
+      return sum + ((item.quantity || 1) * (item.unitPrice || 0));
+    }, 0);
 
     // Create invoice with items in transaction (includes number generation to prevent races)
     const invoice = await prisma.$transaction(async (tx) => {

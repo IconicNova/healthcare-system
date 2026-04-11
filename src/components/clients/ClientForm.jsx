@@ -419,6 +419,7 @@ export default function ClientForm({ client = null, onSuccess, onCancel }) {
                 type="date"
                 value={formData.dateOfBirth}
                 onChange={(e) => handleChange('dateOfBirth', e.target.value)}
+                max={new Date().toISOString().split('T')[0]}
               />
               <Select
                 label="Gender"

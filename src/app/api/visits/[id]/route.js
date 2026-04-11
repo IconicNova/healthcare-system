@@ -222,6 +222,15 @@ export async function DELETE(request, { params }) {
       return NextResponse.json({ error: 'Visit not found' }, { status: 404 });
     }
 
+    // Prevent deletion of visits in terminal statuses (may have billing/compliance records)
+    const undeletableStatuses = ['COMPLETED', 'APPROVED'];
+    if (undeletableStatuses.includes(existing.status)) {
+      return NextResponse.json(
+        { error: `Cannot delete a visit with status "${existing.status}". Cancel it first or contact an administrator.` },
+        { status: 400 }
+      );
+    }
+
     await prisma.visit.delete({
       where: { id },
     });

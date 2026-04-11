@@ -41,6 +41,7 @@ export async function GET(request, { params }) {
     const visits = await prisma.visit.findMany({
       where: {
         clientId,
+        organizationId: session.user.organizationId,
       },
       include: {
         staff: true,

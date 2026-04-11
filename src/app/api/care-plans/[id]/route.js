@@ -103,9 +103,18 @@ export async function PATCH(request, { params }) {
     if (clientId !== undefined) updateData.clientId = clientId;
     if (staffId !== undefined) updateData.staffId = staffId || null;
 
-    // Update services FIRST if provided, so the response includes fresh data
+    // Validate dates BEFORE any destructive operations
+    const effectiveStartDate = startDate ? new Date(startDate) : carePlan.startDate;
+    const effectiveEndDate = endDate !== undefined ? (endDate ? new Date(endDate) : null) : carePlan.endDate;
+    if (effectiveEndDate && effectiveEndDate <= effectiveStartDate) {
+      return NextResponse.json(
+        { error: 'End date must be after start date' },
+        { status: 400 }
+      );
+    }
+
+    // Validate services before any mutations
     if (services && services.length > 0) {
-      // Validate services before updating
       const invalidServices = services.filter(s => !s.serviceId);
       if (invalidServices.length > 0) {
         return NextResponse.json(
@@ -122,49 +131,43 @@ export async function PATCH(request, { params }) {
           { status: 400 }
         );
       }
-
-      // Delete existing services
-      await prisma.carePlanService.deleteMany({
-        where: { carePlanId: id },
-      });
-
-      // Create new services
-      await prisma.carePlanService.createMany({
-        data: services.map(s => ({
-          carePlanId: id,
-          serviceId: s.serviceId,
-          frequency: s.frequency || 'AS_NEEDED',
-          frequencyText: s.frequencyText || null,
-          instructions: s.instructions || null,
-          order: s.order || 0,
-        })),
-      });
     }
 
-    // Validate dates if both are provided
-    const effectiveStartDate = startDate ? new Date(startDate) : carePlan.startDate;
-    const effectiveEndDate = endDate !== undefined ? (endDate ? new Date(endDate) : null) : carePlan.endDate;
-    if (effectiveEndDate && effectiveEndDate <= effectiveStartDate) {
-      return NextResponse.json(
-        { error: 'End date must be after start date' },
-        { status: 400 }
-      );
-    }
+    // All validations passed — perform updates atomically in a transaction
+    const updatedCarePlan = await prisma.$transaction(async (tx) => {
+      // Update services if provided
+      if (services && services.length > 0) {
+        await tx.carePlanService.deleteMany({
+          where: { carePlanId: id },
+        });
 
-    // Now update and return the care plan with fresh service data
-    const updatedCarePlan = await prisma.carePlan.update({
-      where: { id },
-      data: updateData,
-      include: {
-        client: { select: { firstName: true, lastName: true } },
-        staff: { select: { firstName: true, lastName: true } },
-        services: {
-          include: {
-            service: { select: { id: true, name: true, duration: true, baseRate: true } },
+        await tx.carePlanService.createMany({
+          data: services.map(s => ({
+            carePlanId: id,
+            serviceId: s.serviceId,
+            frequency: s.frequency || 'AS_NEEDED',
+            frequencyText: s.frequencyText || null,
+            instructions: s.instructions || null,
+            order: s.order || 0,
+          })),
+        });
+      }
+
+      // Update and return the care plan with fresh service data
+      return tx.carePlan.update({
+        where: { id },
+        data: updateData,
+        include: {
+          client: { select: { firstName: true, lastName: true } },
+          staff: { select: { firstName: true, lastName: true } },
+          services: {
+            include: {
+              service: { select: { id: true, name: true, duration: true, baseRate: true } },
+            },
+            orderBy: { order: 'asc' },
           },
-          orderBy: { order: 'asc' },
         },
-      },
+      });
     });
 
     return NextResponse.json(updatedCarePlan);
