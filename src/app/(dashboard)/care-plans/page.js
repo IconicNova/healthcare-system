@@ -216,6 +216,20 @@ export default function CarePlansPage() {
           >
             Edit
           </button>
+          <button
+            onClick={() => handleDeleteCarePlan(plan.id)}
+            style={{
+              padding: '6px 10px',
+              borderRadius: '6px',
+              border: 'none',
+              backgroundColor: '#EF4444',
+              color: 'white',
+              cursor: 'pointer',
+              fontSize: '12px',
+            }}
+          >
+            Delete
+          </button>
         </div>
       );
     }
@@ -252,6 +266,28 @@ export default function CarePlansPage() {
     } catch (error) {
       console.error('Error creating care plan:', error);
       alert('Failed to create care plan: ' + error.message);
+    }
+  };
+
+  const handleDeleteCarePlan = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this care plan?')) {
+      return;
+    }
+    
+    try {
+      const response = await fetch(`/api/care-plans/${id}`, {
+        method: 'DELETE',
+      });
+      
+      if (response.ok) {
+        fetchData();
+      } else {
+        const error = await response.json();
+        alert('Failed to delete care plan: ' + error.message);
+      }
+    } catch (error) {
+      console.error('Error deleting care plan:', error);
+      alert('Failed to delete care plan');
     }
   };
 
