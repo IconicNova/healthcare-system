@@ -22,17 +22,33 @@ export default function ImageEditorModal({ isOpen, onClose, onApply, imageSrc })
   const [zoomInput, setZoomInput] = useState('100');
   const [minZoom, setMinZoom] = useState(1);
 
+  // Clamp position so image always covers the entire container (no background visible)
+  const clampPosition = useCallback((pos, currentZoom, img) => {
+    if (!img) return pos;
+    // Use COVER scale: image fills the entire container
+    const scaleToCover = Math.max(DISPLAY_SIZE / img.width, DISPLAY_SIZE / img.height);
+    const scaledWidth = img.width * scaleToCover * currentZoom;
+    const scaledHeight = img.height * scaleToCover * currentZoom;
+    // Maximum allowed offset so image edge never enters the container
+    const maxOffsetX = Math.max(0, (scaledWidth - DISPLAY_SIZE) / 2);
+    const maxOffsetY = Math.max(0, (scaledHeight - DISPLAY_SIZE) / 2);
+    return {
+      x: Math.max(-maxOffsetX, Math.min(maxOffsetX, pos.x)),
+      y: Math.max(-maxOffsetY, Math.min(maxOffsetY, pos.y)),
+    };
+  }, []);
+
   // Load image when src changes
   useEffect(() => {
     if (imageSrc && isOpen) {
       const img = new Image();
       img.onload = () => {
         setImage(img);
-        // Calculate scale to contain the entire image within the container (like Discord)
-        // At 100% zoom, the entire image should be visible within the circle
-        const scaleToContain = Math.min(DISPLAY_SIZE / img.width, DISPLAY_SIZE / img.height);
-        setMinZoom(scaleToContain);
-        setZoom(scaleToContain);
+        // Use COVER scale: the image always fills the entire container
+        // The shorter dimension fills DISPLAY_SIZE so no background is ever visible
+        const scaleToCover = Math.max(DISPLAY_SIZE / img.width, DISPLAY_SIZE / img.height);
+        setMinZoom(scaleToCover);
+        setZoom(scaleToCover);
         setPosition({ x: 0, y: 0 });
         setZoomInput('100');
       };
@@ -43,10 +59,10 @@ export default function ImageEditorModal({ isOpen, onClose, onApply, imageSrc })
   // Reset zoom and position
   const resetTransform = useCallback(() => {
     if (!image) return;
-    // Reset to contain mode - entire image visible
-    const scaleToContain = Math.min(DISPLAY_SIZE / image.width, DISPLAY_SIZE / image.height);
-    setMinZoom(scaleToContain);
-    setZoom(scaleToContain);
+    // Reset to cover mode - image fills entire container
+    const scaleToCover = Math.max(DISPLAY_SIZE / image.width, DISPLAY_SIZE / image.height);
+    setMinZoom(scaleToCover);
+    setZoom(scaleToCover);
     setPosition({ x: 0, y: 0 });
     setZoomInput('100');
   }, [image]);
@@ -58,10 +74,13 @@ export default function ImageEditorModal({ isOpen, onClose, onApply, imageSrc })
   };
 
   const handleMouseMove = (e) => {
-    if (!isDragging) return;
+    if (!isDragging || !image) return;
     const deltaX = e.clientX - dragStart.x;
     const deltaY = e.clientY - dragStart.y;
-    setPosition(prev => ({ x: prev.x + deltaX, y: prev.y + deltaY }));
+    setPosition(prev => {
+      const newPos = { x: prev.x + deltaX, y: prev.y + deltaY };
+      return clampPosition(newPos, zoom / minZoom, image);
+    });
     setDragStart({ x: e.clientX, y: e.clientY });
   };
 
@@ -75,11 +94,14 @@ export default function ImageEditorModal({ isOpen, onClose, onApply, imageSrc })
   };
 
   const handleTouchMove = (e) => {
-    if (!isDragging) return;
+    if (!isDragging || !image) return;
     const touch = e.touches[0];
     const deltaX = touch.clientX - dragStart.x;
     const deltaY = touch.clientY - dragStart.y;
-    setPosition(prev => ({ x: prev.x + deltaX, y: prev.y + deltaY }));
+    setPosition(prev => {
+      const newPos = { x: prev.x + deltaX, y: prev.y + deltaY };
+      return clampPosition(newPos, zoom / minZoom, image);
+    });
     setDragStart({ x: touch.clientX, y: touch.clientY });
   };
 
@@ -103,16 +125,17 @@ export default function ImageEditorModal({ isOpen, onClose, onApply, imageSrc })
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
 
-    // Calculate the scale to fit the image to the display size (contain mode)
-    const scaleToDisplay = Math.min(DISPLAY_SIZE / image.width, DISPLAY_SIZE / image.height);
-    const scaledWidth = image.width * scaleToDisplay * zoom;
-    const scaledHeight = image.height * scaleToDisplay * zoom;
+    // Use COVER scale: image fills entire container
+    const scaleToCover = Math.max(DISPLAY_SIZE / image.width, DISPLAY_SIZE / image.height);
+    const zoomMultiplier = zoom / minZoom;
+    const scaledWidth = image.width * scaleToCover * zoomMultiplier;
+    const scaledHeight = image.height * scaleToCover * zoomMultiplier;
     const drawX = (DISPLAY_SIZE / 2) - (scaledWidth / 2) + position.x;
     const drawY = (DISPLAY_SIZE / 2) - (scaledHeight / 2) + position.y;
 
     ctx.clearRect(0, 0, DISPLAY_SIZE, DISPLAY_SIZE);
     ctx.drawImage(image, drawX, drawY, scaledWidth, scaledHeight);
-  }, [image, zoom, position]);
+  }, [image, zoom, minZoom, position]);
 
   // Handle apply - crop and return DataURL
   const handleApply = () => {
@@ -128,12 +151,13 @@ export default function ImageEditorModal({ isOpen, onClose, onApply, imageSrc })
     ctx.closePath();
     ctx.clip();
 
-    // Calculate the scale to fit the image to the display size (contain mode)
-    const scaleToDisplay = Math.min(DISPLAY_SIZE / image.width, DISPLAY_SIZE / image.height);
+    // Use COVER scale: image fills entire container
+    const scaleToCover = Math.max(DISPLAY_SIZE / image.width, DISPLAY_SIZE / image.height);
+    const zoomMultiplier = zoom / minZoom;
     // Scale from display size to crop size
     const scaleToCrop = CROP_SIZE / DISPLAY_SIZE;
-    const scaledWidth = image.width * scaleToDisplay * zoom * scaleToCrop;
-    const scaledHeight = image.height * scaleToDisplay * zoom * scaleToCrop;
+    const scaledWidth = image.width * scaleToCover * zoomMultiplier * scaleToCrop;
+    const scaledHeight = image.height * scaleToCover * zoomMultiplier * scaleToCrop;
     // Scale position to crop size
     const scaledPositionX = position.x * scaleToCrop;
     const scaledPositionY = position.y * scaleToCrop;
@@ -166,7 +190,10 @@ export default function ImageEditorModal({ isOpen, onClose, onApply, imageSrc })
                   setZoomInput(e.target.value);
                   // Convert percentage to zoom multiplier relative to minZoom
                   const zoomMultiplier = percentValue / 100;
-                  setZoom(minZoom * zoomMultiplier);
+                  const newZoom = minZoom * zoomMultiplier;
+                  setZoom(newZoom);
+                  // Clamp position for the new zoom
+                  setPosition(prev => clampPosition(prev, zoomMultiplier, image));
                 }
               }}
               onBlur={() => {
@@ -224,6 +251,8 @@ export default function ImageEditorModal({ isOpen, onClose, onApply, imageSrc })
               const newZoom = minZoom * zoomMultiplier;
               setZoom(newZoom);
               setZoomInput(percentValue.toString());
+              // Clamp position for the new zoom
+              setPosition(prev => clampPosition(prev, zoomMultiplier, image));
             }}
             className="image-editor-slider"
           />
