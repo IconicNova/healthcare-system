@@ -8,6 +8,7 @@ import Button from './Button';
 const CROP_SIZE = 256; // Output canvas size
 const DISPLAY_SIZE = 380; // Display container size (larger like Discord)
 const MAX_ZOOM = 3;
+const MIN_ZOOM_VALUE = 1; // Minimum zoom multiplier (100%)
 
 export default function ImageEditorModal({ isOpen, onClose, onApply, imageSrc }) {
   const canvasRef = useRef(null);
@@ -27,12 +28,13 @@ export default function ImageEditorModal({ isOpen, onClose, onApply, imageSrc })
       const img = new Image();
       img.onload = () => {
         setImage(img);
-        // Calculate minimum zoom to ensure image always covers the container
-        const scaleToCover = Math.max(DISPLAY_SIZE / img.width, DISPLAY_SIZE / img.height);
-        setMinZoom(scaleToCover);
-        setZoom(scaleToCover);
+        // Calculate scale to contain the entire image within the container (like Discord)
+        // At 100% zoom, the entire image should be visible within the circle
+        const scaleToContain = Math.min(DISPLAY_SIZE / img.width, DISPLAY_SIZE / img.height);
+        setMinZoom(scaleToContain);
+        setZoom(scaleToContain);
         setPosition({ x: 0, y: 0 });
-        setZoomInput(Math.round(scaleToCover * 100).toString());
+        setZoomInput('100');
       };
       img.src = imageSrc;
     }
@@ -41,12 +43,12 @@ export default function ImageEditorModal({ isOpen, onClose, onApply, imageSrc })
   // Reset zoom and position
   const resetTransform = useCallback(() => {
     if (!image) return;
-    // Reset to minimum zoom that covers the container
-    const scaleToCover = Math.max(DISPLAY_SIZE / image.width, DISPLAY_SIZE / image.height);
-    setMinZoom(scaleToCover);
-    setZoom(scaleToCover);
+    // Reset to contain mode - entire image visible
+    const scaleToContain = Math.min(DISPLAY_SIZE / image.width, DISPLAY_SIZE / image.height);
+    setMinZoom(scaleToContain);
+    setZoom(scaleToContain);
     setPosition({ x: 0, y: 0 });
-    setZoomInput(Math.round(scaleToCover * 100).toString());
+    setZoomInput('100');
   }, [image]);
 
   // Mouse handlers for dragging
@@ -101,8 +103,8 @@ export default function ImageEditorModal({ isOpen, onClose, onApply, imageSrc })
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
 
-    // Calculate the scale to fit the image to the display size (cover mode)
-    const scaleToDisplay = Math.max(DISPLAY_SIZE / image.width, DISPLAY_SIZE / image.height);
+    // Calculate the scale to fit the image to the display size (contain mode)
+    const scaleToDisplay = Math.min(DISPLAY_SIZE / image.width, DISPLAY_SIZE / image.height);
     const scaledWidth = image.width * scaleToDisplay * zoom;
     const scaledHeight = image.height * scaleToDisplay * zoom;
     const drawX = (DISPLAY_SIZE / 2) - (scaledWidth / 2) + position.x;
@@ -126,8 +128,8 @@ export default function ImageEditorModal({ isOpen, onClose, onApply, imageSrc })
     ctx.closePath();
     ctx.clip();
 
-    // Calculate the scale to fit the image to the display size (cover mode)
-    const scaleToDisplay = Math.max(DISPLAY_SIZE / image.width, DISPLAY_SIZE / image.height);
+    // Calculate the scale to fit the image to the display size (contain mode)
+    const scaleToDisplay = Math.min(DISPLAY_SIZE / image.width, DISPLAY_SIZE / image.height);
     // Scale from display size to crop size
     const scaleToCrop = CROP_SIZE / DISPLAY_SIZE;
     const scaledWidth = image.width * scaleToDisplay * zoom * scaleToCrop;
@@ -155,18 +157,22 @@ export default function ImageEditorModal({ isOpen, onClose, onApply, imageSrc })
             <ZoomIn size={14} className="image-editor-zoom-icon" />
             <input
               type="number"
-              min={Math.round(minZoom * 100)}
-              max={Math.round(MAX_ZOOM * 100)}
+              min={MIN_ZOOM_VALUE * 100}
+              max={MAX_ZOOM * 100}
               value={zoomInput}
               onChange={(e) => {
-                const value = parseFloat(e.target.value);
-                if (value >= minZoom && value <= MAX_ZOOM) {
+                const percentValue = parseFloat(e.target.value);
+                if (percentValue >= MIN_ZOOM_VALUE * 100 && percentValue <= MAX_ZOOM * 100) {
                   setZoomInput(e.target.value);
-                  setZoom(value);
+                  // Convert percentage to zoom multiplier relative to minZoom
+                  const zoomMultiplier = percentValue / 100;
+                  setZoom(minZoom * zoomMultiplier);
                 }
               }}
               onBlur={() => {
-                setZoomInput(Math.round(zoom * 100).toString());
+                // Convert current zoom back to percentage
+                const percent = Math.round((zoom / minZoom) * 100);
+                setZoomInput(percent.toString());
               }}
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {
@@ -205,17 +211,19 @@ export default function ImageEditorModal({ isOpen, onClose, onApply, imageSrc })
 
         {/* Zoom slider */}
         <div className="image-editor-slider-container">
-          <span className="image-editor-slider-label">{minZoom.toFixed(2)}x</span>
+          <span className="image-editor-slider-label">1x</span>
           <input
             type="range"
-            min={minZoom}
-            max={MAX_ZOOM}
-            step="0.01"
-            value={zoom}
+            min={MIN_ZOOM_VALUE * 100}
+            max={MAX_ZOOM * 100}
+            step="1"
+            value={Math.round((zoom / minZoom) * 100)}
             onChange={(e) => {
-              const value = parseFloat(e.target.value);
-              setZoom(value);
-              setZoomInput(Math.round(value * 100).toString());
+              const percentValue = parseFloat(e.target.value);
+              const zoomMultiplier = percentValue / 100;
+              const newZoom = minZoom * zoomMultiplier;
+              setZoom(newZoom);
+              setZoomInput(percentValue.toString());
             }}
             className="image-editor-slider"
           />
