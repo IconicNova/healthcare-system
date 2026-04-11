@@ -5,6 +5,7 @@ import Input from '@/components/ui/Input';
 import Select from '@/components/ui/Select';
 import Button from '@/components/ui/Button';
 import { Upload, X } from 'lucide-react';
+import ImageEditorModal from '@/components/ui/ImageEditorModal';
 
 export default function StaffForm({ onSuccess, onCancel, branches = [], staffId, initialData }) {
   const fileInputRef = useRef(null);
@@ -29,6 +30,8 @@ export default function StaffForm({ onSuccess, onCancel, branches = [], staffId,
   const [avatarPreview, setAvatarPreview] = useState(null);
   const [avatarUploading, setAvatarUploading] = useState(false);
   const [avatarError, setAvatarError] = useState('');
+  const [showImageEditor, setShowImageEditor] = useState(false);
+  const [imageForEditing, setImageForEditing] = useState(null);
 
   useEffect(() => {
     if (initialData) {
@@ -85,10 +88,11 @@ export default function StaffForm({ onSuccess, onCancel, branches = [], staffId,
 
       setAvatarError('');
 
-      // Create preview
+      // Create preview for editor
       const reader = new FileReader();
       reader.onloadend = () => {
-        setAvatarPreview(reader.result);
+        setImageForEditing(reader.result);
+        setShowImageEditor(true);
       };
       reader.readAsDataURL(file);
     }
@@ -138,6 +142,20 @@ export default function StaffForm({ onSuccess, onCancel, branches = [], staffId,
       console.error('Error removing avatar:', error);
     } finally {
       setAvatarUploading(false);
+    }
+  };
+
+  const handleImageEditorApply = (croppedDataUrl) => {
+    setAvatarPreview(croppedDataUrl);
+    setShowImageEditor(false);
+    setImageForEditing(null);
+  };
+
+  const handleImageEditorClose = () => {
+    setShowImageEditor(false);
+    setImageForEditing(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
     }
   };
 
@@ -521,6 +539,13 @@ export default function StaffForm({ onSuccess, onCancel, branches = [], staffId,
           {staffId ? 'Update Staff Member' : 'Create Staff Member'}
         </Button>
       </div>
+
+      <ImageEditorModal
+        isOpen={showImageEditor}
+        onClose={handleImageEditorClose}
+        onApply={handleImageEditorApply}
+        imageSrc={imageForEditing}
+      />
     </form>
   );
 }

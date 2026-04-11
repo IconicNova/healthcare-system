@@ -6,6 +6,7 @@ import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import Select from '@/components/ui/Select';
 import { Plus, X, Upload } from 'lucide-react';
+import ImageEditorModal from '@/components/ui/ImageEditorModal';
 import { format } from 'date-fns';
 
 const STATUS_OPTIONS = [
@@ -51,6 +52,8 @@ export default function ClientForm({ client = null, onSuccess, onCancel }) {
   const [errors, setErrors] = useState({});
   const [avatarPreview, setAvatarPreview] = useState(null);
   const [avatarUploading, setAvatarUploading] = useState(false);
+  const [showImageEditor, setShowImageEditor] = useState(false);
+  const [imageForEditing, setImageForEditing] = useState(null);
 
   useEffect(() => {
     if (client) {
@@ -103,12 +106,27 @@ export default function ClientForm({ client = null, onSuccess, onCancel }) {
 
       setErrors(prev => ({ ...prev, avatar: '' }));
 
-      // Create preview
+      // Create preview for editor
       const reader = new FileReader();
       reader.onloadend = () => {
-        setAvatarPreview(reader.result);
+        setImageForEditing(reader.result);
+        setShowImageEditor(true);
       };
       reader.readAsDataURL(file);
+    }
+  };
+
+  const handleImageEditorApply = (croppedDataUrl) => {
+    setAvatarPreview(croppedDataUrl);
+    setShowImageEditor(false);
+    setImageForEditing(null);
+  };
+
+  const handleImageEditorClose = () => {
+    setShowImageEditor(false);
+    setImageForEditing(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
     }
   };
 
@@ -560,6 +578,13 @@ export default function ClientForm({ client = null, onSuccess, onCancel }) {
           </div>
         </div>
       </form>
+
+      <ImageEditorModal
+        isOpen={showImageEditor}
+        onClose={handleImageEditorClose}
+        onApply={handleImageEditorApply}
+        imageSrc={imageForEditing}
+      />
     </div>
   );
 }

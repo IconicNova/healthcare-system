@@ -8069,3 +8069,210 @@ a:hover {
   }
 }
 
+
+/* ============================================
+   Image Editor Modal
+   Discord-style circular crop editor
+   ============================================ */
+
+.image-editor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-5);
+}
+
+.image-editor-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0 var(--spacing-2);
+}
+
+.image-editor-zoom-indicator {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text);
+}
+
+.image-editor-reset-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  padding: var(--spacing-1) var(--spacing-2);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.image-editor-reset-btn:hover {
+  background: var(--color-gray-100);
+  color: var(--color-text);
+}
+
+.image-editor-container {
+  position: relative;
+  width: 256px;
+  height: 256px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.image-editor-container:active {
+  cursor: grabbing;
+}
+
+.image-editor-canvas {
+  position: absolute;
+  max-width: none !important;
+  max-height: none !important;
+  pointer-events: none;
+}
+
+.image-editor-crop-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at center,
+    transparent 128px,
+    rgba(0, 0, 0, 0.6) 129px
+  );
+}
+
+.image-editor-guides {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.image-editor-guide-h {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: rgba(99, 102, 241, 0.3);
+  transform: translateY(-50%);
+}
+
+.image-editor-guide-v {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: rgba(99, 102, 241, 0.3);
+  transform: translateX(-50%);
+}
+
+.image-editor-slider-container {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  width: 100%;
+  max-width: 300px;
+}
+
+.image-editor-slider-label {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  min-width: 30px;
+  text-align: center;
+}
+
+.image-editor-slider {
+  flex: 1;
+  height: 6px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: linear-gradient(to right, var(--color-accent) 0%, var(--color-accent-light) 50%, var(--color-accent) 100%);
+  border-radius: var(--radius-full);
+  outline: none;
+  cursor: pointer;
+}
+
+.image-editor-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  background: var(--color-white);
+  border: 2px solid var(--color-accent);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: all var(--transition-fast);
+}
+
+.image-editor-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+}
+
+.image-editor-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  background: var(--color-white);
+  border: 2px solid var(--color-accent);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.image-editor-slider::-moz-range-thumb:hover {
+  transform: scale(1.1);
+}
+
+.image-editor-actions {
+  display: flex;
+  gap: var(--spacing-3);
+  margin-top: var(--spacing-2);
+}
+
+/* Dark mode support */
+[data-theme='dark'] .image-editor-crop-overlay {
+  background: radial-gradient(
+    circle at center,
+    transparent 128px,
+    rgba(255, 255, 255, 0.3) 129px
+  );
+}
+
+[data-theme='dark'] .image-editor-slider::-webkit-slider-thumb,
+[data-theme='dark'] .image-editor-slider::-moz-range-thumb {
+  background: var(--color-gray-700);
+  border-color: var(--color-accent);
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .image-editor-container {
+    width: 200px;
+    height: 200px;
+  }
+
+  .image-editor-crop-overlay {
+    background: radial-gradient(
+      circle at center,
+      transparent 100px,
+      rgba(0, 0, 0, 0.6) 101px
+    );
+  }
+
+  .image-editor-slider-container {
+    max-width: 250px;
+  }
+}
