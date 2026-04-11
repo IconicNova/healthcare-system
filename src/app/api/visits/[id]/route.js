@@ -47,7 +47,7 @@ export async function GET(request, { params }) {
             id: true,
             name: true,
             duration: true,
-            rate: true,
+            baseRate: true,
           },
         },
         carePlan: {
@@ -71,10 +71,9 @@ export async function GET(request, { params }) {
             createdAt: true,
           },
         },
-        medAdmin: {
+        medAdministrations: {
           select: {
             id: true,
-            medicationName: true,
             dosage: true,
             administeredAt: true,
             status: true,

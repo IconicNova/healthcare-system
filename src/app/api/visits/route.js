@@ -17,6 +17,7 @@ export async function GET(request) {
     const staffId = searchParams.get('staffId');
     const clientId = searchParams.get('clientId');
     const status = searchParams.get('status');
+    const branchId = searchParams.get('branchId');
 
     const where = {
       organizationId: session.user.organizationId,
@@ -39,6 +40,10 @@ export async function GET(request) {
 
     if (status) {
       where.status = status;
+    }
+
+    if (branchId) {
+      where.branchId = branchId;
     }
 
     const visits = await prisma.visit.findMany({
@@ -98,6 +103,7 @@ export async function POST(request) {
     const {
       clientId,
       staffId,
+      serviceId,
       carePlanId,
       branchId,
       startTime,
@@ -184,6 +190,7 @@ export async function POST(request) {
       data: {
         clientId,
         staffId: staffId || null,
+        serviceId: serviceId || null,
         carePlanId: carePlanId || null,
         startTime: new Date(startTime),
         endTime: new Date(endTime),
@@ -215,58 +222,69 @@ export async function POST(request) {
 
     // Handle recurrence
     const occurrences = [];
+    const skippedDates = [];
     if (recurrence && recurrence.type && recurrence.type !== 'NONE') {
       const baseStart = new Date(startTime);
       const duration = new Date(endTime) - new Date(startTime);
 
-      if (recurrence.type === 'DAILY' && recurrence.count) {
-        for (let i = 1; i < recurrence.count; i++) {
-          const newStart = new Date(baseStart);
-          newStart.setDate(newStart.getDate() + i);
-          const newEnd = new Date(newStart.getTime() + duration);
+      const totalIterations = recurrence.type === 'DAILY' ? (recurrence.count || 0) : (recurrence.weeks || 0);
+      const dayIncrement = recurrence.type === 'DAILY' ? 1 : 7;
 
-          const recurringVisit = await prisma.visit.create({
-            data: {
-              clientId,
-              staffId: staffId || null,
-              carePlanId: carePlanId || null,
-              startTime: newStart,
-              endTime: newEnd,
-              status: status || 'SCHEDULED',
-              title: title || null,
-              description: description || null,
-              notes: notes || null,
+      for (let i = 1; i < totalIterations; i++) {
+        const newStart = new Date(baseStart);
+        newStart.setDate(newStart.getDate() + (i * dayIncrement));
+        const newEnd = new Date(newStart.getTime() + duration);
+
+        // Check conflicts for each recurring visit
+        let hasConflict = false;
+
+        if (staffId) {
+          const staffConflict = await prisma.visit.findFirst({
+            where: {
+              staffId,
               organizationId: session.user.organizationId,
-              branchId: branchId || null,
-              userId: session.user.id,
+              status: { not: 'CANCELLED' },
+              startTime: { lte: newEnd },
+              endTime: { gte: newStart },
             },
           });
-          occurrences.push(recurringVisit.id);
+          if (staffConflict) hasConflict = true;
         }
-      } else if (recurrence.type === 'WEEKLY' && recurrence.weeks) {
-        for (let i = 1; i < recurrence.weeks; i++) {
-          const newStart = new Date(baseStart);
-          newStart.setDate(newStart.getDate() + (i * 7));
-          const newEnd = new Date(newStart.getTime() + duration);
 
-          const recurringVisit = await prisma.visit.create({
-            data: {
-              clientId,
-              staffId: staffId || null,
-              carePlanId: carePlanId || null,
-              startTime: newStart,
-              endTime: newEnd,
-              status: status || 'SCHEDULED',
-              title: title || null,
-              description: description || null,
-              notes: notes || null,
-              organizationId: session.user.organizationId,
-              branchId: branchId || null,
-              userId: session.user.id,
-            },
-          });
-          occurrences.push(recurringVisit.id);
+        const clientConflict = await prisma.visit.findFirst({
+          where: {
+            clientId,
+            organizationId: session.user.organizationId,
+            status: { not: 'CANCELLED' },
+            startTime: { lte: newEnd },
+            endTime: { gte: newStart },
+          },
+        });
+        if (clientConflict) hasConflict = true;
+
+        if (hasConflict) {
+          skippedDates.push(newStart.toISOString());
+          continue;
         }
+
+        const recurringVisit = await prisma.visit.create({
+          data: {
+            clientId,
+            staffId: staffId || null,
+            serviceId: serviceId || null,
+            carePlanId: carePlanId || null,
+            startTime: newStart,
+            endTime: newEnd,
+            status: status || 'SCHEDULED',
+            title: title || null,
+            description: description || null,
+            notes: notes || null,
+            organizationId: session.user.organizationId,
+            branchId: branchId || null,
+            userId: session.user.id,
+          },
+        });
+        occurrences.push(recurringVisit.id);
       }
     }
 
@@ -274,6 +292,7 @@ export async function POST(request) {
       ...visit,
       conflicts,
       recurringOccurrences: occurrences,
+      skippedDates,
     }, { status: 201 });
   } catch (error) {
     console.error('Error creating visit:', error);

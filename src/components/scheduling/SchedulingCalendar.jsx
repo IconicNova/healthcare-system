@@ -7,11 +7,17 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 const STATUS_COLORS = {
   SCHEDULED: '#3B82F6',
+  VACANT: '#8B5CF6',
+  OFFERED: '#6366F1',
   IN_PROGRESS: '#F59E0B',
+  CLOCKED_IN: '#0EA5E9',
   COMPLETED: '#16A34A',
+  APPROVED: '#059669',
   CANCELLED: '#9CA3AF',
+  ON_HOLD: '#D97706',
   NO_SHOW: '#EF4444',
-  MISSED: '#EF4444',
+  MISSED: '#DC2626',
+  LATE: '#EA580C',
 };
 
 export default function SchedulingCalendar({

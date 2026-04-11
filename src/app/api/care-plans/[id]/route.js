@@ -103,22 +103,26 @@ export async function PATCH(request, { params }) {
     if (clientId !== undefined) updateData.clientId = clientId;
     if (staffId !== undefined) updateData.staffId = staffId || null;
 
-    const updatedCarePlan = await prisma.carePlan.update({
-      where: { id },
-      data: updateData,
-      include: {
-        client: { select: { firstName: true, lastName: true } },
-        staff: { select: { firstName: true, lastName: true } },
-        services: {
-          include: {
-            service: { select: { id: true, name: true, duration: true, baseRate: true } },
-          },
-        },
-      },
-    });
-
-    // Update services if provided
+    // Update services FIRST if provided, so the response includes fresh data
     if (services && services.length > 0) {
+      // Validate services before updating
+      const invalidServices = services.filter(s => !s.serviceId);
+      if (invalidServices.length > 0) {
+        return NextResponse.json(
+          { error: 'All services must have a valid service selected' },
+          { status: 400 }
+        );
+      }
+
+      // Check for duplicates
+      const serviceIdSet = new Set(services.map(s => s.serviceId));
+      if (serviceIdSet.size !== services.length) {
+        return NextResponse.json(
+          { error: 'Duplicate services are not allowed in a care plan' },
+          { status: 400 }
+        );
+      }
+
       // Delete existing services
       await prisma.carePlanService.deleteMany({
         where: { carePlanId: id },
@@ -136,6 +140,32 @@ export async function PATCH(request, { params }) {
         })),
       });
     }
+
+    // Validate dates if both are provided
+    const effectiveStartDate = startDate ? new Date(startDate) : carePlan.startDate;
+    const effectiveEndDate = endDate !== undefined ? (endDate ? new Date(endDate) : null) : carePlan.endDate;
+    if (effectiveEndDate && effectiveEndDate <= effectiveStartDate) {
+      return NextResponse.json(
+        { error: 'End date must be after start date' },
+        { status: 400 }
+      );
+    }
+
+    // Now update and return the care plan with fresh service data
+    const updatedCarePlan = await prisma.carePlan.update({
+      where: { id },
+      data: updateData,
+      include: {
+        client: { select: { firstName: true, lastName: true } },
+        staff: { select: { firstName: true, lastName: true } },
+        services: {
+          include: {
+            service: { select: { id: true, name: true, duration: true, baseRate: true } },
+          },
+          orderBy: { order: 'asc' },
+        },
+      },
+    });
 
     return NextResponse.json(updatedCarePlan);
   } catch (error) {

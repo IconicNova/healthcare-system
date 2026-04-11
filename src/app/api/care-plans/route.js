@@ -90,6 +90,33 @@ export async function POST(request) {
       );
     }
 
+    if (endDate && new Date(endDate) <= new Date(startDate)) {
+      return NextResponse.json(
+        { error: 'End date must be after start date' },
+        { status: 400 }
+      );
+    }
+
+    // Validate that all services have a serviceId
+    if (services && services.length > 0) {
+      const invalidServices = services.filter(s => !s.serviceId);
+      if (invalidServices.length > 0) {
+        return NextResponse.json(
+          { error: 'All services must have a valid service selected' },
+          { status: 400 }
+        );
+      }
+
+      // Check for duplicate services
+      const serviceIdSet = new Set(services.map(s => s.serviceId));
+      if (serviceIdSet.size !== services.length) {
+        return NextResponse.json(
+          { error: 'Duplicate services are not allowed in a care plan' },
+          { status: 400 }
+        );
+      }
+    }
+
     const carePlan = await prisma.carePlan.create({
       data: {
         name,

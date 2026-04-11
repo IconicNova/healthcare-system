@@ -6,7 +6,7 @@ import Select from '@/components/ui/Select';
 import Button from '@/components/ui/Button';
 import Modal from '@/components/ui/Modal';
 
-export default function VisitEditForm({ isOpen, onClose, onSubmit, visit, clients = [], staff = [], services = [], carePlans = [], loading = false }) {
+export default function VisitEditForm({ isOpen, onClose, onSubmit, visit, clients = [], staff = [], services = [], branches = [], carePlans = [], loading = false }) {
   const [formData, setFormData] = useState({
     clientId: '',
     staffId: '',
@@ -106,18 +106,24 @@ export default function VisitEditForm({ isOpen, onClose, onSubmit, visit, client
 
   const statusOptions = [
     { value: 'SCHEDULED', label: 'Scheduled' },
+    { value: 'VACANT', label: 'Vacant' },
+    { value: 'OFFERED', label: 'Offered' },
     { value: 'IN_PROGRESS', label: 'In Progress' },
+    { value: 'CLOCKED_IN', label: 'Clocked In' },
     { value: 'COMPLETED', label: 'Completed' },
+    { value: 'APPROVED', label: 'Approved' },
     { value: 'CANCELLED', label: 'Cancelled' },
+    { value: 'ON_HOLD', label: 'On Hold' },
     { value: 'NO_SHOW', label: 'No Show' },
     { value: 'MISSED', label: 'Missed' },
+    { value: 'LATE', label: 'Late' },
   ];
 
   const clientOptions = [
     { value: '', label: 'Select Client' },
     ...clients.map(c => ({
       value: c.id,
-      label: `${c.firstName} ${c.lastName} - ${c.city}`,
+      label: `${c.firstName} ${c.lastName}${c.city ? ` — ${c.city}` : ''}`,
     })),
   ];
 
@@ -141,8 +147,13 @@ export default function VisitEditForm({ isOpen, onClose, onSubmit, visit, client
     { value: '', label: 'No Care Plan' },
     ...carePlans.filter(cp => cp.clientId === formData.clientId).map(cp => ({
       value: cp.id,
-      label: `${cp.name} (${cp.status})`,
+      label: `${cp.name} (${cp.status ? 'Active' : 'Inactive'})`,
     })),
+  ];
+
+  const branchOptions = [
+    { value: '', label: 'Select Branch' },
+    ...branches.map(b => ({ value: b.id, label: b.name })),
   ];
 
   return (
@@ -179,6 +190,13 @@ export default function VisitEditForm({ isOpen, onClose, onSubmit, visit, client
             value={formData.carePlanId}
             onChange={(e) => handleInputChange('carePlanId', e.target.value)}
             options={carePlanOptions}
+          />
+
+          <Select
+            label="Branch"
+            value={formData.branchId}
+            onChange={(e) => handleInputChange('branchId', e.target.value)}
+            options={branchOptions}
           />
 
           <Select

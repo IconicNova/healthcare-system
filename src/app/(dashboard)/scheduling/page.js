@@ -16,11 +16,17 @@ const VIEW_OPTIONS = [
 
 const STATUS_CONFIG = {
   SCHEDULED: { label: 'Scheduled', color: '#3B82F6' },
+  VACANT: { label: 'Vacant', color: '#8B5CF6' },
+  OFFERED: { label: 'Offered', color: '#6366F1' },
   IN_PROGRESS: { label: 'In Progress', color: '#F59E0B' },
+  CLOCKED_IN: { label: 'Clocked In', color: '#0EA5E9' },
   COMPLETED: { label: 'Completed', color: '#16A34A' },
+  APPROVED: { label: 'Approved', color: '#059669' },
   CANCELLED: { label: 'Cancelled', color: '#9CA3AF' },
+  ON_HOLD: { label: 'On Hold', color: '#D97706' },
   NO_SHOW: { label: 'No Show', color: '#EF4444' },
-  MISSED: { label: 'Missed', color: '#EF4444' },
+  MISSED: { label: 'Missed', color: '#DC2626' },
+  LATE: { label: 'Late', color: '#EA580C' },
 };
 
 export default function SchedulingPage() {
@@ -29,6 +35,7 @@ export default function SchedulingPage() {
   const [staff, setStaff] = useState([]);
   const [services, setServices] = useState([]);
   const [branches, setBranches] = useState([]);
+  const [carePlans, setCarePlans] = useState([]);
   const [statusCounts, setStatusCounts] = useState({});
   const [currentDate, setCurrentDate] = useState(new Date());
   const [view, setView] = useState('dayGridMonth');
@@ -43,32 +50,29 @@ export default function SchedulingPage() {
     branchId: '',
   });
 
-  // Fetch all data
+  // Fetch reference data (clients, staff, services, branches, care plans) once on mount
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
+    const fetchReferenceData = async () => {
       try {
-        const [visitsRes, clientsRes, staffRes, servicesRes, branchesRes] = await Promise.all([
-          fetch('/api/visits'),
+        const [clientsRes, staffRes, servicesRes, branchesRes, carePlansRes] = await Promise.all([
           fetch('/api/clients?limit=100'),
           fetch('/api/staff?limit=100'),
           fetch('/api/services'),
           fetch('/api/branches'),
+          fetch('/api/care-plans?limit=100'),
         ]);
 
-        if (visitsRes.ok) setVisits(await visitsRes.json());
         if (clientsRes.ok) setClients((await clientsRes.json()).clients || []);
         if (staffRes.ok) setStaff((await staffRes.json()).staff || []);
         if (servicesRes.ok) setServices(await servicesRes.json());
         if (branchesRes.ok) setBranches((await branchesRes.json()).branches || []);
+        if (carePlansRes.ok) setCarePlans((await carePlansRes.json()).carePlans || []);
       } catch (error) {
-        console.error('Error fetching data:', error);
-      } finally {
-        setLoading(false);
+        console.error('Error fetching reference data:', error);
       }
     };
 
-    fetchData();
+    fetchReferenceData();
   }, []);
 
   // Fetch visits for current view
@@ -85,8 +89,10 @@ export default function SchedulingPage() {
       if (filters.staffId) params.append('staffId', filters.staffId);
       if (filters.clientId) params.append('clientId', filters.clientId);
       if (filters.status) params.append('status', filters.status);
+      if (filters.branchId) params.append('branchId', filters.branchId);
 
       try {
+        setLoading(true);
         const response = await fetch(`/api/visits?${params}`);
         if (response.ok) {
           const data = await response.json();
@@ -94,6 +100,8 @@ export default function SchedulingPage() {
         }
       } catch (error) {
         console.error('Error fetching visits:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -167,6 +175,7 @@ export default function SchedulingPage() {
 
   const handleEditVisit = () => {
     setShowEditForm(true);
+    setSelectedVisit(prev => { /* keep data but close popup via edit form taking over */ return prev; });
   };
 
   const handleDeleteVisit = async () => {
@@ -323,25 +332,25 @@ export default function SchedulingPage() {
         <span style={{ fontSize: '13px', color: 'var(--color-text-secondary)', alignSelf: 'center' }}>Filters:</span>
         <Select
           value={filters.staffId}
-          onChange={(value) => handleFilterChange('staffId', value)}
+          onChange={(e) => handleFilterChange('staffId', e.target.value)}
           options={staffOptions}
           style={{ width: '180px' }}
         />
         <Select
           value={filters.clientId}
-          onChange={(value) => handleFilterChange('clientId', value)}
+          onChange={(e) => handleFilterChange('clientId', e.target.value)}
           options={clientOptions}
           style={{ width: '180px' }}
         />
         <Select
           value={filters.branchId}
-          onChange={(value) => handleFilterChange('branchId', value)}
+          onChange={(e) => handleFilterChange('branchId', e.target.value)}
           options={branchOptions}
           style={{ width: '160px' }}
         />
         <Select
           value={filters.status}
-          onChange={(value) => handleFilterChange('status', value)}
+          onChange={(e) => handleFilterChange('status', e.target.value)}
           options={statusOptions}
           style={{ width: '150px' }}
         />
@@ -384,10 +393,11 @@ export default function SchedulingPage() {
         staff={staff}
         services={services}
         branches={branches}
+        carePlans={carePlans}
       />
 
       {/* Visit Detail Popup */}
-      {selectedVisit && (
+      {selectedVisit && !showEditForm && (
         <VisitDetailPopup
           visit={selectedVisit}
           onClose={() => setSelectedVisit(null)}
@@ -406,6 +416,7 @@ export default function SchedulingPage() {
         staff={staff}
         services={services}
         branches={branches}
+        carePlans={carePlans}
       />
     </div>
   );

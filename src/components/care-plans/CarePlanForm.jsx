@@ -32,10 +32,10 @@ export default function CarePlanForm({ isOpen, onClose, onSubmit, clients = [], 
         serviceIds: carePlan.services?.map(s => s.serviceId) || [],
         serviceDetails: carePlan.services || [],
       });
-    } else if (!formData.name) {
+    } else if (isOpen) {
       resetForm();
     }
-  }, [carePlan, isOpen, formData.name]);
+  }, [carePlan, isOpen]);
 
   const resetForm = () => {
     setFormData({
@@ -67,6 +67,16 @@ export default function CarePlanForm({ isOpen, onClose, onSubmit, clients = [], 
   };
 
   const updateService = (index, field, value) => {
+    // Check for duplicate services when changing serviceId
+    if (field === 'serviceId' && value) {
+      const isDuplicate = formData.serviceDetails.some(
+        (s, i) => i !== index && s.serviceId === value
+      );
+      if (isDuplicate) {
+        alert('This service has already been added to the care plan. Please select a different service.');
+        return;
+      }
+    }
     const updated = [...formData.serviceDetails];
     updated[index] = { ...updated[index], [field]: value };
     setFormData(prev => ({ ...prev, serviceDetails: updated }));
@@ -91,8 +101,22 @@ export default function CarePlanForm({ isOpen, onClose, onSubmit, clients = [], 
     if (!formData.startDate) {
       newErrors.startDate = 'Start date is required';
     }
+    if (formData.endDate && formData.startDate && formData.endDate <= formData.startDate) {
+      newErrors.endDate = 'End date must be after start date';
+    }
     if (formData.serviceDetails.length === 0) {
       newErrors.services = 'At least one service is required';
+    }
+    // Validate each service row has a non-empty serviceId
+    const emptyServiceRows = formData.serviceDetails.filter(s => !s.serviceId);
+    if (emptyServiceRows.length > 0 && formData.serviceDetails.length > 0) {
+      newErrors.services = 'All service rows must have a service selected';
+    }
+    // Check for duplicate services
+    const serviceIds = formData.serviceDetails.map(s => s.serviceId).filter(Boolean);
+    const uniqueServiceIds = new Set(serviceIds);
+    if (uniqueServiceIds.size !== serviceIds.length) {
+      newErrors.services = 'Duplicate services are not allowed';
     }
 
     setErrors(newErrors);
@@ -148,7 +172,7 @@ export default function CarePlanForm({ isOpen, onClose, onSubmit, clients = [], 
     { value: '', label: 'Select Client' },
     ...clients.map(c => ({
       value: c.id,
-      label: `${c.firstName} ${c.lastName}`,
+      label: `${c.firstName} ${c.lastName}${c.city ? ` — ${c.city}` : ''}`,
     })),
   ];
 
@@ -224,6 +248,7 @@ export default function CarePlanForm({ isOpen, onClose, onSubmit, clients = [], 
           type="date"
           value={formData.endDate}
           onChange={(e) => handleInputChange('endDate', e.target.value)}
+          error={errors.endDate}
         />
       </div>
 

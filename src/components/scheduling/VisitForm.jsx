@@ -46,7 +46,14 @@ export default function VisitForm({ isOpen, onClose, onSubmit, clients = [], sta
   };
 
   const handleInputChange = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData(prev => {
+      const updated = { ...prev, [field]: value };
+      // Reset care plan when client changes since care plans are client-specific
+      if (field === 'clientId') {
+        updated.carePlanId = '';
+      }
+      return updated;
+    });
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: null }));
     }
@@ -124,6 +131,7 @@ export default function VisitForm({ isOpen, onClose, onSubmit, clients = [], sta
     { value: 'SCHEDULED', label: 'Scheduled' },
     { value: 'VACANT', label: 'Vacant' },
     { value: 'OFFERED', label: 'Offered' },
+    { value: 'ON_HOLD', label: 'On Hold' },
   ];
 
   const recurrenceOptions = [
@@ -136,7 +144,7 @@ export default function VisitForm({ isOpen, onClose, onSubmit, clients = [], sta
     { value: '', label: 'Select Client' },
     ...clients.map(c => ({
       value: c.id,
-      label: `${c.firstName} ${c.lastName} - ${c.city}`,
+      label: `${c.firstName} ${c.lastName}${c.city ? ` — ${c.city}` : ''}`,
     })),
   ];
 
@@ -148,9 +156,17 @@ export default function VisitForm({ isOpen, onClose, onSubmit, clients = [], sta
     })),
   ];
 
+  // Get services from selected care plan, or show all if no care plan selected
+  const selectedCarePlan = carePlans.find(cp => cp.id === formData.carePlanId);
+  const carePlanServiceIds = selectedCarePlan?.services?.map(s => s.serviceId) || [];
+
+  const filteredServices = formData.carePlanId && carePlanServiceIds.length > 0
+    ? services.filter(s => carePlanServiceIds.includes(s.id))
+    : services;
+
   const serviceOptions = [
     { value: '', label: 'Select Service' },
-    ...services.map(s => ({
+    ...filteredServices.map(s => ({
       value: s.id,
       label: `${s.name} (${s.duration ? s.duration + ' min' : ''})`,
     })),
@@ -165,7 +181,7 @@ export default function VisitForm({ isOpen, onClose, onSubmit, clients = [], sta
     { value: '', label: 'No Care Plan' },
     ...carePlans.filter(cp => cp.clientId === formData.clientId).map(cp => ({
       value: cp.id,
-      label: `${cp.name} (${cp.status})`,
+      label: `${cp.name} (${cp.status ? 'Active' : 'Inactive'})`,
     })),
   ];
 
