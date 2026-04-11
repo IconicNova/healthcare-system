@@ -4,12 +4,18 @@ import { useState, useEffect } from 'react';
 import { CheckCircle, Clock, Calendar, User, ChevronRight, Users } from 'lucide-react';
 
 const STATUS_CONFIG = {
+  VACANT: { label: 'Vacant', color: '#8B5CF6', bg: '#8B5CF615' },
+  OFFERED: { label: 'Offered', color: '#6366F1', bg: '#6366F115' },
   SCHEDULED: { label: 'Scheduled', color: '#3B82F6', bg: '#3B82F615' },
   IN_PROGRESS: { label: 'In Progress', color: '#F59E0B', bg: '#F59E0B15' },
+  CLOCKED_IN: { label: 'Clocked In', color: '#0EA5E9', bg: '#0EA5E915' },
   COMPLETED: { label: 'Completed', color: '#16A34A', bg: '#16A34A15' },
+  APPROVED: { label: 'Approved', color: '#059669', bg: '#05966915' },
   CANCELLED: { label: 'Cancelled', color: '#9CA3AF', bg: '#9CA3AF15' },
+  ON_HOLD: { label: 'On Hold', color: '#F97316', bg: '#F9731615' },
   NO_SHOW: { label: 'No Show', color: '#EF4444', bg: '#EF444415' },
   MISSED: { label: 'Missed', color: '#EF4444', bg: '#EF444415' },
+  LATE: { label: 'Late', color: '#F97316', bg: '#F9731615' },
 };
 
 export default function TasksView({ clientId, onEditVisit }) {

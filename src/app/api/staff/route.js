@@ -100,7 +100,6 @@ export async function GET(request) {
         user: {
           avatar: s.user?.avatar || null,
         },
-        employeeId: generateEmployeeId(s.createdAt),
       })),
       pagination: {
         page,
@@ -272,15 +271,9 @@ export async function POST(request) {
   }
 }
 
-// Helper function to generate employee ID
+// Helper function to generate a unique employee ID
 function generateNewEmployeeId() {
-  const randomNum = Math.floor(100000 + Math.random() * 900000);
-  return `EMP-${randomNum}`;
-}
-
-// Helper function to derive employee ID from createdAt (for existing records without employeeId)
-function generateEmployeeId(createdAt) {
-  const date = new Date(createdAt);
-  const timestamp = date.getTime().toString().slice(-6);
-  return `EMP-${timestamp}`;
+  const timestamp = Date.now().toString(36);
+  const randomPart = Math.random().toString(36).substring(2, 6);
+  return `EMP-${timestamp}${randomPart}`.toUpperCase().slice(0, 12);
 }

@@ -117,6 +117,17 @@ export async function POST(request) {
       );
     }
 
+    // Validate due date is not in the past
+    const dueDateObj = new Date(dueDate);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    if (dueDateObj < today) {
+      return NextResponse.json(
+        { error: 'Due date cannot be in the past' },
+        { status: 400 }
+      );
+    }
+
     // Validate invoiceItems
     if (!invoiceItems || !Array.isArray(invoiceItems) || invoiceItems.length === 0) {
       return NextResponse.json(
@@ -125,28 +136,20 @@ export async function POST(request) {
       );
     }
 
-    const organizationId = session.user.organizationId;
-
-    // Generate invoice number: INV-{YYYYMM}-{sequence}
-    const now = new Date();
-    const yearMonth = now.toISOString().slice(0, 7).replace('-', '');
-    const existingCount = await prisma.invoice.count({
-      where: {
-        organizationId,
-        invoiceNumber: { startsWith: `INV-${yearMonth}-` },
-      },
-    });
-    const sequence = String(existingCount + 1).padStart(4, '0');
-    const invoiceNumber = `INV-${yearMonth}-${sequence}`;
-
-    // Calculate total amount
-    const totalAmount = invoiceItems.reduce(
-      (sum, item) => sum + (item.quantity || 1) * (item.unitPrice || 0),
-      0
-    );
-
-    // Create invoice with items in transaction
+    // Create invoice with items in transaction (includes number generation to prevent races)
     const invoice = await prisma.$transaction(async (tx) => {
+      // Generate invoice number inside transaction to prevent duplicates
+      const now = new Date();
+      const yearMonth = now.toISOString().slice(0, 7).replace('-', '');
+      const existingCount = await tx.invoice.count({
+        where: {
+          organizationId,
+          invoiceNumber: { startsWith: `INV-${yearMonth}-` },
+        },
+      });
+      const sequence = String(existingCount + 1).padStart(4, '0');
+      const invoiceNumber = `INV-${yearMonth}-${sequence}`;
+
       const createdInvoice = await tx.invoice.create({
         data: {
           invoiceNumber,

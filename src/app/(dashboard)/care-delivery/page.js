@@ -19,9 +19,17 @@ export default function CareDeliveryPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // Build date range for visits: 7 days ago → 7 days ahead
+        const today = new Date();
+        const startRange = new Date(today);
+        startRange.setDate(startRange.getDate() - 7);
+        const endRange = new Date(today);
+        endRange.setDate(endRange.getDate() + 7);
+        const visitsUrl = `/api/visits?startDate=${startRange.toISOString()}&endDate=${endRange.toISOString()}`;
+
         const [clientsRes, visitsRes, staffRes] = await Promise.all([
           fetch('/api/clients?limit=100'),
-          fetch('/api/visits'),
+          fetch(visitsUrl),
           fetch('/api/staff?limit=100'),
         ]);
 

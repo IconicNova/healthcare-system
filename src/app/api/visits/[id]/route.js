@@ -93,6 +93,22 @@ export async function GET(request, { params }) {
   }
 }
 
+// Valid status transitions — prevents illegal moves like CANCELLED→APPROVED
+const VALID_STATUS_TRANSITIONS = {
+  VACANT: ['SCHEDULED', 'OFFERED', 'CANCELLED'],
+  SCHEDULED: ['IN_PROGRESS', 'CLOCKED_IN', 'CANCELLED', 'ON_HOLD', 'VACANT', 'OFFERED'],
+  OFFERED: ['SCHEDULED', 'VACANT', 'CANCELLED'],
+  IN_PROGRESS: ['COMPLETED', 'CLOCKED_IN', 'CANCELLED', 'ON_HOLD'],
+  CLOCKED_IN: ['IN_PROGRESS', 'COMPLETED', 'CANCELLED'],
+  COMPLETED: ['APPROVED'],
+  APPROVED: [], // Terminal — no further transitions
+  MISSED: ['SCHEDULED'], // Allow rescheduling
+  LATE: ['IN_PROGRESS', 'CLOCKED_IN', 'COMPLETED', 'CANCELLED'],
+  CANCELLED: [], // Terminal — cannot un-cancel
+  ON_HOLD: ['SCHEDULED', 'CANCELLED'],
+  NO_SHOW: ['SCHEDULED'], // Allow rescheduling
+};
+
 export async function PATCH(request, { params }) {
   try {
     const session = await getServerSession(authOptions);
@@ -113,6 +129,27 @@ export async function PATCH(request, { params }) {
 
     if (!existing) {
       return NextResponse.json({ error: 'Visit not found' }, { status: 404 });
+    }
+
+    // Validate status transition if status is being changed
+    if (body.status && body.status !== existing.status) {
+      const allowed = VALID_STATUS_TRANSITIONS[existing.status];
+      if (!allowed || !allowed.includes(body.status)) {
+        return NextResponse.json(
+          { error: `Cannot transition from "${existing.status}" to "${body.status}". Allowed transitions: ${(allowed || []).join(', ') || 'none (terminal status)'}` },
+          { status: 400 }
+        );
+      }
+    }
+
+    // Validate time logic if times are being updated
+    const newStart = body.startTime ? new Date(body.startTime) : existing.startTime;
+    const newEnd = body.endTime ? new Date(body.endTime) : existing.endTime;
+    if (newEnd <= newStart) {
+      return NextResponse.json(
+        { error: 'End time must be after start time' },
+        { status: 400 }
+      );
     }
 
     const visit = await prisma.visit.update({

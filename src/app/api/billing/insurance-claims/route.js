@@ -136,7 +136,7 @@ export async function POST(request) {
 
     const organizationId = session.user.organizationId;
 
-    // Get the invoice with client info
+    // Get the invoice with client info and visit dates for service date
     const invoice = await prisma.invoice.findFirst({
       where: { id: invoiceId, organizationId },
       include: {
@@ -151,7 +151,11 @@ export async function POST(request) {
         },
         invoiceItems: {
           select: { visitId: true },
+          where: { visitId: { not: null } },
           take: 1,
+        },
+        visit: {
+          select: { startTime: true },
         },
       },
     });
@@ -177,11 +181,17 @@ export async function POST(request) {
       }, { status: 409 });
     }
 
-    // Generate claim number
+    // Generate claim number (monthly-scoped like invoices)
     const now = new Date();
     const yearMonth = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}`;
-    const claimCount = await prisma.insuranceClaim.count({ where: { organizationId } });
-    const claimNumber = `CLM-${yearMonth}-${String(claimCount + 1).padStart(4, '0')}`;
+    const claimPrefix = `CLM-${yearMonth}-`;
+    const claimCount = await prisma.insuranceClaim.count({
+      where: { organizationId, claimNumber: { startsWith: claimPrefix } },
+    });
+    const claimNumber = `${claimPrefix}${String(claimCount + 1).padStart(4, '0')}`;
+
+    // Use visit startTime for service date if available, otherwise fall back to invoice creation date
+    const serviceDate = invoice.visit?.startTime || invoice.createdAt;
 
     const claim = await prisma.insuranceClaim.create({
       data: {
@@ -192,7 +202,7 @@ export async function POST(request) {
         insuranceId: invoice.client.insuranceId,
         diagnosisCode: diagnosisCode || null,
         authorizationNumber: authorizationNumber || null,
-        serviceDate: invoice.createdAt,
+        serviceDate: serviceDate,
         amount: invoice.amount,
         status: 'PENDING',
         notes: notes || null,

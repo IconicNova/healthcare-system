@@ -227,11 +227,26 @@ export default function VisitForm({ isOpen, onClose, onSubmit, clients = [], sta
 
   const carePlanOptions = [
     { value: '', label: 'No Care Plan' },
-    ...carePlans.filter(cp => cp.clientId === formData.clientId).map(cp => ({
-      value: cp.id,
-      label: `${cp.name} (${cp.status ? 'Active' : 'Inactive'})`,
-    })),
+    ...carePlans
+      .filter(cp => cp.clientId === formData.clientId && cp.status !== false)
+      .map(cp => ({
+        value: cp.id,
+        label: cp.name,
+      })),
   ];
+
+  // Check if selected staff matches care plan's assigned staff
+  const getStaffMismatchHint = () => {
+    if (!formData.carePlanId || !formData.staffId) return null;
+    const cp = carePlans.find(c => c.id === formData.carePlanId);
+    if (cp?.staffId && cp.staffId !== formData.staffId) {
+      const cpStaff = staff.find(s => s.id === cp.staffId);
+      if (cpStaff) {
+        return `⚠️ Care plan primary staff is ${cpStaff.firstName} ${cpStaff.lastName}`;
+      }
+    }
+    return null;
+  };
 
   return (
     <div style={{
@@ -287,6 +302,11 @@ export default function VisitForm({ isOpen, onClose, onSubmit, clients = [], sta
                 onChange={(e) => handleInputChange('staffId', e.target.value)}
                 options={staffOptions}
               />
+              {getStaffMismatchHint() && (
+                <p style={{ fontSize: '11px', color: '#D97706', margin: '4px 0 0 0' }}>
+                  {getStaffMismatchHint()}
+                </p>
+              )}
 
               <Select
                 label="Service"

@@ -114,16 +114,10 @@ export async function GET(request) {
       const { staff, timesheets: staffTimesheets } = entry;
       const payRate = staff.hourlyRate || 0;
 
-      let totalRegularHours = 0;
-      let totalOvertimeHours = 0;
-
-      for (const ts of staffTimesheets) {
-        const hours = ts.totalHours || 0;
-        const regular = Math.min(hours, OVERTIME_THRESHOLD);
-        const overtime = Math.max(0, hours - OVERTIME_THRESHOLD);
-        totalRegularHours += regular;
-        totalOvertimeHours += overtime;
-      }
+      // Aggregate ALL hours across timesheets first, THEN apply overtime threshold
+      const totalHoursWorked = staffTimesheets.reduce((sum, ts) => sum + (ts.totalHours || 0), 0);
+      const totalRegularHours = Math.min(totalHoursWorked, OVERTIME_THRESHOLD);
+      const totalOvertimeHours = Math.max(0, totalHoursWorked - OVERTIME_THRESHOLD);
 
       let regularPay = 0;
       let overtimePay = 0;

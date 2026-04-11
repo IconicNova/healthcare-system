@@ -293,12 +293,15 @@ export async function DELETE(request, { params }) {
       return NextResponse.json({ error: 'Staff member not found' }, { status: 404 });
     }
 
-    // Delete all related records including visits before deleting staff/user
+    // Nullify staff on visits instead of deleting them (preserves client care history)
     await prisma.$transaction(async (tx) => {
-      // Delete all visits assigned to this staff (related records cascade automatically)
-      await tx.visit.deleteMany({ where: { staffId: id } });
+      // Unassign visits from this staff (keep visit records for client history/billing)
+      await tx.visit.updateMany({
+        where: { staffId: id },
+        data: { staffId: null, status: 'VACANT' },
+      });
 
-      // Delete all related records
+      // Delete all staff-specific records
       await tx.staffSkill.deleteMany({ where: { staffId: id } });
       await tx.staffCertification.deleteMany({ where: { staffId: id } });
       await tx.staffAvailability.deleteMany({ where: { staffId: id } });

@@ -170,18 +170,22 @@ export default function CarePlanForm({ isOpen, onClose, onSubmit, clients = [], 
 
   const clientOptions = [
     { value: '', label: 'Select Client' },
-    ...clients.map(c => ({
-      value: c.id,
-      label: `${c.firstName} ${c.lastName}${c.city ? ` — ${c.city}` : ''}`,
-    })),
+    ...clients
+      .filter(c => !c.status || c.status === 'ACTIVE' || c.status === 'PENDING')
+      .map(c => ({
+        value: c.id,
+        label: `${c.firstName} ${c.lastName}${c.city ? ` — ${c.city}` : ''}`,
+      })),
   ];
 
   const staffOptions = [
     { value: '', label: 'Select Primary Staff (Optional)' },
-    ...staff.map(s => ({
-      value: s.id,
-      label: `${s.firstName} ${s.lastName} (${s.role})`,
-    })),
+    ...staff
+      .filter(s => s.status === 'ACTIVE')
+      .map(s => ({
+        value: s.id,
+        label: `${s.firstName} ${s.lastName} (${s.role})`,
+      })),
   ];
 
   const serviceOptions = [

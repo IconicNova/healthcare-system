@@ -31,9 +31,21 @@ export async function GET(request) {
     // Build where clause
     const where = { organizationId };
 
-    // Staff can only see their own timesheets
+    // Staff can only see their own timesheets — look up their Staff record
     if (session.user.role === 'STAFF') {
-      where.staffId = session.user.id;
+      const staffRecord = await prisma.staff.findFirst({
+        where: { userId: session.user.id },
+        select: { id: true },
+      });
+      if (staffRecord) {
+        where.staffId = staffRecord.id;
+      } else {
+        // No staff record found for this user — return empty
+        return NextResponse.json({
+          timesheets: [],
+          pagination: { page, limit, total: 0, totalPages: 0 },
+        });
+      }
     }
 
     // Add status filter
@@ -117,6 +129,14 @@ export async function POST(request) {
     if (!staffId || !startDate || !endDate) {
       return NextResponse.json(
         { error: 'Missing required fields: staffId, startDate, endDate' },
+        { status: 400 }
+      );
+    }
+
+    // Validate date range
+    if (new Date(endDate) <= new Date(startDate)) {
+      return NextResponse.json(
+        { error: 'End date must be after start date' },
         { status: 400 }
       );
     }

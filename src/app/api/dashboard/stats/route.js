@@ -65,10 +65,13 @@ export async function GET() {
     const todayEnd = new Date(todayStart);
     todayEnd.setHours(23, 59, 59, 999);
 
+    // Active visit statuses for today (matches what UpcomingShifts shows)
+    const activeVisitStatuses = ['SCHEDULED', 'IN_PROGRESS', 'CLOCKED_IN', 'OFFERED', 'VACANT'];
+
     const scheduledVisitsToday = await prisma.visit.count({
       where: {
         organizationId: session.user.organizationId,
-        status: 'SCHEDULED',
+        status: { in: activeVisitStatuses },
         startTime: {
           gte: todayStart,
           lte: todayEnd,
@@ -84,7 +87,7 @@ export async function GET() {
     const scheduledVisitsYesterday = await prisma.visit.count({
       where: {
         organizationId: session.user.organizationId,
-        status: 'SCHEDULED',
+        status: { in: activeVisitStatuses },
         startTime: {
           gte: yesterday,
           lte: yesterdayEnd,

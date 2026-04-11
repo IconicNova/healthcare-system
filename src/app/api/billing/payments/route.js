@@ -156,7 +156,7 @@ export async function POST(request) {
       );
     }
 
-    // Create payment and potentially update invoice status
+    // Create payment and update invoice status accordingly
     const payment = await prisma.$transaction(async (tx) => {
       // Create payment
       const newPayment = await tx.payment.create({
@@ -173,13 +173,22 @@ export async function POST(request) {
       // Calculate new total
       const newTotalPaid = totalPaid + amount;
 
-      // Update invoice status if fully paid
+      // Update invoice status based on payment coverage
       if (newTotalPaid >= invoice.amount) {
+        // Fully paid
         await tx.invoice.update({
           where: { id: invoiceId },
           data: {
             status: 'PAID',
             paidDate: new Date(),
+          },
+        });
+      } else if (newTotalPaid > 0) {
+        // Partially paid
+        await tx.invoice.update({
+          where: { id: invoiceId },
+          data: {
+            status: 'PARTIALLY_PAID',
           },
         });
       }

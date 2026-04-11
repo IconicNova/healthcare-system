@@ -64,13 +64,24 @@ export async function GET(request) {
       },
     });
 
-    // Calculate pay for each staff
-    const paySummary = timesheets.map((timesheet) => {
-      const staff = timesheet.staff;
-      const totalHours = timesheet.totalHours || 0;
+    // Group timesheets by staff to aggregate hours properly
+    const staffTimesheetMap = new Map();
+    for (const timesheet of timesheets) {
+      const key = timesheet.staffId;
+      if (!staffTimesheetMap.has(key)) {
+        staffTimesheetMap.set(key, { staff: timesheet.staff, timesheets: [] });
+      }
+      staffTimesheetMap.get(key).timesheets.push(timesheet);
+    }
 
-      // Calculate regular and overtime hours
-      // Assuming 40 hours/week is regular, over 40 is overtime
+    // Calculate pay for each staff (aggregate hours THEN apply overtime threshold)
+    const paySummary = Array.from(staffTimesheetMap.values()).map((entry) => {
+      const { staff, timesheets: staffTimesheets } = entry;
+
+      // Sum all hours across timesheets FIRST
+      const totalHours = staffTimesheets.reduce((sum, ts) => sum + (ts.totalHours || 0), 0);
+
+      // THEN apply overtime threshold to the aggregate
       const regularHours = Math.min(totalHours, 40);
       const overtimeHours = Math.max(0, totalHours - 40);
 
@@ -89,8 +100,9 @@ export async function GET(request) {
       } else if (staff.payType === 'SALARY') {
         // For salary, use weekly rate (annual / 52)
         const weeklyRate = payRate / 52;
-        regularPay = weeklyRate;
-        overtimePay = 0; // Salaried typically no overtime
+        const weekCount = staffTimesheets.length;
+        regularPay = weeklyRate * weekCount;
+        overtimePay = 0;
         grossPay = regularPay;
       } else {
         // PER_VISIT or default
@@ -100,9 +112,10 @@ export async function GET(request) {
       }
 
       // Calculate mileage pay (sum of mileage from entries if tracked)
-      // For now, we'll estimate based on entries
       const totalMiles = 0; // TODO: Add mileage tracking to TimesheetEntry model
       const mileagePay = totalMiles * MILEAGE_RATE;
+
+      const latestTimesheet = staffTimesheets.sort((a, b) => new Date(b.startDate) - new Date(a.startDate))[0];
 
       return {
         staffId: staff.id,
@@ -116,7 +129,7 @@ export async function GET(request) {
         overtimePay: parseFloat(overtimePay.toFixed(2)),
         mileagePay: parseFloat(mileagePay.toFixed(2)),
         grossPay: parseFloat((grossPay + mileagePay).toFixed(2)),
-        timesheetPeriod: `${formatDate(timesheet.startDate)} - ${formatDate(timesheet.endDate)}`,
+        timesheetPeriod: `${formatDate(latestTimesheet.startDate)} - ${formatDate(latestTimesheet.endDate)}`,
       };
     });
 

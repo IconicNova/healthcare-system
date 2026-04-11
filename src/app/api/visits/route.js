@@ -115,10 +115,24 @@ export async function POST(request) {
       recurrence,
     } = body;
 
-    // Validate required fields
+    // Validate required fields (aligned with frontend validation)
     if (!clientId || !startTime || !endTime) {
       return NextResponse.json(
         { error: 'Client, start time, and end time are required' },
+        { status: 400 }
+      );
+    }
+
+    if (!serviceId) {
+      return NextResponse.json(
+        { error: 'Service is required' },
+        { status: 400 }
+      );
+    }
+
+    if (!branchId) {
+      return NextResponse.json(
+        { error: 'Branch is required' },
         { status: 400 }
       );
     }

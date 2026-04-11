@@ -104,20 +104,44 @@ export default function VisitEditForm({ isOpen, onClose, onSubmit, visit, client
     }
   };
 
-  const statusOptions = [
-    { value: 'SCHEDULED', label: 'Scheduled' },
-    { value: 'VACANT', label: 'Vacant' },
-    { value: 'OFFERED', label: 'Offered' },
-    { value: 'IN_PROGRESS', label: 'In Progress' },
-    { value: 'CLOCKED_IN', label: 'Clocked In' },
-    { value: 'COMPLETED', label: 'Completed' },
-    { value: 'APPROVED', label: 'Approved' },
-    { value: 'CANCELLED', label: 'Cancelled' },
-    { value: 'ON_HOLD', label: 'On Hold' },
-    { value: 'NO_SHOW', label: 'No Show' },
-    { value: 'MISSED', label: 'Missed' },
-    { value: 'LATE', label: 'Late' },
-  ];
+  // Valid status transitions — mirrors the backend state machine
+  const VALID_STATUS_TRANSITIONS = {
+    VACANT: ['VACANT', 'SCHEDULED', 'OFFERED', 'CANCELLED'],
+    SCHEDULED: ['SCHEDULED', 'IN_PROGRESS', 'CLOCKED_IN', 'CANCELLED', 'ON_HOLD', 'VACANT', 'OFFERED'],
+    OFFERED: ['OFFERED', 'SCHEDULED', 'VACANT', 'CANCELLED'],
+    IN_PROGRESS: ['IN_PROGRESS', 'COMPLETED', 'CLOCKED_IN', 'CANCELLED', 'ON_HOLD'],
+    CLOCKED_IN: ['CLOCKED_IN', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED'],
+    COMPLETED: ['COMPLETED', 'APPROVED'],
+    APPROVED: ['APPROVED'], // Terminal
+    MISSED: ['MISSED', 'SCHEDULED'],
+    LATE: ['LATE', 'IN_PROGRESS', 'CLOCKED_IN', 'COMPLETED', 'CANCELLED'],
+    CANCELLED: ['CANCELLED'], // Terminal
+    ON_HOLD: ['ON_HOLD', 'SCHEDULED', 'CANCELLED'],
+    NO_SHOW: ['NO_SHOW', 'SCHEDULED'],
+  };
+
+  const ALL_STATUS_LABELS = {
+    SCHEDULED: 'Scheduled',
+    VACANT: 'Vacant',
+    OFFERED: 'Offered',
+    IN_PROGRESS: 'In Progress',
+    CLOCKED_IN: 'Clocked In',
+    COMPLETED: 'Completed',
+    APPROVED: 'Approved',
+    CANCELLED: 'Cancelled',
+    ON_HOLD: 'On Hold',
+    NO_SHOW: 'No Show',
+    MISSED: 'Missed',
+    LATE: 'Late',
+  };
+
+  // Get allowed statuses based on current visit status
+  const currentStatus = visit?.status || 'SCHEDULED';
+  const allowedStatuses = VALID_STATUS_TRANSITIONS[currentStatus] || [currentStatus];
+  const statusOptions = allowedStatuses.map(s => ({
+    value: s,
+    label: ALL_STATUS_LABELS[s] || s,
+  }));
 
   const clientOptions = [
     { value: '', label: 'Select Client' },
@@ -145,11 +169,26 @@ export default function VisitEditForm({ isOpen, onClose, onSubmit, visit, client
 
   const carePlanOptions = [
     { value: '', label: 'No Care Plan' },
-    ...carePlans.filter(cp => cp.clientId === formData.clientId).map(cp => ({
-      value: cp.id,
-      label: `${cp.name} (${cp.status ? 'Active' : 'Inactive'})`,
-    })),
+    ...carePlans
+      .filter(cp => cp.clientId === formData.clientId && cp.status !== false)
+      .map(cp => ({
+        value: cp.id,
+        label: cp.name,
+      })),
   ];
+
+  // Check if selected staff matches care plan's assigned staff
+  const getStaffMismatchHint = () => {
+    if (!formData.carePlanId || !formData.staffId) return null;
+    const cp = carePlans.find(c => c.id === formData.carePlanId);
+    if (cp?.staffId && cp.staffId !== formData.staffId) {
+      const cpStaff = staff.find(s => s.id === cp.staffId);
+      if (cpStaff) {
+        return `⚠️ Care plan primary staff is ${cpStaff.firstName} ${cpStaff.lastName}`;
+      }
+    }
+    return null;
+  };
 
   const branchOptions = [
     { value: '', label: 'Select Branch' },
@@ -176,6 +215,11 @@ export default function VisitEditForm({ isOpen, onClose, onSubmit, visit, client
             onChange={(e) => handleInputChange('staffId', e.target.value)}
             options={staffOptions}
           />
+          {getStaffMismatchHint() && (
+            <p style={{ fontSize: '11px', color: '#D97706', margin: '4px 0 0 0', gridColumn: 'span 2' }}>
+              {getStaffMismatchHint()}
+            </p>
+          )}
 
           <Select
             label="Service"

@@ -33,7 +33,7 @@ export async function GET(request) {
     }
 
     // Validate status is a valid ClientStatus enum value
-    if (status && typeof status === 'string' && ['ACTIVE', 'INACTIVE', 'PENDING', 'TERMINATED'].includes(status)) {
+    if (status && typeof status === 'string' && ['ACTIVE', 'INACTIVE', 'PENDING', 'ON_HOLD', 'DISCHARGED'].includes(status)) {
       where.status = status;
     }
 
@@ -133,7 +133,6 @@ export async function POST(request) {
         where: {
           organizationId: session.user.organizationId,
           email,
-          id: { not: body.id },
         },
       });
       if (existing) {

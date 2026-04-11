@@ -67,45 +67,46 @@ export function getInitials(firstName, lastName) {
 }
 
 /**
- * Gets status color
+ * Gets status color — unified across all entity types.
+ * Each status maps to exactly one color to avoid duplicate-key issues.
  */
 export function getStatusColor(status) {
   const statusColors = {
-    // Client status
+    // Shared / universal
     ACTIVE: 'green',
     INACTIVE: 'gray',
     PENDING: 'yellow',
     ON_HOLD: 'orange',
-    // Staff status
-    ACTIVE: 'green',
-    INACTIVE: 'gray',
+    DISCHARGED: 'gray',
+    // Staff-only
     ON_LEAVE: 'blue',
     TERMINATED: 'red',
-    // Visit status
+    // Visit statuses
+    VACANT: 'purple',
+    OFFERED: 'indigo',
     SCHEDULED: 'blue',
     IN_PROGRESS: 'cyan',
+    CLOCKED_IN: 'cyan',
     COMPLETED: 'green',
-    CANCELLED: 'red',
+    APPROVED: 'green',
+    CANCELLED: 'gray',
     NO_SHOW: 'orange',
     MISSED: 'red',
-    // Form status
-    PENDING: 'yellow',
-    COMPLETED: 'gray',
+    LATE: 'orange',
+    // Form-only
     SUBMITTED: 'blue',
-    APPROVED: 'green',
     REJECTED: 'red',
-    // Invoice status
+    // Invoice / Billing
     DRAFT: 'gray',
     SENT: 'blue',
     PAID: 'green',
+    PARTIALLY_PAID: 'yellow',
     OVERDUE: 'red',
-    CANCELLED: 'gray',
-    // Timesheet status
-    DRAFT: 'gray',
-    SUBMITTED: 'yellow',
-    APPROVED: 'green',
-    REJECTED: 'red',
-    PAID: 'green',
+    // Insurance claim
+    IN_REVIEW: 'blue',
+    DENIED: 'red',
+    APPEALED: 'orange',
+    VOIDED: 'gray',
   };
   return statusColors[status] || 'gray';
 }
@@ -162,7 +163,10 @@ export function getRoleDisplayName(role) {
 }
 
 /**
- * Checks if user has required role or higher
+ * Checks if user has required role or higher.
+ * Uses a hierarchical model: SUPER_ADMIN > ADMIN > MANAGER > SUPERVISOR > STAFF > CLIENT.
+ * Returns true if the user's role level is >= any of the required roles.
+ * Note: SUPER_ADMIN always passes all checks by design (highest privilege).
  */
 export function hasRoleAccess(userRole, requiredRoles) {
   if (!userRole) return false;

@@ -27,8 +27,14 @@ export async function GET(request) {
       where.OR = [
         { name: { contains: search, mode: 'insensitive' } },
         { description: { contains: search, mode: 'insensitive' } },
-        { client: { firstName: { contains: search, mode: 'insensitive' } } },
-        { client: { lastName: { contains: search, mode: 'insensitive' } } },
+        {
+          client: {
+            OR: [
+              { firstName: { contains: search, mode: 'insensitive' } },
+              { lastName: { contains: search, mode: 'insensitive' } },
+            ],
+          },
+        },
       ];
     }
 
