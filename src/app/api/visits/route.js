@@ -227,12 +227,36 @@ export async function POST(request) {
       const baseStart = new Date(startTime);
       const duration = new Date(endTime) - new Date(startTime);
 
-      const totalIterations = recurrence.type === 'DAILY' ? (recurrence.count || 0) : (recurrence.weeks || 0);
-      const dayIncrement = recurrence.type === 'DAILY' ? 1 : 7;
+      // Calculate iterations and day increment based on recurrence type
+      let totalIterations = 0;
+      let dayIncrement = 1;
+
+      switch (recurrence.type) {
+        case 'DAILY':
+          totalIterations = recurrence.count || 0;
+          dayIncrement = 1;
+          break;
+        case 'WEEKLY':
+          totalIterations = recurrence.weeks || recurrence.count || 0;
+          dayIncrement = 7;
+          break;
+        case 'BI_WEEKLY':
+          totalIterations = recurrence.count || 0;
+          dayIncrement = 14;
+          break;
+        case 'MONTHLY':
+          totalIterations = recurrence.count || 0;
+          dayIncrement = 0; // handled separately since months have variable days
+          break;
+      }
 
       for (let i = 1; i < totalIterations; i++) {
         const newStart = new Date(baseStart);
-        newStart.setDate(newStart.getDate() + (i * dayIncrement));
+        if (recurrence.type === 'MONTHLY') {
+          newStart.setMonth(newStart.getMonth() + i);
+        } else {
+          newStart.setDate(newStart.getDate() + (i * dayIncrement));
+        }
         const newEnd = new Date(newStart.getTime() + duration);
 
         // Check conflicts for each recurring visit

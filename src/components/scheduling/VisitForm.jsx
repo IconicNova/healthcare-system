@@ -45,12 +45,46 @@ export default function VisitForm({ isOpen, onClose, onSubmit, clients = [], sta
     setErrors({});
   };
 
+  // Map care plan frequency to visit recurrence type
+  const frequencyToRecurrence = (frequency) => {
+    const map = {
+      'DAILY': 'DAILY',
+      'WEEKLY': 'WEEKLY',
+      'BI_WEEKLY': 'BI_WEEKLY',
+      'MONTHLY': 'MONTHLY',
+      'AS_NEEDED': 'NONE',
+      'CUSTOM': 'NONE',
+    };
+    return map[frequency] || 'NONE';
+  };
+
   const handleInputChange = (field, value) => {
     setFormData(prev => {
       const updated = { ...prev, [field]: value };
       // Reset care plan when client changes since care plans are client-specific
       if (field === 'clientId') {
         updated.carePlanId = '';
+        updated.recurrence = { type: 'NONE' };
+      }
+      // Auto-populate recurrence from care plan service frequency
+      if (field === 'carePlanId' && value) {
+        const cp = carePlans.find(c => c.id === value);
+        if (cp?.services?.length > 0) {
+          // Use the first service's frequency, or the selected service's frequency
+          const selectedSvc = cp.services.find(s => s.serviceId === prev.serviceId);
+          const frequency = selectedSvc?.frequency || cp.services[0]?.frequency;
+          if (frequency) {
+            updated.recurrence = { type: frequencyToRecurrence(frequency) };
+          }
+        }
+      }
+      // When service changes and a care plan is selected, match recurrence to that service's frequency
+      if (field === 'serviceId' && prev.carePlanId) {
+        const cp = carePlans.find(c => c.id === prev.carePlanId);
+        const svc = cp?.services?.find(s => s.serviceId === value);
+        if (svc?.frequency) {
+          updated.recurrence = { type: frequencyToRecurrence(svc.frequency) };
+        }
       }
       return updated;
     });
@@ -138,7 +172,21 @@ export default function VisitForm({ isOpen, onClose, onSubmit, clients = [], sta
     { value: 'NONE', label: 'No Recurrence' },
     { value: 'DAILY', label: 'Daily' },
     { value: 'WEEKLY', label: 'Weekly' },
+    { value: 'BI_WEEKLY', label: 'Bi-Weekly (Every 2 Weeks)' },
+    { value: 'MONTHLY', label: 'Monthly' },
   ];
+
+  // Check if recurrence was auto-set from care plan
+  const getRecurrenceHint = () => {
+    if (!formData.carePlanId) return null;
+    const cp = carePlans.find(c => c.id === formData.carePlanId);
+    const selectedSvc = cp?.services?.find(s => s.serviceId === formData.serviceId);
+    const frequency = selectedSvc?.frequency || cp?.services?.[0]?.frequency;
+    if (frequency && frequency !== 'AS_NEEDED' && frequency !== 'CUSTOM') {
+      return `Auto-set from care plan (${frequency.replace('_', '-').toLowerCase()})`;
+    }
+    return null;
+  };
 
   const clientOptions = [
     { value: '', label: 'Select Client' },
@@ -304,6 +352,11 @@ export default function VisitForm({ isOpen, onClose, onSubmit, clients = [], sta
                 onChange={(e) => handleRecurrenceChange('type', e.target.value)}
                 options={recurrenceOptions}
               />
+              {getRecurrenceHint() && (
+                <p style={{ fontSize: '11px', color: 'var(--color-primary)', marginTop: '4px', margin: '4px 0 0 0' }}>
+                  ℹ️ {getRecurrenceHint()}
+                </p>
+              )}
             </div>
 
             {formData.recurrence.type === 'DAILY' && (
@@ -330,6 +383,34 @@ export default function VisitForm({ isOpen, onClose, onSubmit, clients = [], sta
                   value={formData.recurrence.weeks || ''}
                   onChange={(e) => handleRecurrenceChange('weeks', parseInt(e.target.value) || 0)}
                   placeholder="e.g., 4"
+                />
+              </div>
+            )}
+
+            {formData.recurrence.type === 'BI_WEEKLY' && (
+              <div style={{ marginBottom: '16px' }}>
+                <Input
+                  label="Repeat for (bi-weekly cycles)"
+                  type="number"
+                  min="2"
+                  max="26"
+                  value={formData.recurrence.count || ''}
+                  onChange={(e) => handleRecurrenceChange('count', parseInt(e.target.value) || 0)}
+                  placeholder="e.g., 6"
+                />
+              </div>
+            )}
+
+            {formData.recurrence.type === 'MONTHLY' && (
+              <div style={{ marginBottom: '16px' }}>
+                <Input
+                  label="Repeat for (months)"
+                  type="number"
+                  min="2"
+                  max="12"
+                  value={formData.recurrence.count || ''}
+                  onChange={(e) => handleRecurrenceChange('count', parseInt(e.target.value) || 0)}
+                  placeholder="e.g., 3"
                 />
               </div>
             )}
