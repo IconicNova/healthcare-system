@@ -327,6 +327,9 @@ export async function DELETE(request, { params }) {
 
     // Delete all related records and visits before deleting client/user
     await prisma.$transaction(async (tx) => {
+      // Delete insurance claims FIRST (onDelete: Restrict — won't cascade)
+      await tx.insuranceClaim.deleteMany({ where: { clientId: id } });
+
       // Delete all visits for this client (related records cascade automatically)
       await tx.visit.deleteMany({ where: { clientId: id } });
 
@@ -337,6 +340,9 @@ export async function DELETE(request, { params }) {
       await tx.emergencyContact.deleteMany({ where: { clientId: id } });
       await tx.medication.deleteMany({ where: { clientId: id } });
       await tx.clientForm.deleteMany({ where: { clientId: id } });
+      await tx.document.deleteMany({ where: { clientId: id } });
+      await tx.medicalHistory.deleteMany({ where: { clientId: id } });
+      await tx.clientMedicalInfo.deleteMany({ where: { clientId: id } });
 
       // Delete associated user if exists - this will cascade delete the client record
       if (existing.userId) {

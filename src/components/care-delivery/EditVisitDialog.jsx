@@ -8,11 +8,18 @@ import VisitTasksTab from './EditVisitTasksTab';
 import VisitNotesTab from './EditVisitNotesTab';
 
 const STATUS_OPTIONS = [
+  { value: 'VACANT', label: 'Vacant', color: '#8B5CF6' },
   { value: 'SCHEDULED', label: 'Scheduled', color: '#3B82F6' },
+  { value: 'OFFERED', label: 'Offered', color: '#6366F1' },
   { value: 'IN_PROGRESS', label: 'In Progress', color: '#F59E0B' },
+  { value: 'CLOCKED_IN', label: 'Clocked In', color: '#0EA5E9' },
   { value: 'COMPLETED', label: 'Completed', color: '#16A34A' },
+  { value: 'APPROVED', label: 'Approved', color: '#059669' },
   { value: 'CANCELLED', label: 'Cancelled', color: '#9CA3AF' },
+  { value: 'ON_HOLD', label: 'On Hold', color: '#D97706' },
   { value: 'NO_SHOW', label: 'No Show', color: '#EF4444' },
+  { value: 'MISSED', label: 'Missed', color: '#DC2626' },
+  { value: 'LATE', label: 'Late', color: '#EA580C' },
 ];
 
 export default function EditVisitDialog({ isOpen, onClose, visit, onSave }) {

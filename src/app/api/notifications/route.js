@@ -20,7 +20,7 @@ export async function GET(request) {
       userId: session.user.id,
     };
 
-    if (readFilter !== null) {
+    if (readFilter === 'true' || readFilter === 'false') {
       where.read = readFilter === 'true';
     }
 
