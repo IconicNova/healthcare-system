@@ -5,7 +5,8 @@ import { RotateCcw, ZoomIn } from 'lucide-react';
 import Modal from './Modal';
 import Button from './Button';
 
-const CROP_SIZE = 256;
+const CROP_SIZE = 256; // Output canvas size
+const DISPLAY_SIZE = 380; // Display container size (larger like Discord)
 const MIN_ZOOM = 0.5;
 const MAX_ZOOM = 3;
 
@@ -34,12 +35,11 @@ export default function ImageEditorModal({ isOpen, onClose, onApply, imageSrc })
   // Reset zoom and position
   const resetTransform = useCallback(() => {
     if (!image) return;
-    const imageAspectRatio = image.width / image.height;
-    let fitZoom = imageAspectRatio > 1 ? CROP_SIZE / image.width : CROP_SIZE / image.height;
-    fitZoom = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, fitZoom));
-    setZoom(fitZoom);
+    // Start at 1x zoom and center the image
+    // The image will be displayed at its natural size scaled to fit the container
+    setZoom(1);
     setPosition({ x: 0, y: 0 });
-  }, [image]);
+  }, []);
 
   // Mouse handlers for dragging
   const handleMouseDown = (e) => {
@@ -92,12 +92,15 @@ export default function ImageEditorModal({ isOpen, onClose, onApply, imageSrc })
     if (!image || !canvasRef.current) return;
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
-    const scaledWidth = image.width * zoom;
-    const scaledHeight = image.height * zoom;
-    const drawX = (CROP_SIZE / 2) - (scaledWidth / 2) + position.x;
-    const drawY = (CROP_SIZE / 2) - (scaledHeight / 2) + position.y;
 
-    ctx.clearRect(0, 0, CROP_SIZE, CROP_SIZE);
+    // Calculate the scale to fit the image to the display size (cover mode)
+    const scaleToDisplay = Math.max(DISPLAY_SIZE / image.width, DISPLAY_SIZE / image.height);
+    const scaledWidth = image.width * scaleToDisplay * zoom;
+    const scaledHeight = image.height * scaleToDisplay * zoom;
+    const drawX = (DISPLAY_SIZE / 2) - (scaledWidth / 2) + position.x;
+    const drawY = (DISPLAY_SIZE / 2) - (scaledHeight / 2) + position.y;
+
+    ctx.clearRect(0, 0, DISPLAY_SIZE, DISPLAY_SIZE);
     ctx.drawImage(image, drawX, drawY, scaledWidth, scaledHeight);
   }, [image, zoom, position]);
 
@@ -115,11 +118,17 @@ export default function ImageEditorModal({ isOpen, onClose, onApply, imageSrc })
     ctx.closePath();
     ctx.clip();
 
-    // Draw the transformed image
-    const scaledWidth = image.width * zoom;
-    const scaledHeight = image.height * zoom;
-    const drawX = (CROP_SIZE / 2) - (scaledWidth / 2) + position.x;
-    const drawY = (CROP_SIZE / 2) - (scaledHeight / 2) + position.y;
+    // Calculate the scale to fit the image to the display size (cover mode)
+    const scaleToDisplay = Math.max(DISPLAY_SIZE / image.width, DISPLAY_SIZE / image.height);
+    // Scale from display size to crop size
+    const scaleToCrop = CROP_SIZE / DISPLAY_SIZE;
+    const scaledWidth = image.width * scaleToDisplay * zoom * scaleToCrop;
+    const scaledHeight = image.height * scaleToDisplay * zoom * scaleToCrop;
+    // Scale position to crop size
+    const scaledPositionX = position.x * scaleToCrop;
+    const scaledPositionY = position.y * scaleToCrop;
+    const drawX = (CROP_SIZE / 2) - (scaledWidth / 2) + scaledPositionX;
+    const drawY = (CROP_SIZE / 2) - (scaledHeight / 2) + scaledPositionY;
     ctx.drawImage(image, drawX, drawY, scaledWidth, scaledHeight);
 
     onApply(canvas.toDataURL('image/png', 0.9));
@@ -156,7 +165,7 @@ export default function ImageEditorModal({ isOpen, onClose, onApply, imageSrc })
           onTouchMove={handleTouchMove}
           onTouchEnd={handleMouseUp}
         >
-          <canvas ref={canvasRef} className="image-editor-canvas" width={CROP_SIZE} height={CROP_SIZE} />
+          <canvas ref={canvasRef} className="image-editor-canvas" width={DISPLAY_SIZE} height={DISPLAY_SIZE} />
           <div className="image-editor-crop-overlay" />
           <div className="image-editor-guides">
             <div className="image-editor-guide-h" />

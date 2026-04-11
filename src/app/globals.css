@@ -8121,8 +8121,8 @@ a:hover {
 
 .image-editor-container {
   position: relative;
-  width: 256px;
-  height: 256px;
+  width: 380px;
+  height: 380px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -8148,8 +8148,8 @@ a:hover {
   pointer-events: none;
   background: radial-gradient(
     circle at center,
-    transparent 128px,
-    rgba(0, 0, 0, 0.6) 129px
+    transparent 190px,
+    rgba(0, 0, 0, 0.6) 191px
   );
 }
 
@@ -8246,8 +8246,8 @@ a:hover {
 [data-theme='dark'] .image-editor-crop-overlay {
   background: radial-gradient(
     circle at center,
-    transparent 128px,
-    rgba(255, 255, 255, 0.3) 129px
+    transparent 190px,
+    rgba(255, 255, 255, 0.3) 191px
   );
 }
 
@@ -8260,19 +8260,27 @@ a:hover {
 /* Responsive */
 @media (max-width: 640px) {
   .image-editor-container {
-    width: 200px;
-    height: 200px;
+    width: 280px;
+    height: 280px;
   }
 
   .image-editor-crop-overlay {
     background: radial-gradient(
       circle at center,
-      transparent 100px,
-      rgba(0, 0, 0, 0.6) 101px
+      transparent 140px,
+      rgba(0, 0, 0, 0.6) 141px
     );
   }
 
   .image-editor-slider-container {
     max-width: 250px;
+  }
+
+  [data-theme='dark'] .image-editor-crop-overlay {
+    background: radial-gradient(
+      circle at center,
+      transparent 140px,
+      rgba(255, 255, 255, 0.3) 141px
+    );
   }
 }
