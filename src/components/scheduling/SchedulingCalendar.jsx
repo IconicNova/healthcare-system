@@ -133,11 +133,12 @@ export default function SchedulingCalendar({
             };
 
             const startTime = eventInfo.event.start ? formatTime(eventInfo.event.start) : '';
+            const endTime = eventInfo.event.end ? formatTime(eventInfo.event.end) : '';
 
             return (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
                 <span style={{ fontSize: '11px', fontWeight: 600 }}>
-                  {startTime}
+                  {startTime}{endTime ? ` - ${endTime}` : ''}
                 </span>
                 <span style={{ fontSize: '11px' }}>
                   {eventInfo.event.extendedProps.clientName}
