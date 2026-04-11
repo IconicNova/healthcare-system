@@ -8101,7 +8101,7 @@ a:hover {
 }
 
 .image-editor-zoom-input {
-  width: 50px;
+  width: 60px;
   padding: var(--spacing-1) var(--spacing-2);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
