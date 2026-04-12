@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
-import bcrypt from 'bcryptjs';
 
 // PUT /api/staff/[id]/avatar - Update staff avatar
 export async function PUT(request, { params }) {
@@ -43,30 +42,11 @@ export async function PUT(request, { params }) {
         },
       });
     } else {
-      // If no user exists, create one to store the avatar
-      const hashedPassword = await bcrypt.hash(Math.random().toString(36).slice(-10), 10);
-      result = await prisma.user.create({
-        data: {
-          email: existing.email,
-          firstName: existing.firstName,
-          lastName: existing.lastName,
-          role: 'STAFF',
-          avatar: avatarUrl || null,
-          password: hashedPassword,
-        },
-        select: {
-          id: true,
-          firstName: true,
-          lastName: true,
-          avatar: true,
-        },
-      });
-
-      // Link user to staff
-      await prisma.staff.update({
-        where: { id },
-        data: { userId: result.id },
-      });
+      // Staff member has no linked user account — cannot store avatar
+      return NextResponse.json(
+        { error: 'Staff member has no linked user account. Please create a user account for this staff member first.' },
+        { status: 400 }
+      );
     }
 
     return NextResponse.json(result);

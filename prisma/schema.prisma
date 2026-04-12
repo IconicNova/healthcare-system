@@ -227,6 +227,8 @@ model Client {
   documents      Document[]
   insuranceClaims InsuranceClaim[]
 
+  @@index([organizationId, status])
+  @@index([organizationId, branchId])
   @@unique([organizationId, email])
   @@map("client")
 }
@@ -245,6 +247,7 @@ model Document {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
+  @@index([clientId])
   @@map("document")
 }
 
@@ -303,6 +306,8 @@ model Staff {
   availability   StaffAvailability[]
   medAdministrations MedAdministration[]
 
+  @@index([organizationId, status])
+  @@index([organizationId, branchId])
   @@map("staff")
 }
 
@@ -350,6 +355,7 @@ model CarePlan {
   visits       Visit[]
   services     CarePlanService[]
 
+  @@index([organizationId, clientId])
   @@unique([organizationId, name])
   @@map("care_plan")
 }
@@ -407,6 +413,11 @@ model Visit {
   medAdministrations MedAdministration[]
   timesheetEntries TimesheetEntry[]
 
+  @@index([organizationId, startTime])
+  @@index([organizationId, status])
+  @@index([organizationId, clientId])
+  @@index([organizationId, staffId])
+  @@index([clientId, status])
   @@map("visit")
 }
 
@@ -435,6 +446,8 @@ model Invoice {
   payments        Payment[]
   insuranceClaims InsuranceClaim[]
 
+  @@index([organizationId, status])
+  @@index([organizationId, clientId])
   @@unique([organizationId, invoiceNumber])
   @@map("invoice")
 }
@@ -488,6 +501,8 @@ model Timesheet {
   user         User         @relation(fields: [userId], references: [id], onDelete: Restrict)
   timesheetEntries TimesheetEntry[]
 
+  @@index([organizationId, staffId])
+  @@index([organizationId, status])
   @@map("timesheet")
 }
 

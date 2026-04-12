@@ -40,9 +40,9 @@ export async function POST(request) {
 
     // Add date range if provided
     if (startDate || endDate) {
-      where.date = {};
-      if (startDate) where.date.gte = new Date(startDate);
-      if (endDate) where.date.lte = new Date(endDate);
+      where.startTime = {};
+      if (startDate) where.startTime.gte = new Date(startDate);
+      if (endDate) where.startTime.lte = new Date(endDate);
     }
 
     // Get visits grouped by client
@@ -65,7 +65,7 @@ export async function POST(request) {
           },
         },
       },
-      orderBy: { date: 'asc' },
+      orderBy: { startTime: 'asc' },
     });
 
     if (visits.length === 0) {

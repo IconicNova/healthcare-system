@@ -15,6 +15,16 @@ export async function GET(
     }
 
     const { id } = await params;
+
+    // Verify client belongs to user's organization
+    const client = await prisma.client.findUnique({
+      where: { id, organizationId: session.user.organizationId },
+      select: { id: true },
+    });
+    if (!client) {
+      return NextResponse.json({ error: 'Client not found' }, { status: 404 });
+    }
+
     const { searchParams } = new URL(request.url);
     const search = searchParams.get('search') || '';
 
@@ -50,6 +60,16 @@ export async function POST(
     }
 
     const { id } = await params;
+
+    // Verify client belongs to user's organization
+    const client = await prisma.client.findUnique({
+      where: { id, organizationId: session.user.organizationId },
+      select: { id: true },
+    });
+    if (!client) {
+      return NextResponse.json({ error: 'Client not found' }, { status: 404 });
+    }
+
     const body = await request.json();
     const { name, type, url, size } = body;
 
@@ -88,6 +108,16 @@ export async function DELETE(
     }
 
     const { id } = await params;
+
+    // Verify client belongs to user's organization
+    const client = await prisma.client.findUnique({
+      where: { id, organizationId: session.user.organizationId },
+      select: { id: true },
+    });
+    if (!client) {
+      return NextResponse.json({ error: 'Client not found' }, { status: 404 });
+    }
+
     const { searchParams } = new URL(request.url);
     const documentId = searchParams.get('documentId');
 

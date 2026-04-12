@@ -39,7 +39,7 @@ export async function POST(request) {
       where: {
         organizationId,
         status: 'COMPLETED',
-        date: {
+        startTime: {
           gte: start,
           lte: end,
         },
@@ -58,7 +58,7 @@ export async function POST(request) {
           },
         },
       },
-      orderBy: { date: 'asc' },
+      orderBy: { startTime: 'asc' },
     });
 
     if (visits.length === 0) {
@@ -125,7 +125,7 @@ export async function POST(request) {
           totalHours += hours;
 
           return {
-            date: visit.date,
+            date: visit.startTime,
             hours: parseFloat(hours.toFixed(2)),
             billable: true,
             timesheetId: '', // Will be set after timesheet creation

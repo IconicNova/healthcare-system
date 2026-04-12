@@ -124,26 +124,6 @@ export default function LoginPage() {
           {loading ? 'Signing in...' : 'Sign In'}
         </button>
       </form>
-
-      {/* Demo Credentials */}
-      <div
-        style={{
-          padding: '16px 24px',
-          backgroundColor: 'var(--color-gray-50)',
-          borderTop: '1px solid var(--color-border)',
-          borderRadius: '0 0 16px 16px',
-        }}
-      >
-        <p style={{ fontSize: '12px', color: 'var(--color-text-muted)', marginBottom: '8px' }}>
-          Demo credentials:
-        </p>
-        <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)' }}>
-          Email: admin@homecarepro.com
-        </p>
-        <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)' }}>
-          Password: password123
-        </p>
-      </div>
     </div>
   );
 }

@@ -52,6 +52,15 @@ export async function POST(request) {
       );
     }
 
+    // Validate base rate is a positive number
+    const parsedRate = parseFloat(baseRate);
+    if (isNaN(parsedRate) || parsedRate <= 0 || parsedRate > 10000) {
+      return NextResponse.json(
+        { error: 'Base rate must be a positive number (max $10,000)' },
+        { status: 400 }
+      );
+    }
+
     const service = await prisma.service.create({
       data: {
         name,

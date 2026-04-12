@@ -38,14 +38,14 @@ export async function GET(request) {
 
     // Add date range filter if provided
     if (startDate || endDate) {
-      where.date = {};
-      if (startDate) where.date.gte = new Date(startDate);
-      if (endDate) where.date.lte = new Date(endDate);
+      where.startTime = {};
+      if (startDate) where.startTime.gte = new Date(startDate);
+      if (endDate) where.startTime.lte = new Date(endDate);
     }
 
     const visits = await prisma.visit.findMany({
       where,
-      orderBy: { date: 'asc' },
+      orderBy: { startTime: 'asc' },
       include: {
         client: {
           select: {
@@ -92,7 +92,7 @@ export async function GET(request) {
 
       return {
         id: visit.id,
-        date: visit.date.toISOString().split('T')[0],
+        date: visit.startTime.toISOString().split('T')[0],
         actualStart: visit.actualStart?.toISOString(),
         actualEnd: visit.actualEnd?.toISOString(),
         serviceName: visit.service?.name || 'Unknown Service',
