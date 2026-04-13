@@ -15,125 +15,102 @@ export async function GET() {
     const now = new Date();
     const thirtyDaysAgo = subDays(now, 30);
     const monthStart = startOfMonth(now);
-
-    // Get total clients count
-    const totalClients = await prisma.client.count({
-      where: {
-        organizationId: session.user.organizationId,
-        status: 'ACTIVE',
-      },
-    });
-
-    // Get previous month clients count for comparison
-    const previousClients = await prisma.client.count({
-      where: {
-        organizationId: session.user.organizationId,
-        status: 'ACTIVE',
-        createdAt: {
-          lt: thirtyDaysAgo,
-        },
-      },
-    });
-    const clientChange = previousClients > 0
-      ? ((totalClients - previousClients) / previousClients * 100).toFixed(1)
-      : 0;
-
-    // Get active staff count
-    const activeStaff = await prisma.staff.count({
-      where: {
-        organizationId: session.user.organizationId,
-        status: 'ACTIVE',
-      },
-    });
-
-    // Get previous month staff count for comparison
-    const previousStaff = await prisma.staff.count({
-      where: {
-        organizationId: session.user.organizationId,
-        status: 'ACTIVE',
-        createdAt: {
-          lt: thirtyDaysAgo,
-        },
-      },
-    });
-    const staffChange = previousStaff > 0
-      ? ((activeStaff - previousStaff) / previousStaff * 100).toFixed(1)
-      : 0;
-
-    // Get scheduled visits for today
+    const previousMonthStart = subDays(monthStart, 30);
     const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const todayEnd = new Date(todayStart);
     todayEnd.setHours(23, 59, 59, 999);
-
-    // Active visit statuses for today (matches what UpcomingShifts shows)
-    const activeVisitStatuses = ['SCHEDULED', 'IN_PROGRESS', 'CLOCKED_IN', 'OFFERED', 'VACANT'];
-
-    const scheduledVisitsToday = await prisma.visit.count({
-      where: {
-        organizationId: session.user.organizationId,
-        status: { in: activeVisitStatuses },
-        startTime: {
-          gte: todayStart,
-          lte: todayEnd,
-        },
-      },
-    });
-
-    // Get yesterday's visits for comparison
     const yesterday = subDays(todayStart, 1);
     const yesterdayEnd = new Date(yesterday);
     yesterdayEnd.setHours(23, 59, 59, 999);
+    const activeVisitStatuses = ['SCHEDULED', 'IN_PROGRESS', 'CLOCKED_IN', 'OFFERED', 'VACANT'];
 
-    const scheduledVisitsYesterday = await prisma.visit.count({
-      where: {
-        organizationId: session.user.organizationId,
-        status: { in: activeVisitStatuses },
-        startTime: {
-          gte: yesterday,
-          lte: yesterdayEnd,
+    // Run all independent queries in parallel for performance
+    const [
+      totalClients,
+      previousClients,
+      activeStaff,
+      previousStaff,
+      scheduledVisitsToday,
+      scheduledVisitsYesterday,
+      currentMonthRevenue,
+      previousMonthRevenue,
+    ] = await Promise.all([
+      // Total active clients
+      prisma.client.count({
+        where: {
+          organizationId: session.user.organizationId,
+          status: 'ACTIVE',
         },
-      },
-    });
+      }),
+      // Previous month clients for comparison
+      prisma.client.count({
+        where: {
+          organizationId: session.user.organizationId,
+          status: 'ACTIVE',
+          createdAt: { lt: thirtyDaysAgo },
+        },
+      }),
+      // Active staff count
+      prisma.staff.count({
+        where: {
+          organizationId: session.user.organizationId,
+          status: 'ACTIVE',
+        },
+      }),
+      // Previous month staff for comparison
+      prisma.staff.count({
+        where: {
+          organizationId: session.user.organizationId,
+          status: 'ACTIVE',
+          createdAt: { lt: thirtyDaysAgo },
+        },
+      }),
+      // Scheduled visits today
+      prisma.visit.count({
+        where: {
+          organizationId: session.user.organizationId,
+          status: { in: activeVisitStatuses },
+          startTime: { gte: todayStart, lte: todayEnd },
+        },
+      }),
+      // Yesterday's visits for comparison
+      prisma.visit.count({
+        where: {
+          organizationId: session.user.organizationId,
+          status: { in: activeVisitStatuses },
+          startTime: { gte: yesterday, lte: yesterdayEnd },
+        },
+      }),
+      // Current month revenue
+      prisma.invoice.aggregate({
+        where: {
+          organizationId: session.user.organizationId,
+          status: { in: ['PAID', 'SENT'] },
+          createdAt: { gte: monthStart },
+        },
+        _sum: { amount: true },
+      }),
+      // Previous month revenue
+      prisma.invoice.aggregate({
+        where: {
+          organizationId: session.user.organizationId,
+          status: { in: ['PAID', 'SENT'] },
+          createdAt: { gte: previousMonthStart, lt: monthStart },
+        },
+        _sum: { amount: true },
+      }),
+    ]);
+
+    const clientChange = previousClients > 0
+      ? ((totalClients - previousClients) / previousClients * 100).toFixed(1)
+      : 0;
+    const staffChange = previousStaff > 0
+      ? ((activeStaff - previousStaff) / previousStaff * 100).toFixed(1)
+      : 0;
     const visitsChange = scheduledVisitsYesterday > 0
       ? ((scheduledVisitsToday - scheduledVisitsYesterday) / scheduledVisitsYesterday * 100).toFixed(1)
       : 0;
-
-    // Get revenue for current month
-    const currentMonthRevenue = await prisma.invoice.aggregate({
-      where: {
-        organizationId: session.user.organizationId,
-        status: {
-          in: ['PAID', 'SENT'],
-        },
-        createdAt: {
-          gte: monthStart,
-        },
-      },
-      _sum: {
-        amount: true,
-      },
-    });
-
     const currentRevenue = currentMonthRevenue._sum.amount || 0;
-
-    // Get previous month revenue
-    const previousMonthStart = subDays(monthStart, 30);
-    const previousMonthRevenue = await prisma.invoice.aggregate({
-      where: {
-        organizationId: session.user.organizationId,
-        status: {
-          in: ['PAID', 'SENT'],
-        },
-        createdAt: {
-          gte: previousMonthStart,
-          lt: monthStart,
-        },
-      },
-      _sum: {
-        amount: true,
-      },
-    });
-
     const previousRevenue = previousMonthRevenue._sum.amount || 0;
     const revenueChange = previousRevenue > 0
       ? ((currentRevenue - previousRevenue) / previousRevenue * 100).toFixed(1)

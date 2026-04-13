@@ -414,6 +414,7 @@ model Visit {
   timesheetEntries TimesheetEntry[]
 
   @@index([organizationId, startTime])
+  @@index([staffId, startTime, status])
   @@index([organizationId, status])
   @@index([organizationId, clientId])
   @@index([organizationId, staffId])

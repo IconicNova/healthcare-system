@@ -2,43 +2,62 @@
 
 ## Target
 
-Homecare Pro - A comprehensive Next.js-based homecare management system that handles client care, staff scheduling, visit management, billing, insurance claims, and payroll processing.
+Full codebase review of Homecare Pro - a comprehensive home care management system built with Next.js, Prisma, and PostgreSQL.
 
-## Files
+**Project Statistics:**
+- 218 files, ~125,017 words
+- 408 graph nodes, 315 edges, 137 communities
+- Framework: Next.js 14 (App Router)
+- Database: Prisma ORM with PostgreSQL
+- Authentication: NextAuth.js
 
-### Core Application Files
-- **Pages & Routes** (50+ files in `src/app/`)
-  - Authentication flow (`/login`, `/auth/layout`)
-  - Dashboard pages (clients, staff, visits, care plans, billing, payroll, reports, settings)
-  - API routes for all CRUD operations and business logic
+## Files Included
 
-### Key Backend Components
-- **Database Schema** (`prisma/schema.prisma`) - 25+ models including Organization, Client, Staff, Visit, Invoice, InsuranceClaim, Timesheet, Medication, CarePlan
-- **Authentication** (`src/lib/auth.js`, `src/app/api/auth/[...nextauth]/route.js`)
-- **Prisma Client** (`src/lib/prisma.js`)
+### Core Application Structure
+- `src/app/(dashboard)/` - Dashboard pages (clients, staff, care-plans, billing, payroll, scheduling, etc.)
+- `src/app/api/` - All API route handlers (GET/POST/PATCH/DELETE endpoints)
+- `src/components/` - UI components and layout components
+- `src/lib/` - Utility libraries (prisma.js, auth.js, rate-limit.js)
 
-### UI Components
-- Reusable components (`src/components/ui/`) - Button, Input, Modal, Card, StatusBadge, EmptyState
-- Layout components (loading spinner, providers)
+### Key Modules
+- **API Routes**: ~70+ route handlers for CRUD operations
+- **Care Delivery**: Visit management, form charting, EVV (Electronic Visit Verification)
+- **Billing**: Invoicing, payments, insurance claims, batch operations
+- **Payroll**: Timesheets, payslips, pay calculations
+- **Scheduling**: Calendar views, availability management, conflict detection
+- **Settings**: Organization, services, billing/payroll configuration
 
-### Framework Configuration
-- Next.js 14.2.35 with App Router
-- Tailwind CSS + PostCSS
-- Prisma ORM with PostgreSQL
-- NextAuth.js for authentication
-- Zod for validation
+### Configuration & Infrastructure
+- `prisma/schema.prisma` - Database schema
+- `CI_CD_OPERATIONAL_REVIEW.md` - CI/CD pipeline documentation
+- `tailwind.config.js`, `postcss.config.js` - Styling configuration
+- `src/lib/rate-limit.js` - Rate limiting implementation
 
 ## Flags
 
 - Security Focus: no
 - Performance Critical: no
 - Strict Mode: no
-- Framework: Next.js
+- Framework: Next.js 14 (auto-detected)
 
 ## Review Phases
 
-1. **Code Quality & Architecture** - Code complexity, maintainability, SOLID principles, component structure
-2. **Security & Performance** - OWASP Top 10, input validation, database performance, scalability
-3. **Testing & Documentation** - Test coverage, API documentation, README completeness
-4. **Best Practices & Standards** - Framework patterns, deprecated APIs, CI/CD practices
-5. **Consolidated Report** - Executive summary with prioritized findings
+1. **Code Quality & Architecture** (Steps 1A-1B)
+   - Code complexity, maintainability, duplication analysis
+   - Component boundaries, API design, data modeling
+
+2. **Security & Performance** (Steps 2A-2B)
+   - OWASP Top 10, authentication/authorization review
+   - Database performance, caching, memory management
+
+3. **Testing & Documentation** (Steps 3A-3B)
+   - Test coverage analysis (Playwright E2E)
+   - API docs, architecture docs, README completeness
+
+4. **Best Practices & Standards** (Steps 4A-4B)
+   - Next.js/React patterns, modern JavaScript features
+   - CI/CD pipeline (GitHub Actions), deployment strategy
+
+5. **Consolidated Report** (Step 5)
+   - Executive summary with prioritized action items
+   - Findings by category and severity

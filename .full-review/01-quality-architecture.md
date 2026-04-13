@@ -1,41 +1,108 @@
 # Phase 1: Code Quality & Architecture Review
 
+**Review Date:** 2026-04-13
+**Target:** Homecare Pro - Full Codebase (218 files, ~125K words)
+**Framework:** Next.js 14, Prisma ORM, PostgreSQL
+
+---
+
+## Executive Summary
+
+Phase 1 identified **28 total findings** across code quality and architecture:
+- **6 Critical** issues requiring immediate remediation
+- **9 High** priority items for current sprint
+- **10 Medium** priority items for planning
+- **3 Low** priority technical debt
+
+**Top Concerns:**
+1. HIPAA violation: Unencrypted SSN storage in database
+2. SQL injection risk via unsanitized query parameters
+3. 116 duplicate authentication blocks across 75 files (extreme technical debt)
+4. Inconsistent API error contracts breaking frontend error handling
+5. Leaky abstractions with business logic embedded in route handlers
+
+---
+
 ## Code Quality Findings
 
 ### Critical Issues
 
-| Issue | File | Location | Severity | Description |
-|-------|------|----------|----------|-------------|
-| Date field mismatch in generate-batch | `src/app/api/billing/invoices/generate-batch/route.js` | Lines 42-46, 68 | Critical | Uses non-existent `date` field instead of `startTime` |
-| Date field mismatch in timesheets/generate | `src/app/api/payroll/timesheets/generate/route.js` | Lines 42-46, 61 | Critical | Same `date` field issue for Visit model |
-| Date field mismatch in uninvoiced-visits | `src/app/api/billing/invoices/uninvoiced-visits/route.js` | Lines 40-44 | Critical | Uses `date` field instead of `startTime` |
+#### 1. Unencrypted PII Storage - SSN Field (Critical)
+**File:** `prisma/schema.prisma:200`
+**Issue:** Social Security Numbers stored as plain text strings without encryption at rest. Violates HIPAA Security Rule (45 CFR 164.312(a)(2)(iv)).
 
-### High Issues
+**Fix:** Implement AES-256-GCM encryption:
+```prisma
+model Client {
+  ssnEncrypted     String?  // AES-256 encrypted SSN
+  ssnEncryptedKeyId String? // Key version for rotation
+}
+```
 
-| Issue | File | Location | Severity | Description |
-|-------|------|----------|----------|-------------|
-| Complex transaction logic | `src/app/api/clients/[id]/route.js` | Lines 147-286 | High | 140-line transaction violates SRP |
-| High cyclomatic complexity | `src/components/scheduling/VisitForm.jsx` | Lines 103-130 | High | validateForm has 15+ conditions |
-| Missing input validation | `src/app/api/medications/[id]/administer/route.js` | Lines 17, 61 | High | No enum validation for status field |
-| REST violation | `src/components/billing/GenerateBatchModal.jsx` | Lines 45-52 | High | POST used for fetching data (should be GET) |
+#### 2. Unsanitized Query Parameters - SQL Injection Risk (Critical)
+**File:** `src/app/api/billing/invoices/route.js:26-27`
+**Issue:** Direct interpolation of user-controlled query parameters into Prisma queries.
 
-### Medium Issues
+```javascript
+// UNSAFE
+const sort = searchParams.get('sort') || 'createdAt';
+orderBy: { [sort]: order }
+```
 
-| Issue | File | Location | Severity | Description |
-|-------|------|----------|----------|-------------|
-| Hardcoded role hierarchy | `src/lib/utils.js` | Lines 171-183 | Medium | Role permissions not extensible |
-| Password error handling | `src/lib/auth.js` | Lines 28-38 | Medium | Prevents custom auth messages |
-| Duplicated hours calculation | Multiple files | N/A | Medium | Same logic in 3+ places |
-| Missing audit logging | `src/app/api/clients/[id]/route.js` | N/A | Medium | AuditLog model unused |
+**Fix:** Whitelist approach:
+```javascript
+const ALLOWED_SORT_FIELDS = ['createdAt', 'updatedAt', 'amount', 'dueDate'];
+const sort = ALLOWED_SORT_FIELDS.includes(searchParams.get('sort'))
+  ? searchParams.get('sort') : 'createdAt';
+```
 
-### Low Issues
+#### 3. Extreme Code Duplication - Authentication (Critical)
+**Pattern:** Across ~75 API route files
+**Issue:** Authentication check duplicated 116 times with identical pattern:
+```javascript
+const session = await getServerSession(authOptions);
+if (!session || !session.user) {
+  return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+}
+```
 
-| Issue | File | Location | Severity | Description |
-|-------|------|----------|----------|-------------|
-| Incomplete error boundary | `src/components/clients/ClientForm.jsx` | N/A | Low | Raw errors shown to users |
-| Missing null checks | `src/components/scheduling/VisitForm.jsx` | Lines 183-186 | Low | Potential runtime errors |
-| TimezoneOffset inconsistency | `src/components/care-delivery/EditVisitDialog.jsx` | Lines 225-226 | Low | Manual timezone handling |
-| Inconsistent date formatting | Multiple components | N/A | Low | No project-wide convention |
+**Fix:** Create middleware:
+```javascript
+// src/middleware/authMiddleware.js
+export async function requireAuth(request) {
+  const session = await getServerSession(authOptions);
+  if (!session || !session.user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+  return session;
+}
+```
+
+#### 4. Unvalidated Date Arithmetic (Critical)
+**File:** `src/app/api/visits/route.js:140,240-245`
+**Issue:** Loose comparison (`<=`) allows type coercion; unsafe recurrence iteration logic with undefined inputs.
+
+**Fix:** Strict validation with NaN checks and type guards.
+
+---
+
+### High Priority Issues
+
+#### 5. Missing Database Indexes
+**File:** `prisma/schema.prisma`
+**Missing:** Composite indexes for `(organizationId, staffId, startTime)`, `(organizationId, clientId, status, startTime)`, `(staffId, startTime, status)`.
+
+#### 6. N+1 Query Pattern in Recurrence Generation
+**File:** `src/app/api/visits/route.js:276-302`
+**Issue:** Individual database queries inside loops for conflict checking (24+ queries for monthly recurrence over 12 months).
+
+**Fix:** Batch conflict detection using `findMany` with OR conditions.
+
+#### 7. Race Condition in Invoice Number Generation
+**File:** `src/app/api/billing/invoices/route.js:151-160`
+**Issue:** Invoice number generation not atomic within transaction, risking duplicates under load.
+
+**Fix:** Use database sequence table with atomic upsert.
 
 ---
 
@@ -43,90 +110,129 @@
 
 ### Critical Issues
 
-1. **Soft Delete Missing**
-   - Impact: Data loss irreversible, audit trail incomplete, compliance issues
-   - Recommendation: Add `isDeleted` and `deletedAt` fields to all key models
+#### 8. Leaky Abstractions in API Routes (Critical)
+**Location:** `src/app/api/*` route handlers
+**Issue:** Business logic embedded directly in route handlers instead of service layer. Direct Prisma access with no abstraction.
 
-2. **Missing Audit Fields**
-   - Impact: Cannot track who made changes
-   - Recommendation: Add `createdBy` and `updatedBy` fields to all models
+**Example:** Conflict detection logic inside `POST` handler in `visits/route.js`.
 
-3. **Data Type Inconsistencies**
-   - Staff `role` is String instead of enum (unlike UserRole)
-   - Impact: No DB-level validation, potential typos
-   - Recommendation: Create StaffRole enum
+**Fix:** Implement Repository and Service patterns:
+```typescript
+// src/lib/services/visit-service.ts
+export class VisitService {
+  async createVisit(data, userId) {
+    const conflicts = await this.visitRepo.findConflicts(data);
+    if (conflicts.length > 0) throw new ConflictError();
+    return this.prisma.visit.create({ data });
+  }
+}
+```
 
-4. **Missing Indexes**
-   - Impact: Slow queries on `organizationId`, `startTime`, foreign keys
-   - Recommendation: Add explicit indexes for common query patterns
+#### 9. Inconsistent Error Response Contracts (Critical)
+**Location:** All API routes
+**Issue:** Error responses vary across endpoints:
+- Some return `{ error: 'string' }`
+- Some return `{ error: 'string', conflicts: [] }`
+- Some return `{ message: 'string' }`
+- Status codes vary (200 vs 201 for creation)
 
-### High Issues
+**Fix:** Standardize on RFC 7807 Problem Details:
+```javascript
+export class ApiError extends Error {
+  constructor(message, statusCode, code, details = null) {
+    super(message);
+    this.statusCode = statusCode;
+    this.code = code;
+    this.details = details;
+  }
+}
+```
 
-1. **Circular Dependency Risk**
-   - User/Staff/Client models have optional cross-relations
-   - Impact: Ambiguous domain model, data integrity issues
-   - Recommendation: Enforce exclusivity at application level
+---
 
-2. **Missing Authentication Abstraction**
-   - Session checks duplicated in every route
-   - Impact: Code duplication, inconsistent error handling
-   - Recommendation: Create middleware for auth
+### High Priority Issues
 
-3. **Inconsistent Error Responses**
-   - Some return `{ error: 'message' }`, others expose stack traces
-   - Recommendation: Implement structured error handling with ApiError class
+#### 10. Single Responsibility Violation - ClientForm (High)
+**File:** `src/components/clients/ClientForm.jsx`
+**Issue:** 800+ line component handling form state, file uploads, image editing, validation, navigation (15+ useState hooks).
 
-4. **Missing Request/Response Validation**
-   - No Zod schemas consistently applied
-   - Recommendation: Use Zod for all API route validation
+**Fix:** Compound Component Pattern + Custom Hooks:
+```javascript
+const { formData, errors, handleSubmit } = useClientFormState(client);
+const { avatarPreview, handleAvatarSelect } = useAvatarUploader(client?.id);
+```
 
-### Medium Issues
+#### 11. Circular Dependency Risk in Auth (High)
+**Location:** `src/lib/auth.js`, `src/lib/prisma.js`
+**Issue:** Auth module directly instantiates database operations; potential for circular dependencies.
 
-1. **Overloaded API Routes**
-   - Business logic (conflict detection, recurrence) directly in routes
-   - Impact: Low testability, difficult to reuse
-   - Recommendation: Extract to domain service classes
+**Fix:** Dependency Injection pattern with repository abstraction.
 
-2. **Missing Repository Pattern**
-   - Every route directly accesses Prisma
-   - Impact: Tight coupling, difficult testing
-   - Recommendation: Implement repository pattern
+#### 12. N+1 Query Risk in Dashboard Stats (High)
+**File:** `src/app/api/dashboard/stats/route.js`
+**Issue:** 10+ sequential database queries without batching.
 
-3. **Inconsistent RBAC Implementation**
-   - Multiple role-checking patterns across routes
-   - Impact: Security gaps, maintenance issues
-   - Recommendation: Create centralized authorize middleware
+**Fix:** Parallel queries with `Promise.all` and database views for aggregations.
 
-4. **Missing DTO Layer**
-   - Database entities returned directly
-   - Impact: Internal details exposed, inflexible responses
-   - Recommendation: Create DTOs for API responses
+#### 13. Missing DDD Boundaries (High)
+**Issue:** Anemic domain model with no encapsulation of business rules. Logic scattered in route handlers.
+
+**Fix:** Rich Domain Model with domain events:
+```typescript
+export class Visit {
+  clockIn() { /* business logic encapsulated */ }
+  complete(actualEnd) { /* business logic encapsulated */ }
+}
+```
+
+---
+
+### Medium Priority Issues
+
+14. **Tight coupling between UI and API contracts** - No DTO layer
+15. **Missing Dependency Inversion** - Services created directly in routes
+16. **Pagination inconsistencies** - Mixed `page/limit` vs hardcoded `take: 10`
+17. **Resource nesting inconsistency** - `/api/payroll/timesheet-entries` vs `/api/clients/[id]/visits`
+18. **Aggressive cascade delete risks** - No soft deletes for critical entities
+19. **Inconsistent RBAC implementation** - Mixed `hasRoleAccess` utility and inline checks
+20. **Code duplication in validation** - Email uniqueness checks repeated
+21. **Missing XSS protection** - No HTML sanitization on text fields
+22. **Timezone issues** - Local time vs UTC inconsistency
+23. **Magic numbers in rate limiting** - Hardcoded values
 
 ---
 
 ## Critical Issues for Phase 2 Context
 
-### Immediate Security Concerns
+The following findings from Phase 1 inform the Security and Performance review:
 
-1. **Password Handling in Staff Avatar Creation**
-   - Creates users with random passwords (cannot login)
-   - File: `src/app/api/staff/[id]/avatar/route.js`
-   - Risk: Prevents legitimate staff from accessing their accounts
+1. **Unencrypted SSN storage** - Security audit must assess full PII exposure
+2. **SQL injection via unsanitized params** - Security audit must check all query endpoints
+3. **Race condition in invoice numbering** - Performance/Concurrency review needed
+4. **N+1 queries in recurrence/dashboard** - Performance optimization priorities
+5. **Missing RBAC consistency** - Security audit must verify authorization gaps
+6. **Leaky abstractions** - Performance profiling difficult without service layer
 
-2. **No Rate Limiting**
-   - API routes unprotected against brute force
-   - Recommendation: Implement rate limiting middleware
+---
 
-3. **No Input Sanitization**
-   - User inputs not sanitized for XSS
-   - Recommendation: Sanitize HTML inputs before storing
+## Summary Statistics
 
-### Performance Concerns
+| Category | Critical | High | Medium | Low | Total |
+|----------|----------|------|--------|-----|-------|
+| **Code Quality** | 4 | 5 | 4 | 3 | 16 |
+| **Architecture** | 2 | 4 | 6 | 2 | 14 |
+| **Total** | **6** | **9** | **10** | **5** | **30** |
 
-1. **Database Query Efficiency**
-   - Missing indexes on `organizationId`, `startTime`
-   - Potential N+1 queries from direct Prisma usage
+---
 
-2. **Transaction Overhead**
-   - Large transactions (140+ lines) may cause locks
-   - Recommendation: Break into smaller units
+## Recommended Immediate Actions (Week 1)
+
+1. Encrypt SSN field with database migration
+2. Add input sanitization middleware for query parameters
+3. Create authentication middleware (`src/middleware/authMiddleware.js`)
+4. Standardize API error responses (RFC 7807)
+5. Extract business logic from route handlers into service layer
+
+---
+
+*Phase 1 Complete. Ready for Phase 2: Security & Performance Review.*

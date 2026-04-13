@@ -3,6 +3,8 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { hasRoleAccess } from '@/lib/utils';
+import { InvoiceSchema } from '@/lib/validations';
+import { ApiResponse } from '@/lib/api-response';
 
 // GET - List invoices with pagination, search, filter
 export async function GET(request) {
@@ -23,8 +25,12 @@ export async function GET(request) {
     const skip = (page - 1) * limit;
     const search = searchParams.get('search') || '';
     const status = searchParams.get('status') || '';
-    const sort = searchParams.get('sort') || 'createdAt';
-    const order = searchParams.get('order') || 'desc';
+
+    // Whitelist valid sort fields to prevent information disclosure
+    const ALLOWED_SORT_FIELDS = ['createdAt', 'updatedAt', 'amount', 'dueDate', 'invoiceNumber', 'status'];
+    const ALLOWED_ORDER_VALUES = ['asc', 'desc'];
+    const sort = ALLOWED_SORT_FIELDS.includes(searchParams.get('sort')) ? searchParams.get('sort') : 'createdAt';
+    const order = ALLOWED_ORDER_VALUES.includes(searchParams.get('order')) ? searchParams.get('order') : 'desc';
 
     const organizationId = session.user.organizationId;
 
@@ -111,33 +117,20 @@ export async function POST(request) {
     const organizationId = session.user.organizationId;
 
     const body = await request.json();
-    const { clientId, dueDate, notes, invoiceItems, branchId } = body;
 
-    // Validate required fields
-    if (!clientId || !dueDate) {
-      return NextResponse.json(
-        { error: 'Missing required fields: clientId, dueDate' },
-        { status: 400 }
-      );
+    const validationResult = InvoiceSchema.safeParse(body);
+    if (!validationResult.success) {
+      return ApiResponse.error('Validation failed', 400, validationResult.error.format());
     }
+
+    const { clientId, dueDate, notes, invoiceItems, branchId } = body;
 
     // Validate due date is not in the past
     const dueDateObj = new Date(dueDate);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     if (dueDateObj < today) {
-      return NextResponse.json(
-        { error: 'Due date cannot be in the past' },
-        { status: 400 }
-      );
-    }
-
-    // Validate invoiceItems
-    if (!invoiceItems || !Array.isArray(invoiceItems) || invoiceItems.length === 0) {
-      return NextResponse.json(
-        { error: 'At least one invoice item is required' },
-        { status: 400 }
-      );
+      return ApiResponse.error('Due date cannot be in the past', 400);
     }
 
     // Calculate total amount from invoice items

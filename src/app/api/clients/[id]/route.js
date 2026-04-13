@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
+import { encrypt, maskSSN } from '@/lib/encryption';
 
 export async function GET(request, { params }) {
   try {
@@ -87,6 +88,7 @@ export async function GET(request, { params }) {
 
     return NextResponse.json({
       ...client,
+      ssn: client.ssn ? maskSSN(client.ssn) : null,
       avatar: client.avatar,
       fullName: `${client.firstName} ${client.lastName}`,
     });
@@ -235,7 +237,7 @@ export async function PATCH(request, { params }) {
           ...(body.phone && { phone: body.phone }),
           ...(body.dateOfBirth && { dateOfBirth: new Date(body.dateOfBirth) }),
           ...(body.gender !== undefined && { gender: body.gender }),
-          ...(body.ssn !== undefined && { ssn: body.ssn }),
+          ...(body.ssn !== undefined && { ssn: body.ssn ? encrypt(body.ssn) : null }),
           ...(body.address && { address: body.address }),
           ...(body.city && { city: body.city }),
           ...(body.state && { state: body.state }),

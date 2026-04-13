@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import { hasRoleAccess } from '@/lib/utils';
 
 // POST - Record medication administration
 export async function POST(request, { params }) {
@@ -10,6 +11,11 @@ export async function POST(request, { params }) {
 
     if (!session || !session.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    // Only staff-level roles can administer medications
+    if (!hasRoleAccess(session.user.role, ['STAFF', 'SUPERVISOR', 'MANAGER', 'ADMIN'])) {
+      return NextResponse.json({ error: 'Forbidden: insufficient role for medication administration' }, { status: 403 });
     }
 
     const { id } = params;

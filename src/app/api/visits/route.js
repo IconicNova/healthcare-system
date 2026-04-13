@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import { VisitSchema } from '@/lib/validations';
+import { ApiResponse } from '@/lib/api-response';
 
 export async function GET(request) {
   try {
@@ -100,6 +102,11 @@ export async function POST(request) {
 
     const body = await request.json();
 
+    const validationResult = VisitSchema.safeParse(body);
+    if (!validationResult.success) {
+      return ApiResponse.error('Validation failed', 400, validationResult.error.format());
+    }
+
     const {
       clientId,
       staffId,
@@ -115,33 +122,12 @@ export async function POST(request) {
       recurrence,
     } = body;
 
-    // Validate required fields (aligned with frontend validation)
-    if (!clientId || !startTime || !endTime) {
-      return NextResponse.json(
-        { error: 'Client, start time, and end time are required' },
-        { status: 400 }
-      );
-    }
-
-    if (!serviceId) {
-      return NextResponse.json(
-        { error: 'Service is required' },
-        { status: 400 }
-      );
-    }
-
-    if (!branchId) {
-      return NextResponse.json(
-        { error: 'Branch is required' },
-        { status: 400 }
-      );
+    if (!serviceId || !branchId) {
+      return ApiResponse.error('Service and Branch are required', 400);
     }
 
     if (new Date(endTime) <= new Date(startTime)) {
-      return NextResponse.json(
-        { error: 'End time must be after start time' },
-        { status: 400 }
-      );
+      return ApiResponse.error('End time must be after start time', 400);
     }
 
     // Check for staff availability conflict
@@ -264,6 +250,7 @@ export async function POST(request) {
           break;
       }
 
+      const proposedVisits = [];
       for (let i = 1; i < totalIterations; i++) {
         const newStart = new Date(baseStart);
         if (recurrence.type === 'MONTHLY') {
@@ -272,40 +259,10 @@ export async function POST(request) {
           newStart.setDate(newStart.getDate() + (i * dayIncrement));
         }
         const newEnd = new Date(newStart.getTime() + duration);
-
-        // Check conflicts for each recurring visit
-        let hasConflict = false;
-
-        if (staffId) {
-          const staffConflict = await prisma.visit.findFirst({
-            where: {
-              staffId,
-              organizationId: session.user.organizationId,
-              status: { not: 'CANCELLED' },
-              startTime: { lte: newEnd },
-              endTime: { gte: newStart },
-            },
-          });
-          if (staffConflict) hasConflict = true;
-        }
-
-        const clientConflict = await prisma.visit.findFirst({
-          where: {
-            clientId,
-            organizationId: session.user.organizationId,
-            status: { not: 'CANCELLED' },
-            startTime: { lte: newEnd },
-            endTime: { gte: newStart },
-          },
-        });
-        if (clientConflict) hasConflict = true;
-
-        if (hasConflict) {
-          skippedDates.push(newStart.toISOString());
-          continue;
-        }
-
-        const recurringVisit = await prisma.visit.create({
+        
+        proposedVisits.push({
+          startTime: newStart,
+          endTime: newEnd,
           data: {
             clientId,
             staffId: staffId || null,
@@ -320,9 +277,59 @@ export async function POST(request) {
             organizationId: session.user.organizationId,
             branchId: branchId || null,
             userId: session.user.id,
-          },
+          }
         });
-        occurrences.push(recurringVisit.id);
+      }
+
+      // Batch conflict detection
+      if (proposedVisits.length > 0) {
+        const timeConditions = proposedVisits.map(v => ({
+          startTime: { lte: v.endTime },
+          endTime: { gte: v.startTime }
+        }));
+
+        const [batchedStaffConflicts, batchedClientConflicts] = await Promise.all([
+          staffId ? prisma.visit.findMany({
+            where: {
+              staffId,
+              organizationId: session.user.organizationId,
+              status: { not: 'CANCELLED' },
+              OR: timeConditions
+            }
+          }) : Promise.resolve([]),
+          prisma.visit.findMany({
+            where: {
+              clientId,
+              organizationId: session.user.organizationId,
+              status: { not: 'CANCELLED' },
+              OR: timeConditions
+            }
+          })
+        ]);
+
+        const validVisits = [];
+        for (const pv of proposedVisits) {
+          const hasStaffConflict = staffId && batchedStaffConflicts.some(c => 
+            c.startTime <= pv.endTime && c.endTime >= pv.startTime
+          );
+          const hasClientConflict = batchedClientConflicts.some(c => 
+            c.startTime <= pv.endTime && c.endTime >= pv.startTime
+          );
+
+          if (hasStaffConflict || hasClientConflict) {
+            skippedDates.push(pv.startTime.toISOString());
+          } else {
+            validVisits.push(pv.data);
+          }
+        }
+
+        if (validVisits.length > 0) {
+          // Use transaction to create all non-conflicting visits efficiently and return their IDs
+          const createdVisits = await prisma.$transaction(
+            validVisits.map(data => prisma.visit.create({ data }))
+          );
+          occurrences.push(...createdVisits.map(v => v.id));
+        }
       }
     }
 

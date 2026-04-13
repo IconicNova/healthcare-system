@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import { encrypt } from '@/lib/encryption';
+import { ClientSchema } from '@/lib/validations';
+import { ApiResponse } from '@/lib/api-response';
 
 export async function GET(request) {
   try {
@@ -100,6 +103,11 @@ export async function POST(request) {
 
     const body = await request.json();
 
+    const validationResult = ClientSchema.safeParse(body);
+    if (!validationResult.success) {
+      return ApiResponse.error('Validation failed', 400, validationResult.error.format());
+    }
+
     const {
       firstName,
       lastName,
@@ -118,26 +126,6 @@ export async function POST(request) {
       branchId,
       emergencyContacts,
     } = body;
-
-    // Validate required fields
-    if (!firstName || !lastName || !phone || !address || !city || !state || !zipCode) {
-      return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
-      );
-    }
-
-    // Validate date of birth if provided (prevent wildly invalid years like +020004)
-    if (dateOfBirth) {
-      const dob = new Date(dateOfBirth);
-      const year = dob.getFullYear();
-      if (isNaN(dob.getTime()) || year < 1900 || year > new Date().getFullYear()) {
-        return NextResponse.json(
-          { error: 'Invalid date of birth. Please enter a valid date.' },
-          { status: 400 }
-        );
-      }
-    }
 
     // Check for duplicate email if provided
     if (email) {
@@ -161,7 +149,7 @@ export async function POST(request) {
         lastName,
         dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : null,
         gender,
-        ssn,
+        ssn: ssn ? encrypt(ssn) : null,
         email: email || null,
         phone,
         address,

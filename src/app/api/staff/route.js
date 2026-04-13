@@ -3,6 +3,8 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
+import { StaffSchema } from '@/lib/validations';
+import { ApiResponse } from '@/lib/api-response';
 
 export async function GET(request) {
   try {
@@ -19,8 +21,12 @@ export async function GET(request) {
     const status = searchParams.get('status');
     const branchId = searchParams.get('branchId');
     const role = searchParams.get('role');
-    const sort = searchParams.get('sort') || 'createdAt';
-    const order = searchParams.get('order') || 'desc';
+
+    // Whitelist valid sort fields to prevent information disclosure
+    const ALLOWED_SORT_FIELDS = ['createdAt', 'updatedAt', 'firstName', 'lastName', 'email', 'status', 'role'];
+    const ALLOWED_ORDER_VALUES = ['asc', 'desc'];
+    const sort = ALLOWED_SORT_FIELDS.includes(searchParams.get('sort')) ? searchParams.get('sort') : 'createdAt';
+    const order = ALLOWED_ORDER_VALUES.includes(searchParams.get('order')) ? searchParams.get('order') : 'desc';
     const skip = (page - 1) * limit;
 
     const where = {
@@ -124,6 +130,11 @@ export async function POST(request) {
 
     const body = await request.json();
 
+    const validationResult = StaffSchema.safeParse(body);
+    if (!validationResult.success) {
+      return ApiResponse.error('Validation failed', 400, validationResult.error.format());
+    }
+
     const {
       firstName,
       lastName,
@@ -139,12 +150,9 @@ export async function POST(request) {
       licenseExpiry,
     } = body;
 
-    // Validate required fields
-    if (!firstName || !lastName || !email || !password || !phone || !branchId || !role) {
-      return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
-      );
+    // Validate required fields explicitly strictly required for staff creation (some omitted in Zod because of shared schema logic)
+    if (!email || !password || !branchId || !role) {
+      return ApiResponse.error('Missing required fields (email, password, branchId, role)', 400);
     }
 
     // Validate role - never allow ADMIN creation through API

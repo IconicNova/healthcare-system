@@ -19,6 +19,22 @@ export async function PATCH(request, { params }) {
     const { id } = await params;
     const body = await request.json();
 
+    // Prevent self-modification of role
+    if (id === session.user.id && body.role && body.role !== session.user.role) {
+      return NextResponse.json({ error: 'Cannot modify your own role' }, { status: 403 });
+    }
+
+    // Prevent non-SUPER_ADMIN from assigning SUPER_ADMIN role
+    if (body.role === 'SUPER_ADMIN' && session.user.role !== 'SUPER_ADMIN') {
+      return NextResponse.json({ error: 'Only SUPER_ADMIN can assign SUPER_ADMIN role' }, { status: 403 });
+    }
+
+    // Validate role is a valid enum value
+    const VALID_ROLES = ['STAFF', 'SUPERVISOR', 'MANAGER', 'ADMIN', 'SUPER_ADMIN'];
+    if (body.role && !VALID_ROLES.includes(body.role)) {
+      return NextResponse.json({ error: 'Invalid role' }, { status: 400 });
+    }
+
     const updateData = {
       firstName: body.firstName,
       lastName: body.lastName,
