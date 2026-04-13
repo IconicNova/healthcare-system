@@ -203,6 +203,10 @@ export default function StaffForm({ onSuccess, onCancel, branches = [], staffId,
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!e.target.checkValidity()) {
+      e.target.reportValidity();
+      return;
+    }
     setError('');
 
     if (!validateForm()) {
@@ -245,7 +249,11 @@ export default function StaffForm({ onSuccess, onCancel, branches = [], staffId,
 
       if (!response.ok) {
         const data = await response.json();
-        throw new Error(data.error || `Failed to ${staffId ? 'update' : 'create'} staff member`);
+        let errorMessage = data.error || `Failed to ${staffId ? 'update' : 'create'} staff member`;
+        if (data.details && Array.isArray(data.details)) {
+          errorMessage += ': ' + data.details.map(d => d.message).join(', ');
+        }
+        throw new Error(errorMessage);
       }
 
       const result = await response.json();

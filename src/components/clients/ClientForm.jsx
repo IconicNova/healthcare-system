@@ -219,6 +219,10 @@ export default function ClientForm({ client = null, onSuccess, onCancel }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!e.target.checkValidity()) {
+      e.target.reportValidity();
+      return;
+    }
     if (!validate()) return;
 
     setSaving(true);
@@ -242,7 +246,11 @@ export default function ClientForm({ client = null, onSuccess, onCancel }) {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.error || 'Failed to save client');
+        let errorMessage = error.error || 'Failed to save client';
+        if (error.details && Array.isArray(error.details)) {
+          errorMessage += ': ' + error.details.map(d => d.message).join(', ');
+        }
+        throw new Error(errorMessage);
       }
 
       const result = await response.json();
@@ -435,6 +443,9 @@ export default function ClientForm({ client = null, onSuccess, onCancel }) {
                 value={formData.ssn}
                 onChange={(e) => handleChange('ssn', e.target.value)}
                 placeholder="XXX-XX-XXXX"
+                maxLength={11}
+                pattern="^(\d{3}-\d{2}-\d{4}|\d{9})$"
+                title="Input your 9 digit Social Security/Insurance Number"
               />
             </div>
 
