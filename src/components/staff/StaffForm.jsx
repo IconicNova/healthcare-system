@@ -401,12 +401,14 @@ export default function StaffForm({ onSuccess, onCancel, branches = [], staffId,
             value={formData.firstName}
             onChange={(e) => handleInputChange('firstName', e.target.value)}
             required
+            maxLength={50}
           />
           <Input
             label="Last Name"
             value={formData.lastName}
             onChange={(e) => handleInputChange('lastName', e.target.value)}
             required
+            maxLength={50}
           />
         </div>
 
@@ -417,6 +419,7 @@ export default function StaffForm({ onSuccess, onCancel, branches = [], staffId,
             value={formData.email}
             onChange={(e) => handleInputChange('email', e.target.value)}
             required
+            maxLength={255}
           />
         </div>
 
@@ -428,6 +431,7 @@ export default function StaffForm({ onSuccess, onCancel, branches = [], staffId,
             onChange={(e) => handleInputChange('password', e.target.value)}
             required={!staffId}
             helperText={staffId ? 'Leave blank to keep current password' : 'Minimum 8 characters'}
+            maxLength={100}
           />
           <Input
             label={staffId ? "Confirm Password (optional)" : "Confirm Password"}
@@ -435,6 +439,7 @@ export default function StaffForm({ onSuccess, onCancel, branches = [], staffId,
             value={formData.confirmPassword}
             onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
             required={!staffId}
+            maxLength={100}
           />
         </div>
 
@@ -467,6 +472,10 @@ export default function StaffForm({ onSuccess, onCancel, branches = [], staffId,
             value={formData.phone}
             onChange={(e) => handleInputChange('phone', e.target.value)}
             required
+            maxLength={20}
+            pattern="^\+?[1]?[-.\s]?\(?([0-9]{3})\)?[-.\s]?([0-9]{3})[-.\s]?([0-9]{4})$"
+            placeholder="(416) 555-0198"
+            title="Must be a valid 10-digit North American phone number"
           />
           <Select
             label="Branch"
@@ -483,6 +492,7 @@ export default function StaffForm({ onSuccess, onCancel, branches = [], staffId,
             type="date"
             value={formData.hireDate}
             onChange={(e) => handleInputChange('hireDate', e.target.value)}
+            min="1900-01-01"
           />
           <Input
             label="Pay Rate"
@@ -491,6 +501,7 @@ export default function StaffForm({ onSuccess, onCancel, branches = [], staffId,
             value={formData.payRate}
             onChange={(e) => handleInputChange('payRate', e.target.value)}
             placeholder="0.00"
+            min="0"
           />
           <Select
             label="Pay Type"
@@ -511,6 +522,7 @@ export default function StaffForm({ onSuccess, onCancel, branches = [], staffId,
             label="License Number"
             value={formData.licenseNumber}
             onChange={(e) => handleInputChange('licenseNumber', e.target.value)}
+            maxLength={50}
           />
         </div>
 
@@ -520,6 +532,7 @@ export default function StaffForm({ onSuccess, onCancel, branches = [], staffId,
             type="date"
             value={formData.licenseExpiry}
             onChange={(e) => handleInputChange('licenseExpiry', e.target.value)}
+            min="1900-01-01"
           />
         </div>
       </div>

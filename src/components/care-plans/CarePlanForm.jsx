@@ -207,6 +207,7 @@ export default function CarePlanForm({ isOpen, onClose, onSubmit, clients = [], 
           onChange={(e) => handleInputChange('name', e.target.value)}
           placeholder="e.g., Post-Surgery Recovery Plan"
           error={errors.name}
+          maxLength={255}
         />
       </div>
 
@@ -218,6 +219,7 @@ export default function CarePlanForm({ isOpen, onClose, onSubmit, clients = [], 
           rows="3"
           className="textarea"
           placeholder="Optional description of the care plan..."
+          maxLength={1000}
         />
       </div>
 
@@ -245,6 +247,7 @@ export default function CarePlanForm({ isOpen, onClose, onSubmit, clients = [], 
           value={formData.startDate}
           onChange={(e) => handleInputChange('startDate', e.target.value)}
           error={errors.startDate}
+          min="1900-01-01"
         />
 
         <Input
@@ -253,6 +256,7 @@ export default function CarePlanForm({ isOpen, onClose, onSubmit, clients = [], 
           value={formData.endDate}
           onChange={(e) => handleInputChange('endDate', e.target.value)}
           error={errors.endDate}
+          min="1900-01-01"
         />
       </div>
 
@@ -340,6 +344,7 @@ export default function CarePlanForm({ isOpen, onClose, onSubmit, clients = [], 
                     value={service.instructions || ''}
                     onChange={(e) => updateService(index, 'instructions', e.target.value)}
                     placeholder="Special instructions..."
+                    maxLength={1000}
                     style={{
                       width: '100%',
                       padding: '8px 12px',

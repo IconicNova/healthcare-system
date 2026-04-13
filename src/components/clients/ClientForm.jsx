@@ -403,6 +403,7 @@ export default function ClientForm({ client = null, onSuccess, onCancel }) {
                 onChange={(e) => handleChange('firstName', e.target.value)}
                 error={errors.firstName}
                 required
+                maxLength={50}
               />
               <Input
                 label="Last Name"
@@ -410,6 +411,7 @@ export default function ClientForm({ client = null, onSuccess, onCancel }) {
                 onChange={(e) => handleChange('lastName', e.target.value)}
                 error={errors.lastName}
                 required
+                maxLength={50}
               />
             </div>
 
@@ -419,6 +421,7 @@ export default function ClientForm({ client = null, onSuccess, onCancel }) {
                 type="date"
                 value={formData.dateOfBirth}
                 onChange={(e) => handleChange('dateOfBirth', e.target.value)}
+                min="1900-01-01"
                 max={new Date().toISOString().split('T')[0]}
               />
               <Select
@@ -442,6 +445,7 @@ export default function ClientForm({ client = null, onSuccess, onCancel }) {
                 value={formData.email}
                 onChange={(e) => handleChange('email', e.target.value)}
                 error={errors.email}
+                maxLength={255}
               />
               <Input
                 label="Phone"
@@ -449,6 +453,10 @@ export default function ClientForm({ client = null, onSuccess, onCancel }) {
                 onChange={(e) => handleChange('phone', e.target.value)}
                 error={errors.phone}
                 required
+                maxLength={20}
+                pattern="^\+?[1]?[-.\s]?\(?([0-9]{3})\)?[-.\s]?([0-9]{3})[-.\s]?([0-9]{4})$"
+                title="Must be a valid 10-digit North American phone number"
+                placeholder="(416) 555-0198"
               />
             </div>
 
@@ -463,6 +471,7 @@ export default function ClientForm({ client = null, onSuccess, onCancel }) {
               onChange={(e) => handleChange('address', e.target.value)}
               error={errors.address}
               required
+              maxLength={255}
               style={{ marginBottom: '16px' }}
             />
 
@@ -473,21 +482,26 @@ export default function ClientForm({ client = null, onSuccess, onCancel }) {
                 onChange={(e) => handleChange('city', e.target.value)}
                 error={errors.city}
                 required
+                maxLength={50}
               />
               <Input
-                label="State"
+                label="Province"
                 value={formData.state}
                 onChange={(e) => handleChange('state', e.target.value)}
                 error={errors.state}
                 required
-                maxLength={2}
+                maxLength={50}
               />
               <Input
-                label="Zip Code"
+                label="Postal Code"
                 value={formData.zipCode}
                 onChange={(e) => handleChange('zipCode', e.target.value)}
                 error={errors.zipCode}
                 required
+                maxLength={7}
+                pattern="^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$"
+                placeholder="M5V 2T6"
+                title="Valid Canadian Postal Code (e.g. M5V 2T6)"
               />
             </div>
 
@@ -524,18 +538,22 @@ export default function ClientForm({ client = null, onSuccess, onCancel }) {
                     value={contact.name}
                     onChange={(e) => handleEmergencyContactChange(index, 'name', e.target.value)}
                     style={{ marginBottom: 0 }}
+                    maxLength={50}
                   />
                   <Input
                     label="Relation"
                     value={contact.relation}
                     onChange={(e) => handleEmergencyContactChange(index, 'relation', e.target.value)}
                     style={{ marginBottom: 0 }}
+                    maxLength={50}
                   />
                   <Input
                     label="Phone"
                     value={contact.phone}
                     onChange={(e) => handleEmergencyContactChange(index, 'phone', e.target.value)}
                     style={{ marginBottom: 0 }}
+                    maxLength={20}
+                    pattern="^\+?[1]?[-.\s]?\(?([0-9]{3})\)?[-.\s]?([0-9]{3})[-.\s]?([0-9]{4})$"
                   />
                   <Input
                     label="Email"
@@ -543,6 +561,7 @@ export default function ClientForm({ client = null, onSuccess, onCancel }) {
                     value={contact.email}
                     onChange={(e) => handleEmergencyContactChange(index, 'email', e.target.value)}
                     style={{ marginBottom: 0 }}
+                    maxLength={255}
                   />
                   <button
                     type="button"

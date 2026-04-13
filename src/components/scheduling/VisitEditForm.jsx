@@ -259,6 +259,7 @@ export default function VisitEditForm({ isOpen, onClose, onSubmit, visit, client
             value={formData.date}
             onChange={(e) => handleInputChange('date', e.target.value)}
             error={errors.date}
+            min="1900-01-01"
           />
 
           <Input
@@ -286,6 +287,7 @@ export default function VisitEditForm({ isOpen, onClose, onSubmit, visit, client
             rows="3"
             className="textarea"
             placeholder="Optional notes for this visit..."
+            maxLength={1000}
           />
         </div>
 
