@@ -206,18 +206,30 @@ export default function FormsReviewQueue({ clientId = '', embedded = false }) {
                 </option>
               ))}
             </select>
-            <input
-              type="date"
-              className="input"
-              value={filters.dateFrom}
-              onChange={(event) => handleFilterChange('dateFrom', event.target.value)}
-            />
-            <input
-              type="date"
-              className="input"
-              value={filters.dateTo}
-              onChange={(event) => handleFilterChange('dateTo', event.target.value)}
-            />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <label style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-text-secondary)' }}>
+                From
+              </label>
+              <input
+                type="date"
+                className="input"
+                aria-label="Filter from date"
+                value={filters.dateFrom}
+                onChange={(event) => handleFilterChange('dateFrom', event.target.value)}
+              />
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <label style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-text-secondary)' }}>
+                To
+              </label>
+              <input
+                type="date"
+                className="input"
+                aria-label="Filter to date"
+                value={filters.dateTo}
+                onChange={(event) => handleFilterChange('dateTo', event.target.value)}
+              />
+            </div>
           </div>
         </div>
       </div>
