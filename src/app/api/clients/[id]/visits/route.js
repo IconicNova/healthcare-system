@@ -18,7 +18,7 @@ export async function GET(request, { params }) {
     const skip = (page - 1) * limit;
 
     // Check if client exists
-    const client = await prisma.client.findUnique({
+    const client = await prisma.client.findFirst({
       where: {
         id,
         organizationId: session.user.organizationId,
@@ -52,6 +52,12 @@ export async function GET(request, { params }) {
               name: true,
             },
           },
+          service: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
           visitTasks: {
             select: {
               id: true,
@@ -79,6 +85,7 @@ export async function GET(request, { params }) {
         ...visit,
         staffName: visit.staff ? `${visit.staff.firstName} ${visit.staff.lastName}` : null,
         carePlanName: visit.carePlan?.name || null,
+        serviceName: visit.service?.name || null,
         completedTasks: visit.visitTasks.filter(t => t.completed).length,
         totalTasks: visit.visitTasks.length,
       })),

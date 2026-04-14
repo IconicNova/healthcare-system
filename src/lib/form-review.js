@@ -12,6 +12,38 @@ export function getReviewableStatuses() {
   return ['SUBMITTED', 'IN_REVIEW'];
 }
 
+export function buildReviewQueueWhereClause(organizationId, filters = {}) {
+  const where = {
+    client: {
+      organizationId,
+    },
+    status: filters.status || {
+      in: getReviewableStatuses(),
+    },
+  };
+
+  if (filters.clientId) {
+    where.clientId = filters.clientId;
+  }
+
+  if (filters.templateId) {
+    where.templateId = filters.templateId;
+  }
+
+  if (filters.dateFrom || filters.dateTo) {
+    where.submittedAt = {
+      ...(filters.dateFrom
+        ? { gte: new Date(`${filters.dateFrom}T00:00:00.000Z`) }
+        : {}),
+      ...(filters.dateTo
+        ? { lte: new Date(`${filters.dateTo}T23:59:59.999Z`) }
+        : {}),
+    };
+  }
+
+  return where;
+}
+
 export function canTransitionFormStatus(currentStatus, nextStatus, options = {}) {
   const validTransitions = {
     DRAFT: ['SUBMITTED'],
@@ -34,12 +66,13 @@ export function canTransitionFormStatus(currentStatus, nextStatus, options = {})
 
 export function countSubmittedLikeStatuses(statuses = []) {
   return statuses.filter((status) =>
-    ['SUBMITTED', 'IN_REVIEW', 'APPROVED'].includes(normalizeFormStatus(status))
+    ['SUBMITTED', 'IN_REVIEW', 'APPROVED', 'REJECTED'].includes(normalizeFormStatus(status))
   ).length;
 }
 
 export function shouldAutosaveDraft({ status, hasValidationErrors } = {}) {
-  return normalizeFormStatus(status) === 'DRAFT' && Boolean(hasValidationErrors);
+  void hasValidationErrors;
+  return normalizeFormStatus(status) === 'DRAFT';
 }
 
 export function buildReviewMetadataPatch({
@@ -59,8 +92,7 @@ export function buildReviewMetadataPatch({
       approvedAt: now,
       approvedBy: actorId || null,
       rejectedAt: null,
-      rejectedBy: null,
-      rejectionReason: '',
+      rejectionReason: null,
     };
   }
 
@@ -70,7 +102,6 @@ export function buildReviewMetadataPatch({
       approvedAt: null,
       approvedBy: null,
       rejectedAt: now,
-      rejectedBy: actorId || null,
       rejectionReason: normalizeRejectionReason(rejectionReason),
     };
   }
@@ -81,8 +112,7 @@ export function buildReviewMetadataPatch({
       approvedAt: null,
       approvedBy: null,
       rejectedAt: null,
-      rejectedBy: null,
-      rejectionReason: '',
+      rejectionReason: null,
     };
   }
 

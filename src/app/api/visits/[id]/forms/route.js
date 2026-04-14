@@ -4,6 +4,10 @@ import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { normalizeFormStatus } from '@/lib/form-review';
 
+function isUniqueConstraintError(error) {
+  return error?.code === 'P2002';
+}
+
 // GET - Fetch forms for a visit
 export async function GET(request, { params }) {
   try {
@@ -128,27 +132,65 @@ export async function POST(request, { params }) {
       });
     }
 
-    const form = await prisma.clientForm.create({
-      data: {
-        templateId,
-        visitId: id,
-        clientId: visit.clientId,
-        status: 'DRAFT',
-        formData: null,
-        submittedBy: null,
-      },
-      include: {
-        template: {
-          select: {
-            id: true,
-            name: true,
-            description: true,
-            schema: true,
-            category: true,
+    let form;
+
+    try {
+      form = await prisma.clientForm.create({
+        data: {
+          templateId,
+          visitId: id,
+          clientId: visit.clientId,
+          status: 'DRAFT',
+          formData: null,
+          submittedBy: null,
+        },
+        include: {
+          template: {
+            select: {
+              id: true,
+              name: true,
+              description: true,
+              schema: true,
+              category: true,
+            },
           },
         },
-      },
-    });
+      });
+    } catch (error) {
+      if (!isUniqueConstraintError(error)) {
+        throw error;
+      }
+
+      const concurrentForm = await prisma.clientForm.findFirst({
+        where: {
+          visitId: id,
+          templateId,
+        },
+        include: {
+          template: {
+            select: {
+              id: true,
+              name: true,
+              description: true,
+              schema: true,
+              category: true,
+            },
+          },
+        },
+        orderBy: { createdAt: 'desc' },
+      });
+
+      if (!concurrentForm) {
+        throw error;
+      }
+
+      return NextResponse.json({
+        form: {
+          ...concurrentForm,
+          status: normalizeFormStatus(concurrentForm.status),
+        },
+      });
+    }
 
     return NextResponse.json({
       form: {

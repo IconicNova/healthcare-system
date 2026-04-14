@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Button from '@/components/ui/Button';
@@ -314,9 +315,12 @@ export default function ClientForm({ client = null, onSuccess, onCancel }) {
             <div style={{ display: 'flex', alignItems: 'center', gap: '24px', marginBottom: '24px' }}>
               <div style={{ position: 'relative', width: '100px', height: '100px' }}>
                 {avatarPreview ? (
-                  <img
+                  <Image
                     src={avatarPreview}
                     alt="Profile preview"
+                    unoptimized
+                    width={100}
+                    height={100}
                     style={{
                       width: '100px',
                       height: '100px',

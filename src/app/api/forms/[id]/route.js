@@ -133,15 +133,12 @@ export async function PATCH(request, { params }) {
       }
 
       updateData.status = nextStatus;
-      const metadataPatch = buildReviewMetadataPatch({
+      Object.assign(updateData, buildReviewMetadataPatch({
         previousStatus: currentStatus,
         nextStatus,
         rejectionReason: body.rejectionReason,
         actorId: session.user.id,
-      });
-      const { rejectedBy, ...persistedMetadataPatch } = metadataPatch;
-      void rejectedBy;
-      Object.assign(updateData, persistedMetadataPatch);
+      }));
 
       // Record lifecycle timestamps as the form moves through review.
       if (nextStatus === 'SUBMITTED' && !form.submittedAt) {

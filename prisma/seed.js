@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
+import { chartingTemplates } from '../src/lib/charting-templates.js';
 
 const prisma = new PrismaClient();
 
@@ -503,6 +504,15 @@ async function main() {
           ],
         }),
       },
+      ...chartingTemplates.map((template) => ({
+        organizationId: organization.id,
+        name: template.name,
+        description: template.description,
+        category: template.category,
+        isRequired: template.isRequired,
+        status: template.status,
+        schema: template.schema,
+      })),
     ],
   });
 

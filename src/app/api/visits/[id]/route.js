@@ -13,7 +13,7 @@ export async function GET(request, { params }) {
 
     const { id } = params;
 
-    const visit = await prisma.visit.findUnique({
+    const visit = await prisma.visit.findFirst({
       where: {
         id,
         organizationId: session.user.organizationId,
@@ -120,7 +120,7 @@ export async function PATCH(request, { params }) {
     const { id } = params;
     const body = await request.json();
 
-    const existing = await prisma.visit.findUnique({
+    const existing = await prisma.visit.findFirst({
       where: {
         id,
         organizationId: session.user.organizationId,
@@ -209,8 +209,12 @@ export async function PATCH(request, { params }) {
       data: {
         ...(body.startTime && { startTime: new Date(body.startTime) }),
         ...(body.endTime && { endTime: new Date(body.endTime) }),
+        ...(body.title !== undefined && { title: body.title }),
+        ...(body.description !== undefined && { description: body.description }),
         ...(body.status && { status: body.status }),
         ...(body.notes !== undefined && { notes: body.notes }),
+        ...(body.actualStart !== undefined && { actualStart: body.actualStart ? new Date(body.actualStart) : null }),
+        ...(body.actualEnd !== undefined && { actualEnd: body.actualEnd ? new Date(body.actualEnd) : null }),
         ...(body.clientId && { clientId: body.clientId }),
         ...(body.staffId !== undefined && { staffId: body.staffId }),
         ...(body.serviceId && { serviceId: body.serviceId }),
@@ -263,7 +267,7 @@ export async function DELETE(request, { params }) {
 
     const { id } = params;
 
-    const existing = await prisma.visit.findUnique({
+    const existing = await prisma.visit.findFirst({
       where: {
         id,
         organizationId: session.user.organizationId,

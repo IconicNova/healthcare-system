@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { Users, Search } from 'lucide-react';
 import CareDeliveryLayout from '@/components/care-delivery/CareDeliveryLayout';
 import TasksView from '@/components/care-delivery/TasksView';
@@ -89,12 +90,34 @@ export default function CareDeliveryPage() {
     <div>
       {/* Page Header */}
       <div style={{ marginBottom: '24px' }}>
-        <h1 style={{ fontSize: '28px', fontWeight: 700, color: 'var(--color-text)', margin: 0 }}>
-          Care Delivery
-        </h1>
-        <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)', marginTop: '4px' }}>
-          Document visits, complete tasks, and track client progress
-        </p>
+        <div style={{ display: 'flex', justifyContent: 'space-between', gap: '16px', flexWrap: 'wrap', alignItems: 'flex-start' }}>
+          <div>
+            <h1 style={{ fontSize: '28px', fontWeight: 700, color: 'var(--color-text)', margin: 0 }}>
+              Care Delivery
+            </h1>
+            <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)', marginTop: '4px' }}>
+              Document visits, complete tasks, and track client progress
+            </p>
+          </div>
+          <Link
+            href="/care-delivery/forms/review"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '10px 14px',
+              borderRadius: '10px',
+              backgroundColor: 'var(--color-white)',
+              border: '1px solid var(--color-border)',
+              color: 'var(--color-text)',
+              fontSize: '13px',
+              fontWeight: 600,
+              textDecoration: 'none',
+            }}
+          >
+            Review Submitted Forms
+          </Link>
+        </div>
       </div>
 
       {/* Client Selector */}

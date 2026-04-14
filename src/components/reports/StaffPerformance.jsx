@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { format, startOfMonth, endOfMonth } from 'date-fns';
 
@@ -12,11 +12,7 @@ export default function StaffPerformance() {
   const [data, setData] = useState([]);
   const [sortConfig, setSortConfig] = useState({ key: 'completionRate', direction: 'desc' });
 
-  useEffect(() => {
-    fetchStaffPerformance();
-  }, [dateFrom, dateTo]);
-
-  const fetchStaffPerformance = async () => {
+  const fetchStaffPerformance = useCallback(async () => {
     setLoading(true);
     try {
       const response = await fetch(
@@ -31,7 +27,11 @@ export default function StaffPerformance() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [dateFrom, dateTo]);
+
+  useEffect(() => {
+    fetchStaffPerformance();
+  }, [fetchStaffPerformance]);
 
   const handleSort = (key) => {
     setSortConfig(prev => ({

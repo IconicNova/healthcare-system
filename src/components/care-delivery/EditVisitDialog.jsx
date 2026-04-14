@@ -6,6 +6,7 @@ import Tabs from '@/components/ui/Tabs';
 import { Info, ListTodo, FileText, Target, Check, Save, Clock } from 'lucide-react';
 import VisitTasksTab from './EditVisitTasksTab';
 import VisitNotesTab from './EditVisitNotesTab';
+import EditVisitFormsTab from './EditVisitFormsTab';
 
 const STATUS_OPTIONS = [
   { value: 'VACANT', label: 'Vacant', color: '#8B5CF6' },
@@ -32,6 +33,7 @@ export default function EditVisitDialog({ isOpen, onClose, visit, onSave }) {
     actualEnd: null,
   });
   const [isSaving, setIsSaving] = useState(false);
+  const [activeTab, setActiveTab] = useState('info');
 
   useEffect(() => {
     if (visit) {
@@ -45,6 +47,12 @@ export default function EditVisitDialog({ isOpen, onClose, visit, onSave }) {
       });
     }
   }, [visit, isOpen]);
+
+  useEffect(() => {
+    if (isOpen) {
+      setActiveTab('info');
+    }
+  }, [isOpen, visit?.id]);
 
   const handleSubmit = async () => {
     if (!visit) return;
@@ -379,25 +387,21 @@ export default function EditVisitDialog({ isOpen, onClose, visit, onSave }) {
       value: 'tasks',
       label: 'Service Tasks',
       icon: ListTodo,
-      content: <VisitTasksTab visitId={visit?.id} />,
+    },
+    {
+      value: 'forms',
+      label: 'Forms',
+      icon: FileText,
     },
     {
       value: 'notes',
       label: 'View Notes',
       icon: FileText,
-      content: <VisitNotesTab visitId={visit?.id} />,
     },
     {
       value: 'goals',
       label: 'Goals',
       icon: Target,
-      content: (
-        <div style={{ padding: '24px', textAlign: 'center', color: 'var(--color-text-secondary)' }}>
-          <Target size={48} style={{ opacity: 0.3, marginBottom: '16px' }} />
-          <p style={{ fontSize: '14px', fontWeight: 500 }}>Goals Management</p>
-          <p style={{ fontSize: '12px', marginTop: '8px' }}>Care goals for this visit will appear here</p>
-        </div>
-      ),
     },
   ];
 
@@ -410,7 +414,20 @@ export default function EditVisitDialog({ isOpen, onClose, visit, onSave }) {
     >
       <div style={{ height: '600px', display: 'flex', flexDirection: 'column' }}>
         <div style={{ flex: 1, overflow: 'auto' }}>
-          <Tabs tabs={tabs} defaultTab="info" />
+          <Tabs tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
+          <div>
+            {activeTab === 'info' && renderInfoTab()}
+            {activeTab === 'tasks' && <VisitTasksTab visitId={visit?.id} />}
+            {activeTab === 'forms' && <EditVisitFormsTab visitId={visit?.id} />}
+            {activeTab === 'notes' && <VisitNotesTab visitId={visit?.id} />}
+            {activeTab === 'goals' && (
+              <div style={{ padding: '24px', textAlign: 'center', color: 'var(--color-text-secondary)' }}>
+                <Target size={48} style={{ opacity: 0.3, marginBottom: '16px' }} />
+                <p style={{ fontSize: '14px', fontWeight: 500 }}>Goals Management</p>
+                <p style={{ fontSize: '12px', marginTop: '8px' }}>Care goals for this visit will appear here</p>
+              </div>
+            )}
+          </div>
         </div>
         <div style={{
           padding: '16px 24px',

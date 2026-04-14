@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Edit, MoreVertical, Trash2, Upload, X } from 'lucide-react';
@@ -220,9 +221,12 @@ export default function StaffProfile({ staffData }) {
           {/* Avatar Section */}
           <div style={{ position: 'relative' }}>
             {displayAvatar ? (
-              <img
+              <Image
                 src={displayAvatar}
                 alt={`${staffData.firstName} ${staffData.lastName}`}
+                unoptimized
+                width={80}
+                height={80}
                 style={{
                   width: '80px',
                   height: '80px',

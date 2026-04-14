@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import DataTable from '@/components/ui/DataTable';
@@ -106,9 +107,12 @@ export default function ClientList() {
       return (
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           {hasAvatar ? (
-            <img
+            <Image
               src={client.avatar}
               alt={`${client.firstName} ${client.lastName}`}
+              unoptimized
+              width={40}
+              height={40}
               style={{
                 width: '40px',
                 height: '40px',

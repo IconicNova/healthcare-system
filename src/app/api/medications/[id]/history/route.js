@@ -49,6 +49,11 @@ export async function GET(request, { params }) {
             select: {
               title: true,
               startTime: true,
+              service: {
+                select: {
+                  name: true,
+                },
+              },
             },
           },
         },

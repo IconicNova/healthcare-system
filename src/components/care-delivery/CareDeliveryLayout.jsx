@@ -1,10 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { ListTodo, FileText, ClipboardList, Activity, Pill } from 'lucide-react';
+import { usePathname, useRouter } from 'next/navigation';
+import { ListTodo, FileCheck, FileText, ClipboardList, Activity, Pill } from 'lucide-react';
 
 const NAV_ITEMS = [
   { value: 'tasks', label: 'Tasks', icon: ListTodo },
+  { value: 'forms-review', label: 'Forms Review', icon: FileCheck, href: '/care-delivery/forms/review' },
   { value: 'progress', label: 'Progress Notes', icon: FileText },
   { value: 'reports', label: 'Visit Reports', icon: ClipboardList },
   { value: 'vitals', label: 'Vitals', icon: Activity },
@@ -12,6 +14,8 @@ const NAV_ITEMS = [
 ];
 
 export default function CareDeliveryLayout({ children, initialTab = 'tasks', client }) {
+  const router = useRouter();
+  const pathname = usePathname();
   const [activeTab, setActiveTab] = useState(initialTab);
 
   return (
@@ -51,7 +55,13 @@ export default function CareDeliveryLayout({ children, initialTab = 'tasks', cli
           {NAV_ITEMS.map((item) => (
             <button
               key={item.value}
-              onClick={() => setActiveTab(item.value)}
+              onClick={() => {
+                if (item.href) {
+                  router.push(item.href);
+                  return;
+                }
+                setActiveTab(item.value);
+              }}
               style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -59,8 +69,8 @@ export default function CareDeliveryLayout({ children, initialTab = 'tasks', cli
                 width: '100%',
                 padding: '10px 12px',
                 border: 'none',
-                backgroundColor: activeTab === item.value ? 'var(--color-primary-light)' : 'transparent',
-                color: activeTab === item.value ? 'white' : 'var(--color-text-secondary)',
+                backgroundColor: (item.href ? pathname === item.href : activeTab === item.value) ? 'var(--color-primary-light)' : 'transparent',
+                color: (item.href ? pathname === item.href : activeTab === item.value) ? 'white' : 'var(--color-text-secondary)',
                 borderRadius: '8px',
                 cursor: 'pointer',
                 fontSize: '13px',

@@ -15,7 +15,7 @@ export async function GET(request, { params }) {
     const { id } = params;
 
     // Verify the client belongs to the user's organization
-    const client = await prisma.client.findUnique({
+    const client = await prisma.client.findFirst({
       where: {
         id,
         organizationId: session.user.organizationId,

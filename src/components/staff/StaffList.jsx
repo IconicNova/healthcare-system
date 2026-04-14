@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import DataTable from '@/components/ui/DataTable';
@@ -148,9 +149,12 @@ export default function StaffList() {
       return (
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           {hasAvatar ? (
-            <img
+            <Image
               src={member.user.avatar}
               alt={`${member.firstName} ${member.lastName}`}
+              unoptimized
+              width={40}
+              height={40}
               style={{
                 width: '40px',
                 height: '40px',

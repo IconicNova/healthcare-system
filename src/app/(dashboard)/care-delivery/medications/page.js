@@ -3,6 +3,10 @@
 import { useState, useEffect } from 'react';
 import { Pill, Plus, History } from 'lucide-react';
 import Modal from '@/components/ui/Modal';
+import {
+  buildMedicationAdministrationPayload,
+  formatAdministrationVisitLabel,
+} from '@/components/care-delivery/medication-administration.helpers';
 
 const STATUS_CONFIG = {
   ADMINISTERED: { label: 'Administered', color: '#16A34A', bg: '#16A34A15' },
@@ -15,15 +19,18 @@ export default function MedicationsPage() {
   const [selectedClient, setSelectedClient] = useState(null);
   const [clients, setClients] = useState([]);
   const [medications, setMedications] = useState([]);
+  const [clientVisits, setClientVisits] = useState([]);
   const [selectedMedication, setSelectedMedication] = useState(null);
   const [showMedicationDetail, setShowMedicationDetail] = useState(false);
   const [showAdministerModal, setShowAdministerModal] = useState(false);
+  const [administrationError, setAdministrationError] = useState('');
   const [administrationData, setAdministrationData] = useState({
     status: 'ADMINISTERED',
     dosage: '',
     unit: '',
     reason: '',
     comment: '',
+    visitId: '',
   });
   const [loading, setLoading] = useState(true);
 
@@ -48,19 +55,28 @@ export default function MedicationsPage() {
   useEffect(() => {
     if (!selectedClient) return;
 
-    const fetchMedications = async () => {
+    const fetchClientContext = async () => {
       try {
-        const response = await fetch(`/api/clients/${selectedClient.id}/medications`);
-        if (response.ok) {
-          const data = await response.json();
+        const [medicationsResponse, visitsResponse] = await Promise.all([
+          fetch(`/api/clients/${selectedClient.id}/medications`),
+          fetch(`/api/clients/${selectedClient.id}/visits?limit=20`),
+        ]);
+
+        if (medicationsResponse.ok) {
+          const data = await medicationsResponse.json();
           setMedications(data.medications || []);
         }
+
+        if (visitsResponse.ok) {
+          const data = await visitsResponse.json();
+          setClientVisits(data.visits || []);
+        }
       } catch (error) {
-        console.error('Error fetching medications:', error);
+        console.error('Error fetching client context:', error);
       }
     };
 
-    fetchMedications();
+    fetchClientContext();
   }, [selectedClient]);
 
   const handleClientSelect = (e) => {
@@ -68,6 +84,7 @@ export default function MedicationsPage() {
     const client = clients.find(c => c.id === clientId);
     setSelectedClient(client);
     setMedications([]);
+    setClientVisits([]);
     setSelectedMedication(null);
   };
 
@@ -88,12 +105,14 @@ export default function MedicationsPage() {
   };
 
   const handleAdministerClick = () => {
+    setAdministrationError('');
     setAdministrationData({
       status: 'ADMINISTERED',
       dosage: selectedMedication?.dosage || '',
       unit: '',
       reason: '',
       comment: '',
+      visitId: clientVisits[0]?.id || '',
     });
     setShowAdministerModal(true);
   };
@@ -102,15 +121,18 @@ export default function MedicationsPage() {
     if (!selectedMedication) return;
 
     try {
+      const payload = buildMedicationAdministrationPayload(administrationData);
+
       const response = await fetch(`/api/medications/${selectedMedication.id}/administer`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(administrationData),
+        body: JSON.stringify(payload),
       });
 
       if (response.ok) {
         const result = await response.json();
         alert('Medication administration recorded successfully');
+        setAdministrationError('');
 
         // Refresh medication data
         const updatedMedication = { ...selectedMedication };
@@ -121,11 +143,12 @@ export default function MedicationsPage() {
 
         setShowAdministerModal(false);
       } else {
-        alert('Failed to record medication administration');
+        const data = await response.json().catch(() => ({}));
+        setAdministrationError(data.error || 'Failed to record medication administration');
       }
     } catch (error) {
       console.error('Error administering medication:', error);
-      alert('Failed to record medication administration');
+      setAdministrationError(error.message || 'Failed to record medication administration');
     }
   };
 
@@ -368,6 +391,15 @@ export default function MedicationsPage() {
                               Reason: {admin.reason}
                             </div>
                           )}
+                          {admin.visit && (
+                            <div style={{ marginTop: '4px', color: 'var(--color-text-secondary)' }}>
+                              Visit: {formatAdministrationVisitLabel({
+                                title: admin.visit.title,
+                                startTime: admin.visit.startTime,
+                                serviceName: admin.visit.service?.name,
+                              })}
+                            </div>
+                          )}
                         </div>
                       </div>
                     );
@@ -450,6 +482,34 @@ export default function MedicationsPage() {
             </div>
           )}
 
+          <div>
+            <label style={{ fontSize: '13px', fontWeight: 500, display: 'block', marginBottom: '8px' }}>
+              Administration Event / Visit *
+            </label>
+            <select
+              value={administrationData.visitId}
+              onChange={(e) => setAdministrationData(prev => ({ ...prev, visitId: e.target.value }))}
+              style={{
+                width: '100%',
+                padding: '10px 12px',
+                borderRadius: '8px',
+                border: '1px solid var(--color-border)',
+                fontSize: '13px',
+                backgroundColor: 'white',
+              }}
+            >
+              <option value="">Select a visit</option>
+              {clientVisits.map((visit) => (
+                <option key={visit.id} value={visit.id}>
+                  {formatAdministrationVisitLabel(visit)}
+                </option>
+              ))}
+            </select>
+            <p style={{ marginTop: '6px', fontSize: '12px', color: 'var(--color-text-secondary)' }}>
+              Link each administration record to the visit where the event occurred.
+            </p>
+          </div>
+
           {/* Reason for non-administration */}
           {administrationData.status !== 'ADMINISTERED' && (
             <div>
@@ -494,6 +554,19 @@ export default function MedicationsPage() {
             />
           </div>
 
+          {administrationError && (
+            <div style={{
+              fontSize: '12px',
+              color: 'var(--color-error)',
+              backgroundColor: 'rgba(239, 68, 68, 0.08)',
+              border: '1px solid rgba(239, 68, 68, 0.18)',
+              borderRadius: '8px',
+              padding: '10px 12px',
+            }}>
+              {administrationError}
+            </div>
+          )}
+
           {/* Action Buttons */}
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end', marginTop: '8px' }}>
             <button
@@ -523,6 +596,7 @@ export default function MedicationsPage() {
                 fontWeight: 500,
                 cursor: 'pointer',
               }}
+              disabled={clientVisits.length === 0}
             >
               Record Administration
             </button>

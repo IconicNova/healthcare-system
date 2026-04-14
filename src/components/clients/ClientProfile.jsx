@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Tabs from '@/components/ui/Tabs';
@@ -178,9 +179,12 @@ export default function ClientProfilePage({ params }) {
           <div style={{ display: 'flex', gap: '16px' }}>
             <div style={{ position: 'relative' }}>
               {displayAvatar ? (
-                <img
+                <Image
                   src={displayAvatar}
                   alt={`${client.firstName} ${client.lastName}`}
+                  unoptimized
+                  width={64}
+                  height={64}
                   style={{
                     width: '64px',
                     height: '64px',

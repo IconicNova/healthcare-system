@@ -117,7 +117,7 @@ export default function ImageEditorModal({ isOpen, onClose, onApply, imageSrc })
     };
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose]);
+  }, [isOpen, onClose, resetTransform]);
 
   // Draw image on canvas
   useEffect(() => {

@@ -20,11 +20,25 @@ export async function POST(request, { params }) {
 
     const { id } = params;
     const body = await request.json();
-    const { status, dosage, unit, reason, comment } = body;
+    const { status, dosage, unit, reason, comment, visitId } = body;
 
     if (!status) {
       return NextResponse.json(
         { error: 'Status is required' },
+        { status: 400 }
+      );
+    }
+
+    if (!visitId) {
+      return NextResponse.json(
+        { error: 'A linked visit is required for medication administration' },
+        { status: 400 }
+      );
+    }
+
+    if (status.toUpperCase() !== 'ADMINISTERED' && !reason?.trim()) {
+      return NextResponse.json(
+        { error: 'A reason is required when medication is not administered' },
         { status: 400 }
       );
     }
@@ -41,6 +55,18 @@ export async function POST(request, { params }) {
 
     if (!medication) {
       return NextResponse.json({ error: 'Medication not found' }, { status: 404 });
+    }
+
+    const visit = await prisma.visit.findFirst({
+      where: {
+        id: visitId,
+        clientId: medication.clientId,
+        organizationId: session.user.organizationId,
+      },
+    });
+
+    if (!visit) {
+      return NextResponse.json({ error: 'Visit not found for this medication administration' }, { status: 404 });
     }
 
     // Find the staff record for the current user
@@ -62,6 +88,7 @@ export async function POST(request, { params }) {
     const administration = await prisma.medAdministration.create({
       data: {
         medicationId: id,
+        visitId,
         staffId: staff.id,
         administeredAt: new Date(),
         status: status.toUpperCase(),
@@ -75,6 +102,18 @@ export async function POST(request, { params }) {
           select: {
             name: true,
             dosage: true,
+          },
+        },
+        visit: {
+          select: {
+            id: true,
+            title: true,
+            startTime: true,
+            service: {
+              select: {
+                name: true,
+              },
+            },
           },
         },
         staff: {

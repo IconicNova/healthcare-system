@@ -24,6 +24,7 @@ export default function FormChartingPage({ params }) {
   const [saveStatus, setSaveStatus] = useState('idle'); // idle, saving, saved, error
   const [showPreview, setShowPreview] = useState(false);
   const [validationErrors, setValidationErrors] = useState({});
+  const [reviewActionLoading, setReviewActionLoading] = useState(false);
   const currentStatus = normalizeFormStatus(form?.status);
   const isEditable = currentStatus === 'DRAFT';
   const statusStyles = {
@@ -198,6 +199,47 @@ export default function FormChartingPage({ params }) {
     }
   };
 
+  const handleReviewAction = async (nextStatus) => {
+    let rejectionReason = '';
+
+    if (nextStatus === 'REJECTED') {
+      rejectionReason = window.prompt('Enter a rejection reason')?.trim() || '';
+      if (!rejectionReason) {
+        alert('A rejection reason is required.');
+        return;
+      }
+    }
+
+    try {
+      setReviewActionLoading(true);
+
+      const response = await fetch(`/api/forms/${formId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          status: nextStatus,
+          rejectionReason,
+        }),
+      });
+
+      if (!response.ok) {
+        const payload = await response.json().catch(() => ({}));
+        throw new Error(payload.error || 'Failed to update review status');
+      }
+
+      const payload = await response.json();
+      setForm({
+        ...payload.form,
+        status: normalizeFormStatus(payload.form.status),
+      });
+    } catch (error) {
+      console.error('Error updating review status:', error);
+      alert(error.message || 'Failed to update review status');
+    } finally {
+      setReviewActionLoading(false);
+    }
+  };
+
   if (loading) {
     return (
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '400px' }}>
@@ -285,7 +327,20 @@ export default function FormChartingPage({ params }) {
               </span>
             </div>
           </div>
+          <div>
+            <span style={{ fontSize: '12px', color: 'var(--color-text-secondary)' }}>Reviewed</span>
+            <div style={{ fontSize: '14px', fontWeight: 500, marginTop: '4px' }}>
+              {form.approvedAt || form.rejectedAt
+                ? new Date(form.approvedAt || form.rejectedAt).toLocaleString()
+                : '-'}
+            </div>
+          </div>
         </div>
+        {form.rejectionReason && (
+          <div style={{ marginTop: '12px', fontSize: '13px', color: '#991b1b' }}>
+            Rejection reason: {form.rejectionReason}
+          </div>
+        )}
       </div>
 
       {/* Save Status Indicator */}
@@ -424,21 +479,88 @@ export default function FormChartingPage({ params }) {
             {saving ? 'Submitting...' : 'Submit Form'}
           </button>
         ) : (
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              padding: '12px 16px',
-              borderRadius: '8px',
-              backgroundColor: 'var(--color-gray-50)',
-              border: '1px solid var(--color-border)',
-              color: 'var(--color-text-secondary)',
-              fontSize: '13px',
-              fontWeight: 500,
-            }}
-          >
-            Read-only after submission
-          </div>
+          <>
+            {(currentStatus === 'SUBMITTED' || currentStatus === 'REJECTED') && (
+              <button
+                onClick={() => handleReviewAction('IN_REVIEW')}
+                disabled={reviewActionLoading}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  padding: '12px 24px',
+                  borderRadius: '8px',
+                  border: '1px solid var(--color-border)',
+                  backgroundColor: 'white',
+                  color: 'var(--color-text)',
+                  fontSize: '14px',
+                  fontWeight: 500,
+                  cursor: reviewActionLoading ? 'not-allowed' : 'pointer',
+                }}
+              >
+                {reviewActionLoading ? 'Updating...' : currentStatus === 'REJECTED' ? 'Resume Review' : 'Start Review'}
+              </button>
+            )}
+            {currentStatus === 'IN_REVIEW' && (
+              <>
+                <button
+                  onClick={() => handleReviewAction('REJECTED')}
+                  disabled={reviewActionLoading}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    padding: '12px 24px',
+                    borderRadius: '8px',
+                    border: '1px solid var(--color-error)',
+                    backgroundColor: 'white',
+                    color: 'var(--color-error)',
+                    fontSize: '14px',
+                    fontWeight: 500,
+                    cursor: reviewActionLoading ? 'not-allowed' : 'pointer',
+                  }}
+                >
+                  Reject
+                </button>
+                <button
+                  onClick={() => handleReviewAction('APPROVED')}
+                  disabled={reviewActionLoading}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    padding: '12px 24px',
+                    borderRadius: '8px',
+                    border: 'none',
+                    backgroundColor: 'var(--color-success)',
+                    color: 'white',
+                    fontSize: '14px',
+                    fontWeight: 500,
+                    cursor: reviewActionLoading ? 'not-allowed' : 'pointer',
+                  }}
+                >
+                  Approve
+                </button>
+              </>
+            )}
+            {(currentStatus === 'APPROVED' || currentStatus === 'REJECTED' || currentStatus === 'SUBMITTED') && (
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  padding: '12px 16px',
+                  borderRadius: '8px',
+                  backgroundColor: 'var(--color-gray-50)',
+                  border: '1px solid var(--color-border)',
+                  color: 'var(--color-text-secondary)',
+                  fontSize: '13px',
+                  fontWeight: 500,
+                }}
+              >
+                Read-only after submission
+              </div>
+            )}
+          </>
         )}
       </div>
 

@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useState, useEffect, useRef } from 'react';
 import Input from '@/components/ui/Input';
 import Select from '@/components/ui/Select';
@@ -305,9 +306,12 @@ export default function StaffForm({ onSuccess, onCancel, branches = [], staffId,
         <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
           <div style={{ position: 'relative', width: '100px', height: '100px' }}>
             {avatarPreview ? (
-              <img
+              <Image
                 src={avatarPreview}
                 alt="Profile preview"
+                unoptimized
+                width={100}
+                height={100}
                 style={{
                   width: '100px',
                   height: '100px',

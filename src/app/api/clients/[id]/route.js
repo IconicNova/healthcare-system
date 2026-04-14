@@ -15,7 +15,7 @@ export async function GET(request, { params }) {
 
     const { id } = params;
 
-    const client = await prisma.client.findUnique({
+    const client = await prisma.client.findFirst({
       where: {
         id,
         organizationId: session.user.organizationId,
@@ -110,7 +110,7 @@ export async function PATCH(request, { params }) {
     const body = await request.json();
 
     // Check if client exists
-    const existing = await prisma.client.findUnique({
+    const existing = await prisma.client.findFirst({
       where: {
         id,
         organizationId: session.user.organizationId,
@@ -310,7 +310,7 @@ export async function DELETE(request, { params }) {
     const { id } = params;
 
     // Check if client exists and count visits
-    const existing = await prisma.client.findUnique({
+    const existing = await prisma.client.findFirst({
       where: {
         id,
         organizationId: session.user.organizationId,

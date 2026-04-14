@@ -141,7 +141,8 @@ export default function ClientFormsTab({ clientId }) {
                     <th style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-text-secondary)', textAlign: 'left', padding: '12px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Type</th>
                     <th style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-text-secondary)', textAlign: 'left', padding: '12px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Status</th>
                     <th style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-text-secondary)', textAlign: 'left', padding: '12px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Submitted</th>
-                    <th style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-text-secondary)', textAlign: 'left', padding: '12px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Approved</th>
+                    <th style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-text-secondary)', textAlign: 'left', padding: '12px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Reviewed</th>
+                    <th style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-text-secondary)', textAlign: 'left', padding: '12px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Reviewer</th>
                     <th style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-text-secondary)', textAlign: 'left', padding: '12px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Actions</th>
                   </tr>
                 </thead>
@@ -179,7 +180,12 @@ export default function ClientFormsTab({ clientId }) {
                         </td>
                         <td style={{ padding: '16px 12px' }}>
                           <div style={{ fontSize: '13px', color: 'var(--color-text)' }}>
-                            {form.approvedAt ? format(new Date(form.approvedAt), 'MMM d, yyyy') : '-'}
+                            {form.reviewedAt ? format(new Date(form.reviewedAt), 'MMM d, yyyy') : '-'}
+                          </div>
+                        </td>
+                        <td style={{ padding: '16px 12px' }}>
+                          <div style={{ fontSize: '13px', color: 'var(--color-text)' }}>
+                            {form.reviewedBy || '-'}
                           </div>
                         </td>
                         <td style={{ padding: '16px 12px' }}>

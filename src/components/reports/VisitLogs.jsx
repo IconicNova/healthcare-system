@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { format, startOfMonth, endOfMonth } from 'date-fns';
 import { exportToCSV } from './ExportButton';
 
@@ -25,11 +25,7 @@ export default function VisitLogs() {
     branches: [],
   });
 
-  useEffect(() => {
-    fetchVisitLogs();
-  }, [currentPage, filters]);
-
-  const fetchVisitLogs = async () => {
+  const fetchVisitLogs = useCallback(async () => {
     setLoading(true);
     try {
       const params = new URLSearchParams({
@@ -49,7 +45,11 @@ export default function VisitLogs() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentPage, filters, pageSize]);
+
+  useEffect(() => {
+    fetchVisitLogs();
+  }, [fetchVisitLogs]);
 
   const handleFilterChange = (key, value) => {
     setFilters(prev => ({ ...prev, [key]: value }));

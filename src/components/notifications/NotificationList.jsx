@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import NotificationItem from './NotificationItem';
 import { CheckSquare, Trash2 } from 'lucide-react';
 
@@ -21,11 +21,7 @@ export default function NotificationList() {
   const [loading, setLoading] = useState(true);
   const [selectedIds, setSelectedIds] = useState([]);
 
-  useEffect(() => {
-    fetchNotifications();
-  }, [activeTab, categoryFilter]);
-
-  const fetchNotifications = async () => {
+  const fetchNotifications = useCallback(async () => {
     setLoading(true);
     try {
       let readFilter = null;
@@ -61,7 +57,11 @@ export default function NotificationList() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [activeTab, categoryFilter]);
+
+  useEffect(() => {
+    fetchNotifications();
+  }, [fetchNotifications]);
 
   const handleMarkAllRead = async () => {
     if (!confirm('Mark all notifications as read?')) return;

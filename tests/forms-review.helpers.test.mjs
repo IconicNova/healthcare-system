@@ -87,8 +87,7 @@ function run() {
       approvedAt: null,
       approvedBy: null,
       rejectedAt: null,
-      rejectedBy: null,
-      rejectionReason: '',
+      rejectionReason: null,
     }
   );
 
@@ -103,7 +102,7 @@ function run() {
 
   assert.equal(
     countSubmittedLikeStatuses(['SUBMITTED', 'IN_REVIEW', 'APPROVED', 'REJECTED']),
-    3
+    4
   );
 }
 

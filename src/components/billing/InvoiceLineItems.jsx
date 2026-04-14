@@ -4,32 +4,30 @@ import React, { useState } from 'react';
 import { Plus, Trash2 } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils';
 
-export default function InvoiceLineItems({ items, onChange }) {
-  const [lineItems, setLineItems] = useState([]);
-  const itemsRef = React.useRef(items);
+const createDefaultItems = () => ([
+  {
+    id: Date.now(),
+    description: '',
+    quantity: 1,
+    unitPrice: 0,
+    visitId: null,
+    serviceId: null,
+  },
+]);
 
-  // Initialize state
-  React.useEffect(() => {
-    const defaultItems = [
-      {
-        id: Date.now(),
-        description: '',
-        quantity: 1,
-        unitPrice: 0,
-        visitId: null,
-        serviceId: null,
-      },
-    ];
-    setLineItems(items || defaultItems);
-    itemsRef.current = items;
-  }, []);
+export default function InvoiceLineItems({ items, onChange }) {
+  const [lineItems, setLineItems] = useState(() => items || createDefaultItems());
+  const itemsRef = React.useRef(items);
 
   // Sync with prop changes without triggering onChange
   React.useEffect(() => {
-    if (items && JSON.stringify(items) !== JSON.stringify(itemsRef.current)) {
-      setLineItems(items);
-      itemsRef.current = items;
+    const nextItems = items || createDefaultItems();
+    const previousItems = itemsRef.current || createDefaultItems();
+
+    if (JSON.stringify(nextItems) !== JSON.stringify(previousItems)) {
+      setLineItems(nextItems);
     }
+    itemsRef.current = items;
   }, [items]);
 
   // Notify parent only when user makes changes

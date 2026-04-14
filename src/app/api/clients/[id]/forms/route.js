@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import { normalizeFormStatus } from '@/lib/form-review';
 
 export async function GET(request, { params }) {
   try {
@@ -19,7 +20,7 @@ export async function GET(request, { params }) {
     const type = searchParams.get('type') || '';
 
     // Check if client exists
-    const client = await prisma.client.findUnique({
+    const client = await prisma.client.findFirst({
       where: {
         id,
         organizationId: session.user.organizationId,
@@ -55,7 +56,20 @@ export async function GET(request, { params }) {
     ]);
 
     return NextResponse.json({
-      forms,
+      forms: forms.map((form) => ({
+        id: form.id,
+        name: form.template?.name || 'Untitled Form',
+        type: form.template?.category || 'Other',
+        status: normalizeFormStatus(form.status),
+        submittedAt: form.submittedAt,
+        approvedAt: form.approvedAt,
+        reviewedAt: form.approvedAt || form.rejectedAt,
+        reviewedBy: form.approvedBy || null,
+        rejectionReason: form.rejectionReason,
+        templateId: form.templateId,
+        formId: form.id,
+        visitId: form.visitId,
+      })),
       pagination: {
         page,
         limit,
