@@ -171,7 +171,16 @@ export default function FormsReviewQueue({ clientId = '', embedded = false }) {
               Filters
             </span>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '12px' }}>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: embedded
+                ? 'minmax(160px, 1fr) minmax(160px, 1fr) minmax(180px, 1fr) minmax(280px, 1.3fr)'
+                : 'repeat(auto-fit, minmax(180px, 1fr))',
+              gap: '12px',
+              alignItems: 'end',
+            }}
+          >
             <select
               className="select"
               value={filters.status}
@@ -208,27 +217,55 @@ export default function FormsReviewQueue({ clientId = '', embedded = false }) {
             </select>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
               <label style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-text-secondary)' }}>
-                From
+                Date Range
               </label>
-              <input
-                type="date"
-                className="input"
-                aria-label="Filter from date"
-                value={filters.dateFrom}
-                onChange={(event) => handleFilterChange('dateFrom', event.target.value)}
-              />
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              <label style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-text-secondary)' }}>
-                To
-              </label>
-              <input
-                type="date"
-                className="input"
-                aria-label="Filter to date"
-                value={filters.dateTo}
-                onChange={(event) => handleFilterChange('dateTo', event.target.value)}
-              />
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: '1fr auto 1fr',
+                  gap: '10px',
+                  alignItems: 'center',
+                  minHeight: '40px',
+                  padding: '0 12px',
+                  borderRadius: '12px',
+                  border: '1px solid var(--color-border)',
+                  backgroundColor: 'var(--color-surface-elevated)',
+                }}
+              >
+                <input
+                  type="date"
+                  className="input"
+                  aria-label="Filter from date"
+                  value={filters.dateFrom}
+                  onChange={(event) => handleFilterChange('dateFrom', event.target.value)}
+                  style={{
+                    height: '38px',
+                    padding: 0,
+                    border: 'none',
+                    borderRadius: 0,
+                    background: 'transparent',
+                    boxShadow: 'none',
+                  }}
+                />
+                <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-text-muted)' }}>
+                  to
+                </span>
+                <input
+                  type="date"
+                  className="input"
+                  aria-label="Filter to date"
+                  value={filters.dateTo}
+                  onChange={(event) => handleFilterChange('dateTo', event.target.value)}
+                  style={{
+                    height: '38px',
+                    padding: 0,
+                    border: 'none',
+                    borderRadius: 0,
+                    background: 'transparent',
+                    boxShadow: 'none',
+                  }}
+                />
+              </div>
             </div>
           </div>
         </div>
