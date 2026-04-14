@@ -151,10 +151,22 @@ export default function AddProgressNoteModal({ clientId, existingNote, onClose, 
                   textAlign: 'left',
                 }}
               >
-                <div style={{ fontSize: '13px', fontWeight: 500, color: 'var(--color-text)' }}>
+                <div
+                  style={{
+                    fontSize: '13px',
+                    fontWeight: 500,
+                    color: noteType === type.value ? 'white' : 'var(--color-text)',
+                  }}
+                >
                   {type.label}
                 </div>
-                <div style={{ fontSize: '11px', color: 'var(--color-text-secondary)', marginTop: '2px' }}>
+                <div
+                  style={{
+                    fontSize: '11px',
+                    color: noteType === type.value ? 'rgba(255, 255, 255, 0.8)' : 'var(--color-text-secondary)',
+                    marginTop: '2px',
+                  }}
+                >
                   {type.description.substring(0, 50)}...
                 </div>
               </button>

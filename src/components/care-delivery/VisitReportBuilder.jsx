@@ -201,10 +201,22 @@ export default function VisitReportBuilder({ clientId, onClose, onSuccess }) {
                   textAlign: 'left',
                 }}
               >
-                <div style={{ fontSize: '14px', fontWeight: 500, color: 'var(--color-text)', marginBottom: '4px' }}>
+                <div
+                  style={{
+                    fontSize: '14px',
+                    fontWeight: 500,
+                    color: reportType === 'VISIT_SUMMARY' ? 'white' : 'var(--color-text)',
+                    marginBottom: '4px',
+                  }}
+                >
                   Visit Summary
                 </div>
-                <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)' }}>
+                <div
+                  style={{
+                    fontSize: '12px',
+                    color: reportType === 'VISIT_SUMMARY' ? 'rgba(255, 255, 255, 0.8)' : 'var(--color-text-secondary)',
+                  }}
+                >
                   Document a single visit with detailed information
                 </div>
               </button>
@@ -219,10 +231,22 @@ export default function VisitReportBuilder({ clientId, onClose, onSuccess }) {
                   textAlign: 'left',
                 }}
               >
-                <div style={{ fontSize: '14px', fontWeight: 500, color: 'var(--color-text)', marginBottom: '4px' }}>
+                <div
+                  style={{
+                    fontSize: '14px',
+                    fontWeight: 500,
+                    color: reportType === 'PERIOD_SUMMARY' ? 'white' : 'var(--color-text)',
+                    marginBottom: '4px',
+                  }}
+                >
                   Period Summary
                 </div>
-                <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)' }}>
+                <div
+                  style={{
+                    fontSize: '12px',
+                    color: reportType === 'PERIOD_SUMMARY' ? 'rgba(255, 255, 255, 0.8)' : 'var(--color-text-secondary)',
+                  }}
+                >
                   Aggregate multiple visits into daily, weekly, or monthly report
                 </div>
               </button>
