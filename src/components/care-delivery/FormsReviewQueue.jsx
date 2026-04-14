@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Eye, Filter, FileText } from 'lucide-react';
+import { buildFormsReviewFilterRows } from '@/components/care-delivery/forms-review-layout.helpers';
 
 const STATUS_OPTIONS = [
   { value: '', label: 'Reviewable' },
@@ -127,6 +128,11 @@ export default function FormsReviewQueue({ clientId = '', embedded = false }) {
     inReview: forms.filter((form) => form.status === 'IN_REVIEW').length,
   }), [forms]);
 
+  const filterRows = useMemo(
+    () => buildFormsReviewFilterRows({ embedded, clientLocked: Boolean(clientId) }),
+    [clientId, embedded]
+  );
+
   const handleFilterChange = (field, value) => {
     setFilters((current) => ({
       ...current,
@@ -171,102 +177,99 @@ export default function FormsReviewQueue({ clientId = '', embedded = false }) {
               Filters
             </span>
           </div>
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: embedded
-                ? 'minmax(160px, 1fr) minmax(160px, 1fr) minmax(180px, 1fr) minmax(280px, 1.3fr)'
-                : 'repeat(auto-fit, minmax(180px, 1fr))',
-              gap: '12px',
-              alignItems: 'end',
-            }}
-          >
-            <select
-              className="select"
-              value={filters.status}
-              onChange={(event) => handleFilterChange('status', event.target.value)}
-            >
-              {STATUS_OPTIONS.map((option) => (
-                <option key={option.value} value={option.value}>{option.label}</option>
-              ))}
-            </select>
-            <select
-              className="select"
-              value={filters.clientId}
-              onChange={(event) => handleFilterChange('clientId', event.target.value)}
-              disabled={Boolean(clientId)}
-            >
-              <option value="">All Clients</option>
-              {clients.map((client) => (
-                <option key={client.id} value={client.id}>
-                  {client.firstName} {client.lastName}
-                </option>
-              ))}
-            </select>
-            <select
-              className="select"
-              value={filters.templateId}
-              onChange={(event) => handleFilterChange('templateId', event.target.value)}
-            >
-              <option value="">All Templates</option>
-              {templates.map((template) => (
-                <option key={template.id} value={template.id}>
-                  {template.name}
-                </option>
-              ))}
-            </select>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              <label style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-text-secondary)' }}>
-                Date Range
-              </label>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            {filterRows.map((row, rowIndex) => (
               <div
+                key={rowIndex}
                 style={{
                   display: 'grid',
-                  gridTemplateColumns: '1fr auto 1fr',
-                  gap: '10px',
-                  alignItems: 'center',
-                  minHeight: '40px',
-                  padding: '0 12px',
-                  borderRadius: '12px',
-                  border: '1px solid var(--color-border)',
-                  backgroundColor: 'var(--color-surface-elevated)',
+                  gridTemplateColumns: row.map((field) => field.width).join(' '),
+                  gap: '12px',
+                  alignItems: 'end',
                 }}
               >
-                <input
-                  type="date"
-                  className="input"
-                  aria-label="Filter from date"
-                  value={filters.dateFrom}
-                  onChange={(event) => handleFilterChange('dateFrom', event.target.value)}
-                  style={{
-                    height: '38px',
-                    padding: 0,
-                    border: 'none',
-                    borderRadius: 0,
-                    background: 'transparent',
-                    boxShadow: 'none',
-                  }}
-                />
-                <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-text-muted)' }}>
-                  to
-                </span>
-                <input
-                  type="date"
-                  className="input"
-                  aria-label="Filter to date"
-                  value={filters.dateTo}
-                  onChange={(event) => handleFilterChange('dateTo', event.target.value)}
-                  style={{
-                    height: '38px',
-                    padding: 0,
-                    border: 'none',
-                    borderRadius: 0,
-                    background: 'transparent',
-                    boxShadow: 'none',
-                  }}
-                />
+                {row.map((field) => {
+                  if (field.key === 'status') {
+                    return (
+                      <select
+                        key={field.key}
+                        className="select"
+                        value={filters.status}
+                        onChange={(event) => handleFilterChange('status', event.target.value)}
+                      >
+                        {STATUS_OPTIONS.map((option) => (
+                          <option key={option.value} value={option.value}>{option.label}</option>
+                        ))}
+                      </select>
+                    );
+                  }
+
+                  if (field.key === 'client') {
+                    return (
+                      <select
+                        key={field.key}
+                        className="select"
+                        value={filters.clientId}
+                        onChange={(event) => handleFilterChange('clientId', event.target.value)}
+                        disabled={field.disabled}
+                      >
+                        <option value="">All Clients</option>
+                        {clients.map((client) => (
+                          <option key={client.id} value={client.id}>
+                            {client.firstName} {client.lastName}
+                          </option>
+                        ))}
+                      </select>
+                    );
+                  }
+
+                  if (field.key === 'template') {
+                    return (
+                      <select
+                        key={field.key}
+                        className="select"
+                        value={filters.templateId}
+                        onChange={(event) => handleFilterChange('templateId', event.target.value)}
+                      >
+                        <option value="">All Templates</option>
+                        {templates.map((template) => (
+                          <option key={template.id} value={template.id}>
+                            {template.name}
+                          </option>
+                        ))}
+                      </select>
+                    );
+                  }
+
+                  return (
+                    <div key={field.key} style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      <label style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-text-secondary)' }}>
+                        Date Range
+                      </label>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', gap: '12px', alignItems: 'center' }}>
+                        <input
+                          type="date"
+                          className="input"
+                          aria-label="Filter from date"
+                          value={filters.dateFrom}
+                          onChange={(event) => handleFilterChange('dateFrom', event.target.value)}
+                        />
+                        <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-text-muted)' }}>
+                          to
+                        </span>
+                        <input
+                          type="date"
+                          className="input"
+                          aria-label="Filter to date"
+                          value={filters.dateTo}
+                          onChange={(event) => handleFilterChange('dateTo', event.target.value)}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
-            </div>
+            ))}
           </div>
         </div>
       </div>
