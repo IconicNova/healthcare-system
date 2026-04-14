@@ -43,7 +43,7 @@ function formatStatusLabel(status) {
   return status.replaceAll('_', ' ').toLowerCase().replace(/\b\w/g, (letter) => letter.toUpperCase());
 }
 
-export default function FormsReviewQueue() {
+export default function FormsReviewQueue({ clientId = '', embedded = false }) {
   const router = useRouter();
   const [forms, setForms] = useState([]);
   const [clients, setClients] = useState([]);
@@ -52,11 +52,18 @@ export default function FormsReviewQueue() {
   const [error, setError] = useState('');
   const [filters, setFilters] = useState({
     status: '',
-    clientId: '',
+    clientId,
     templateId: '',
     dateFrom: '',
     dateTo: '',
   });
+
+  useEffect(() => {
+    setFilters((current) => ({
+      ...current,
+      clientId,
+    }));
+  }, [clientId]);
 
   useEffect(() => {
     async function fetchFilterOptions() {
@@ -129,30 +136,32 @@ export default function FormsReviewQueue() {
 
   return (
     <div>
-      <div style={{ marginBottom: '24px', display: 'flex', justifyContent: 'space-between', gap: '16px', flexWrap: 'wrap' }}>
-        <div>
-          <h1 style={{ fontSize: '28px', fontWeight: 700, color: 'var(--color-text)', margin: 0 }}>
-            Forms Review
-          </h1>
-          <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)', marginTop: '4px' }}>
-            Review submitted charting forms across all clients
-          </p>
+      {!embedded && (
+        <div style={{ marginBottom: '24px', display: 'flex', justifyContent: 'space-between', gap: '16px', flexWrap: 'wrap' }}>
+          <div>
+            <h1 style={{ fontSize: '28px', fontWeight: 700, color: 'var(--color-text)', margin: 0 }}>
+              Forms Review
+            </h1>
+            <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)', marginTop: '4px' }}>
+              Review submitted charting forms across all clients
+            </p>
+          </div>
+          <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+            <div className="card" style={{ padding: '12px 16px', minWidth: '120px' }}>
+              <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)' }}>Queue</div>
+              <div style={{ fontSize: '20px', fontWeight: 700, color: 'var(--color-text)' }}>{summary.total}</div>
+            </div>
+            <div className="card" style={{ padding: '12px 16px', minWidth: '120px' }}>
+              <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)' }}>Submitted</div>
+              <div style={{ fontSize: '20px', fontWeight: 700, color: 'var(--color-text)' }}>{summary.submitted}</div>
+            </div>
+            <div className="card" style={{ padding: '12px 16px', minWidth: '120px' }}>
+              <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)' }}>In Review</div>
+              <div style={{ fontSize: '20px', fontWeight: 700, color: 'var(--color-text)' }}>{summary.inReview}</div>
+            </div>
+          </div>
         </div>
-        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-          <div className="card" style={{ padding: '12px 16px', minWidth: '120px' }}>
-            <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)' }}>Queue</div>
-            <div style={{ fontSize: '20px', fontWeight: 700, color: 'var(--color-text)' }}>{summary.total}</div>
-          </div>
-          <div className="card" style={{ padding: '12px 16px', minWidth: '120px' }}>
-            <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)' }}>Submitted</div>
-            <div style={{ fontSize: '20px', fontWeight: 700, color: 'var(--color-text)' }}>{summary.submitted}</div>
-          </div>
-          <div className="card" style={{ padding: '12px 16px', minWidth: '120px' }}>
-            <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)' }}>In Review</div>
-            <div style={{ fontSize: '20px', fontWeight: 700, color: 'var(--color-text)' }}>{summary.inReview}</div>
-          </div>
-        </div>
-      </div>
+      )}
 
       <div className="card" style={{ marginBottom: '20px' }}>
         <div className="card-body">
@@ -176,6 +185,7 @@ export default function FormsReviewQueue() {
               className="select"
               value={filters.clientId}
               onChange={(event) => handleFilterChange('clientId', event.target.value)}
+              disabled={Boolean(clientId)}
             >
               <option value="">All Clients</option>
               {clients.map((client) => (

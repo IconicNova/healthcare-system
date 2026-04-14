@@ -831,6 +831,13 @@ a:hover {
   appearance: none;
 }
 
+.input[type="date"],
+.input[type="time"] {
+  appearance: auto;
+  -webkit-appearance: auto;
+  padding-right: var(--spacing-3);
+}
+
 .input:hover:not(:focus):not(:disabled) {
   border-color: var(--color-gray-300);
 }
