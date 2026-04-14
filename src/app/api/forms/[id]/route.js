@@ -4,12 +4,10 @@ import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import {
   buildReviewMetadataPatch,
-  normalizeFormStatus,
-} from '@/lib/form-review';
-import {
   canTransitionFormStatus,
   normalizeRejectionReason,
-} from '@/components/care-delivery/forms-review.helpers';
+  normalizeFormStatus,
+} from '@/lib/form-review';
 
 // GET - Fetch a single form with template and relations
 export async function GET(request, { params }) {

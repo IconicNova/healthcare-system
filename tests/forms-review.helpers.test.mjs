@@ -1,16 +1,14 @@
 import assert from 'node:assert/strict';
 import {
   getReviewableStatuses,
-  canTransitionFormStatus,
-  normalizeRejectionReason,
-  buildReviewQueueFilters,
-} from '../src/components/care-delivery/forms-review.helpers.js';
-import {
   normalizeFormStatus,
   buildReviewMetadataPatch,
   shouldAutosaveDraft,
   countSubmittedLikeStatuses,
+  canTransitionFormStatus,
+  normalizeRejectionReason,
 } from '../src/lib/form-review.js';
+import { buildReviewQueueFilters } from '../src/components/care-delivery/forms-review.helpers.js';
 
 function run() {
   assert.deepEqual(getReviewableStatuses(), ['SUBMITTED', 'IN_REVIEW']);
