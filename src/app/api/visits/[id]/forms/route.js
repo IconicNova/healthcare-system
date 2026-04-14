@@ -3,6 +3,12 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 
+function normalizeLegacyFormStatus(status) {
+  if (status === 'PENDING') return 'DRAFT';
+  if (status === 'COMPLETED') return 'SUBMITTED';
+  return status || 'DRAFT';
+}
+
 // GET - Fetch forms for a visit
 export async function GET(request, { params }) {
   try {
@@ -42,7 +48,12 @@ export async function GET(request, { params }) {
       orderBy: { createdAt: 'desc' },
     });
 
-    return NextResponse.json({ forms });
+    return NextResponse.json({
+      forms: forms.map((form) => ({
+        ...form,
+        status: normalizeLegacyFormStatus(form.status),
+      })),
+    });
   } catch (error) {
     console.error('Error fetching visit forms:', error);
     return NextResponse.json({ error: 'Failed to fetch visit forms' }, { status: 500 });
@@ -60,7 +71,7 @@ export async function POST(request, { params }) {
 
     const { id } = params;
     const body = await request.json();
-    const { templateId, status } = body;
+    const { templateId } = body;
 
     if (!templateId) {
       return NextResponse.json(
@@ -94,14 +105,37 @@ export async function POST(request, { params }) {
       return NextResponse.json({ error: 'Template not found' }, { status: 404 });
     }
 
+    const existingForm = await prisma.clientForm.findFirst({
+      where: {
+        visitId: id,
+        templateId,
+      },
+      include: {
+        template: {
+          select: {
+            id: true,
+            name: true,
+            description: true,
+            schema: true,
+            category: true,
+          },
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    if (existingForm) {
+      return NextResponse.json({ form: existingForm });
+    }
+
     const form = await prisma.clientForm.create({
       data: {
         templateId,
         visitId: id,
         clientId: visit.clientId,
-        status: status || 'PENDING',
+        status: 'DRAFT',
         formData: null,
-        submittedBy: session.user.id,
+        submittedBy: null,
       },
       include: {
         template: {
@@ -116,7 +150,12 @@ export async function POST(request, { params }) {
       },
     });
 
-    return NextResponse.json(form, { status: 201 });
+    return NextResponse.json({
+      form: {
+        ...form,
+        status: normalizeLegacyFormStatus(form.status),
+      },
+    }, { status: 201 });
   } catch (error) {
     console.error('Error creating visit form:', error);
     return NextResponse.json({ error: 'Failed to create visit form' }, { status: 500 });

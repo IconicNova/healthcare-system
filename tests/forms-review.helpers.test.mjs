@@ -9,9 +9,14 @@ import {
 function run() {
   assert.deepEqual(getReviewableStatuses(), ['SUBMITTED', 'IN_REVIEW']);
 
+  assert.equal(canTransitionFormStatus('DRAFT', 'SUBMITTED', {}), true);
   assert.equal(canTransitionFormStatus('SUBMITTED', 'IN_REVIEW', {}), true);
   assert.equal(canTransitionFormStatus('IN_REVIEW', 'APPROVED', {}), true);
   assert.equal(canTransitionFormStatus('DRAFT', 'APPROVED', {}), false);
+  assert.equal(
+    canTransitionFormStatus('APPROVED', 'REJECTED', { rejectionReason: 'x' }),
+    false
+  );
   assert.equal(
     canTransitionFormStatus('SUBMITTED', 'REJECTED', { rejectionReason: '' }),
     false
@@ -53,6 +58,14 @@ function run() {
       dateTo: '',
     }
   );
+
+  assert.deepEqual(buildReviewQueueFilters(undefined), {
+    status: '',
+    clientId: '',
+    templateId: '',
+    dateFrom: '',
+    dateTo: '',
+  });
 }
 
 run();

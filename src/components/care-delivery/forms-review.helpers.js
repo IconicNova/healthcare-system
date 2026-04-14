@@ -26,7 +26,7 @@ export function canTransitionFormStatus(currentStatus, nextStatus, options = {})
   return true;
 }
 
-export function buildReviewQueueFilters(searchParams) {
+export function buildReviewQueueFilters(searchParams = {}) {
   return {
     status: searchParams.status || '',
     clientId: searchParams.clientId || '',

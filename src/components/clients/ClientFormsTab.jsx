@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { format } from 'date-fns';
 import StatusBadge from '@/components/ui/StatusBadge';
 import Pagination from '@/components/ui/Pagination';
@@ -8,23 +9,30 @@ import SearchInput from '@/components/ui/SearchInput';
 import { FileText, Eye } from 'lucide-react';
 
 const STATUS_VARIANTS = {
-  PENDING: 'default',
-  COMPLETED: 'success',
+  DRAFT: 'default',
   SUBMITTED: 'primary',
+  IN_REVIEW: 'info',
   APPROVED: 'success',
   REJECTED: 'error',
 };
 
+function normalizeFormStatus(status) {
+  if (status === 'PENDING') return 'DRAFT';
+  if (status === 'COMPLETED') return 'SUBMITTED';
+  return status || 'DRAFT';
+}
+
 const FORM_TYPES = [
   { value: '', label: 'All Forms' },
-  { value: 'Intake', label: 'Intake Forms' },
-  { value: 'Care Plan', label: 'Care Plans' },
   { value: 'Assessment', label: 'Assessments' },
-  { value: 'Consent', label: 'Consent Forms' },
+  { value: 'Documentation', label: 'Documentation' },
+  { value: 'Orders', label: 'Orders' },
+  { value: 'Vitals', label: 'Vitals' },
   { value: 'Other', label: 'Other' },
 ];
 
 export default function ClientFormsTab({ clientId }) {
+  const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [forms, setForms] = useState([]);
   const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0, totalPages: 0 });
@@ -44,7 +52,10 @@ export default function ClientFormsTab({ clientId }) {
         const response = await fetch(`/api/clients/${clientId}/forms?${params}`);
         if (response.ok) {
           const data = await response.json();
-          setForms(data.forms);
+          setForms((data.forms || []).map((form) => ({
+            ...form,
+            status: normalizeFormStatus(form.status),
+          })));
           setPagination(data.pagination);
         }
       } catch (error) {
@@ -178,6 +189,7 @@ export default function ClientFormsTab({ clientId }) {
                         </td>
                         <td style={{ padding: '16px 12px' }}>
                           <button
+                            onClick={() => router.push(`/care-delivery/forms/${form.formId}`)}
                             style={{
                               padding: '6px 12px',
                               borderRadius: '6px',
@@ -193,7 +205,7 @@ export default function ClientFormsTab({ clientId }) {
                             }}
                           >
                             <Eye size={14} />
-                            View
+                            View Form
                           </button>
                         </td>
                       </tr>

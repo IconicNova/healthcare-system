@@ -5,6 +5,19 @@ import { useRouter } from 'next/navigation';
 import { ArrowLeft, Save, Check, Clock, AlertCircle, Eye } from 'lucide-react';
 import FormFieldRenderer from '@/components/care-delivery/FormFieldRenderer';
 
+function normalizeFormStatus(status) {
+  if (status === 'PENDING') return 'DRAFT';
+  if (status === 'COMPLETED') return 'SUBMITTED';
+  return status || 'DRAFT';
+}
+
+function formatReadOnlyValue(value) {
+  if (value === true) return 'Yes';
+  if (value === false) return 'No';
+  if (value === null || value === undefined || value === '') return '-';
+  return String(value);
+}
+
 export default function FormChartingPage({ params }) {
   const router = useRouter();
   const { formId } = params;
@@ -16,6 +29,16 @@ export default function FormChartingPage({ params }) {
   const [saveStatus, setSaveStatus] = useState('idle'); // idle, saving, saved, error
   const [showPreview, setShowPreview] = useState(false);
   const [validationErrors, setValidationErrors] = useState({});
+  const currentStatus = normalizeFormStatus(form?.status);
+  const isEditable = currentStatus === 'DRAFT';
+  const statusStyles = {
+    DRAFT: { backgroundColor: 'var(--color-gray-100)', color: 'var(--color-text-secondary)' },
+    SUBMITTED: { backgroundColor: 'var(--color-success-light)', color: '#065f46' },
+    IN_REVIEW: { backgroundColor: 'var(--color-info-light, #dbeafe)', color: '#1d4ed8' },
+    APPROVED: { backgroundColor: 'var(--color-success-light)', color: '#065f46' },
+    REJECTED: { backgroundColor: 'var(--color-error-light)', color: '#991b1b' },
+  };
+  const statusStyle = statusStyles[currentStatus] || statusStyles.DRAFT;
 
   // Fetch form data
   useEffect(() => {
@@ -24,7 +47,10 @@ export default function FormChartingPage({ params }) {
         const response = await fetch(`/api/forms/${formId}`);
         if (response.ok) {
           const data = await response.json();
-          setForm(data.form);
+          setForm({
+            ...data.form,
+            status: normalizeFormStatus(data.form.status),
+          });
 
           // Initialize form data with existing data or empty object
           const initialData = data.form.formData || {};
@@ -47,7 +73,7 @@ export default function FormChartingPage({ params }) {
 
   // Debounced auto-save
   const saveForm = useCallback(async () => {
-    if (!form || saving || saveStatus === 'saved') return;
+    if (!form || saving || saveStatus === 'saved' || !isEditable) return;
 
     setSaving(true);
     setSaveStatus('saving');
@@ -94,7 +120,7 @@ export default function FormChartingPage({ params }) {
     } finally {
       setSaving(false);
     }
-  }, [form, formData, saving, saveStatus, formId]);
+  }, [form, formData, saving, saveStatus, formId, isEditable]);
 
   // Auto-save with debounce (2 seconds)
   useEffect(() => {
@@ -106,6 +132,10 @@ export default function FormChartingPage({ params }) {
   }, [formData, saveForm]);
 
   const handleFieldChange = (fieldName, value) => {
+    if (!isEditable) {
+      return;
+    }
+
     setFormData(prev => ({
       ...prev,
       [fieldName]: value,
@@ -122,6 +152,10 @@ export default function FormChartingPage({ params }) {
   };
 
   const handleSubmit = async () => {
+    if (!isEditable) {
+      return;
+    }
+
     // Validate all required fields
     const errors = {};
     const schema = form.template?.schema || {};
@@ -249,10 +283,9 @@ export default function FormChartingPage({ params }) {
                 fontWeight: 600,
                 padding: '4px 8px',
                 borderRadius: '12px',
-                backgroundColor: form.status === 'SUBMITTED' ? 'var(--color-success-light)' : 'var(--color-warning-light)',
-                color: form.status === 'SUBMITTED' ? '#065f46' : '#92400e',
+                ...statusStyle,
               }}>
-                {form.status}
+                {currentStatus}
               </span>
             </div>
           </div>
@@ -301,12 +334,43 @@ export default function FormChartingPage({ params }) {
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
                 {(section.fields || []).map((field, fieldIndex) => (
                   <div key={fieldIndex}>
-                    <FormFieldRenderer
-                      field={field}
-                      value={formData[field.name] || ''}
-                      onChange={(value) => handleFieldChange(field.name, value)}
-                      error={validationErrors[field.name]}
-                    />
+                    {isEditable ? (
+                      <FormFieldRenderer
+                        field={field}
+                        value={formData[field.name] || ''}
+                        onChange={(value) => handleFieldChange(field.name, value)}
+                        error={validationErrors[field.name]}
+                      />
+                    ) : (
+                      <div style={{ marginBottom: '12px' }}>
+                        <div style={{
+                          display: 'block',
+                          fontSize: '13px',
+                          fontWeight: 500,
+                          color: 'var(--color-text)',
+                          marginBottom: '8px',
+                        }}>
+                          {field.label}
+                          {field.required && (
+                            <span style={{ color: 'var(--color-error)', marginLeft: '4px' }}>*</span>
+                          )}
+                        </div>
+                        <div style={{
+                          width: '100%',
+                          padding: '10px 12px',
+                          borderRadius: '8px',
+                          border: '1px solid var(--color-border)',
+                          fontSize: '14px',
+                          backgroundColor: 'var(--color-gray-50)',
+                          color: 'var(--color-text)',
+                          minHeight: '42px',
+                          display: 'flex',
+                          alignItems: 'center',
+                        }}>
+                          {formatReadOnlyValue(formData[field.name])}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -342,26 +406,44 @@ export default function FormChartingPage({ params }) {
           <Eye size={18} />
           Preview
         </button>
-        <button
-          onClick={handleSubmit}
-          disabled={saving || form.status === 'SUBMITTED'}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            padding: '12px 24px',
-            borderRadius: '8px',
-            border: 'none',
-            backgroundColor: saving || form.status === 'SUBMITTED' ? 'var(--color-gray-200)' : 'var(--color-primary)',
-            color: saving || form.status === 'SUBMITTED' ? 'var(--color-text-muted)' : 'white',
-            fontSize: '14px',
-            fontWeight: 500,
-            cursor: saving || form.status === 'SUBMITTED' ? 'not-allowed' : 'pointer',
-          }}
-        >
-          <Save size={18} />
-          {saving ? 'Submitting...' : form.status === 'SUBMITTED' ? 'Submitted' : 'Submit Form'}
-        </button>
+        {isEditable ? (
+          <button
+            onClick={handleSubmit}
+            disabled={saving}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '12px 24px',
+              borderRadius: '8px',
+              border: 'none',
+              backgroundColor: saving ? 'var(--color-gray-200)' : 'var(--color-primary)',
+              color: saving ? 'var(--color-text-muted)' : 'white',
+              fontSize: '14px',
+              fontWeight: 500,
+              cursor: saving ? 'not-allowed' : 'pointer',
+            }}
+          >
+            <Save size={18} />
+            {saving ? 'Submitting...' : 'Submit Form'}
+          </button>
+        ) : (
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              padding: '12px 16px',
+              borderRadius: '8px',
+              backgroundColor: 'var(--color-gray-50)',
+              border: '1px solid var(--color-border)',
+              color: 'var(--color-text-secondary)',
+              fontSize: '13px',
+              fontWeight: 500,
+            }}
+          >
+            Read-only after submission
+          </div>
+        )}
       </div>
 
       {/* Preview Modal */}
