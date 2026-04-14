@@ -1,996 +1,1095 @@
-# Graph Report - .  (2026-04-13)
+# Graph Report - .  (2026-04-14)
 
 ## Corpus Check
-- Large corpus: 218 files · ~125,017 words. Semantic extraction will be expensive (many Claude tokens). Consider running on a subfolder, or use --no-semantic to run AST-only.
+- Large corpus: 242 files · ~145,029 words. Semantic extraction will be expensive (many Claude tokens). Consider running on a subfolder, or use --no-semantic to run AST-only.
 
 ## Summary
-- 408 nodes · 315 edges · 137 communities detected
-- Extraction: 94% EXTRACTED · 6% INFERRED · 0% AMBIGUOUS · INFERRED: 18 edges (avg confidence: 0.87)
+- 412 nodes · 321 edges · 152 communities detected
+- Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 1 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Community Hubs (Navigation)
-- [[_COMMUNITY_API Route Handlers|API Route Handlers]]
-- [[_COMMUNITY_System Documentation|System Documentation]]
-- [[_COMMUNITY_Resource CRUD Routes|Resource CRUD Routes]]
-- [[_COMMUNITY_Care Plan UI Flow|Care Plan UI Flow]]
-- [[_COMMUNITY_Utility Functions|Utility Functions]]
-- [[_COMMUNITY_Error Boundary|Error Boundary]]
-- [[_COMMUNITY_Financial Reporting|Financial Reporting]]
-- [[_COMMUNITY_Care Plan Detail Page|Care Plan Detail Page]]
-- [[_COMMUNITY_Export Utilities|Export Utilities]]
-- [[_COMMUNITY_Staff Performance Reports|Staff Performance Reports]]
-- [[_COMMUNITY_Toast Notifications|Toast Notifications]]
-- [[_COMMUNITY_Document Seeding|Document Seeding]]
-- [[_COMMUNITY_Database Seeding|Database Seeding]]
-- [[_COMMUNITY_Root Layout|Root Layout]]
-- [[_COMMUNITY_404 Page|404 Page]]
-- [[_COMMUNITY_Home Page|Home Page]]
-- [[_COMMUNITY_Auth Layout|Auth Layout]]
-- [[_COMMUNITY_Login Page|Login Page]]
-- [[_COMMUNITY_Dashboard Error Handler|Dashboard Error Handler]]
-- [[_COMMUNITY_Dashboard Layout|Dashboard Layout]]
-- [[_COMMUNITY_Loading States|Loading States]]
-- [[_COMMUNITY_Billing Page|Billing Page]]
-- [[_COMMUNITY_Care Delivery Page|Care Delivery Page]]
-- [[_COMMUNITY_Form Charting Page|Form Charting Page]]
-- [[_COMMUNITY_Medications Page|Medications Page]]
-- [[_COMMUNITY_Care Plans List|Care Plans List]]
-- [[_COMMUNITY_Care Plan Edit|Care Plan Edit]]
-- [[_COMMUNITY_Clients List|Clients List]]
-- [[_COMMUNITY_New Client Form|New Client Form]]
-- [[_COMMUNITY_Client Profile|Client Profile]]
-- [[_COMMUNITY_Edit Client Form|Edit Client Form]]
-- [[_COMMUNITY_Dashboard Home|Dashboard Home]]
-- [[_COMMUNITY_Notifications Page|Notifications Page]]
-- [[_COMMUNITY_Payroll Page|Payroll Page]]
-- [[_COMMUNITY_Reports Page|Reports Page]]
-- [[_COMMUNITY_Scheduling Page|Scheduling Page]]
-- [[_COMMUNITY_Settings Page|Settings Page]]
-- [[_COMMUNITY_Staff List|Staff List]]
-- [[_COMMUNITY_Staff Profile|Staff Profile]]
-- [[_COMMUNITY_Edit Staff Form|Edit Staff Form]]
-- [[_COMMUNITY_Context Providers|Context Providers]]
-- [[_COMMUNITY_Billing Summary|Billing Summary]]
-- [[_COMMUNITY_Batch Invoice Modal|Batch Invoice Modal]]
-- [[_COMMUNITY_Import Visits Modal|Import Visits Modal]]
-- [[_COMMUNITY_Insurance Claim Detail|Insurance Claim Detail]]
-- [[_COMMUNITY_Insurance Claim Form|Insurance Claim Form]]
-- [[_COMMUNITY_Insurance Claim List|Insurance Claim List]]
-- [[_COMMUNITY_Invoice Detail|Invoice Detail]]
-- [[_COMMUNITY_Invoice Form|Invoice Form]]
-- [[_COMMUNITY_Invoice Line Items|Invoice Line Items]]
-- [[_COMMUNITY_Invoice List|Invoice List]]
-- [[_COMMUNITY_Payment Form|Payment Form]]
-- [[_COMMUNITY_Payment List|Payment List]]
-- [[_COMMUNITY_Care Delivery Layout|Care Delivery Layout]]
-- [[_COMMUNITY_Edit Visit Dialog|Edit Visit Dialog]]
-- [[_COMMUNITY_Edit Visit Notes|Edit Visit Notes]]
-- [[_COMMUNITY_Edit Visit Tasks|Edit Visit Tasks]]
-- [[_COMMUNITY_Form Field Renderer|Form Field Renderer]]
-- [[_COMMUNITY_Tasks View|Tasks View]]
-- [[_COMMUNITY_Visit Notes Tab|Visit Notes Tab]]
-- [[_COMMUNITY_Care Plan Form|Care Plan Form]]
-- [[_COMMUNITY_Client Care Plans Tab|Client Care Plans Tab]]
-- [[_COMMUNITY_Client Documents Tab|Client Documents Tab]]
-- [[_COMMUNITY_Client Form|Client Form]]
-- [[_COMMUNITY_Client Forms Tab|Client Forms Tab]]
-- [[_COMMUNITY_Client List|Client List]]
-- [[_COMMUNITY_Client Medical Tab|Client Medical Tab]]
-- [[_COMMUNITY_Client Overview Tab|Client Overview Tab]]
-- [[_COMMUNITY_Client Profile|Client Profile]]
-- [[_COMMUNITY_Client Visits Tab|Client Visits Tab]]
-- [[_COMMUNITY_Alerts Panel|Alerts Panel]]
-- [[_COMMUNITY_EVV Widget|EVV Widget]]
-- [[_COMMUNITY_Metrics Grid|Metrics Grid]]
-- [[_COMMUNITY_Recent Invoices|Recent Invoices]]
-- [[_COMMUNITY_Revenue Chart|Revenue Chart]]
-- [[_COMMUNITY_Upcoming Shifts|Upcoming Shifts]]
-- [[_COMMUNITY_Visit Chart|Visit Chart]]
-- [[_COMMUNITY_Breadcrumb|Breadcrumb]]
-- [[_COMMUNITY_Loading Spinner|Loading Spinner]]
-- [[_COMMUNITY_Sidebar|Sidebar]]
-- [[_COMMUNITY_Top Bar|Top Bar]]
-- [[_COMMUNITY_Notification Dropdown|Notification Dropdown]]
-- [[_COMMUNITY_Notification Item|Notification Item]]
-- [[_COMMUNITY_Notification List|Notification List]]
-- [[_COMMUNITY_Export Accounting Modal|Export Accounting Modal]]
-- [[_COMMUNITY_Generate Timesheet Modal|Generate Timesheet Modal]]
-- [[_COMMUNITY_Payroll Summary|Payroll Summary]]
-- [[_COMMUNITY_Payslip Detail|Payslip Detail]]
-- [[_COMMUNITY_Payslip List|Payslip List]]
-- [[_COMMUNITY_Pay Summary Table|Pay Summary Table]]
-- [[_COMMUNITY_Timesheet Detail|Timesheet Detail]]
-- [[_COMMUNITY_Timesheet Entry Form|Timesheet Entry Form]]
-- [[_COMMUNITY_Timesheet List|Timesheet List]]
-- [[_COMMUNITY_Client History|Client History]]
-- [[_COMMUNITY_Compliance Dashboard|Compliance Dashboard]]
-- [[_COMMUNITY_Visit Logs|Visit Logs]]
-- [[_COMMUNITY_Scheduling Calendar|Scheduling Calendar]]
-- [[_COMMUNITY_Visit Detail Popup|Visit Detail Popup]]
-- [[_COMMUNITY_Visit Edit Form|Visit Edit Form]]
-- [[_COMMUNITY_Visit Form|Visit Form]]
-- [[_COMMUNITY_Billing Settings|Billing Settings]]
-- [[_COMMUNITY_Notification Settings|Notification Settings]]
-- [[_COMMUNITY_Organization Settings|Organization Settings]]
-- [[_COMMUNITY_Payroll Settings|Payroll Settings]]
-- [[_COMMUNITY_Scheduling Rules|Scheduling Rules]]
-- [[_COMMUNITY_Services Configuration|Services Configuration]]
-- [[_COMMUNITY_Users and Roles|Users and Roles]]
-- [[_COMMUNITY_Availability Grid|Availability Grid]]
-- [[_COMMUNITY_Skills and Certs Tab|Skills and Certs Tab]]
-- [[_COMMUNITY_Staff Form|Staff Form]]
-- [[_COMMUNITY_Staff List|Staff List]]
-- [[_COMMUNITY_Staff Overview Tab|Staff Overview Tab]]
-- [[_COMMUNITY_Staff Profile|Staff Profile]]
-- [[_COMMUNITY_Staff Schedule Tab|Staff Schedule Tab]]
-- [[_COMMUNITY_Staff Timesheets Tab|Staff Timesheets Tab]]
-- [[_COMMUNITY_Button Component|Button Component]]
-- [[_COMMUNITY_Card Component|Card Component]]
-- [[_COMMUNITY_Data Table|Data Table]]
-- [[_COMMUNITY_Empty State|Empty State]]
-- [[_COMMUNITY_Image Editor Modal|Image Editor Modal]]
-- [[_COMMUNITY_Input Component|Input Component]]
-- [[_COMMUNITY_KPI Card|KPI Card]]
-- [[_COMMUNITY_Modal Component|Modal Component]]
-- [[_COMMUNITY_Pagination|Pagination]]
-- [[_COMMUNITY_Search Input|Search Input]]
-- [[_COMMUNITY_Select Component|Select Component]]
-- [[_COMMUNITY_Status Badge|Status Badge]]
-- [[_COMMUNITY_Tabs Component|Tabs Component]]
-- [[_COMMUNITY_Toast Component|Toast Component]]
-- [[_COMMUNITY_Rate Limiting|Rate Limiting]]
-- [[_COMMUNITY_Brand Icon|Brand Icon]]
-- [[_COMMUNITY_Next.js Types|Next.js Types]]
-- [[_COMMUNITY_PostCSS Config|PostCSS Config]]
-- [[_COMMUNITY_Tailwind Config|Tailwind Config]]
-- [[_COMMUNITY_Auth Configuration|Auth Configuration]]
-- [[_COMMUNITY_Prisma Client|Prisma Client]]
-- [[_COMMUNITY_E2E Tests|E2E Tests]]
+- [[_COMMUNITY_Community 0|Community 0]]
+- [[_COMMUNITY_Community 1|Community 1]]
+- [[_COMMUNITY_Community 2|Community 2]]
+- [[_COMMUNITY_Community 3|Community 3]]
+- [[_COMMUNITY_Community 4|Community 4]]
+- [[_COMMUNITY_Community 5|Community 5]]
+- [[_COMMUNITY_Community 6|Community 6]]
+- [[_COMMUNITY_Community 7|Community 7]]
+- [[_COMMUNITY_Community 8|Community 8]]
+- [[_COMMUNITY_Community 9|Community 9]]
+- [[_COMMUNITY_Community 10|Community 10]]
+- [[_COMMUNITY_Community 11|Community 11]]
+- [[_COMMUNITY_Community 12|Community 12]]
+- [[_COMMUNITY_Community 13|Community 13]]
+- [[_COMMUNITY_Community 14|Community 14]]
+- [[_COMMUNITY_Community 15|Community 15]]
+- [[_COMMUNITY_Community 16|Community 16]]
+- [[_COMMUNITY_Community 17|Community 17]]
+- [[_COMMUNITY_Community 18|Community 18]]
+- [[_COMMUNITY_Community 19|Community 19]]
+- [[_COMMUNITY_Community 20|Community 20]]
+- [[_COMMUNITY_Community 21|Community 21]]
+- [[_COMMUNITY_Community 22|Community 22]]
+- [[_COMMUNITY_Community 23|Community 23]]
+- [[_COMMUNITY_Community 24|Community 24]]
+- [[_COMMUNITY_Community 25|Community 25]]
+- [[_COMMUNITY_Community 26|Community 26]]
+- [[_COMMUNITY_Community 27|Community 27]]
+- [[_COMMUNITY_Community 28|Community 28]]
+- [[_COMMUNITY_Community 29|Community 29]]
+- [[_COMMUNITY_Community 30|Community 30]]
+- [[_COMMUNITY_Community 31|Community 31]]
+- [[_COMMUNITY_Community 32|Community 32]]
+- [[_COMMUNITY_Community 33|Community 33]]
+- [[_COMMUNITY_Community 34|Community 34]]
+- [[_COMMUNITY_Community 35|Community 35]]
+- [[_COMMUNITY_Community 36|Community 36]]
+- [[_COMMUNITY_Community 37|Community 37]]
+- [[_COMMUNITY_Community 38|Community 38]]
+- [[_COMMUNITY_Community 39|Community 39]]
+- [[_COMMUNITY_Community 40|Community 40]]
+- [[_COMMUNITY_Community 41|Community 41]]
+- [[_COMMUNITY_Community 42|Community 42]]
+- [[_COMMUNITY_Community 43|Community 43]]
+- [[_COMMUNITY_Community 44|Community 44]]
+- [[_COMMUNITY_Community 45|Community 45]]
+- [[_COMMUNITY_Community 46|Community 46]]
+- [[_COMMUNITY_Community 47|Community 47]]
+- [[_COMMUNITY_Community 48|Community 48]]
+- [[_COMMUNITY_Community 49|Community 49]]
+- [[_COMMUNITY_Community 50|Community 50]]
+- [[_COMMUNITY_Community 51|Community 51]]
+- [[_COMMUNITY_Community 52|Community 52]]
+- [[_COMMUNITY_Community 53|Community 53]]
+- [[_COMMUNITY_Community 54|Community 54]]
+- [[_COMMUNITY_Community 55|Community 55]]
+- [[_COMMUNITY_Community 56|Community 56]]
+- [[_COMMUNITY_Community 57|Community 57]]
+- [[_COMMUNITY_Community 58|Community 58]]
+- [[_COMMUNITY_Community 59|Community 59]]
+- [[_COMMUNITY_Community 60|Community 60]]
+- [[_COMMUNITY_Community 61|Community 61]]
+- [[_COMMUNITY_Community 62|Community 62]]
+- [[_COMMUNITY_Community 63|Community 63]]
+- [[_COMMUNITY_Community 64|Community 64]]
+- [[_COMMUNITY_Community 65|Community 65]]
+- [[_COMMUNITY_Community 66|Community 66]]
+- [[_COMMUNITY_Community 67|Community 67]]
+- [[_COMMUNITY_Community 68|Community 68]]
+- [[_COMMUNITY_Community 69|Community 69]]
+- [[_COMMUNITY_Community 70|Community 70]]
+- [[_COMMUNITY_Community 71|Community 71]]
+- [[_COMMUNITY_Community 72|Community 72]]
+- [[_COMMUNITY_Community 73|Community 73]]
+- [[_COMMUNITY_Community 74|Community 74]]
+- [[_COMMUNITY_Community 75|Community 75]]
+- [[_COMMUNITY_Community 76|Community 76]]
+- [[_COMMUNITY_Community 77|Community 77]]
+- [[_COMMUNITY_Community 78|Community 78]]
+- [[_COMMUNITY_Community 79|Community 79]]
+- [[_COMMUNITY_Community 80|Community 80]]
+- [[_COMMUNITY_Community 81|Community 81]]
+- [[_COMMUNITY_Community 82|Community 82]]
+- [[_COMMUNITY_Community 83|Community 83]]
+- [[_COMMUNITY_Community 84|Community 84]]
+- [[_COMMUNITY_Community 85|Community 85]]
+- [[_COMMUNITY_Community 86|Community 86]]
+- [[_COMMUNITY_Community 87|Community 87]]
+- [[_COMMUNITY_Community 88|Community 88]]
+- [[_COMMUNITY_Community 89|Community 89]]
+- [[_COMMUNITY_Community 90|Community 90]]
+- [[_COMMUNITY_Community 91|Community 91]]
+- [[_COMMUNITY_Community 92|Community 92]]
+- [[_COMMUNITY_Community 93|Community 93]]
+- [[_COMMUNITY_Community 94|Community 94]]
+- [[_COMMUNITY_Community 95|Community 95]]
+- [[_COMMUNITY_Community 96|Community 96]]
+- [[_COMMUNITY_Community 97|Community 97]]
+- [[_COMMUNITY_Community 98|Community 98]]
+- [[_COMMUNITY_Community 99|Community 99]]
+- [[_COMMUNITY_Community 100|Community 100]]
+- [[_COMMUNITY_Community 101|Community 101]]
+- [[_COMMUNITY_Community 102|Community 102]]
+- [[_COMMUNITY_Community 103|Community 103]]
+- [[_COMMUNITY_Community 104|Community 104]]
+- [[_COMMUNITY_Community 105|Community 105]]
+- [[_COMMUNITY_Community 106|Community 106]]
+- [[_COMMUNITY_Community 107|Community 107]]
+- [[_COMMUNITY_Community 108|Community 108]]
+- [[_COMMUNITY_Community 109|Community 109]]
+- [[_COMMUNITY_Community 110|Community 110]]
+- [[_COMMUNITY_Community 111|Community 111]]
+- [[_COMMUNITY_Community 112|Community 112]]
+- [[_COMMUNITY_Community 113|Community 113]]
+- [[_COMMUNITY_Community 114|Community 114]]
+- [[_COMMUNITY_Community 115|Community 115]]
+- [[_COMMUNITY_Community 116|Community 116]]
+- [[_COMMUNITY_Community 117|Community 117]]
+- [[_COMMUNITY_Community 118|Community 118]]
+- [[_COMMUNITY_Community 119|Community 119]]
+- [[_COMMUNITY_Community 120|Community 120]]
+- [[_COMMUNITY_Community 121|Community 121]]
+- [[_COMMUNITY_Community 122|Community 122]]
+- [[_COMMUNITY_Community 123|Community 123]]
+- [[_COMMUNITY_Community 124|Community 124]]
+- [[_COMMUNITY_Community 125|Community 125]]
+- [[_COMMUNITY_Community 126|Community 126]]
+- [[_COMMUNITY_Community 127|Community 127]]
+- [[_COMMUNITY_Community 128|Community 128]]
+- [[_COMMUNITY_Community 129|Community 129]]
+- [[_COMMUNITY_Community 130|Community 130]]
+- [[_COMMUNITY_Community 131|Community 131]]
+- [[_COMMUNITY_Community 132|Community 132]]
+- [[_COMMUNITY_Community 133|Community 133]]
+- [[_COMMUNITY_Community 134|Community 134]]
+- [[_COMMUNITY_Community 135|Community 135]]
+- [[_COMMUNITY_Community 136|Community 136]]
+- [[_COMMUNITY_Community 137|Community 137]]
+- [[_COMMUNITY_Community 138|Community 138]]
+- [[_COMMUNITY_Community 139|Community 139]]
+- [[_COMMUNITY_Community 140|Community 140]]
+- [[_COMMUNITY_Community 141|Community 141]]
+- [[_COMMUNITY_Community 142|Community 142]]
+- [[_COMMUNITY_Community 143|Community 143]]
+- [[_COMMUNITY_Community 144|Community 144]]
+- [[_COMMUNITY_Community 145|Community 145]]
+- [[_COMMUNITY_Community 146|Community 146]]
+- [[_COMMUNITY_Community 147|Community 147]]
+- [[_COMMUNITY_Community 148|Community 148]]
+- [[_COMMUNITY_Community 149|Community 149]]
+- [[_COMMUNITY_Community 150|Community 150]]
+- [[_COMMUNITY_Community 151|Community 151]]
 
 ## God Nodes (most connected - your core abstractions)
-1. `GET()` - 57 edges
-2. `POST()` - 25 edges
-3. `PATCH()` - 19 edges
-4. `DELETE()` - 15 edges
-5. `Create New Care Plan Form` - 9 edges
-6. `Homecare Pro System` - 8 edges
-7. `ErrorBoundary` - 5 edges
-8. `Infrastructure as Code` - 5 edges
-9. `Next.js Framework` - 5 edges
-10. `Deployment Strategy` - 4 edges
+1. `GET()` - 64 edges
+2. `POST()` - 35 edges
+3. `PATCH()` - 22 edges
+4. `DELETE()` - 18 edges
+5. `ErrorBoundary` - 5 edges
+6. `compareMedicationLists()` - 4 edges
+7. `PUT()` - 3 edges
+8. `checkInteractions()` - 3 edges
+9. `getKey()` - 3 edges
+10. `decrypt()` - 3 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `Graphify Knowledge Graph` --conceptually_related_to--> `Next.js Framework`  [INFERRED]
-  CLAUDE.md → README.md
+- `POST()` --calls--> `mergeMedications()`  [EXTRACTED]
+  src\app\api\visits\[id]\tasks\route.js → src\app\api\clients\[id]\medications\reconcile\route.js
+- `POST()` --calls--> `compareMedicationLists()`  [EXTRACTED]
+  src\app\api\visits\[id]\tasks\route.js → src\app\api\clients\[id]\medications\reconcile\route.js
+- `POST()` --calls--> `checkInteractions()`  [EXTRACTED]
+  src\app\api\visits\[id]\tasks\route.js → src\app\api\medications\check-interactions\route.js
+- `POST()` --calls--> `generateSummaryFromData()`  [EXTRACTED]
+  src\app\api\visits\[id]\tasks\route.js → src\app\api\reports\[id]\generate\route.js
 - `POST()` --calls--> `generateNewEmployeeId()`  [EXTRACTED]
   src\app\api\visits\[id]\tasks\route.js → src\app\api\staff\route.js
-- `DELETE()` --calls--> `GET()`  [EXTRACTED]
-  src\app\api\visits\[id]\route.js → src\app\api\visits\[id]\tasks\route.js
-- `Next.js Framework` --implements--> `Homecare Pro System`  [INFERRED]
-  README.md → CI_CD_OPERATIONAL_REVIEW.md
-- `Create Care Plan Button` --rationale_for--> `Create New Care Plan Form`  [INFERRED]
-  tests/screenshots/care-plans-page.png → tests/screenshots/modal-open.png
 
 ## Communities
 
-### Community 0 - "API Route Handlers"
-Cohesion: 0.05
-Nodes (3): generateNewEmployeeId(), GET(), POST()
+### Community 0 - "Community 0"
+Cohesion: 0.04
+Nodes (4): generateNewEmployeeId(), generateSummaryFromData(), GET(), POST()
 
-### Community 1 - "System Documentation"
-Cohesion: 0.07
-Nodes (30): Blue-Green Deployment, Canary Deployment, CI/CD Pipeline, Content-Security-Policy, Deployment Strategy, Docker Compose Configuration, Environment Management, GitHub Actions (+22 more)
-
-### Community 2 - "Resource CRUD Routes"
+### Community 1 - "Community 1"
 Cohesion: 0.1
 Nodes (3): DELETE(), PATCH(), PUT()
 
-### Community 3 - "Care Plan UI Flow"
-Cohesion: 0.15
-Nodes (15): Care Plans Table with New Entry, Create Care Plan Button, Care Plans Listing Page, Form Validation Error States, Populated Care Plan Form, Dashboard Initial View, Add Service Button, Care Plan Name Input Field (+7 more)
-
-### Community 4 - "Utility Functions"
+### Community 2 - "Community 2"
 Cohesion: 0.15
 Nodes (0): 
 
-### Community 5 - "Error Boundary"
+### Community 3 - "Community 3"
 Cohesion: 0.33
 Nodes (1): ErrorBoundary
 
-### Community 6 - "Financial Reporting"
+### Community 4 - "Community 4"
+Cohesion: 0.6
+Nodes (4): compareMedicationLists(), getChanges(), mergeMedications(), normalizeMedicationName()
+
+### Community 5 - "Community 5"
+Cohesion: 0.7
+Nodes (4): decrypt(), encrypt(), getKey(), maskSSN()
+
+### Community 6 - "Community 6"
 Cohesion: 0.5
 Nodes (0): 
 
-### Community 7 - "Care Plan Detail Page"
+### Community 7 - "Community 7"
+Cohesion: 0.5
+Nodes (4): homecare-pro Project, Next.js Framework, Prisma ORM, Tailwind CSS
+
+### Community 8 - "Community 8"
 Cohesion: 0.67
 Nodes (0): 
 
-### Community 8 - "Export Utilities"
+### Community 9 - "Community 9"
+Cohesion: 1.0
+Nodes (2): checkInteractions(), normalizeName()
+
+### Community 10 - "Community 10"
 Cohesion: 0.67
 Nodes (0): 
 
-### Community 9 - "Staff Performance Reports"
+### Community 11 - "Community 11"
 Cohesion: 0.67
 Nodes (0): 
 
-### Community 10 - "Toast Notifications"
+### Community 12 - "Community 12"
 Cohesion: 0.67
 Nodes (0): 
 
-### Community 11 - "Document Seeding"
+### Community 13 - "Community 13"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 12 - "Database Seeding"
+### Community 14 - "Community 14"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 13 - "Root Layout"
+### Community 15 - "Community 15"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 14 - "404 Page"
+### Community 16 - "Community 16"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 15 - "Home Page"
+### Community 17 - "Community 17"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 16 - "Auth Layout"
+### Community 18 - "Community 18"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 17 - "Login Page"
+### Community 19 - "Community 19"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 18 - "Dashboard Error Handler"
+### Community 20 - "Community 20"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 19 - "Dashboard Layout"
+### Community 21 - "Community 21"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 20 - "Loading States"
+### Community 22 - "Community 22"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 21 - "Billing Page"
+### Community 23 - "Community 23"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 22 - "Care Delivery Page"
+### Community 24 - "Community 24"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 23 - "Form Charting Page"
+### Community 25 - "Community 25"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 24 - "Medications Page"
+### Community 26 - "Community 26"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 25 - "Care Plans List"
+### Community 27 - "Community 27"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 26 - "Care Plan Edit"
+### Community 28 - "Community 28"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 27 - "Clients List"
+### Community 29 - "Community 29"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 28 - "New Client Form"
+### Community 30 - "Community 30"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 29 - "Client Profile"
+### Community 31 - "Community 31"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 30 - "Edit Client Form"
+### Community 32 - "Community 32"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 31 - "Dashboard Home"
+### Community 33 - "Community 33"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 32 - "Notifications Page"
+### Community 34 - "Community 34"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 33 - "Payroll Page"
+### Community 35 - "Community 35"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 34 - "Reports Page"
+### Community 36 - "Community 36"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 35 - "Scheduling Page"
+### Community 37 - "Community 37"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 36 - "Settings Page"
+### Community 38 - "Community 38"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 37 - "Staff List"
+### Community 39 - "Community 39"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 38 - "Staff Profile"
+### Community 40 - "Community 40"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 39 - "Edit Staff Form"
+### Community 41 - "Community 41"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 40 - "Context Providers"
+### Community 42 - "Community 42"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 41 - "Billing Summary"
+### Community 43 - "Community 43"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 42 - "Batch Invoice Modal"
+### Community 44 - "Community 44"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 43 - "Import Visits Modal"
+### Community 45 - "Community 45"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 44 - "Insurance Claim Detail"
+### Community 46 - "Community 46"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 45 - "Insurance Claim Form"
+### Community 47 - "Community 47"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 46 - "Insurance Claim List"
+### Community 48 - "Community 48"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 47 - "Invoice Detail"
+### Community 49 - "Community 49"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 48 - "Invoice Form"
+### Community 50 - "Community 50"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 49 - "Invoice Line Items"
+### Community 51 - "Community 51"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 50 - "Invoice List"
+### Community 52 - "Community 52"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 51 - "Payment Form"
+### Community 53 - "Community 53"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 52 - "Payment List"
+### Community 54 - "Community 54"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 53 - "Care Delivery Layout"
+### Community 55 - "Community 55"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 54 - "Edit Visit Dialog"
+### Community 56 - "Community 56"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 55 - "Edit Visit Notes"
+### Community 57 - "Community 57"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 56 - "Edit Visit Tasks"
+### Community 58 - "Community 58"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 57 - "Form Field Renderer"
+### Community 59 - "Community 59"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 58 - "Tasks View"
+### Community 60 - "Community 60"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 59 - "Visit Notes Tab"
+### Community 61 - "Community 61"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 60 - "Care Plan Form"
+### Community 62 - "Community 62"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 61 - "Client Care Plans Tab"
+### Community 63 - "Community 63"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 62 - "Client Documents Tab"
+### Community 64 - "Community 64"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 63 - "Client Form"
+### Community 65 - "Community 65"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 64 - "Client Forms Tab"
+### Community 66 - "Community 66"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 65 - "Client List"
+### Community 67 - "Community 67"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 66 - "Client Medical Tab"
+### Community 68 - "Community 68"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 67 - "Client Overview Tab"
+### Community 69 - "Community 69"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 68 - "Client Profile"
+### Community 70 - "Community 70"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 69 - "Client Visits Tab"
+### Community 71 - "Community 71"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 70 - "Alerts Panel"
+### Community 72 - "Community 72"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 71 - "EVV Widget"
+### Community 73 - "Community 73"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 72 - "Metrics Grid"
+### Community 74 - "Community 74"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 73 - "Recent Invoices"
+### Community 75 - "Community 75"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 74 - "Revenue Chart"
+### Community 76 - "Community 76"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 75 - "Upcoming Shifts"
+### Community 77 - "Community 77"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 76 - "Visit Chart"
+### Community 78 - "Community 78"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 77 - "Breadcrumb"
+### Community 79 - "Community 79"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 78 - "Loading Spinner"
+### Community 80 - "Community 80"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 79 - "Sidebar"
+### Community 81 - "Community 81"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 80 - "Top Bar"
+### Community 82 - "Community 82"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 81 - "Notification Dropdown"
+### Community 83 - "Community 83"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 82 - "Notification Item"
+### Community 84 - "Community 84"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 83 - "Notification List"
+### Community 85 - "Community 85"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 84 - "Export Accounting Modal"
+### Community 86 - "Community 86"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 85 - "Generate Timesheet Modal"
+### Community 87 - "Community 87"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 86 - "Payroll Summary"
+### Community 88 - "Community 88"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 87 - "Payslip Detail"
+### Community 89 - "Community 89"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 88 - "Payslip List"
+### Community 90 - "Community 90"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 89 - "Pay Summary Table"
+### Community 91 - "Community 91"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 90 - "Timesheet Detail"
+### Community 92 - "Community 92"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 91 - "Timesheet Entry Form"
+### Community 93 - "Community 93"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 92 - "Timesheet List"
+### Community 94 - "Community 94"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 93 - "Client History"
+### Community 95 - "Community 95"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 94 - "Compliance Dashboard"
+### Community 96 - "Community 96"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 95 - "Visit Logs"
+### Community 97 - "Community 97"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 96 - "Scheduling Calendar"
+### Community 98 - "Community 98"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 97 - "Visit Detail Popup"
+### Community 99 - "Community 99"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 98 - "Visit Edit Form"
+### Community 100 - "Community 100"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 99 - "Visit Form"
+### Community 101 - "Community 101"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 100 - "Billing Settings"
+### Community 102 - "Community 102"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 101 - "Notification Settings"
+### Community 103 - "Community 103"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 102 - "Organization Settings"
+### Community 104 - "Community 104"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 103 - "Payroll Settings"
+### Community 105 - "Community 105"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 104 - "Scheduling Rules"
+### Community 106 - "Community 106"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 105 - "Services Configuration"
+### Community 107 - "Community 107"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 106 - "Users and Roles"
+### Community 108 - "Community 108"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 107 - "Availability Grid"
+### Community 109 - "Community 109"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 108 - "Skills and Certs Tab"
+### Community 110 - "Community 110"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 109 - "Staff Form"
+### Community 111 - "Community 111"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 110 - "Staff List"
+### Community 112 - "Community 112"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 111 - "Staff Overview Tab"
+### Community 113 - "Community 113"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 112 - "Staff Profile"
+### Community 114 - "Community 114"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 113 - "Staff Schedule Tab"
+### Community 115 - "Community 115"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 114 - "Staff Timesheets Tab"
+### Community 116 - "Community 116"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 115 - "Button Component"
+### Community 117 - "Community 117"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 116 - "Card Component"
+### Community 118 - "Community 118"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 117 - "Data Table"
+### Community 119 - "Community 119"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 118 - "Empty State"
+### Community 120 - "Community 120"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 119 - "Image Editor Modal"
+### Community 121 - "Community 121"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 120 - "Input Component"
+### Community 122 - "Community 122"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 121 - "KPI Card"
+### Community 123 - "Community 123"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 122 - "Modal Component"
+### Community 124 - "Community 124"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 123 - "Pagination"
+### Community 125 - "Community 125"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 124 - "Search Input"
+### Community 126 - "Community 126"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 125 - "Select Component"
+### Community 127 - "Community 127"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 126 - "Status Badge"
+### Community 128 - "Community 128"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 127 - "Tabs Component"
+### Community 129 - "Community 129"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 128 - "Toast Component"
+### Community 130 - "Community 130"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 129 - "Rate Limiting"
+### Community 131 - "Community 131"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 130 - "Brand Icon"
+### Community 132 - "Community 132"
 Cohesion: 1.0
-Nodes (2): Homecare Pro Brand Icon, Medical Cross Symbol
+Nodes (0): 
+
+### Community 133 - "Community 133"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 134 - "Community 134"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 135 - "Community 135"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 136 - "Community 136"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 137 - "Community 137"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 138 - "Community 138"
+Cohesion: 1.0
+Nodes (0): 
 
-### Community 131 - "Next.js Types"
+### Community 139 - "Community 139"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 132 - "PostCSS Config"
+### Community 140 - "Community 140"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 133 - "Tailwind Config"
+### Community 141 - "Community 141"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 134 - "Auth Configuration"
+### Community 142 - "Community 142"
 Cohesion: 1.0
+Nodes (2): Care Plans Feature, Scheduling System
+
+### Community 143 - "Community 143"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 144 - "Community 144"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 145 - "Community 145"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 146 - "Community 146"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 147 - "Community 147"
+Cohesion: 1.0
 Nodes (0): 
 
-### Community 135 - "Prisma Client"
+### Community 148 - "Community 148"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 136 - "E2E Tests"
+### Community 149 - "Community 149"
 Cohesion: 1.0
 Nodes (0): 
+
+### Community 150 - "Community 150"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 151 - "Community 151"
+Cohesion: 1.0
+Nodes (1): Billing System
 
 ## Knowledge Gaps
-- **24 isolated node(s):** `Incident Response`, `GitHub Actions`, `Vercel Platform`, `Playwright Test Suite`, `Prisma Schema` (+19 more)
+- **6 isolated node(s):** `Next.js Framework`, `Prisma ORM`, `Tailwind CSS`, `Care Plans Feature`, `Billing System` (+1 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **Thin community `Document Seeding`** (2 nodes): `main()`, `addDocuments.js`
+- **Thin community `Community 13`** (2 nodes): `main()`, `addDocuments.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Database Seeding`** (2 nodes): `seed.js`, `main()`
+- **Thin community `Community 14`** (2 nodes): `seed-drug-interactions.js`, `main()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Root Layout`** (2 nodes): `RootLayout()`, `layout.js`
+- **Thin community `Community 15`** (2 nodes): `seed.js`, `main()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `404 Page`** (2 nodes): `NotFound()`, `not-found.js`
+- **Thin community `Community 16`** (2 nodes): `RootLayout()`, `layout.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Home Page`** (2 nodes): `Home()`, `page.js`
+- **Thin community `Community 17`** (2 nodes): `NotFound()`, `not-found.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Auth Layout`** (2 nodes): `AuthLayout()`, `layout.js`
+- **Thin community `Community 18`** (2 nodes): `Home()`, `page.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Login Page`** (2 nodes): `LoginPage()`, `page.js`
+- **Thin community `Community 19`** (2 nodes): `AuthLayout()`, `layout.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Dashboard Error Handler`** (2 nodes): `DashboardError()`, `error.js`
+- **Thin community `Community 20`** (2 nodes): `LoginPage()`, `page.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Dashboard Layout`** (2 nodes): `DashboardLayout()`, `layout.js`
+- **Thin community `Community 21`** (2 nodes): `DashboardError()`, `error.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Loading States`** (2 nodes): `Loading()`, `loading.js`
+- **Thin community `Community 22`** (2 nodes): `DashboardLayout()`, `layout.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Billing Page`** (2 nodes): `BillingPage()`, `page.js`
+- **Thin community `Community 23`** (2 nodes): `Loading()`, `loading.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Care Delivery Page`** (2 nodes): `CareDeliveryPage()`, `page.js`
+- **Thin community `Community 24`** (2 nodes): `BillingPage()`, `page.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Form Charting Page`** (2 nodes): `FormChartingPage()`, `page.js`
+- **Thin community `Community 25`** (2 nodes): `CareDeliveryPage()`, `page.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Medications Page`** (2 nodes): `MedicationsPage()`, `page.js`
+- **Thin community `Community 26`** (2 nodes): `FormChartingPage()`, `page.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Care Plans List`** (2 nodes): `CarePlansPage()`, `page.js`
+- **Thin community `Community 27`** (2 nodes): `MedicationsPage()`, `page.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Care Plan Edit`** (2 nodes): `CarePlanEditPage()`, `page.js`
+- **Thin community `Community 28`** (2 nodes): `CarePlansPage()`, `page.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Clients List`** (2 nodes): `ClientsPage()`, `page.js`
+- **Thin community `Community 29`** (2 nodes): `CarePlanEditPage()`, `page.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `New Client Form`** (2 nodes): `NewClientPage()`, `page.js`
+- **Thin community `Community 30`** (2 nodes): `ClientsPage()`, `page.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Client Profile`** (2 nodes): `ClientProfilePage()`, `page.js`
+- **Thin community `Community 31`** (2 nodes): `NewClientPage()`, `page.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Edit Client Form`** (2 nodes): `EditClientPage()`, `page.js`
+- **Thin community `Community 32`** (2 nodes): `ClientProfilePage()`, `page.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Dashboard Home`** (2 nodes): `DashboardPage()`, `page.js`
+- **Thin community `Community 33`** (2 nodes): `EditClientPage()`, `page.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Notifications Page`** (2 nodes): `NotificationsPage()`, `page.js`
+- **Thin community `Community 34`** (2 nodes): `DashboardPage()`, `page.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Payroll Page`** (2 nodes): `PayrollPage()`, `page.js`
+- **Thin community `Community 35`** (2 nodes): `NotificationsPage()`, `page.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Reports Page`** (2 nodes): `ReportsPage()`, `page.js`
+- **Thin community `Community 36`** (2 nodes): `PayrollPage()`, `page.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Scheduling Page`** (2 nodes): `SchedulingPage()`, `page.js`
+- **Thin community `Community 37`** (2 nodes): `ReportsPage()`, `page.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Settings Page`** (2 nodes): `SettingsPage()`, `page.js`
+- **Thin community `Community 38`** (2 nodes): `SchedulingPage()`, `page.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Staff List`** (2 nodes): `StaffPage()`, `page.js`
+- **Thin community `Community 39`** (2 nodes): `SettingsPage()`, `page.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Staff Profile`** (2 nodes): `StaffProfilePage()`, `page.js`
+- **Thin community `Community 40`** (2 nodes): `StaffPage()`, `page.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Edit Staff Form`** (2 nodes): `EditStaffPage()`, `page.js`
+- **Thin community `Community 41`** (2 nodes): `StaffProfilePage()`, `page.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Context Providers`** (2 nodes): `ClientProviders()`, `providers.js`
+- **Thin community `Community 42`** (2 nodes): `EditStaffPage()`, `page.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Billing Summary`** (2 nodes): `BillingSummary()`, `BillingSummary.jsx`
+- **Thin community `Community 43`** (2 nodes): `ClientProviders()`, `providers.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Batch Invoice Modal`** (2 nodes): `GenerateBatchModal()`, `GenerateBatchModal.jsx`
+- **Thin community `Community 44`** (2 nodes): `BillingSummary()`, `BillingSummary.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Import Visits Modal`** (2 nodes): `ImportVisitsModal()`, `ImportVisitsModal.jsx`
+- **Thin community `Community 45`** (2 nodes): `GenerateBatchModal()`, `GenerateBatchModal.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Insurance Claim Detail`** (2 nodes): `InsuranceClaimDetail()`, `InsuranceClaimDetail.jsx`
+- **Thin community `Community 46`** (2 nodes): `ImportVisitsModal()`, `ImportVisitsModal.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Insurance Claim Form`** (2 nodes): `InsuranceClaimForm()`, `InsuranceClaimForm.jsx`
+- **Thin community `Community 47`** (2 nodes): `InsuranceClaimDetail()`, `InsuranceClaimDetail.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Insurance Claim List`** (2 nodes): `InsuranceClaimList()`, `InsuranceClaimList.jsx`
+- **Thin community `Community 48`** (2 nodes): `InsuranceClaimForm()`, `InsuranceClaimForm.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Invoice Detail`** (2 nodes): `InvoiceDetail()`, `InvoiceDetail.jsx`
+- **Thin community `Community 49`** (2 nodes): `InsuranceClaimList()`, `InsuranceClaimList.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Invoice Form`** (2 nodes): `InvoiceForm()`, `InvoiceForm.jsx`
+- **Thin community `Community 50`** (2 nodes): `InvoiceDetail()`, `InvoiceDetail.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Invoice Line Items`** (2 nodes): `InvoiceLineItems()`, `InvoiceLineItems.jsx`
+- **Thin community `Community 51`** (2 nodes): `InvoiceForm()`, `InvoiceForm.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Invoice List`** (2 nodes): `InvoiceList()`, `InvoiceList.jsx`
+- **Thin community `Community 52`** (2 nodes): `InvoiceLineItems()`, `InvoiceLineItems.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Payment Form`** (2 nodes): `PaymentForm()`, `PaymentForm.jsx`
+- **Thin community `Community 53`** (2 nodes): `InvoiceList()`, `InvoiceList.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Payment List`** (2 nodes): `PaymentList()`, `PaymentList.jsx`
+- **Thin community `Community 54`** (2 nodes): `PaymentForm()`, `PaymentForm.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Care Delivery Layout`** (2 nodes): `CareDeliveryLayout()`, `CareDeliveryLayout.jsx`
+- **Thin community `Community 55`** (2 nodes): `PaymentList()`, `PaymentList.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Edit Visit Dialog`** (2 nodes): `EditVisitDialog()`, `EditVisitDialog.jsx`
+- **Thin community `Community 56`** (2 nodes): `AddProgressNoteModal()`, `AddProgressNoteModal.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Edit Visit Notes`** (2 nodes): `EditVisitNotesTab()`, `EditVisitNotesTab.jsx`
+- **Thin community `Community 57`** (2 nodes): `CareDeliveryLayout()`, `CareDeliveryLayout.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Edit Visit Tasks`** (2 nodes): `VisitTasksTab()`, `EditVisitTasksTab.jsx`
+- **Thin community `Community 58`** (2 nodes): `DrugInteractionAlert()`, `DrugInteractionAlert.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Form Field Renderer`** (2 nodes): `FormFieldRenderer()`, `FormFieldRenderer.jsx`
+- **Thin community `Community 59`** (2 nodes): `EditVisitDialog()`, `EditVisitDialog.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Tasks View`** (2 nodes): `TasksView.jsx`, `TasksView()`
+- **Thin community `Community 60`** (2 nodes): `EditVisitNotesTab()`, `EditVisitNotesTab.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Visit Notes Tab`** (2 nodes): `VisitNotesTab.jsx`, `VisitNotesTab()`
+- **Thin community `Community 61`** (2 nodes): `VisitTasksTab()`, `EditVisitTasksTab.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Care Plan Form`** (2 nodes): `CarePlanForm()`, `CarePlanForm.jsx`
+- **Thin community `Community 62`** (2 nodes): `FormFieldRenderer()`, `FormFieldRenderer.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Client Care Plans Tab`** (2 nodes): `ClientCarePlansTab()`, `ClientCarePlansTab.jsx`
+- **Thin community `Community 63`** (2 nodes): `MedicationReconciliation()`, `MedicationReconciliation.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Client Documents Tab`** (2 nodes): `ClientDocumentsTab()`, `ClientDocumentsTab.jsx`
+- **Thin community `Community 64`** (2 nodes): `ProgressNotesTab()`, `ProgressNotesTab.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Client Form`** (2 nodes): `ClientForm()`, `ClientForm.jsx`
+- **Thin community `Community 65`** (2 nodes): `TasksView.jsx`, `TasksView()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Client Forms Tab`** (2 nodes): `ClientFormsTab()`, `ClientFormsTab.jsx`
+- **Thin community `Community 66`** (2 nodes): `VisitNotesTab.jsx`, `VisitNotesTab()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Client List`** (2 nodes): `ClientList()`, `ClientList.jsx`
+- **Thin community `Community 67`** (2 nodes): `VisitReportBuilder.jsx`, `VisitReportBuilder()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Client Medical Tab`** (2 nodes): `ClientMedicalTab()`, `ClientMedicalTab.jsx`
+- **Thin community `Community 68`** (2 nodes): `VisitReportsTab.jsx`, `VisitReportsTab()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Client Overview Tab`** (2 nodes): `ClientOverviewTab()`, `ClientOverviewTab.jsx`
+- **Thin community `Community 69`** (2 nodes): `VitalsChart.jsx`, `VitalsChart()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Client Profile`** (2 nodes): `ClientProfilePage()`, `ClientProfile.jsx`
+- **Thin community `Community 70`** (2 nodes): `VitalsEntryForm.jsx`, `VitalsEntryForm()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Client Visits Tab`** (2 nodes): `ClientVisitsTab()`, `ClientVisitsTab.jsx`
+- **Thin community `Community 71`** (2 nodes): `VitalsTab.jsx`, `VitalsTab()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Alerts Panel`** (2 nodes): `AlertsPanel()`, `AlertsPanel.jsx`
+- **Thin community `Community 72`** (2 nodes): `CarePlanForm()`, `CarePlanForm.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `EVV Widget`** (2 nodes): `EVVWidget()`, `EVVWidget.jsx`
+- **Thin community `Community 73`** (2 nodes): `ClientCarePlansTab()`, `ClientCarePlansTab.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Metrics Grid`** (2 nodes): `MetricsGrid()`, `MetricsGrid.jsx`
+- **Thin community `Community 74`** (2 nodes): `ClientDocumentsTab()`, `ClientDocumentsTab.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Recent Invoices`** (2 nodes): `RecentInvoices()`, `RecentInvoices.jsx`
+- **Thin community `Community 75`** (2 nodes): `ClientForm()`, `ClientForm.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Revenue Chart`** (2 nodes): `RevenueChart()`, `RevenueChart.jsx`
+- **Thin community `Community 76`** (2 nodes): `ClientFormsTab()`, `ClientFormsTab.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Upcoming Shifts`** (2 nodes): `UpcomingShifts.jsx`, `UpcomingShifts()`
+- **Thin community `Community 77`** (2 nodes): `ClientList()`, `ClientList.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Visit Chart`** (2 nodes): `VisitChart.jsx`, `VisitChart()`
+- **Thin community `Community 78`** (2 nodes): `ClientMedicalTab()`, `ClientMedicalTab.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Breadcrumb`** (2 nodes): `Breadcrumb()`, `Breadcrumb.jsx`
+- **Thin community `Community 79`** (2 nodes): `ClientOverviewTab()`, `ClientOverviewTab.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Loading Spinner`** (2 nodes): `LoadingSpinner()`, `LoadingSpinner.jsx`
+- **Thin community `Community 80`** (2 nodes): `ClientProfilePage()`, `ClientProfile.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Sidebar`** (2 nodes): `Sidebar()`, `Sidebar.jsx`
+- **Thin community `Community 81`** (2 nodes): `ClientVisitsTab()`, `ClientVisitsTab.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Top Bar`** (2 nodes): `TopBar.jsx`, `TopBar()`
+- **Thin community `Community 82`** (2 nodes): `AlertsPanel()`, `AlertsPanel.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Notification Dropdown`** (2 nodes): `NotificationDropdown()`, `NotificationDropdown.jsx`
+- **Thin community `Community 83`** (2 nodes): `EVVWidget()`, `EVVWidget.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Notification Item`** (2 nodes): `NotificationItem()`, `NotificationItem.jsx`
+- **Thin community `Community 84`** (2 nodes): `MetricsGrid()`, `MetricsGrid.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Notification List`** (2 nodes): `NotificationList()`, `NotificationList.jsx`
+- **Thin community `Community 85`** (2 nodes): `RecentInvoices()`, `RecentInvoices.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Export Accounting Modal`** (2 nodes): `ExportAccountingModal()`, `ExportAccountingModal.jsx`
+- **Thin community `Community 86`** (2 nodes): `RevenueChart()`, `RevenueChart.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Generate Timesheet Modal`** (2 nodes): `GenerateTimesheetModal()`, `GenerateTimesheetModal.jsx`
+- **Thin community `Community 87`** (2 nodes): `UpcomingShifts.jsx`, `UpcomingShifts()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Payroll Summary`** (2 nodes): `PayrollSummary()`, `PayrollSummary.jsx`
+- **Thin community `Community 88`** (2 nodes): `VisitChart.jsx`, `VisitChart()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Payslip Detail`** (2 nodes): `PayslipDetail()`, `PayslipDetail.jsx`
+- **Thin community `Community 89`** (2 nodes): `Breadcrumb()`, `Breadcrumb.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Payslip List`** (2 nodes): `PayslipList()`, `PayslipList.jsx`
+- **Thin community `Community 90`** (2 nodes): `LoadingSpinner()`, `LoadingSpinner.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Pay Summary Table`** (2 nodes): `PaySummaryTable()`, `PaySummaryTable.jsx`
+- **Thin community `Community 91`** (2 nodes): `Sidebar()`, `Sidebar.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Timesheet Detail`** (2 nodes): `TimesheetDetail.jsx`, `TimesheetDetail()`
+- **Thin community `Community 92`** (2 nodes): `TopBar.jsx`, `TopBar()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Timesheet Entry Form`** (2 nodes): `TimesheetEntryForm.jsx`, `TimesheetEntryForm()`
+- **Thin community `Community 93`** (2 nodes): `NotificationDropdown()`, `NotificationDropdown.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Timesheet List`** (2 nodes): `TimesheetList.jsx`, `TimesheetList()`
+- **Thin community `Community 94`** (2 nodes): `NotificationItem()`, `NotificationItem.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Client History`** (2 nodes): `ClientHistory()`, `ClientHistory.jsx`
+- **Thin community `Community 95`** (2 nodes): `NotificationList()`, `NotificationList.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Compliance Dashboard`** (2 nodes): `ComplianceDashboard()`, `ComplianceDashboard.jsx`
+- **Thin community `Community 96`** (2 nodes): `ExportAccountingModal()`, `ExportAccountingModal.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Visit Logs`** (2 nodes): `VisitLogs.jsx`, `VisitLogs()`
+- **Thin community `Community 97`** (2 nodes): `GenerateTimesheetModal()`, `GenerateTimesheetModal.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Scheduling Calendar`** (2 nodes): `SchedulingCalendar()`, `SchedulingCalendar.jsx`
+- **Thin community `Community 98`** (2 nodes): `PayrollSummary()`, `PayrollSummary.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Visit Detail Popup`** (2 nodes): `VisitDetailPopup.jsx`, `VisitDetailPopup()`
+- **Thin community `Community 99`** (2 nodes): `PayslipDetail()`, `PayslipDetail.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Visit Edit Form`** (2 nodes): `VisitEditForm.jsx`, `VisitEditForm()`
+- **Thin community `Community 100`** (2 nodes): `PayslipList()`, `PayslipList.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Visit Form`** (2 nodes): `VisitForm.jsx`, `VisitForm()`
+- **Thin community `Community 101`** (2 nodes): `PaySummaryTable()`, `PaySummaryTable.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Billing Settings`** (2 nodes): `BillingSettings()`, `BillingSettings.jsx`
+- **Thin community `Community 102`** (2 nodes): `TimesheetDetail.jsx`, `TimesheetDetail()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Notification Settings`** (2 nodes): `NotificationSettings()`, `NotificationSettings.jsx`
+- **Thin community `Community 103`** (2 nodes): `TimesheetEntryForm.jsx`, `TimesheetEntryForm()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Organization Settings`** (2 nodes): `OrganizationSettings()`, `OrganizationSettings.jsx`
+- **Thin community `Community 104`** (2 nodes): `TimesheetList.jsx`, `TimesheetList()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Payroll Settings`** (2 nodes): `PayrollSettings()`, `PayrollSettings.jsx`
+- **Thin community `Community 105`** (2 nodes): `ClientHistory()`, `ClientHistory.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Scheduling Rules`** (2 nodes): `SchedulingRules()`, `SchedulingRules.jsx`
+- **Thin community `Community 106`** (2 nodes): `ComplianceDashboard()`, `ComplianceDashboard.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Services Configuration`** (2 nodes): `ServicesConfiguration()`, `ServicesConfiguration.jsx`
+- **Thin community `Community 107`** (2 nodes): `VisitLogs.jsx`, `VisitLogs()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Users and Roles`** (2 nodes): `UsersAndRoles.jsx`, `UsersAndRoles()`
+- **Thin community `Community 108`** (2 nodes): `SchedulingCalendar()`, `SchedulingCalendar.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Availability Grid`** (2 nodes): `AvailabilityGrid()`, `AvailabilityGrid.jsx`
+- **Thin community `Community 109`** (2 nodes): `VisitDetailPopup.jsx`, `VisitDetailPopup()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Skills and Certs Tab`** (2 nodes): `SkillsCertsTab()`, `SkillsCertsTab.jsx`
+- **Thin community `Community 110`** (2 nodes): `VisitEditForm.jsx`, `VisitEditForm()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Staff Form`** (2 nodes): `StaffForm.jsx`, `StaffForm()`
+- **Thin community `Community 111`** (2 nodes): `VisitForm.jsx`, `VisitForm()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Staff List`** (2 nodes): `StaffList.jsx`, `StaffList()`
+- **Thin community `Community 112`** (2 nodes): `BillingSettings()`, `BillingSettings.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Staff Overview Tab`** (2 nodes): `StaffOverviewTab.jsx`, `StaffOverviewTab()`
+- **Thin community `Community 113`** (2 nodes): `NotificationSettings()`, `NotificationSettings.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Staff Profile`** (2 nodes): `StaffProfile.jsx`, `StaffProfile()`
+- **Thin community `Community 114`** (2 nodes): `OrganizationSettings()`, `OrganizationSettings.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Staff Schedule Tab`** (2 nodes): `StaffScheduleTab.jsx`, `StaffScheduleTab()`
+- **Thin community `Community 115`** (2 nodes): `PayrollSettings()`, `PayrollSettings.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Staff Timesheets Tab`** (2 nodes): `StaffTimesheetsTab.jsx`, `StaffTimesheetsTab()`
+- **Thin community `Community 116`** (2 nodes): `SchedulingRules()`, `SchedulingRules.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Button Component`** (2 nodes): `Button()`, `Button.jsx`
+- **Thin community `Community 117`** (2 nodes): `ServicesConfiguration()`, `ServicesConfiguration.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Card Component`** (2 nodes): `Card()`, `Card.jsx`
+- **Thin community `Community 118`** (2 nodes): `UsersAndRoles.jsx`, `UsersAndRoles()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Data Table`** (2 nodes): `DataTable()`, `DataTable.jsx`
+- **Thin community `Community 119`** (2 nodes): `AvailabilityGrid()`, `AvailabilityGrid.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Empty State`** (2 nodes): `EmptyState()`, `EmptyState.jsx`
+- **Thin community `Community 120`** (2 nodes): `SkillsCertsTab()`, `SkillsCertsTab.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Image Editor Modal`** (2 nodes): `ImageEditorModal()`, `ImageEditorModal.jsx`
+- **Thin community `Community 121`** (2 nodes): `StaffForm.jsx`, `StaffForm()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Input Component`** (2 nodes): `Input()`, `Input.jsx`
+- **Thin community `Community 122`** (2 nodes): `StaffList.jsx`, `StaffList()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `KPI Card`** (2 nodes): `KPICard()`, `KPICard.jsx`
+- **Thin community `Community 123`** (2 nodes): `StaffOverviewTab.jsx`, `StaffOverviewTab()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Modal Component`** (2 nodes): `Modal()`, `Modal.jsx`
+- **Thin community `Community 124`** (2 nodes): `StaffProfile.jsx`, `StaffProfile()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Pagination`** (2 nodes): `Pagination()`, `Pagination.jsx`
+- **Thin community `Community 125`** (2 nodes): `StaffScheduleTab.jsx`, `StaffScheduleTab()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Search Input`** (2 nodes): `SearchInput()`, `SearchInput.jsx`
+- **Thin community `Community 126`** (2 nodes): `StaffTimesheetsTab.jsx`, `StaffTimesheetsTab()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Select Component`** (2 nodes): `Select()`, `Select.jsx`
+- **Thin community `Community 127`** (2 nodes): `Button()`, `Button.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Status Badge`** (2 nodes): `StatusBadge.jsx`, `StatusBadge()`
+- **Thin community `Community 128`** (2 nodes): `Card()`, `Card.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Tabs Component`** (2 nodes): `Tabs.jsx`, `Tabs()`
+- **Thin community `Community 129`** (2 nodes): `DataTable()`, `DataTable.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Toast Component`** (2 nodes): `Toast.jsx`, `Toast()`
+- **Thin community `Community 130`** (2 nodes): `EmptyState()`, `EmptyState.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Rate Limiting`** (2 nodes): `rateLimit()`, `rate-limit.js`
+- **Thin community `Community 131`** (2 nodes): `ImageEditorModal()`, `ImageEditorModal.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Brand Icon`** (2 nodes): `Homecare Pro Brand Icon`, `Medical Cross Symbol`
+- **Thin community `Community 132`** (2 nodes): `Input()`, `Input.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Next.js Types`** (1 nodes): `next-env.d.ts`
+- **Thin community `Community 133`** (2 nodes): `KPICard()`, `KPICard.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `PostCSS Config`** (1 nodes): `postcss.config.js`
+- **Thin community `Community 134`** (2 nodes): `Modal()`, `Modal.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Tailwind Config`** (1 nodes): `tailwind.config.js`
+- **Thin community `Community 135`** (2 nodes): `Pagination()`, `Pagination.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Auth Configuration`** (1 nodes): `auth.js`
+- **Thin community `Community 136`** (2 nodes): `SearchInput()`, `SearchInput.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Prisma Client`** (1 nodes): `prisma.js`
+- **Thin community `Community 137`** (2 nodes): `Select()`, `Select.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `E2E Tests`** (1 nodes): `create-care-plan.spec.js`
+- **Thin community `Community 138`** (2 nodes): `StatusBadge.jsx`, `StatusBadge()`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 139`** (2 nodes): `Tabs.jsx`, `Tabs()`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 140`** (2 nodes): `Toast.jsx`, `Toast()`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 141`** (2 nodes): `rateLimit()`, `rate-limit.js`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 142`** (2 nodes): `Care Plans Feature`, `Scheduling System`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 143`** (1 nodes): `next-env.d.ts`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 144`** (1 nodes): `postcss.config.js`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 145`** (1 nodes): `tailwind.config.js`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 146`** (1 nodes): `api-response.js`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 147`** (1 nodes): `auth.js`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 148`** (1 nodes): `prisma.js`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 149`** (1 nodes): `validations.js`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 150`** (1 nodes): `create-care-plan.spec.js`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 151`** (1 nodes): `Billing System`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `GET()` connect `API Route Handlers` to `Resource CRUD Routes`?**
-  _High betweenness centrality (0.032) - this node is a cross-community bridge._
-- **Why does `POST()` connect `API Route Handlers` to `Resource CRUD Routes`?**
+- **Why does `GET()` connect `Community 0` to `Community 1`?**
+  _High betweenness centrality (0.043) - this node is a cross-community bridge._
+- **Why does `POST()` connect `Community 0` to `Community 1`, `Community 4`, `Community 9`?**
+  _High betweenness centrality (0.019) - this node is a cross-community bridge._
+- **Why does `DELETE()` connect `Community 1` to `Community 0`?**
   _High betweenness centrality (0.008) - this node is a cross-community bridge._
-- **Why does `DELETE()` connect `Resource CRUD Routes` to `API Route Handlers`?**
-  _High betweenness centrality (0.007) - this node is a cross-community bridge._
-- **Are the 9 inferred relationships involving `Create New Care Plan Form` (e.g. with `Create Care Plan Button` and `Care Plan Name Input Field`) actually correct?**
-  _`Create New Care Plan Form` has 9 INFERRED edges - model-reasoned connections that need verification._
-- **What connects `Incident Response`, `GitHub Actions`, `Vercel Platform` to the rest of the system?**
-  _24 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `API Route Handlers` be split into smaller, more focused modules?**
-  _Cohesion score 0.05 - nodes in this community are weakly interconnected._
-- **Should `System Documentation` be split into smaller, more focused modules?**
-  _Cohesion score 0.07 - nodes in this community are weakly interconnected._
+- **What connects `Next.js Framework`, `Prisma ORM`, `Tailwind CSS` to the rest of the system?**
+  _6 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Should `Community 0` be split into smaller, more focused modules?**
+  _Cohesion score 0.04 - nodes in this community are weakly interconnected._
+- **Should `Community 1` be split into smaller, more focused modules?**
+  _Cohesion score 0.1 - nodes in this community are weakly interconnected._

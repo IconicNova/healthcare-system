@@ -27,14 +27,15 @@ export async function GET(request, { params }) {
           include: {
             visit: {
               select: {
-                date: true,
-                serviceName: true,
+                startTime: true,
+                endTime: true,
+                title: true,
               },
             },
             service: {
               select: {
                 name: true,
-                rate: true,
+                baseRate: true,
               },
             },
           },

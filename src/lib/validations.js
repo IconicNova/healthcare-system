@@ -33,7 +33,7 @@ export const ClientSchema = z.object({
     .optional()
     .nullable()
     .or(z.literal('')),
-  status: z.enum(['ACTIVE', 'INACTIVE', 'DISCHARGED', 'DECEASED']).optional()
+  status: z.enum(['ACTIVE', 'INACTIVE', 'PENDING', 'ON_HOLD', 'DISCHARGED']).optional()
 });
 
 export const StaffSchema = z.object({
@@ -46,7 +46,7 @@ export const StaffSchema = z.object({
     .nullable()
     .or(z.literal('')),
   role: z.string().max(50).optional().nullable(),
-  status: z.enum(['ACTIVE', 'INACTIVE', 'LEAVE_OF_ABSENCE', 'TERMINATED']).optional(),
+  status: z.enum(['ACTIVE', 'INACTIVE', 'ON_LEAVE', 'TERMINATED']).optional(),
   payType: z.enum(['HOURLY', 'SALARY', 'PER_VISIT']).optional().nullable(),
   hourlyRate: z.number().min(0).optional().nullable()
 });

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
+import { randomUUID } from 'crypto';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { hasRoleAccess } from '@/lib/utils';
@@ -125,6 +126,11 @@ export async function POST(request) {
 
     const { clientId, dueDate, notes, invoiceItems, branchId } = body;
 
+    // Guard: invoiceItems must be present with at least one item
+    if (!invoiceItems || !Array.isArray(invoiceItems) || invoiceItems.length === 0) {
+      return ApiResponse.error('At least one invoice line item is required', 400);
+    }
+
     // Validate due date is not in the past
     const dueDateObj = new Date(dueDate);
     const today = new Date();
@@ -140,17 +146,11 @@ export async function POST(request) {
 
     // Create invoice with items in transaction (includes number generation to prevent races)
     const invoice = await prisma.$transaction(async (tx) => {
-      // Generate invoice number inside transaction to prevent duplicates
+      // Generate collision-safe invoice number using timestamp + random suffix
       const now = new Date();
       const yearMonth = now.toISOString().slice(0, 7).replace('-', '');
-      const existingCount = await tx.invoice.count({
-        where: {
-          organizationId,
-          invoiceNumber: { startsWith: `INV-${yearMonth}-` },
-        },
-      });
-      const sequence = String(existingCount + 1).padStart(4, '0');
-      const invoiceNumber = `INV-${yearMonth}-${sequence}`;
+      const suffix = randomUUID().slice(0, 8).toUpperCase();
+      const invoiceNumber = `INV-${yearMonth}-${suffix}`;
 
       const createdInvoice = await tx.invoice.create({
         data: {

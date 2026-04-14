@@ -185,7 +185,6 @@ export async function POST(request) {
         status: true,
         dateOfBirth: true,
         gender: true,
-        ssn: true,
         insuranceType: true,
         insuranceId: true,
         createdAt: true,

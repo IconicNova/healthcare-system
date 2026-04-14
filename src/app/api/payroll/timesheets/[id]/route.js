@@ -27,11 +27,10 @@ export async function GET(request, { params }) {
           include: {
             visit: {
               select: {
-                date: true,
+                startTime: true,
+                endTime: true,
                 actualStart: true,
                 actualEnd: true,
-                scheduledStart: true,
-                scheduledEnd: true,
                 client: {
                   select: {
                     firstName: true,
@@ -68,9 +67,15 @@ export async function GET(request, { params }) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    // Staff can only see their own timesheets
-    if (session.user.role === 'STAFF' && timesheet.staffId !== session.user.id) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    // Staff can only see their own timesheets — resolve Staff.id from User.id
+    if (session.user.role === 'STAFF') {
+      const staffProfile = await prisma.staff.findFirst({
+        where: { userId: session.user.id },
+        select: { id: true },
+      });
+      if (!staffProfile || timesheet.staffId !== staffProfile.id) {
+        return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+      }
     }
 
     return NextResponse.json({

@@ -1,0 +1,1015 @@
+{
+  "communities": {
+    "0": [
+      "route_formatdate",
+      "route_generatenewemployeeid",
+      "route_generatesummaryfromdata",
+      "route_get",
+      "route_post",
+      "src_app_api_auth_nextauth_route_js",
+      "src_app_api_billing_insurance_claims_route_js",
+      "src_app_api_billing_invoices_generate_batch_route_js",
+      "src_app_api_billing_invoices_id_send_route_js",
+      "src_app_api_billing_invoices_route_js",
+      "src_app_api_billing_invoices_uninvoiced_visits_route_js",
+      "src_app_api_billing_payments_route_js",
+      "src_app_api_billing_stats_route_js",
+      "src_app_api_branches_route_js",
+      "src_app_api_care_plans_id_generate_visits_route_js",
+      "src_app_api_care_plans_route_js",
+      "src_app_api_clients_id_forms_route_js",
+      "src_app_api_clients_id_medications_route_js",
+      "src_app_api_clients_id_progress_notes_route_js",
+      "src_app_api_clients_id_reports_route_js",
+      "src_app_api_clients_id_visits_route_js",
+      "src_app_api_clients_id_vitals_route_js",
+      "src_app_api_clients_route_js",
+      "src_app_api_dashboard_alerts_route_js",
+      "src_app_api_dashboard_recent_invoices_route_js",
+      "src_app_api_dashboard_revenue_chart_route_js",
+      "src_app_api_dashboard_stats_route_js",
+      "src_app_api_dashboard_upcoming_shifts_route_js",
+      "src_app_api_dashboard_visit_chart_route_js",
+      "src_app_api_forms_templates_route_js",
+      "src_app_api_medications_id_administer_route_js",
+      "src_app_api_medications_id_history_route_js",
+      "src_app_api_notifications_route_js",
+      "src_app_api_notifications_unread_count_route_js",
+      "src_app_api_payroll_pay_summary_route_js",
+      "src_app_api_payroll_payslips_route_js",
+      "src_app_api_payroll_stats_route_js",
+      "src_app_api_payroll_timesheets_generate_route_js",
+      "src_app_api_payroll_timesheets_id_entries_route_js",
+      "src_app_api_payroll_timesheets_route_js",
+      "src_app_api_reports_client_history_clientid_route_js",
+      "src_app_api_reports_compliance_route_js",
+      "src_app_api_reports_financial_route_js",
+      "src_app_api_reports_id_generate_route_js",
+      "src_app_api_reports_staff_performance_route_js",
+      "src_app_api_reports_visit_logs_route_js",
+      "src_app_api_services_route_js",
+      "src_app_api_settings_services_route_js",
+      "src_app_api_settings_users_route_js",
+      "src_app_api_staff_id_certifications_route_js",
+      "src_app_api_staff_id_skills_route_js",
+      "src_app_api_staff_id_timesheets_route_js",
+      "src_app_api_staff_id_visits_route_js",
+      "src_app_api_staff_route_js",
+      "src_app_api_visits_conflicts_route_js",
+      "src_app_api_visits_id_forms_route_js",
+      "src_app_api_visits_id_notes_route_js",
+      "src_app_api_visits_id_tasks_route_js",
+      "src_app_api_visits_route_js",
+      "src_app_api_visits_status_counts_route_js",
+      "src_app_api_vitals_id_trends_route_js"
+    ],
+    "1": [
+      "route_delete",
+      "route_patch",
+      "route_put",
+      "src_app_api_billing_insurance_claims_id_route_js",
+      "src_app_api_billing_invoices_id_route_js",
+      "src_app_api_care_plans_id_route_js",
+      "src_app_api_clients_id_avatar_route_js",
+      "src_app_api_clients_id_documents_route_js",
+      "src_app_api_clients_id_medical_route_js",
+      "src_app_api_clients_id_route_js",
+      "src_app_api_forms_id_route_js",
+      "src_app_api_notifications_id_read_route_js",
+      "src_app_api_notifications_id_route_js",
+      "src_app_api_notifications_mark_all_read_route_js",
+      "src_app_api_payroll_timesheet_entries_id_route_js",
+      "src_app_api_payroll_timesheets_id_route_js",
+      "src_app_api_progress_notes_id_route_js",
+      "src_app_api_reports_id_route_js",
+      "src_app_api_settings_config_route_js",
+      "src_app_api_settings_organization_route_js",
+      "src_app_api_settings_services_id_route_js",
+      "src_app_api_settings_users_id_route_js",
+      "src_app_api_staff_id_availability_route_js",
+      "src_app_api_staff_id_avatar_route_js",
+      "src_app_api_staff_id_certifications_certid_route_js",
+      "src_app_api_staff_id_route_js",
+      "src_app_api_staff_id_skills_skillid_route_js",
+      "src_app_api_visit_tasks_id_route_js",
+      "src_app_api_visits_id_route_js",
+      "src_app_api_vitals_id_route_js"
+    ],
+    "2": [
+      "src_lib_utils_js",
+      "utils_calculateage",
+      "utils_cn",
+      "utils_formatcurrency",
+      "utils_formatdate",
+      "utils_formatdatetime",
+      "utils_formatphone",
+      "utils_formattime",
+      "utils_getinitials",
+      "utils_getroledisplayname",
+      "utils_getstatuscolor",
+      "utils_hasroleaccess",
+      "utils_truncate"
+    ],
+    "3": [
+      "errorboundary_errorboundary",
+      "errorboundary_errorboundary_componentdidcatch",
+      "errorboundary_errorboundary_constructor",
+      "errorboundary_errorboundary_getderivedstatefromerror",
+      "errorboundary_errorboundary_render",
+      "src_components_errorboundary_jsx"
+    ],
+    "4": [
+      "route_comparemedicationlists",
+      "route_getchanges",
+      "route_mergemedications",
+      "route_normalizemedicationname",
+      "src_app_api_clients_id_medications_reconcile_route_js"
+    ],
+    "5": [
+      "encryption_decrypt",
+      "encryption_encrypt",
+      "encryption_getkey",
+      "encryption_maskssn",
+      "src_lib_encryption_js"
+    ],
+    "6": [
+      "financialreport_agingchartwithdata",
+      "financialreport_financialreport",
+      "financialreport_revenuechartwithdata",
+      "src_components_reports_financialreport_jsx"
+    ],
+    "7": [
+      "README_homecare-pro",
+      "README_nextjs",
+      "README_prisma",
+      "README_tailwind"
+    ],
+    "8": [
+      "page_careplandetailpage",
+      "page_getstatuscolor",
+      "src_app_dashboard_care_plans_id_page_js"
+    ],
+    "9": [
+      "route_checkinteractions",
+      "route_normalizename",
+      "src_app_api_medications_check_interactions_route_js"
+    ],
+    "10": [
+      "exportbutton_exportbutton",
+      "exportbutton_exporttocsv",
+      "src_components_reports_exportbutton_jsx"
+    ],
+    "11": [
+      "src_components_reports_staffperformance_jsx",
+      "staffperformance_performancechart",
+      "staffperformance_staffperformance"
+    ],
+    "12": [
+      "src_components_ui_usetoast_js",
+      "usetoast_toastprovider",
+      "usetoast_usetoast"
+    ],
+    "13": [
+      "adddocuments_main",
+      "prisma_adddocuments_js"
+    ],
+    "14": [
+      "prisma_seed_drug_interactions_js",
+      "seed_drug_interactions_main"
+    ],
+    "15": [
+      "prisma_seed_js",
+      "seed_main"
+    ],
+    "16": [
+      "layout_rootlayout",
+      "src_app_layout_js"
+    ],
+    "17": [
+      "not_found_notfound",
+      "src_app_not_found_js"
+    ],
+    "18": [
+      "page_home",
+      "src_app_page_js"
+    ],
+    "19": [
+      "layout_authlayout",
+      "src_app_auth_layout_js"
+    ],
+    "20": [
+      "page_loginpage",
+      "src_app_auth_login_page_js"
+    ],
+    "21": [
+      "error_dashboarderror",
+      "src_app_dashboard_error_js"
+    ],
+    "22": [
+      "layout_dashboardlayout",
+      "src_app_dashboard_layout_js"
+    ],
+    "23": [
+      "loading_loading",
+      "src_app_dashboard_loading_js"
+    ],
+    "24": [
+      "page_billingpage",
+      "src_app_dashboard_billing_page_js"
+    ],
+    "25": [
+      "page_caredeliverypage",
+      "src_app_dashboard_care_delivery_page_js"
+    ],
+    "26": [
+      "page_formchartingpage",
+      "src_app_dashboard_care_delivery_forms_formid_page_js"
+    ],
+    "27": [
+      "page_medicationspage",
+      "src_app_dashboard_care_delivery_medications_page_js"
+    ],
+    "28": [
+      "page_careplanspage",
+      "src_app_dashboard_care_plans_page_js"
+    ],
+    "29": [
+      "page_careplaneditpage",
+      "src_app_dashboard_care_plans_id_edit_page_js"
+    ],
+    "30": [
+      "page_clientspage",
+      "src_app_dashboard_clients_page_js"
+    ],
+    "31": [
+      "page_newclientpage",
+      "src_app_dashboard_clients_new_page_js"
+    ],
+    "32": [
+      "page_clientprofilepage",
+      "src_app_dashboard_clients_id_page_js"
+    ],
+    "33": [
+      "page_editclientpage",
+      "src_app_dashboard_clients_id_edit_page_js"
+    ],
+    "34": [
+      "page_dashboardpage",
+      "src_app_dashboard_dashboard_page_js"
+    ],
+    "35": [
+      "page_notificationspage",
+      "src_app_dashboard_notifications_page_js"
+    ],
+    "36": [
+      "page_payrollpage",
+      "src_app_dashboard_payroll_page_js"
+    ],
+    "37": [
+      "page_reportspage",
+      "src_app_dashboard_reports_page_js"
+    ],
+    "38": [
+      "page_schedulingpage",
+      "src_app_dashboard_scheduling_page_js"
+    ],
+    "39": [
+      "page_settingspage",
+      "src_app_dashboard_settings_page_js"
+    ],
+    "40": [
+      "page_staffpage",
+      "src_app_dashboard_staff_page_js"
+    ],
+    "41": [
+      "page_staffprofilepage",
+      "src_app_dashboard_staff_id_page_js"
+    ],
+    "42": [
+      "page_editstaffpage",
+      "src_app_dashboard_staff_id_edit_page_js"
+    ],
+    "43": [
+      "providers_clientproviders",
+      "src_components_providers_js"
+    ],
+    "44": [
+      "billingsummary_billingsummary",
+      "src_components_billing_billingsummary_jsx"
+    ],
+    "45": [
+      "generatebatchmodal_generatebatchmodal",
+      "src_components_billing_generatebatchmodal_jsx"
+    ],
+    "46": [
+      "importvisitsmodal_importvisitsmodal",
+      "src_components_billing_importvisitsmodal_jsx"
+    ],
+    "47": [
+      "insuranceclaimdetail_insuranceclaimdetail",
+      "src_components_billing_insuranceclaimdetail_jsx"
+    ],
+    "48": [
+      "insuranceclaimform_insuranceclaimform",
+      "src_components_billing_insuranceclaimform_jsx"
+    ],
+    "49": [
+      "insuranceclaimlist_insuranceclaimlist",
+      "src_components_billing_insuranceclaimlist_jsx"
+    ],
+    "50": [
+      "invoicedetail_invoicedetail",
+      "src_components_billing_invoicedetail_jsx"
+    ],
+    "51": [
+      "invoiceform_invoiceform",
+      "src_components_billing_invoiceform_jsx"
+    ],
+    "52": [
+      "invoicelineitems_invoicelineitems",
+      "src_components_billing_invoicelineitems_jsx"
+    ],
+    "53": [
+      "invoicelist_invoicelist",
+      "src_components_billing_invoicelist_jsx"
+    ],
+    "54": [
+      "paymentform_paymentform",
+      "src_components_billing_paymentform_jsx"
+    ],
+    "55": [
+      "paymentlist_paymentlist",
+      "src_components_billing_paymentlist_jsx"
+    ],
+    "56": [
+      "addprogressnotemodal_addprogressnotemodal",
+      "src_components_care_delivery_addprogressnotemodal_jsx"
+    ],
+    "57": [
+      "caredeliverylayout_caredeliverylayout",
+      "src_components_care_delivery_caredeliverylayout_jsx"
+    ],
+    "58": [
+      "druginteractionalert_druginteractionalert",
+      "src_components_care_delivery_druginteractionalert_jsx"
+    ],
+    "59": [
+      "editvisitdialog_editvisitdialog",
+      "src_components_care_delivery_editvisitdialog_jsx"
+    ],
+    "60": [
+      "editvisitnotestab_editvisitnotestab",
+      "src_components_care_delivery_editvisitnotestab_jsx"
+    ],
+    "61": [
+      "editvisittaskstab_visittaskstab",
+      "src_components_care_delivery_editvisittaskstab_jsx"
+    ],
+    "62": [
+      "formfieldrenderer_formfieldrenderer",
+      "src_components_care_delivery_formfieldrenderer_jsx"
+    ],
+    "63": [
+      "medicationreconciliation_medicationreconciliation",
+      "src_components_care_delivery_medicationreconciliation_jsx"
+    ],
+    "64": [
+      "progressnotestab_progressnotestab",
+      "src_components_care_delivery_progressnotestab_jsx"
+    ],
+    "65": [
+      "src_components_care_delivery_tasksview_jsx",
+      "tasksview_tasksview"
+    ],
+    "66": [
+      "src_components_care_delivery_visitnotestab_jsx",
+      "visitnotestab_visitnotestab"
+    ],
+    "67": [
+      "src_components_care_delivery_visitreportbuilder_jsx",
+      "visitreportbuilder_visitreportbuilder"
+    ],
+    "68": [
+      "src_components_care_delivery_visitreportstab_jsx",
+      "visitreportstab_visitreportstab"
+    ],
+    "69": [
+      "src_components_care_delivery_vitalschart_jsx",
+      "vitalschart_vitalschart"
+    ],
+    "70": [
+      "src_components_care_delivery_vitalsentryform_jsx",
+      "vitalsentryform_vitalsentryform"
+    ],
+    "71": [
+      "src_components_care_delivery_vitalstab_jsx",
+      "vitalstab_vitalstab"
+    ],
+    "72": [
+      "careplanform_careplanform",
+      "src_components_care_plans_careplanform_jsx"
+    ],
+    "73": [
+      "clientcareplanstab_clientcareplanstab",
+      "src_components_clients_clientcareplanstab_jsx"
+    ],
+    "74": [
+      "clientdocumentstab_clientdocumentstab",
+      "src_components_clients_clientdocumentstab_jsx"
+    ],
+    "75": [
+      "clientform_clientform",
+      "src_components_clients_clientform_jsx"
+    ],
+    "76": [
+      "clientformstab_clientformstab",
+      "src_components_clients_clientformstab_jsx"
+    ],
+    "77": [
+      "clientlist_clientlist",
+      "src_components_clients_clientlist_jsx"
+    ],
+    "78": [
+      "clientmedicaltab_clientmedicaltab",
+      "src_components_clients_clientmedicaltab_jsx"
+    ],
+    "79": [
+      "clientoverviewtab_clientoverviewtab",
+      "src_components_clients_clientoverviewtab_jsx"
+    ],
+    "80": [
+      "clientprofile_clientprofilepage",
+      "src_components_clients_clientprofile_jsx"
+    ],
+    "81": [
+      "clientvisitstab_clientvisitstab",
+      "src_components_clients_clientvisitstab_jsx"
+    ],
+    "82": [
+      "alertspanel_alertspanel",
+      "src_components_dashboard_alertspanel_jsx"
+    ],
+    "83": [
+      "evvwidget_evvwidget",
+      "src_components_dashboard_evvwidget_jsx"
+    ],
+    "84": [
+      "metricsgrid_metricsgrid",
+      "src_components_dashboard_metricsgrid_jsx"
+    ],
+    "85": [
+      "recentinvoices_recentinvoices",
+      "src_components_dashboard_recentinvoices_jsx"
+    ],
+    "86": [
+      "revenuechart_revenuechart",
+      "src_components_dashboard_revenuechart_jsx"
+    ],
+    "87": [
+      "src_components_dashboard_upcomingshifts_jsx",
+      "upcomingshifts_upcomingshifts"
+    ],
+    "88": [
+      "src_components_dashboard_visitchart_jsx",
+      "visitchart_visitchart"
+    ],
+    "89": [
+      "breadcrumb_breadcrumb",
+      "src_components_layout_breadcrumb_jsx"
+    ],
+    "90": [
+      "loadingspinner_loadingspinner",
+      "src_components_layout_loadingspinner_jsx"
+    ],
+    "91": [
+      "sidebar_sidebar",
+      "src_components_layout_sidebar_jsx"
+    ],
+    "92": [
+      "src_components_layout_topbar_jsx",
+      "topbar_topbar"
+    ],
+    "93": [
+      "notificationdropdown_notificationdropdown",
+      "src_components_notifications_notificationdropdown_jsx"
+    ],
+    "94": [
+      "notificationitem_notificationitem",
+      "src_components_notifications_notificationitem_jsx"
+    ],
+    "95": [
+      "notificationlist_notificationlist",
+      "src_components_notifications_notificationlist_jsx"
+    ],
+    "96": [
+      "exportaccountingmodal_exportaccountingmodal",
+      "src_components_payroll_exportaccountingmodal_jsx"
+    ],
+    "97": [
+      "generatetimesheetmodal_generatetimesheetmodal",
+      "src_components_payroll_generatetimesheetmodal_jsx"
+    ],
+    "98": [
+      "payrollsummary_payrollsummary",
+      "src_components_payroll_payrollsummary_jsx"
+    ],
+    "99": [
+      "payslipdetail_payslipdetail",
+      "src_components_payroll_payslipdetail_jsx"
+    ],
+    "100": [
+      "paysliplist_paysliplist",
+      "src_components_payroll_paysliplist_jsx"
+    ],
+    "101": [
+      "paysummarytable_paysummarytable",
+      "src_components_payroll_paysummarytable_jsx"
+    ],
+    "102": [
+      "src_components_payroll_timesheetdetail_jsx",
+      "timesheetdetail_timesheetdetail"
+    ],
+    "103": [
+      "src_components_payroll_timesheetentryform_jsx",
+      "timesheetentryform_timesheetentryform"
+    ],
+    "104": [
+      "src_components_payroll_timesheetlist_jsx",
+      "timesheetlist_timesheetlist"
+    ],
+    "105": [
+      "clienthistory_clienthistory",
+      "src_components_reports_clienthistory_jsx"
+    ],
+    "106": [
+      "compliancedashboard_compliancedashboard",
+      "src_components_reports_compliancedashboard_jsx"
+    ],
+    "107": [
+      "src_components_reports_visitlogs_jsx",
+      "visitlogs_visitlogs"
+    ],
+    "108": [
+      "schedulingcalendar_schedulingcalendar",
+      "src_components_scheduling_schedulingcalendar_jsx"
+    ],
+    "109": [
+      "src_components_scheduling_visitdetailpopup_jsx",
+      "visitdetailpopup_visitdetailpopup"
+    ],
+    "110": [
+      "src_components_scheduling_visiteditform_jsx",
+      "visiteditform_visiteditform"
+    ],
+    "111": [
+      "src_components_scheduling_visitform_jsx",
+      "visitform_visitform"
+    ],
+    "112": [
+      "billingsettings_billingsettings",
+      "src_components_settings_billingsettings_jsx"
+    ],
+    "113": [
+      "notificationsettings_notificationsettings",
+      "src_components_settings_notificationsettings_jsx"
+    ],
+    "114": [
+      "organizationsettings_organizationsettings",
+      "src_components_settings_organizationsettings_jsx"
+    ],
+    "115": [
+      "payrollsettings_payrollsettings",
+      "src_components_settings_payrollsettings_jsx"
+    ],
+    "116": [
+      "schedulingrules_schedulingrules",
+      "src_components_settings_schedulingrules_jsx"
+    ],
+    "117": [
+      "servicesconfiguration_servicesconfiguration",
+      "src_components_settings_servicesconfiguration_jsx"
+    ],
+    "118": [
+      "src_components_settings_usersandroles_jsx",
+      "usersandroles_usersandroles"
+    ],
+    "119": [
+      "availabilitygrid_availabilitygrid",
+      "src_components_staff_availabilitygrid_jsx"
+    ],
+    "120": [
+      "skillscertstab_skillscertstab",
+      "src_components_staff_skillscertstab_jsx"
+    ],
+    "121": [
+      "src_components_staff_staffform_jsx",
+      "staffform_staffform"
+    ],
+    "122": [
+      "src_components_staff_stafflist_jsx",
+      "stafflist_stafflist"
+    ],
+    "123": [
+      "src_components_staff_staffoverviewtab_jsx",
+      "staffoverviewtab_staffoverviewtab"
+    ],
+    "124": [
+      "src_components_staff_staffprofile_jsx",
+      "staffprofile_staffprofile"
+    ],
+    "125": [
+      "src_components_staff_staffscheduletab_jsx",
+      "staffscheduletab_staffscheduletab"
+    ],
+    "126": [
+      "src_components_staff_stafftimesheetstab_jsx",
+      "stafftimesheetstab_stafftimesheetstab"
+    ],
+    "127": [
+      "button_button",
+      "src_components_ui_button_jsx"
+    ],
+    "128": [
+      "card_card",
+      "src_components_ui_card_jsx"
+    ],
+    "129": [
+      "datatable_datatable",
+      "src_components_ui_datatable_jsx"
+    ],
+    "130": [
+      "emptystate_emptystate",
+      "src_components_ui_emptystate_jsx"
+    ],
+    "131": [
+      "imageeditormodal_imageeditormodal",
+      "src_components_ui_imageeditormodal_jsx"
+    ],
+    "132": [
+      "input_input",
+      "src_components_ui_input_jsx"
+    ],
+    "133": [
+      "kpicard_kpicard",
+      "src_components_ui_kpicard_jsx"
+    ],
+    "134": [
+      "modal_modal",
+      "src_components_ui_modal_jsx"
+    ],
+    "135": [
+      "pagination_pagination",
+      "src_components_ui_pagination_jsx"
+    ],
+    "136": [
+      "searchinput_searchinput",
+      "src_components_ui_searchinput_jsx"
+    ],
+    "137": [
+      "select_select",
+      "src_components_ui_select_jsx"
+    ],
+    "138": [
+      "src_components_ui_statusbadge_jsx",
+      "statusbadge_statusbadge"
+    ],
+    "139": [
+      "src_components_ui_tabs_jsx",
+      "tabs_tabs"
+    ],
+    "140": [
+      "src_components_ui_toast_jsx",
+      "toast_toast"
+    ],
+    "141": [
+      "rate_limit_ratelimit",
+      "src_lib_rate_limit_js"
+    ],
+    "142": [
+      "USER_GUIDE_care_plans",
+      "USER_GUIDE_scheduling"
+    ],
+    "143": [
+      "next_env_d_ts"
+    ],
+    "144": [
+      "postcss_config_js"
+    ],
+    "145": [
+      "tailwind_config_js"
+    ],
+    "146": [
+      "src_lib_api_response_js"
+    ],
+    "147": [
+      "src_lib_auth_js"
+    ],
+    "148": [
+      "src_lib_prisma_js"
+    ],
+    "149": [
+      "src_lib_validations_js"
+    ],
+    "150": [
+      "tests_create_care_plan_spec_js"
+    ],
+    "151": [
+      "USER_GUIDE_billing"
+    ]
+  },
+  "cohesion": {
+    "0": 0.04,
+    "1": 0.1,
+    "2": 0.15,
+    "3": 0.33,
+    "4": 0.6,
+    "5": 0.7,
+    "6": 0.5,
+    "7": 0.5,
+    "8": 0.67,
+    "9": 1.0,
+    "10": 0.67,
+    "11": 0.67,
+    "12": 0.67,
+    "13": 1.0,
+    "14": 1.0,
+    "15": 1.0,
+    "16": 1.0,
+    "17": 1.0,
+    "18": 1.0,
+    "19": 1.0,
+    "20": 1.0,
+    "21": 1.0,
+    "22": 1.0,
+    "23": 1.0,
+    "24": 1.0,
+    "25": 1.0,
+    "26": 1.0,
+    "27": 1.0,
+    "28": 1.0,
+    "29": 1.0,
+    "30": 1.0,
+    "31": 1.0,
+    "32": 1.0,
+    "33": 1.0,
+    "34": 1.0,
+    "35": 1.0,
+    "36": 1.0,
+    "37": 1.0,
+    "38": 1.0,
+    "39": 1.0,
+    "40": 1.0,
+    "41": 1.0,
+    "42": 1.0,
+    "43": 1.0,
+    "44": 1.0,
+    "45": 1.0,
+    "46": 1.0,
+    "47": 1.0,
+    "48": 1.0,
+    "49": 1.0,
+    "50": 1.0,
+    "51": 1.0,
+    "52": 1.0,
+    "53": 1.0,
+    "54": 1.0,
+    "55": 1.0,
+    "56": 1.0,
+    "57": 1.0,
+    "58": 1.0,
+    "59": 1.0,
+    "60": 1.0,
+    "61": 1.0,
+    "62": 1.0,
+    "63": 1.0,
+    "64": 1.0,
+    "65": 1.0,
+    "66": 1.0,
+    "67": 1.0,
+    "68": 1.0,
+    "69": 1.0,
+    "70": 1.0,
+    "71": 1.0,
+    "72": 1.0,
+    "73": 1.0,
+    "74": 1.0,
+    "75": 1.0,
+    "76": 1.0,
+    "77": 1.0,
+    "78": 1.0,
+    "79": 1.0,
+    "80": 1.0,
+    "81": 1.0,
+    "82": 1.0,
+    "83": 1.0,
+    "84": 1.0,
+    "85": 1.0,
+    "86": 1.0,
+    "87": 1.0,
+    "88": 1.0,
+    "89": 1.0,
+    "90": 1.0,
+    "91": 1.0,
+    "92": 1.0,
+    "93": 1.0,
+    "94": 1.0,
+    "95": 1.0,
+    "96": 1.0,
+    "97": 1.0,
+    "98": 1.0,
+    "99": 1.0,
+    "100": 1.0,
+    "101": 1.0,
+    "102": 1.0,
+    "103": 1.0,
+    "104": 1.0,
+    "105": 1.0,
+    "106": 1.0,
+    "107": 1.0,
+    "108": 1.0,
+    "109": 1.0,
+    "110": 1.0,
+    "111": 1.0,
+    "112": 1.0,
+    "113": 1.0,
+    "114": 1.0,
+    "115": 1.0,
+    "116": 1.0,
+    "117": 1.0,
+    "118": 1.0,
+    "119": 1.0,
+    "120": 1.0,
+    "121": 1.0,
+    "122": 1.0,
+    "123": 1.0,
+    "124": 1.0,
+    "125": 1.0,
+    "126": 1.0,
+    "127": 1.0,
+    "128": 1.0,
+    "129": 1.0,
+    "130": 1.0,
+    "131": 1.0,
+    "132": 1.0,
+    "133": 1.0,
+    "134": 1.0,
+    "135": 1.0,
+    "136": 1.0,
+    "137": 1.0,
+    "138": 1.0,
+    "139": 1.0,
+    "140": 1.0,
+    "141": 1.0,
+    "142": 1.0,
+    "143": 1.0,
+    "144": 1.0,
+    "145": 1.0,
+    "146": 1.0,
+    "147": 1.0,
+    "148": 1.0,
+    "149": 1.0,
+    "150": 1.0,
+    "151": 1.0
+  },
+  "gods": [
+    {
+      "id": "route_get",
+      "label": "GET()",
+      "edges": 64
+    },
+    {
+      "id": "route_post",
+      "label": "POST()",
+      "edges": 35
+    },
+    {
+      "id": "route_patch",
+      "label": "PATCH()",
+      "edges": 22
+    },
+    {
+      "id": "route_delete",
+      "label": "DELETE()",
+      "edges": 18
+    },
+    {
+      "id": "errorboundary_errorboundary",
+      "label": "ErrorBoundary",
+      "edges": 5
+    },
+    {
+      "id": "route_comparemedicationlists",
+      "label": "compareMedicationLists()",
+      "edges": 4
+    },
+    {
+      "id": "route_put",
+      "label": "PUT()",
+      "edges": 3
+    },
+    {
+      "id": "route_checkinteractions",
+      "label": "checkInteractions()",
+      "edges": 3
+    },
+    {
+      "id": "encryption_getkey",
+      "label": "getKey()",
+      "edges": 3
+    },
+    {
+      "id": "encryption_decrypt",
+      "label": "decrypt()",
+      "edges": 3
+    }
+  ],
+  "surprises": [
+    {
+      "source": "POST()",
+      "target": "mergeMedications()",
+      "source_files": [
+        "src\\app\\api\\visits\\[id]\\tasks\\route.js",
+        "src\\app\\api\\clients\\[id]\\medications\\reconcile\\route.js"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "connects across different repos/directories; bridges separate communities; peripheral node `mergeMedications()` unexpectedly reaches hub `POST()`"
+    },
+    {
+      "source": "POST()",
+      "target": "compareMedicationLists()",
+      "source_files": [
+        "src\\app\\api\\visits\\[id]\\tasks\\route.js",
+        "src\\app\\api\\clients\\[id]\\medications\\reconcile\\route.js"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "connects across different repos/directories; bridges separate communities"
+    },
+    {
+      "source": "POST()",
+      "target": "checkInteractions()",
+      "source_files": [
+        "src\\app\\api\\visits\\[id]\\tasks\\route.js",
+        "src\\app\\api\\medications\\check-interactions\\route.js"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "connects across different repos/directories; bridges separate communities"
+    },
+    {
+      "source": "POST()",
+      "target": "generateSummaryFromData()",
+      "source_files": [
+        "src\\app\\api\\visits\\[id]\\tasks\\route.js",
+        "src\\app\\api\\reports\\[id]\\generate\\route.js"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "connects across different repos/directories; peripheral node `generateSummaryFromData()` unexpectedly reaches hub `POST()`"
+    },
+    {
+      "source": "POST()",
+      "target": "generateNewEmployeeId()",
+      "source_files": [
+        "src\\app\\api\\visits\\[id]\\tasks\\route.js",
+        "src\\app\\api\\staff\\route.js"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "connects across different repos/directories; peripheral node `generateNewEmployeeId()` unexpectedly reaches hub `POST()`"
+    }
+  ],
+  "questions": [
+    {
+      "type": "bridge_node",
+      "question": "Why does `GET()` connect `Community 0` to `Community 1`?",
+      "why": "High betweenness centrality (0.043) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `POST()` connect `Community 0` to `Community 1`, `Community 4`, `Community 9`?",
+      "why": "High betweenness centrality (0.019) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `DELETE()` connect `Community 1` to `Community 0`?",
+      "why": "High betweenness centrality (0.008) - this node is a cross-community bridge."
+    },
+    {
+      "type": "isolated_nodes",
+      "question": "What connects `Next.js Framework`, `Prisma ORM`, `Tailwind CSS` to the rest of the system?",
+      "why": "6 weakly-connected nodes found - possible documentation gaps or missing edges."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Community 0` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.04 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Community 1` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.1 - nodes in this community are weakly interconnected."
+    }
+  ]
+}

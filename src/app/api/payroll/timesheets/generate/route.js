@@ -114,9 +114,9 @@ export async function POST(request) {
             const start = new Date(visit.actualStart);
             const end = new Date(visit.actualEnd);
             hours = (end - start) / (1000 * 60 * 60);
-          } else if (visit.scheduledStart && visit.scheduledEnd) {
-            const start = new Date(visit.scheduledStart);
-            const end = new Date(visit.scheduledEnd);
+          } else if (visit.startTime && visit.endTime) {
+            const start = new Date(visit.startTime);
+            const end = new Date(visit.endTime);
             hours = (end - start) / (1000 * 60 * 60);
           } else if (visit.service?.duration) {
             hours = visit.service.duration / 60;

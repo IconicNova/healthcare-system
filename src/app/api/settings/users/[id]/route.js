@@ -54,6 +54,18 @@ export async function PATCH(request, { params }) {
         organizationId: session.user.organizationId,
       },
       data: updateData,
+      select: {
+        id: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        role: true,
+        status: true,
+        avatar: true,
+        createdAt: true,
+        updatedAt: true,
+        branchId: true,
+      },
     });
 
     return NextResponse.json(user);

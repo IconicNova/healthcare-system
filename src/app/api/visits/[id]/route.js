@@ -152,6 +152,58 @@ export async function PATCH(request, { params }) {
       );
     }
 
+    // Re-run scheduling conflict checks when times or assignments change
+    const effectiveStaffId = body.staffId !== undefined ? body.staffId : existing.staffId;
+    const effectiveClientId = body.clientId || existing.clientId;
+    const timesOrAssignmentsChanged = body.startTime || body.endTime || body.staffId !== undefined || body.clientId;
+
+    if (timesOrAssignmentsChanged && existing.status !== 'CANCELLED') {
+      let conflicts = [];
+
+      // Staff conflict check
+      if (effectiveStaffId) {
+        const staffConflicts = await prisma.visit.findMany({
+          where: {
+            staffId: effectiveStaffId,
+            organizationId: session.user.organizationId,
+            id: { not: id },
+            status: { not: 'CANCELLED' },
+            OR: [{
+              startTime: { lte: newEnd },
+              endTime: { gte: newStart },
+            }],
+          },
+        });
+        conflicts = staffConflicts.map(v => ({
+          type: 'STAFF', visitId: v.id, startTime: v.startTime, endTime: v.endTime,
+        }));
+      }
+
+      // Client conflict check
+      const clientConflicts = await prisma.visit.findMany({
+        where: {
+          clientId: effectiveClientId,
+          organizationId: session.user.organizationId,
+          id: { not: id },
+          status: { not: 'CANCELLED' },
+          OR: [{
+            startTime: { lte: newEnd },
+            endTime: { gte: newStart },
+          }],
+        },
+      });
+      conflicts = conflicts.concat(clientConflicts.map(v => ({
+        type: 'CLIENT', visitId: v.id, startTime: v.startTime, endTime: v.endTime,
+      })));
+
+      if (conflicts.length > 0) {
+        return NextResponse.json(
+          { error: 'Time slot conflict detected', conflicts },
+          { status: 409 }
+        );
+      }
+    }
+
     const visit = await prisma.visit.update({
       where: { id },
       data: {
