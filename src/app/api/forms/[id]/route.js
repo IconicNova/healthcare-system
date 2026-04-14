@@ -3,15 +3,13 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import {
+  buildReviewMetadataPatch,
+  normalizeFormStatus,
+} from '@/lib/form-review';
+import {
   canTransitionFormStatus,
   normalizeRejectionReason,
 } from '@/components/care-delivery/forms-review.helpers';
-
-function normalizeLegacyFormStatus(status) {
-  if (status === 'PENDING') return 'DRAFT';
-  if (status === 'COMPLETED') return 'SUBMITTED';
-  return status || 'DRAFT';
-}
 
 // GET - Fetch a single form with template and relations
 export async function GET(request, { params }) {
@@ -74,7 +72,7 @@ export async function GET(request, { params }) {
     return NextResponse.json({
       form: {
         ...form,
-        status: normalizeLegacyFormStatus(form.status),
+        status: normalizeFormStatus(form.status),
       },
     });
   } catch (error) {
@@ -109,7 +107,7 @@ export async function PATCH(request, { params }) {
       return NextResponse.json({ error: 'Form not found' }, { status: 404 });
     }
 
-    const currentStatus = normalizeLegacyFormStatus(form.status);
+    const currentStatus = normalizeFormStatus(form.status);
     const updateData = {};
 
     if (formData !== undefined) {
@@ -136,21 +134,20 @@ export async function PATCH(request, { params }) {
       }
 
       updateData.status = status;
+      const metadataPatch = buildReviewMetadataPatch({
+        previousStatus: currentStatus,
+        nextStatus: status,
+        rejectionReason: body.rejectionReason,
+        actorId: session.user.id,
+      });
+      const { rejectedBy, ...persistedMetadataPatch } = metadataPatch;
+      void rejectedBy;
+      Object.assign(updateData, persistedMetadataPatch);
 
       // Record lifecycle timestamps as the form moves through review.
       if (status === 'SUBMITTED' && !form.submittedAt) {
         updateData.submittedAt = new Date();
         updateData.submittedBy = session.user.id;
-      }
-
-      if (status === 'APPROVED' && !form.approvedAt) {
-        updateData.approvedAt = new Date();
-        updateData.approvedBy = session.user.id;
-      }
-
-      if (status === 'REJECTED' && !form.rejectedAt) {
-        updateData.rejectedAt = new Date();
-        updateData.rejectionReason = normalizeRejectionReason(body.rejectionReason);
       }
     }
 
@@ -187,7 +184,7 @@ export async function PATCH(request, { params }) {
     return NextResponse.json({
       form: {
         ...updatedForm,
-        status: normalizeLegacyFormStatus(updatedForm.status),
+        status: normalizeFormStatus(updatedForm.status),
       },
     });
   } catch (error) {

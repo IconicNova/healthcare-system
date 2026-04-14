@@ -2,12 +2,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
-
-function normalizeLegacyFormStatus(status) {
-  if (status === 'PENDING') return 'DRAFT';
-  if (status === 'COMPLETED') return 'SUBMITTED';
-  return status || 'DRAFT';
-}
+import { normalizeFormStatus } from '@/lib/form-review';
 
 // GET - Fetch forms for a visit
 export async function GET(request, { params }) {
@@ -51,7 +46,7 @@ export async function GET(request, { params }) {
     return NextResponse.json({
       forms: forms.map((form) => ({
         ...form,
-        status: normalizeLegacyFormStatus(form.status),
+        status: normalizeFormStatus(form.status),
       })),
     });
   } catch (error) {
@@ -125,7 +120,12 @@ export async function POST(request, { params }) {
     });
 
     if (existingForm) {
-      return NextResponse.json({ form: existingForm });
+      return NextResponse.json({
+        form: {
+          ...existingForm,
+          status: normalizeFormStatus(existingForm.status),
+        },
+      });
     }
 
     const form = await prisma.clientForm.create({
@@ -153,7 +153,7 @@ export async function POST(request, { params }) {
     return NextResponse.json({
       form: {
         ...form,
-        status: normalizeLegacyFormStatus(form.status),
+        status: normalizeFormStatus(form.status),
       },
     }, { status: 201 });
   } catch (error) {

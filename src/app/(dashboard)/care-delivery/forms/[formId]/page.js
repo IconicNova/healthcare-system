@@ -4,12 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Save, Check, Clock, AlertCircle, Eye } from 'lucide-react';
 import FormFieldRenderer from '@/components/care-delivery/FormFieldRenderer';
-
-function normalizeFormStatus(status) {
-  if (status === 'PENDING') return 'DRAFT';
-  if (status === 'COMPLETED') return 'SUBMITTED';
-  return status || 'DRAFT';
-}
+import { normalizeFormStatus } from '@/lib/form-review';
 
 function formatReadOnlyValue(value) {
   if (value === true) return 'Yes';

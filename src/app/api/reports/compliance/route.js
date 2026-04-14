@@ -44,12 +44,12 @@ export async function GET() {
     // Overdue forms (DRAFT forms past their expected submission date)
     const overdueForms = await prisma.clientForm.findMany({
       where: {
-        status: 'PENDING',
+        status: 'DRAFT',
         client: {
           organizationId: session.user.organizationId,
         },
         createdAt: {
-          lt: addDays(now, -7), // Forms older than 7 days in PENDING status
+          lt: addDays(now, -7), // Forms older than 7 days in DRAFT status
         },
       },
       include: {

@@ -7,6 +7,7 @@ import StatusBadge from '@/components/ui/StatusBadge';
 import Pagination from '@/components/ui/Pagination';
 import SearchInput from '@/components/ui/SearchInput';
 import { FileText, Eye } from 'lucide-react';
+import { normalizeFormStatus } from '@/lib/form-review';
 
 const STATUS_VARIANTS = {
   DRAFT: 'default',
@@ -15,12 +16,6 @@ const STATUS_VARIANTS = {
   APPROVED: 'success',
   REJECTED: 'error',
 };
-
-function normalizeFormStatus(status) {
-  if (status === 'PENDING') return 'DRAFT';
-  if (status === 'COMPLETED') return 'SUBMITTED';
-  return status || 'DRAFT';
-}
 
 const FORM_TYPES = [
   { value: '', label: 'All Forms' },

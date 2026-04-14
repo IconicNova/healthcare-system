@@ -5,6 +5,10 @@ import {
   normalizeRejectionReason,
   buildReviewQueueFilters,
 } from '../src/components/care-delivery/forms-review.helpers.js';
+import {
+  normalizeFormStatus,
+  buildReviewMetadataPatch,
+} from '../src/lib/form-review.js';
 
 function run() {
   assert.deepEqual(getReviewableStatuses(), ['SUBMITTED', 'IN_REVIEW']);
@@ -66,6 +70,27 @@ function run() {
     dateFrom: '',
     dateTo: '',
   });
+
+  assert.equal(normalizeFormStatus('PENDING'), 'DRAFT');
+  assert.equal(normalizeFormStatus('COMPLETED'), 'SUBMITTED');
+  assert.equal(normalizeFormStatus('SUBMITTED'), 'SUBMITTED');
+
+  assert.deepEqual(
+    buildReviewMetadataPatch({
+      previousStatus: 'REJECTED',
+      nextStatus: 'IN_REVIEW',
+      rejectionReason: '',
+      actorId: 'user-1',
+    }),
+    {
+      status: 'IN_REVIEW',
+      approvedAt: null,
+      approvedBy: null,
+      rejectedAt: null,
+      rejectedBy: null,
+      rejectionReason: '',
+    }
+  );
 }
 
 run();
