@@ -93,6 +93,7 @@ export async function PATCH(request, { params }) {
     const { id } = params;
     const body = await request.json();
     const { formData, status } = body;
+    const nextStatus = status ? normalizeFormStatus(status) : null;
 
     const form = await prisma.clientForm.findFirst({
       where: {
@@ -121,9 +122,9 @@ export async function PATCH(request, { params }) {
       updateData.formData = formData;
     }
 
-    if (status) {
+    if (nextStatus) {
       if (
-        !canTransitionFormStatus(currentStatus, status, {
+        !canTransitionFormStatus(currentStatus, nextStatus, {
           rejectionReason: normalizeRejectionReason(body.rejectionReason),
         })
       ) {
@@ -133,10 +134,10 @@ export async function PATCH(request, { params }) {
         );
       }
 
-      updateData.status = status;
+      updateData.status = nextStatus;
       const metadataPatch = buildReviewMetadataPatch({
         previousStatus: currentStatus,
-        nextStatus: status,
+        nextStatus,
         rejectionReason: body.rejectionReason,
         actorId: session.user.id,
       });
@@ -145,7 +146,7 @@ export async function PATCH(request, { params }) {
       Object.assign(updateData, persistedMetadataPatch);
 
       // Record lifecycle timestamps as the form moves through review.
-      if (status === 'SUBMITTED' && !form.submittedAt) {
+      if (nextStatus === 'SUBMITTED' && !form.submittedAt) {
         updateData.submittedAt = new Date();
         updateData.submittedBy = session.user.id;
       }
