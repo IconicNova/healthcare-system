@@ -5,6 +5,9 @@ import { Users, Search } from 'lucide-react';
 import CareDeliveryLayout from '@/components/care-delivery/CareDeliveryLayout';
 import TasksView from '@/components/care-delivery/TasksView';
 import EditVisitDialog from '@/components/care-delivery/EditVisitDialog';
+import ProgressNotesTab from '@/components/care-delivery/ProgressNotesTab';
+import VitalsTab from '@/components/care-delivery/VitalsTab';
+import VisitReportsTab from '@/components/care-delivery/VisitReportsTab';
 
 export default function CareDeliveryPage() {
   const [clients, setClients] = useState([]);
@@ -272,23 +275,17 @@ export default function CareDeliveryPage() {
                 />
               )}
               {activeTab === 'progress' && (
-                <div style={{ textAlign: 'center', padding: '60px 20px', color: 'var(--color-text-secondary)' }}>
-                  <p style={{ fontSize: '14px' }}>Progress Notes view - Coming soon</p>
-                </div>
+                <ProgressNotesTab clientId={selectedClient.id} />
               )}
               {activeTab === 'reports' && (
-                <div style={{ textAlign: 'center', padding: '60px 20px', color: 'var(--color-text-secondary)' }}>
-                  <p style={{ fontSize: '14px' }}>Visit Reports view - Coming soon</p>
-                </div>
+                <VisitReportsTab clientId={selectedClient.id} />
               )}
               {activeTab === 'vitals' && (
-                <div style={{ textAlign: 'center', padding: '60px 20px', color: 'var(--color-text-secondary)' }}>
-                  <p style={{ fontSize: '14px' }}>Vitals view - Coming soon</p>
-                </div>
+                <VitalsTab clientId={selectedClient.id} />
               )}
               {activeTab === 'medications' && (
                 <div style={{ textAlign: 'center', padding: '60px 20px', color: 'var(--color-text-secondary)' }}>
-                  <p style={{ fontSize: '14px' }}>Medications view - Coming soon</p>
+                  <p style={{ fontSize: '14px' }}>Navigate to Medications tab for medication management</p>
                 </div>
               )}
             </>

@@ -105,6 +105,26 @@ enum InsuranceClaimStatus {
   VOIDED
 }
 
+enum ProgressNoteType {
+  SOAP
+  DAP
+  NARRATIVE
+  INCIDENT
+}
+
+enum ReportPeriod {
+  DAILY
+  WEEKLY
+  MONTHLY
+}
+
+enum InteractionSeverity {
+  LOW
+  MODERATE
+  HIGH
+  CONTRAINDICATED
+}
+
 // Models
 
 model Organization {
@@ -226,6 +246,10 @@ model Client {
   medicalInfo    ClientMedicalInfo?
   documents      Document[]
   insuranceClaims InsuranceClaim[]
+  progressNotes  ProgressNote[]
+  vitalSigns     VitalSign[]
+  visitReports   VisitReport[]
+  medicationOrders MedicationOrder[]
 
   @@index([organizationId, status])
   @@index([organizationId, branchId])
@@ -412,6 +436,8 @@ model Visit {
   forms            ClientForm[]
   medAdministrations MedAdministration[]
   timesheetEntries TimesheetEntry[]
+  progressNotes      ProgressNote[]
+  vitalSigns         VitalSign[]
 
   @@index([organizationId, startTime])
   @@index([staffId, startTime, status])
@@ -542,6 +568,7 @@ model Medication {
 
   client               Client             @relation(fields: [clientId], references: [id], onDelete: Cascade)
   medAdministrations   MedAdministration[]
+  medicationOrders     MedicationOrder[]
 
   @@map("medication")
 }
@@ -740,6 +767,125 @@ model VisitNote {
   visit Visit @relation(fields: [visitId], references: [id], onDelete: Cascade)
 
   @@map("visit_note")
+}
+
+// ─── CARE DELIVERY CLINICAL MODELS ───────────────────────────────
+
+model ProgressNote {
+  id          String           @id @default(uuid())
+  clientId    String
+  client      Client           @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  visitId     String?
+  visit       Visit?           @relation(fields: [visitId], references: [id], onDelete: SetNull)
+  type        ProgressNoteType @default(SOAP)
+  subjective  String?
+  objective   String?
+  assessment  String?
+  plan        String?
+  narrative   String?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  createdBy   String?
+
+  @@index([clientId, createdAt])
+  @@index([visitId])
+  @@map("progress_note")
+}
+
+model VitalSign {
+  id                    String   @id @default(uuid())
+  clientId              String
+  client                Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  visitId               String?
+  visit                 Visit?   @relation(fields: [visitId], references: [id], onDelete: SetNull)
+
+  // Vitals
+  temperature           Float?
+  temperatureUnit       String   @default("F")
+  bloodPressureSystolic Float?
+  bloodPressureDiastolic Float?
+  heartRate             Float?
+  respiratoryRate       Float?
+  oxygenSaturation      Float?
+  painLevel             Float?
+  weight                Float?
+  weightUnit            String   @default("lbs")
+  height                Float?
+  heightUnit            String   @default("in")
+  bmi                   Float?
+  glucose               Float?
+  glucoseUnit           String   @default("mg/dL")
+
+  // Meta
+  recordedAt            DateTime @default(now())
+  recordedBy            String?
+  notes                 String?
+
+  @@index([clientId, recordedAt])
+  @@index([visitId])
+  @@map("vital_sign")
+}
+
+model VisitReport {
+  id               String      @id @default(uuid())
+  clientId         String
+  client           Client      @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  // Report type
+  type             String      // "VISIT_SUMMARY" or "PERIOD_SUMMARY"
+  period           ReportPeriod?
+  startDate        DateTime
+  endDate          DateTime
+
+  // Content
+  summary          String?
+  servicesDelivered Json?
+  clientCondition  String?
+  notableEvents    String?
+  recommendations  String?
+
+  // Metadata
+  generatedAt      DateTime    @default(now())
+  generatedBy      String?
+  visitIds         String[]
+
+  @@index([clientId, startDate, endDate])
+  @@map("visit_report")
+}
+
+model MedicationOrder {
+  id               String   @id @default(uuid())
+  clientId         String
+  client           Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  medicationId     String?
+  medication       Medication? @relation(fields: [medicationId], references: [id], onDelete: SetNull)
+
+  // Prescription details
+  prescriptionDate DateTime @default(now())
+  prescriberName   String?
+  prescriberNPI    String?
+  pharmacyName     String?
+  pharmacyPhone    String?
+  refillCount      Int      @default(0)
+  maxRefills       Int?
+
+  // Status
+  status           String   @default("ACTIVE")
+
+  @@index([clientId, status])
+  @@map("medication_order")
+}
+
+model DrugInteraction {
+  id              String             @id @default(uuid())
+  drug1           String
+  drug2           String
+  severity        InteractionSeverity
+  description     String
+  recommendation  String?
+
+  @@unique([drug1, drug2])
+  @@map("drug_interaction")
 }
 
 model Notification {
