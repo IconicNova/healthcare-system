@@ -7,14 +7,6 @@ export function normalizeRejectionReason(value) {
 }
 
 export function canTransitionFormStatus(currentStatus, nextStatus, options = {}) {
-  if (currentStatus === 'DRAFT' && nextStatus !== 'SUBMITTED') {
-    return false;
-  }
-
-  if (nextStatus === 'REJECTED') {
-    return normalizeRejectionReason(options.rejectionReason).length > 0;
-  }
-
   const validTransitions = {
     DRAFT: ['SUBMITTED'],
     SUBMITTED: ['IN_REVIEW', 'APPROVED', 'REJECTED'],
@@ -23,7 +15,15 @@ export function canTransitionFormStatus(currentStatus, nextStatus, options = {})
     REJECTED: ['IN_REVIEW'],
   };
 
-  return (validTransitions[currentStatus] || []).includes(nextStatus);
+  if (!(validTransitions[currentStatus] || []).includes(nextStatus)) {
+    return false;
+  }
+
+  if (nextStatus === 'REJECTED') {
+    return normalizeRejectionReason(options.rejectionReason).length > 0;
+  }
+
+  return true;
 }
 
 export function buildReviewQueueFilters(searchParams) {

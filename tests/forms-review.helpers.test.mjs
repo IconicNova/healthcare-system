@@ -40,6 +40,19 @@ function run() {
       dateTo: '2026-04-30',
     }
   );
+
+  assert.deepEqual(
+    buildReviewQueueFilters({
+      status: 'SUBMITTED',
+    }),
+    {
+      status: 'SUBMITTED',
+      clientId: '',
+      templateId: '',
+      dateFrom: '',
+      dateTo: '',
+    }
+  );
 }
 
 run();
