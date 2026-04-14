@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Save, Check, Clock, AlertCircle, Eye } from 'lucide-react';
 import FormFieldRenderer from '@/components/care-delivery/FormFieldRenderer';
-import { normalizeFormStatus } from '@/lib/form-review';
+import { normalizeFormStatus, shouldAutosaveDraft } from '@/lib/form-review';
 
 function formatReadOnlyValue(value) {
   if (value === true) return 'Yes';
@@ -68,7 +68,7 @@ export default function FormChartingPage({ params }) {
 
   // Debounced auto-save
   const saveForm = useCallback(async () => {
-    if (!form || saving || saveStatus === 'saved' || !isEditable) return;
+    if (!form || saving || saveStatus === 'saved') return;
 
     setSaving(true);
     setSaveStatus('saving');
@@ -89,7 +89,8 @@ export default function FormChartingPage({ params }) {
 
       setValidationErrors(errors);
 
-      if (Object.keys(errors).length > 0) {
+      const hasValidationErrors = Object.keys(errors).length > 0;
+      if (hasValidationErrors && !shouldAutosaveDraft({ status: currentStatus, hasValidationErrors })) {
         setSaveStatus('error');
         setTimeout(() => setSaveStatus('idle'), 3000);
         return;
@@ -115,7 +116,7 @@ export default function FormChartingPage({ params }) {
     } finally {
       setSaving(false);
     }
-  }, [form, formData, saving, saveStatus, formId, isEditable]);
+  }, [form, formData, saving, saveStatus, formId, currentStatus]);
 
   // Auto-save with debounce (2 seconds)
   useEffect(() => {

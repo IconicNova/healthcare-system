@@ -8,6 +8,8 @@ import {
 import {
   normalizeFormStatus,
   buildReviewMetadataPatch,
+  shouldAutosaveDraft,
+  countSubmittedLikeStatuses,
 } from '../src/lib/form-review.js';
 
 function run() {
@@ -90,6 +92,20 @@ function run() {
       rejectedBy: null,
       rejectionReason: '',
     }
+  );
+
+  assert.equal(
+    shouldAutosaveDraft({ status: 'DRAFT', hasValidationErrors: true }),
+    true
+  );
+  assert.equal(
+    shouldAutosaveDraft({ status: 'SUBMITTED', hasValidationErrors: false }),
+    false
+  );
+
+  assert.equal(
+    countSubmittedLikeStatuses(['SUBMITTED', 'IN_REVIEW', 'APPROVED', 'REJECTED']),
+    3
   );
 }
 

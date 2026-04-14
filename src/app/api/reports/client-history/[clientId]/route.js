@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { format } from 'date-fns';
+import { countSubmittedLikeStatuses, normalizeFormStatus } from '@/lib/form-review';
 
 export async function GET(request, { params }) {
   const session = await getServerSession(authOptions);
@@ -98,7 +99,7 @@ export async function GET(request, { params }) {
       id: form.id,
       date: format(new Date(form.createdAt), 'MMM d, yyyy'),
       formName: form.template.name,
-      status: form.status,
+      status: normalizeFormStatus(form.status),
       submittedBy: form.submittedBy || 'N/A',
     }));
 
@@ -107,7 +108,7 @@ export async function GET(request, { params }) {
       totalVisits: visits.length,
       activeCarePlans: client.carePlans.length,
       medicationsCount: client.medications.length,
-      formsSubmitted: client.forms.filter(f => f.status === 'SUBMITTED' || f.status === 'APPROVED').length,
+      formsSubmitted: countSubmittedLikeStatuses(client.forms.map((form) => form.status)),
     };
 
     return NextResponse.json({
