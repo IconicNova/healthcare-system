@@ -212,12 +212,7 @@ export default function TasksView({ clientId, onEditVisit }) {
             <CheckCircle size={14} />
             Completed ({groupedVisits.past.length})
           </div>
-          {groupedVisits.past.slice(0, 5).map(renderVisitCard)}
-          {groupedVisits.past.length > 5 && (
-            <div style={{ textAlign: 'center', marginTop: '12px', fontSize: '12px', color: 'var(--color-text-secondary)' }}>
-              +{groupedVisits.past.length - 5} more past visits
-            </div>
-          )}
+          {groupedVisits.past.map(renderVisitCard)}
         </div>
       )}
     </div>
