@@ -3,6 +3,12 @@
 import { useState, useEffect } from 'react';
 import { X, Check } from 'lucide-react';
 
+const PERIOD_OPTIONS = [
+  { value: 'DAILY', label: 'Daily' },
+  { value: 'WEEKLY', label: 'Weekly' },
+  { value: 'MONTHLY', label: 'Monthly' },
+];
+
 export default function VisitReportBuilder({ clientId, onClose, onSuccess }) {
   const [step, setStep] = useState(1);
   const [submitting, setSubmitting] = useState(false);
@@ -12,10 +18,27 @@ export default function VisitReportBuilder({ clientId, onClose, onSuccess }) {
   const [reportType, setReportType] = useState('VISIT_SUMMARY');
   const [period, setPeriod] = useState('DAILY');
   const [selectedVisits, setSelectedVisits] = useState([]);
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
   const [summary, setSummary] = useState('');
   const [clientCondition, setClientCondition] = useState('');
   const [notableEvents, setNotableEvents] = useState('');
   const [recommendations, setRecommendations] = useState('');
+
+  useEffect(() => {
+    // Set default date range based on period
+    const today = new Date();
+    const start = new Date();
+
+    if (period === 'WEEKLY') {
+      start.setDate(today.getDate() - 7);
+    } else if (period === 'MONTHLY') {
+      start.setDate(today.getDate() - 30);
+    }
+
+    setStartDate(start.toISOString().split('T')[0]);
+    setEndDate(today.toISOString().split('T')[0]);
+  }, []);
 
   useEffect(() => {
     // Fetch recent visits when component mounts
@@ -281,8 +304,46 @@ export default function VisitReportBuilder({ clientId, onClose, onSuccess }) {
                     </button>
                   ))}
                 </div>
-                <div style={{ padding: '12px', backgroundColor: 'var(--color-gray-50)', borderRadius: '8px', fontSize: '12px', color: 'var(--color-text-secondary)' }}>
-                  The system will automatically include all visits within the selected period.
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  <div>
+                    <label style={{ fontSize: '13px', fontWeight: 500, color: 'var(--color-text)', display: 'block', marginBottom: '6px' }}>
+                      Start Date
+                    </label>
+                    <input
+                      type="date"
+                      value={startDate}
+                      onChange={(e) => setStartDate(e.target.value)}
+                      style={{
+                        width: '100%',
+                        padding: '10px 12px',
+                        borderRadius: '8px',
+                        border: '1px solid var(--color-border)',
+                        fontSize: '14px',
+                        fontFamily: 'inherit',
+                      }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ fontSize: '13px', fontWeight: 500, color: 'var(--color-text)', display: 'block', marginBottom: '6px' }}>
+                      End Date
+                    </label>
+                    <input
+                      type="date"
+                      value={endDate}
+                      onChange={(e) => setEndDate(e.target.value)}
+                      style={{
+                        width: '100%',
+                        padding: '10px 12px',
+                        borderRadius: '8px',
+                        border: '1px solid var(--color-border)',
+                        fontSize: '14px',
+                        fontFamily: 'inherit',
+                      }}
+                    />
+                  </div>
+                </div>
+                <div style={{ marginTop: '16px', padding: '12px', backgroundColor: 'var(--color-gray-50)', borderRadius: '8px', fontSize: '12px', color: 'var(--color-text-secondary)' }}>
+                  The system will automatically include all visits within the selected date range.
                 </div>
               </>
             ) : (
@@ -468,17 +529,33 @@ export default function VisitReportBuilder({ clientId, onClose, onSuccess }) {
           {step < 4 ? (
             <button
               onClick={() => setStep(prev => prev + 1)}
-              disabled={(reportType === 'VISIT_SUMMARY' && selectedVisits.length === 0 && step === 2) || (step === 3 && !summary)}
+              disabled={
+                (reportType === 'VISIT_SUMMARY' && selectedVisits.length === 0 && step === 2) ||
+                (reportType === 'PERIOD_SUMMARY' && (!startDate || !endDate) && step === 2) ||
+                (step === 3 && !summary)
+              }
               style={{
                 padding: '10px 20px',
                 borderRadius: '8px',
                 border: 'none',
-                backgroundColor: ((reportType === 'VISIT_SUMMARY' && selectedVisits.length === 0 && step === 2) || (step === 3 && !summary)) ? 'var(--color-gray-300)' : 'var(--color-primary)',
+                backgroundColor: (
+                  (reportType === 'VISIT_SUMMARY' && selectedVisits.length === 0 && step === 2) ||
+                  (reportType === 'PERIOD_SUMMARY' && (!startDate || !endDate) && step === 2) ||
+                  (step === 3 && !summary)
+                ) ? 'var(--color-gray-300)' : 'var(--color-primary)',
                 color: 'white',
                 fontSize: '13px',
                 fontWeight: 500,
-                cursor: ((reportType === 'VISIT_SUMMARY' && selectedVisits.length === 0 && step === 2) || (step === 3 && !summary)) ? 'not-allowed' : 'pointer',
-                opacity: ((reportType === 'VISIT_SUMMARY' && selectedVisits.length === 0 && step === 2) || (step === 3 && !summary)) ? 0.5 : 1,
+                cursor: (
+                  (reportType === 'VISIT_SUMMARY' && selectedVisits.length === 0 && step === 2) ||
+                  (reportType === 'PERIOD_SUMMARY' && (!startDate || !endDate) && step === 2) ||
+                  (step === 3 && !summary)
+                ) ? 'not-allowed' : 'pointer',
+                opacity: (
+                  (reportType === 'VISIT_SUMMARY' && selectedVisits.length === 0 && step === 2) ||
+                  (reportType === 'PERIOD_SUMMARY' && (!startDate || !endDate) && step === 2) ||
+                  (step === 3 && !summary)
+                ) ? 0.5 : 1,
               }}
             >
               Next
