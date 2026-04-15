@@ -1,29 +1,48 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { Bell } from 'lucide-react';
+import { useCallback, useEffect, useState, useRef } from 'react';
+import { Bell, X } from 'lucide-react';
 import NotificationItem from './NotificationItem';
 import Link from 'next/link';
+
+const tabs = [
+  { id: 'all', name: 'All' },
+  { id: 'unread', name: 'Unread' },
+  { id: 'alerts', name: 'Alerts' },
+  { id: 'system', name: 'System' },
+];
 
 export default function NotificationDropdown() {
   const [unreadCount, setUnreadCount] = useState(0);
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState('all');
+  const dropdownRef = useRef(null);
 
   useEffect(() => {
-    fetchUnreadCount();
-    fetchNotifications();
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
 
-    // Poll every 30 seconds
-    const interval = setInterval(() => {
-      fetchUnreadCount();
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (isOpen) {
       fetchNotifications();
-    }, 30000);
+    }
+  }, [fetchNotifications, isOpen]);
 
-    return () => clearInterval(interval);
-  }, []);
-
-  const fetchUnreadCount = async () => {
+  const fetchUnreadCount = useCallback(async () => {
     try {
       const response = await fetch('/api/notifications/unread-count');
       if (response.ok) {
@@ -33,12 +52,34 @@ export default function NotificationDropdown() {
     } catch (error) {
       console.error('Error fetching unread count:', error);
     }
-  };
+  }, []);
 
-  const fetchNotifications = async () => {
+  const fetchNotifications = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await fetch('/api/notifications?read=false&pageSize=5');
+      let readFilter = null;
+      let typeFilter = null;
+
+      if (activeTab === 'unread') {
+        readFilter = false;
+      } else if (activeTab === 'alerts') {
+        typeFilter = 'alert';
+      } else if (activeTab === 'system') {
+        typeFilter = 'system';
+      }
+
+      const params = new URLSearchParams({
+        pageSize: '20',
+      });
+
+      if (readFilter !== null) {
+        params.append('read', readFilter.toString());
+      }
+      if (typeFilter !== null) {
+        params.append('type', typeFilter);
+      }
+
+      const response = await fetch(`/api/notifications?${params}`);
       if (response.ok) {
         const data = await response.json();
         setNotifications(data.notifications);
@@ -48,7 +89,17 @@ export default function NotificationDropdown() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [activeTab]);
+
+  useEffect(() => {
+    fetchUnreadCount();
+
+    const interval = setInterval(() => {
+      fetchUnreadCount();
+    }, 30000);
+
+    return () => clearInterval(interval);
+  }, [fetchUnreadCount]);
 
   const handleMarkAllRead = async () => {
     try {
@@ -56,18 +107,25 @@ export default function NotificationDropdown() {
         method: 'PATCH',
       });
       setUnreadCount(0);
-      setNotifications([]);
+      fetchNotifications();
     } catch (error) {
       console.error('Error marking all as read:', error);
     }
   };
 
+  const toggleDropdown = () => {
+    setIsOpen(!isOpen);
+    if (!isOpen) {
+      setActiveTab('all');
+    }
+  };
+
   return (
-    <div style={{ position: 'relative', display: 'inline-block' }}>
+    <div style={{ position: 'relative', display: 'inline-block' }} ref={dropdownRef}>
       <button
         className="topbar-btn"
         aria-label="Notifications"
-        onClick={() => fetchNotifications()}
+        onClick={toggleDropdown}
       >
         <Bell size={20} />
         {unreadCount > 0 && (
@@ -75,74 +133,125 @@ export default function NotificationDropdown() {
         )}
       </button>
 
-      {/* Dropdown */}
-      <div
-        className="dropdown-menu"
-        style={{
-          top: '100%',
-          marginTop: '8px',
-          right: 0,
-          left: 'auto',
-          minWidth: '350px',
-          maxHeight: '400px',
-          overflow: 'hidden',
-        }}
-      >
+      {isOpen && (
         <div
+          className="dropdown-menu"
           style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: '12px 16px',
-            borderBottom: '1px solid var(--color-border)',
-            backgroundColor: 'var(--color-gray-50)',
+            position: 'absolute',
+            top: '100%',
+            marginTop: '8px',
+            right: 0,
+            left: 'auto',
+            minWidth: '380px',
+            maxHeight: '500px',
+            overflow: 'hidden',
+            zIndex: 1000,
           }}
         >
-          <span style={{ fontWeight: 'bold', fontSize: '14px' }}>Notifications</span>
-          {unreadCount > 0 && (
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '12px 16px',
+              borderBottom: '1px solid var(--color-border)',
+              backgroundColor: 'var(--color-gray-50)',
+            }}
+          >
+            <span style={{ fontWeight: 'bold', fontSize: '14px' }}>Notifications</span>
             <button
               className="btn btn-ghost"
-              style={{ fontSize: '12px', padding: '4px 8px' }}
-              onClick={handleMarkAllRead}
+              style={{ padding: '4px' }}
+              onClick={() => setIsOpen(false)}
             >
-              Mark all read
+              <X size={16} />
             </button>
-          )}
-        </div>
+          </div>
 
-        <div style={{ maxHeight: '320px', overflowY: 'auto' }}>
-          {loading ? (
-            <div style={{ textAlign: 'center', padding: '20px' }}>
-              <div className="loading-spinner sm" style={{ margin: '0 auto' }} />
-            </div>
-          ) : notifications.length > 0 ? (
-            notifications.map(notification => (
-              <NotificationItem
-                key={notification.id}
-                notification={notification}
-                compact={true}
-              />
-            ))
-          ) : (
-            <div style={{ textAlign: 'center', padding: '20px', color: '#64748b' }}>
-              No notifications
-            </div>
-          )}
-        </div>
+          <div
+            className="tabs"
+            style={{
+              display: 'flex',
+              padding: '8px 12px',
+              borderBottom: '1px solid var(--color-border)',
+              gap: '4px',
+              flexWrap: 'wrap',
+            }}
+          >
+            {tabs.map(tab => (
+              <button
+                key={tab.id}
+                className={`tab ${activeTab === tab.id ? 'active' : ''}`}
+                onClick={() => setActiveTab(tab.id)}
+                style={{
+                  fontSize: '12px',
+                  padding: '6px 10px',
+                  textTransform: 'capitalize',
+                }}
+              >
+                {tab.name}
+              </button>
+            ))}
+          </div>
 
-        <div
-          style={{
-            padding: '12px',
-            borderTop: '1px solid var(--color-border)',
-            backgroundColor: 'var(--color-gray-50)',
-            textAlign: 'center',
-          }}
-        >
-          <Link href="/notifications" style={{ color: 'var(--color-accent)', fontSize: '13px' }}>
-            View all notifications →
-          </Link>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '8px 16px',
+              borderBottom: '1px solid var(--color-border)',
+              backgroundColor: 'var(--color-gray-50)',
+            }}
+          >
+            <span style={{ fontSize: '12px', color: '#64748b' }}>
+              {unreadCount > 0 ? `${unreadCount} unread` : 'All caught up'}
+            </span>
+            {unreadCount > 0 && (
+              <button
+                className="btn btn-ghost"
+                style={{ fontSize: '11px', padding: '4px 8px' }}
+                onClick={handleMarkAllRead}
+              >
+                Mark all read
+              </button>
+            )}
+          </div>
+
+          <div style={{ maxHeight: '320px', overflowY: 'auto' }}>
+            {loading ? (
+              <div style={{ textAlign: 'center', padding: '20px' }}>
+                <div className="loading-spinner sm" style={{ margin: '0 auto' }} />
+              </div>
+            ) : notifications.length > 0 ? (
+              notifications.map(notification => (
+                <NotificationItem
+                  key={notification.id}
+                  notification={notification}
+                  compact={true}
+                />
+              ))
+            ) : (
+              <div style={{ textAlign: 'center', padding: '20px', color: '#64748b' }}>
+                No notifications
+              </div>
+            )}
+          </div>
+
+          <div
+            style={{
+              padding: '12px',
+              borderTop: '1px solid var(--color-border)',
+              backgroundColor: 'var(--color-gray-50)',
+              textAlign: 'center',
+            }}
+          >
+            <Link href="/notifications" style={{ color: 'var(--color-accent)', fontSize: '13px' }}>
+              View all notifications →
+            </Link>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
