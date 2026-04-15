@@ -1,12 +1,181 @@
 import { z } from 'zod';
 
-const canadianPhoneRegex = /^\+?[1]?[-.\s]?\(?([0-9]{3})\)?[-.\s]?([0-9]{3})[-.\s]?([0-9]{4})$/;
+const canadianPhoneRegex = /^\+?1?(?:\.|\s|-)?\(?([0-9]{3})\)?(?:\.|\s|-)?([0-9]{3})(?:\.|\s|-)?([0-9]{4})$/;
 const canadianPostalCodeRegex = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/;
+const humanNameRegex = /^[\p{L}](?:[\p{L}' .-]*[\p{L}])?$/u;
+const suspiciousNameFragments = ['asdf', 'qwer', 'zxcv', 'poiuy', 'lkjh', 'mnbv'];
+
+export const staffPhonePattern = '^\\+?1?(?:\\.|\\s|-)?\\(?([0-9]{3})\\)?(?:\\.|\\s|-)?([0-9]{3})(?:\\.|\\s|-)?([0-9]{4})$';
 
 const minDateRefinement = [
   (val) => !val || new Date(val) >= new Date('1900-01-01'),
   { message: "Date is exceptionally too far in the past" }
 ];
+
+function collapseWhitespace(value) {
+  return value.trim().replace(/\s+/g, ' ');
+}
+
+function hasRepeatedChunk(value) {
+  for (let size = 2; size <= Math.floor(value.length / 3); size += 1) {
+    const chunk = value.slice(0, size);
+    if (chunk.repeat(Math.floor(value.length / size)) === value) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+function looksSuspiciouslyGarbledName(value) {
+  const normalized = value.toLowerCase().replace(/[\s'.-]/g, '');
+
+  if (!normalized) {
+    return false;
+  }
+
+  if (/(.)\1{3,}/.test(normalized)) {
+    return true;
+  }
+
+  if (normalized.length >= 6 && hasRepeatedChunk(normalized)) {
+    return true;
+  }
+
+  return suspiciousNameFragments.some((fragment) => normalized.includes(fragment));
+}
+
+function buildHumanNameSchema(fieldLabel) {
+  return z.string()
+    .trim()
+    .min(1, `${fieldLabel} is required`)
+    .max(50, `${fieldLabel} must be 50 characters or fewer`)
+    .transform(collapseWhitespace)
+    .refine((value) => humanNameRegex.test(value), {
+      message: `${fieldLabel} can only include letters, spaces, apostrophes, periods, and hyphens`,
+    })
+    .refine((value) => !looksSuspiciouslyGarbledName(value), {
+      message: `${fieldLabel} looks invalid or spammy`,
+    });
+}
+
+const normalizedEmailSchema = z.string()
+  .trim()
+  .min(1, 'Email is required')
+  .max(255, 'Email must be 255 characters or fewer')
+  .email('Invalid email format')
+  .transform((value) => value.toLowerCase());
+
+const passwordSchema = z.string()
+  .min(8, 'Password must be at least 8 characters')
+  .max(100, 'Password must be 100 characters or fewer')
+  .refine((value) => /[A-Za-z]/.test(value), {
+    message: 'Password must include at least one letter',
+  })
+  .refine((value) => /\d/.test(value), {
+    message: 'Password must include at least one number',
+  })
+  .refine((value) => !/\s/.test(value), {
+    message: 'Password cannot contain spaces',
+  });
+
+const optionalDateSchema = z.union([z.string(), z.date()])
+  .refine(...minDateRefinement)
+  .optional()
+  .nullable();
+
+const staffBaseSchema = z.object({
+  firstName: buildHumanNameSchema('First name'),
+  lastName: buildHumanNameSchema('Last name'),
+  email: normalizedEmailSchema,
+  phone: z.string()
+    .trim()
+    .regex(canadianPhoneRegex, 'Invalid North American phone format'),
+  role: z.enum(['STAFF', 'SUPERVISOR', 'MANAGER'], {
+    errorMap: () => ({ message: 'Role is required' }),
+  }),
+  status: z.enum(['ACTIVE', 'INACTIVE', 'ON_LEAVE', 'TERMINATED']).default('ACTIVE'),
+  payType: z.enum(['HOURLY', 'SALARY', 'PER_VISIT']).default('HOURLY'),
+  payRate: z.number().min(0, 'Pay rate must be 0 or greater').optional().nullable(),
+  branchId: z.string().uuid('Branch is required'),
+  hireDate: optionalDateSchema,
+  licenseNumber: z.string().trim().max(50, 'License number must be 50 characters or fewer').optional().nullable(),
+  licenseExpiry: optionalDateSchema,
+});
+
+export const CreateStaffSchema = staffBaseSchema.extend({
+  password: passwordSchema,
+});
+
+export const UpdateStaffSchema = staffBaseSchema.partial().extend({
+  password: passwordSchema.optional(),
+});
+
+function extractFirstError(fieldErrors) {
+  for (const messages of Object.values(fieldErrors)) {
+    if (Array.isArray(messages) && messages.length > 0) {
+      return messages[0];
+    }
+  }
+
+  return 'Validation failed';
+}
+
+export function normalizeStaffFormData(formData) {
+  const normalizedPayRate =
+    formData.payRate === '' || formData.payRate === null || formData.payRate === undefined
+      ? null
+      : Number(formData.payRate);
+  const normalizedPassword = formData.password?.trim() ? formData.password : undefined;
+
+  return {
+    firstName: formData.firstName ?? '',
+    lastName: formData.lastName ?? '',
+    email: formData.email ?? '',
+    password: normalizedPassword,
+    phone: formData.phone ?? '',
+    branchId: formData.branchId ?? '',
+    hireDate: formData.hireDate || null,
+    payRate: Number.isFinite(normalizedPayRate) ? normalizedPayRate : Number.NaN,
+    payType: formData.payType ?? 'HOURLY',
+    status: formData.status ?? 'ACTIVE',
+    role: formData.role ?? 'STAFF',
+    licenseNumber: formData.licenseNumber?.trim() ? formData.licenseNumber.trim() : null,
+    licenseExpiry: formData.licenseExpiry || null,
+  };
+}
+
+export function validateStaffFormData(formData, { isEdit = false } = {}) {
+  const normalizedData = normalizeStaffFormData(formData);
+  const schema = isEdit ? UpdateStaffSchema : CreateStaffSchema;
+  const validationResult = schema.safeParse(normalizedData);
+
+  if (!validationResult.success) {
+    const fieldErrors = validationResult.error.flatten().fieldErrors;
+    return {
+      success: false,
+      fieldErrors,
+      firstError: extractFirstError(fieldErrors),
+      data: null,
+    };
+  }
+
+  if ((formData.password ?? '') !== (formData.confirmPassword ?? '')) {
+    return {
+      success: false,
+      fieldErrors: { confirmPassword: ['Passwords do not match'] },
+      firstError: 'Passwords do not match',
+      data: null,
+    };
+  }
+
+  return {
+    success: true,
+    fieldErrors: {},
+    firstError: null,
+    data: validationResult.data,
+  };
+}
 
 export const ClientSchema = z.object({
   firstName: z.string().min(1, "First name is required").max(50),
@@ -36,20 +205,7 @@ export const ClientSchema = z.object({
   status: z.enum(['ACTIVE', 'INACTIVE', 'PENDING', 'ON_HOLD', 'DISCHARGED']).optional()
 });
 
-export const StaffSchema = z.object({
-  firstName: z.string().min(1, "First name is required").max(50),
-  lastName: z.string().min(1, "Last name is required").max(50),
-  email: z.string().email("Invalid email format").max(255).optional().nullable(),
-  phone: z.string()
-    .regex(canadianPhoneRegex, "Invalid Canadian phone format")
-    .optional()
-    .nullable()
-    .or(z.literal('')),
-  role: z.string().max(50).optional().nullable(),
-  status: z.enum(['ACTIVE', 'INACTIVE', 'ON_LEAVE', 'TERMINATED']).optional(),
-  payType: z.enum(['HOURLY', 'SALARY', 'PER_VISIT']).optional().nullable(),
-  hourlyRate: z.number().min(0).optional().nullable()
-});
+export const StaffSchema = CreateStaffSchema;
 
 export const VisitSchema = z.object({
   clientId: z.string().uuid("Invalid client ID"),

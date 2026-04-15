@@ -7,6 +7,7 @@ import Select from '@/components/ui/Select';
 import Button from '@/components/ui/Button';
 import { Upload, X } from 'lucide-react';
 import ImageEditorModal from '@/components/ui/ImageEditorModal';
+import { staffPhonePattern, validateStaffFormData } from '@/lib/validations';
 
 export default function StaffForm({ onSuccess, onCancel, branches = [], staffId, initialData }) {
   const fileInputRef = useRef(null);
@@ -160,48 +161,6 @@ export default function StaffForm({ onSuccess, onCancel, branches = [], staffId,
     }
   };
 
-  const validateForm = () => {
-    setError('');
-
-    if (!formData.firstName.trim()) {
-      setError('First name is required');
-      return false;
-    }
-    if (!formData.lastName.trim()) {
-      setError('Last name is required');
-      return false;
-    }
-    if (!formData.email.trim()) {
-      setError('Email is required');
-      return false;
-    }
-    if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      setError('Invalid email format');
-      return false;
-    }
-    if (!staffId && !formData.password) {
-      setError('Password is required');
-      return false;
-    }
-    if (!staffId && formData.password.length < 8) {
-      setError('Password must be at least 8 characters');
-      return false;
-    }
-    if (formData.password && formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
-      return false;
-    }
-    if (!formData.phone.trim()) {
-      setError('Phone is required');
-      return false;
-    }
-    if (!formData.branchId) {
-      setError('Branch is required');
-      return false;
-    }
-    return true;
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!e.target.checkValidity()) {
@@ -210,33 +169,20 @@ export default function StaffForm({ onSuccess, onCancel, branches = [], staffId,
     }
     setError('');
 
-    if (!validateForm()) {
+    const validation = validateStaffFormData(formData, { isEdit: Boolean(staffId) });
+    if (!validation.success) {
+      setError(validation.firstError);
       return;
     }
 
     setLoading(true);
 
     try {
-      const payload = {
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        email: formData.email,
-        phone: formData.phone,
-        branchId: formData.branchId,
-        hireDate: formData.hireDate,
-        payRate: formData.payRate ? parseFloat(formData.payRate) : null,
-        payType: formData.payType,
-        status: formData.status,
-        role: formData.role,
-        licenseNumber: formData.licenseNumber || null,
-        licenseExpiry: formData.licenseExpiry || null,
-      };
+      const payload = { ...validation.data };
 
       // Only include password if changing (not empty and not editing without password change)
-      if (!staffId) {
-        payload.password = formData.password;
-      } else if (formData.password) {
-        payload.password = formData.password;
+      if (staffId && !formData.password) {
+        delete payload.password;
       }
 
       const endpoint = staffId ? `/api/staff/${staffId}` : '/api/staff';
@@ -485,7 +431,7 @@ export default function StaffForm({ onSuccess, onCancel, branches = [], staffId,
             onChange={(e) => handleInputChange('phone', e.target.value)}
             required
             maxLength={20}
-            pattern="^\+?[1]?[-.\s]?\(?([0-9]{3})\)?[-.\s]?([0-9]{3})[-.\s]?([0-9]{4})$"
+            pattern={staffPhonePattern}
             placeholder="(416) 555-0198"
             title="Must be a valid 10-digit North American phone number"
           />

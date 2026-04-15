@@ -203,15 +203,87 @@ export default function ClientForm({ client = null, onSuccess, onCancel }) {
 
   const validate = () => {
     const newErrors = {};
-    if (!formData.firstName.trim()) newErrors.firstName = 'First name is required';
-    if (!formData.lastName.trim()) newErrors.lastName = 'Last name is required';
-    if (!formData.phone.trim()) newErrors.phone = 'Phone is required';
-    if (!formData.address.trim()) newErrors.address = 'Address is required';
-    if (!formData.city.trim()) newErrors.city = 'City is required';
-    if (!formData.state.trim()) newErrors.state = 'State is required';
-    if (!formData.zipCode.trim()) newErrors.zipCode = 'Zip Code is required';
+
+    // First Name validation
+    if (!formData.firstName.trim()) {
+      newErrors.firstName = 'First name is required';
+    } else if (!/^[a-zA-Z\s'-]+$/.test(formData.firstName.trim())) {
+      newErrors.firstName = 'First name can only contain letters, spaces, hyphens, and apostrophes';
+    } else if (formData.firstName.trim().length < 2) {
+      newErrors.firstName = 'First name must be at least 2 characters';
+    }
+
+    // Last Name validation
+    if (!formData.lastName.trim()) {
+      newErrors.lastName = 'Last name is required';
+    } else if (!/^[a-zA-Z\s'-]+$/.test(formData.lastName.trim())) {
+      newErrors.lastName = 'Last name can only contain letters, spaces, hyphens, and apostrophes';
+    } else if (formData.lastName.trim().length < 2) {
+      newErrors.lastName = 'Last name must be at least 2 characters';
+    }
+
+    // Date of Birth validation
+    if (formData.dateOfBirth) {
+      const dob = new Date(formData.dateOfBirth);
+      const today = new Date();
+      if (dob > today) {
+        newErrors.dateOfBirth = 'Date of birth cannot be in the future';
+      } else if (dob.getFullYear() < 1900) {
+        newErrors.dateOfBirth = 'Date of birth must be after 1900';
+      }
+    }
+
+    // Phone validation
+    if (!formData.phone.trim()) {
+      newErrors.phone = 'Phone is required';
+    } else {
+      const phonePattern = /^(\+1[-.\s]?)?\(?([0-9]{3})\)?[-.\s]?([0-9]{3})[-.\s]?([0-9]{4})$/;
+      if (!phonePattern.test(formData.phone.trim())) {
+        newErrors.phone = 'Please enter a valid 10-digit phone number';
+      }
+    }
+
+    // Address validation
+    if (!formData.address.trim()) {
+      newErrors.address = 'Address is required';
+    }
+
+    // City validation
+    if (!formData.city.trim()) {
+      newErrors.city = 'City is required';
+    } else if (!/^[a-zA-Z\s]+$/.test(formData.city.trim())) {
+      newErrors.city = 'City can only contain letters and spaces';
+    }
+
+    // State/Province validation
+    if (!formData.state.trim()) {
+      newErrors.state = 'State is required';
+    } else if (!/^[a-zA-Z\s]+$/.test(formData.state.trim())) {
+      newErrors.state = 'State can only contain letters and spaces';
+    }
+
+    // Zip Code validation (US ZIP or Canadian Postal Code)
+    if (!formData.zipCode.trim()) {
+      newErrors.zipCode = 'Zip Code is required';
+    } else {
+      const usZipPattern = /^\d{5}(-\d{4})?$/;
+      const caPostalPattern = /^[ABCEGHJ-NPRSTVXY]\d[ABCEGHJ-NPRSTV-Z][ -]?\d[ABCEGHJ-NPRSTV-Z]\d$/i;
+      if (!usZipPattern.test(formData.zipCode.trim()) && !caPostalPattern.test(formData.zipCode.trim())) {
+        newErrors.zipCode = 'Enter valid ZIP (12345) or Postal Code (A1A 1A1)';
+      }
+    }
+
+    // Email validation
     if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = 'Invalid email address';
+    }
+
+    // SSN validation (optional but must be valid if provided)
+    if (formData.ssn.trim()) {
+      const ssnPattern = /^(\d{3}-\d{2}-\d{4}|\d{9})$/;
+      if (!ssnPattern.test(formData.ssn.trim())) {
+        newErrors.ssn = 'SSN must be 9 digits (XXX-XX-XXXX or XXXXXXXXX)';
+      }
     }
 
     setErrors(newErrors);
@@ -446,10 +518,9 @@ export default function ClientForm({ client = null, onSuccess, onCancel }) {
                 label="SSN"
                 value={formData.ssn}
                 onChange={(e) => handleChange('ssn', e.target.value)}
+                error={errors.ssn}
                 placeholder="XXX-XX-XXXX"
                 maxLength={11}
-                pattern="^(\d{3}-\d{2}-\d{4}|\d{9})$"
-                title="Input your 9 digit Social Security/Insurance Number"
               />
             </div>
 
@@ -469,8 +540,6 @@ export default function ClientForm({ client = null, onSuccess, onCancel }) {
                 error={errors.phone}
                 required
                 maxLength={20}
-                pattern="^\+?[1]?[-.\s]?\(?([0-9]{3})\)?[-.\s]?([0-9]{3})[-.\s]?([0-9]{4})$"
-                title="Must be a valid 10-digit North American phone number"
                 placeholder="(416) 555-0198"
               />
             </div>
@@ -513,10 +582,8 @@ export default function ClientForm({ client = null, onSuccess, onCancel }) {
                 onChange={(e) => handleChange('zipCode', e.target.value)}
                 error={errors.zipCode}
                 required
-                maxLength={7}
-                pattern="^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$"
-                placeholder="M5V 2T6"
-                title="Valid Canadian Postal Code (e.g. M5V 2T6)"
+                maxLength={10}
+                placeholder="12345 or A1A 1A1"
               />
             </div>
 
@@ -568,7 +635,6 @@ export default function ClientForm({ client = null, onSuccess, onCancel }) {
                     onChange={(e) => handleEmergencyContactChange(index, 'phone', e.target.value)}
                     style={{ marginBottom: 0 }}
                     maxLength={20}
-                    pattern="^\+?[1]?[-.\s]?\(?([0-9]{3})\)?[-.\s]?([0-9]{3})[-.\s]?([0-9]{4})$"
                   />
                   <Input
                     label="Email"

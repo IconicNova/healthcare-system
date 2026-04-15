@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
-import { StaffSchema } from '@/lib/validations';
+import { CreateStaffSchema } from '@/lib/validations';
 import { ApiResponse } from '@/lib/api-response';
 
 export async function GET(request) {
@@ -130,7 +130,7 @@ export async function POST(request) {
 
     const body = await request.json();
 
-    const validationResult = StaffSchema.safeParse(body);
+    const validationResult = CreateStaffSchema.safeParse(body);
     if (!validationResult.success) {
       return ApiResponse.error('Validation failed', 400, validationResult.error.format());
     }
@@ -148,12 +148,8 @@ export async function POST(request) {
       role,
       licenseNumber,
       licenseExpiry,
-    } = body;
-
-    // Validate required fields explicitly strictly required for staff creation (some omitted in Zod because of shared schema logic)
-    if (!email || !password || !branchId || !role) {
-      return ApiResponse.error('Missing required fields (email, password, branchId, role)', 400);
-    }
+      hireDate,
+    } = validationResult.data;
 
     // Validate role - never allow ADMIN creation through API
     if (role === 'ADMIN' || role === 'SUPER_ADMIN') {
@@ -235,6 +231,7 @@ export async function POST(request) {
           status: status || 'INACTIVE',
           licenseNumber: licenseNumber || null,
           licenseExpiry: licenseExpiry ? new Date(licenseExpiry) : null,
+          hireDate: hireDate ? new Date(hireDate) : null,
           organizationId: session.user.organizationId,
           branchId: branchId || null,
           userId: user.id,

@@ -274,6 +274,7 @@ export default function VisitReportBuilder({ clientId, onClose, onSuccess }) {
                         cursor: 'pointer',
                         fontSize: '13px',
                         fontWeight: 500,
+                        color: period === opt.value ? 'white' : 'var(--color-text)',
                       }}
                     >
                       {opt.label}
@@ -306,10 +307,10 @@ export default function VisitReportBuilder({ clientId, onClose, onSuccess }) {
                       >
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                           <div>
-                            <div style={{ fontSize: '13px', fontWeight: 500, color: 'var(--color-text)' }}>{visit.title}</div>
-                            <div style={{ fontSize: '11px', color: 'var(--color-text-muted)' }}>{formatDate(visit.startTime)}</div>
+                            <div style={{ fontSize: '13px', fontWeight: 500, color: selectedVisits.includes(visit.id) ? 'white' : 'var(--color-text)' }}>{visit.title}</div>
+                            <div style={{ fontSize: '11px', color: selectedVisits.includes(visit.id) ? 'rgba(255, 255, 255, 0.8)' : 'var(--color-text-muted)' }}>{formatDate(visit.startTime)}</div>
                           </div>
-                          {selectedVisits.includes(visit.id) && <Check size={18} style={{ color: 'var(--color-primary)' }} />}
+                          {selectedVisits.includes(visit.id) && <Check size={18} style={{ color: 'white' }} />}
                         </div>
                       </div>
                     ))}

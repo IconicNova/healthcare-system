@@ -1,0 +1,11 @@
+[   32994ms] [WARNING] The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width. @ https://together-care.vercel.app/_next/static/chunks/3009-d534d58adb278e81.js:0
+[   33131ms] [WARNING] The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width. @ https://together-care.vercel.app/_next/static/chunks/3009-d534d58adb278e81.js:0
+[  256517ms] [WARNING] The specified value "99/99/9999" does not conform to the required format, "yyyy-MM-dd". @ :7054
+[  504428ms] [ERROR] Pattern attribute value ^\+?[1]?[-.\s]?\(?([0-9]{3})\)?[-.\s]?([0-9]{3})[-.\s]?([0-9]{4})$ is not a valid regular expression: Uncaught SyntaxError: Invalid regular expression: /^\+?[1]?[-.\s]?\(?([0-9]{3})\)?[-.\s]?([0-9]{3})[-.\s]?([0-9]{4})$/v: Invalid character in character class @ https://together-care.vercel.app/clients:0
+[  504428ms] [ERROR] Pattern attribute value ^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$ is not a valid regular expression: Uncaught SyntaxError: Invalid regular expression: /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/v: Invalid character in character class @ https://together-care.vercel.app/clients:0

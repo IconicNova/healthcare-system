@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
+import { UpdateStaffSchema } from '@/lib/validations';
 
 export async function GET(request, { params }) {
   try {
@@ -125,6 +126,16 @@ export async function PATCH(request, { params }) {
 
     const { id } = params;
     const body = await request.json();
+    const validationResult = UpdateStaffSchema.safeParse(body);
+
+    if (!validationResult.success) {
+      return NextResponse.json(
+        { error: 'Validation failed', details: validationResult.error.format() },
+        { status: 400 }
+      );
+    }
+
+    const data = validationResult.data;
 
     // Check if staff exists
     const existing = await prisma.staff.findFirst({
@@ -141,16 +152,16 @@ export async function PATCH(request, { params }) {
 
     // Handle password update if provided
     let userData = {};
-    if (body.password) {
-      userData.password = await bcrypt.hash(body.password, 10);
+    if (data.password) {
+      userData.password = await bcrypt.hash(data.password, 10);
     }
 
     // Update email if provided and check for duplicates within organization
-    if (body.email && body.email !== existing.email) {
+    if (data.email && data.email !== existing.email) {
       // Check User duplicates within org excluding existing.userId
       const duplicateUser = await prisma.user.findFirst({
         where: {
-          email: body.email,
+          email: data.email,
           organizationId: session.user.organizationId,
           id: { not: existing.userId },
         },
@@ -166,7 +177,7 @@ export async function PATCH(request, { params }) {
       // Check Staff duplicates within org excluding existing.id
       const duplicateStaff = await prisma.staff.findFirst({
         where: {
-          email: body.email,
+          email: data.email,
           organizationId: session.user.organizationId,
           id: { not: existing.id },
         },
@@ -189,9 +200,9 @@ export async function PATCH(request, { params }) {
         user = await tx.user.update({
           where: { id: existing.userId },
           data: {
-            ...(body.email && { email: body.email }),
-            ...(body.firstName && { firstName: body.firstName }),
-            ...(body.lastName && { lastName: body.lastName }),
+            ...(data.email && { email: data.email }),
+            ...(data.firstName && { firstName: data.firstName }),
+            ...(data.lastName && { lastName: data.lastName }),
             ...userData,
           },
           select: {
@@ -203,14 +214,14 @@ export async function PATCH(request, { params }) {
             avatar: true,
           },
         });
-      } else if (body.password) {
+      } else if (data.password) {
         // Only create user if password is provided (data inconsistency fix)
         const userDataToCreate = {
-          email: body.email || existing.email,
-          firstName: body.firstName || existing.firstName,
-          lastName: body.lastName || existing.lastName,
-          role: body.role || existing.role,
-          password: await bcrypt.hash(body.password, 10),
+          email: data.email || existing.email,
+          firstName: data.firstName || existing.firstName,
+          lastName: data.lastName || existing.lastName,
+          role: data.role || existing.role,
+          password: await bcrypt.hash(data.password, 10),
           organizationId: session.user.organizationId,
         };
 
@@ -238,18 +249,18 @@ export async function PATCH(request, { params }) {
       const staff = await tx.staff.update({
         where: { id },
         data: {
-          ...(body.firstName && { firstName: body.firstName }),
-          ...(body.lastName && { lastName: body.lastName }),
-          ...(body.email && { email: body.email }),
-          ...(body.phone && { phone: body.phone }),
-          ...(body.role && { role: body.role }),
-          ...(body.payType && { payType: body.payType }),
-          ...(body.payRate !== undefined && { hourlyRate: body.payRate }),
-          ...(body.status && { status: body.status }),
-          ...(body.branchId !== undefined && { branchId: body.branchId }),
-          ...(body.hireDate && { hireDate: new Date(body.hireDate) }),
-          ...(body.licenseNumber !== undefined && { licenseNumber: body.licenseNumber }),
-          ...(body.licenseExpiry && { licenseExpiry: new Date(body.licenseExpiry) }),
+          ...(data.firstName && { firstName: data.firstName }),
+          ...(data.lastName && { lastName: data.lastName }),
+          ...(data.email && { email: data.email }),
+          ...(data.phone && { phone: data.phone }),
+          ...(data.role && { role: data.role }),
+          ...(data.payType && { payType: data.payType }),
+          ...(data.payRate !== undefined && { hourlyRate: data.payRate }),
+          ...(data.status && { status: data.status }),
+          ...(data.branchId !== undefined && { branchId: data.branchId }),
+          ...(data.hireDate && { hireDate: new Date(data.hireDate) }),
+          ...(data.licenseNumber !== undefined && { licenseNumber: data.licenseNumber }),
+          ...(data.licenseExpiry && { licenseExpiry: new Date(data.licenseExpiry) }),
         },
         include: {
           user: {
