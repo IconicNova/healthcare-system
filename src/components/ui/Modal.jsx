@@ -9,6 +9,7 @@ export default function Modal({
   children,
   size = 'md',
   showClose = true,
+  bodyClassName = '',
 }) {
   const modalRef = useRef(null);
 
@@ -66,7 +67,7 @@ export default function Modal({
             )}
           </div>
         )}
-        <div className="modal-body">{children}</div>
+        <div className={`modal-body ${bodyClassName}`}>{children}</div>
       </div>
     </div>
   );

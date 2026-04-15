@@ -129,9 +129,9 @@ export default function InvoiceForm({ onSuccess, onCancel, invoice }) {
 
   return (
     <>
-      <Modal isOpen={true} onClose={onCancel} title={invoice ? 'Edit Invoice' : 'Create Invoice'} size="xl">
+      <Modal isOpen={true} onClose={onCancel} title={invoice ? 'Edit Invoice' : 'Create Invoice'} size="xl" bodyClassName="modal-body-no-scroll">
         <form onSubmit={handleSubmit}>
-          <div className="modal-body" style={{ maxWidth: '900px' }}>
+          <div style={{ maxWidth: '900px' }}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '20px' }}>
               {/* Client Select */}
               <div className="form-group">

@@ -1207,6 +1207,12 @@ a:hover {
   max-height: calc(90vh - 180px);
 }
 
+.modal-body-no-scroll {
+  padding: var(--spacing-5);
+  overflow-y: visible;
+  max-height: none;
+}
+
 .modal-footer {
   padding: var(--spacing-4) var(--spacing-5);
   border-top: 1px solid var(--color-border);
