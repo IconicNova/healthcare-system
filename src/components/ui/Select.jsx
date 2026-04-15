@@ -5,10 +5,12 @@ export default function Select({
   required = false,
   options = [],
   className = '',
+  inline = false,
   onChange,
   ...props
 }) {
   const selectClasses = `select ${error ? 'input-error' : ''} ${className}`;
+  const wrapperClass = inline ? '' : 'form-group';
 
   const handleChange = (e) => {
     if (onChange) {
@@ -17,7 +19,7 @@ export default function Select({
   };
 
   return (
-    <div className="form-group">
+    <div className={wrapperClass}>
       {label && (
         <label className={`form-label ${required ? 'required' : ''}`}>
           {label}

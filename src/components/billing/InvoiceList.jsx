@@ -156,19 +156,22 @@ export default function InvoiceList({ onInvoiceClick }) {
   return (
     <div>
       {/* Filters */}
-      <div style={{ display: 'flex', gap: '12px', marginBottom: '16px', flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', gap: '12px', marginBottom: '16px', alignItems: 'flex-end' }}>
         <SearchInput
           placeholder="Search by invoice number or client name..."
           value={search}
           onChange={handleSearchChange}
-          style={{ flex: 1, minWidth: '200px' }}
+          style={{ flex: 1, minWidth: '250px' }}
         />
-        <Select
-          value={statusFilter}
-          onChange={handleStatusChange}
-          options={STATUS_OPTIONS}
-          style={{ width: '150px' }}
-        />
+        <div style={{ minWidth: '180px' }}>
+          <Select
+            value={statusFilter}
+            onChange={handleStatusChange}
+            options={STATUS_OPTIONS}
+            style={{ width: '100%' }}
+            inline
+          />
+        </div>
       </div>
 
       {/* Data Table */}

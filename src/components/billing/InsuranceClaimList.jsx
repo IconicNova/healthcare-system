@@ -237,21 +237,24 @@ export default function InsuranceClaimList({ onClaimClick, onCreateClaim }) {
   return (
     <div>
       {/* Filters */}
-      <div style={{ display: 'flex', gap: '12px', marginBottom: '16px', flexWrap: 'wrap', alignItems: 'center' }}>
+      <div style={{ display: 'flex', gap: '12px', marginBottom: '16px', alignItems: 'flex-end' }}>
         <SearchInput
           placeholder="Search by claim #, client, or insurance..."
           value={search}
           onChange={(val) => { setSearch(val); setPagination(prev => ({ ...prev, page: 1 })); }}
-          style={{ flex: 1, minWidth: '200px' }}
+          style={{ flex: 1, minWidth: '250px' }}
         />
-        <Select
-          value={statusFilter}
-          onChange={(val) => { setStatusFilter(val); setPagination(prev => ({ ...prev, page: 1 })); }}
-          options={STATUS_OPTIONS}
-          style={{ width: '150px' }}
-        />
+        <div style={{ minWidth: '180px' }}>
+          <Select
+            value={statusFilter}
+            onChange={(val) => { setStatusFilter(val); setPagination(prev => ({ ...prev, page: 1 })); }}
+            options={STATUS_OPTIONS}
+            style={{ width: '100%' }}
+            inline
+          />
+        </div>
         {onCreateClaim && (
-          <Button onClick={onCreateClaim} icon={Plus}>
+          <Button onClick={onCreateClaim} icon={Plus} style={{ whiteSpace: 'nowrap' }}>
             New Claim
           </Button>
         )}
