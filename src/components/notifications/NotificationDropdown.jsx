@@ -135,17 +135,19 @@ export default function NotificationDropdown() {
 
       {isOpen && (
         <div
-          className="dropdown-menu"
           style={{
             position: 'absolute',
             top: '100%',
             marginTop: '8px',
             right: 0,
-            left: 'auto',
             minWidth: '380px',
             maxHeight: '500px',
             overflow: 'hidden',
-            zIndex: 1000,
+            backgroundColor: 'white',
+            border: '1px solid #e2e8f0',
+            borderRadius: '8px',
+            boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+            zIndex: 9999,
           }}
         >
           <div
