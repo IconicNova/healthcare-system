@@ -67,7 +67,7 @@ export default function Modal({
             )}
           </div>
         )}
-        <div className={`modal-body ${bodyClassName}`}>{children}</div>
+        <div className={`modal-body ${bodyClassName}`} style={{ flex: 1, overflowY: 'auto' }}>{children}</div>
       </div>
     </div>
   );
