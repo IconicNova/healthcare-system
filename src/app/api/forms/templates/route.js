@@ -41,7 +41,10 @@ export async function GET(request) {
         status: true,
         createdAt: true,
       },
-      orderBy: { category: 'asc', name: 'asc' },
+      orderBy: [
+        { category: 'asc' },
+        { name: 'asc' },
+      ],
     });
 
     // Group templates by category
