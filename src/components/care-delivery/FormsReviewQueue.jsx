@@ -47,7 +47,6 @@ function formatStatusLabel(status) {
 export default function FormsReviewQueue({ clientId = '', embedded = false }) {
   const router = useRouter();
   const [forms, setForms] = useState([]);
-  const [clients, setClients] = useState([]);
   const [templates, setTemplates] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -69,15 +68,7 @@ export default function FormsReviewQueue({ clientId = '', embedded = false }) {
   useEffect(() => {
     async function fetchFilterOptions() {
       try {
-        const [clientsResponse, templatesResponse] = await Promise.all([
-          fetch('/api/clients?limit=100'),
-          fetch('/api/forms/templates'),
-        ]);
-
-        if (clientsResponse.ok) {
-          const clientData = await clientsResponse.json();
-          setClients(clientData.clients || []);
-        }
+        const templatesResponse = await fetch('/api/forms/templates');
 
         if (templatesResponse.ok) {
           const templateData = await templatesResponse.json();
@@ -129,8 +120,8 @@ export default function FormsReviewQueue({ clientId = '', embedded = false }) {
   }), [forms]);
 
   const filterRows = useMemo(
-    () => buildFormsReviewFilterRows({ embedded, clientLocked: Boolean(clientId) }),
-    [clientId, embedded]
+    () => buildFormsReviewFilterRows({ embedded }),
+    [embedded]
   );
 
   const handleFilterChange = (field, value) => {
@@ -199,25 +190,6 @@ export default function FormsReviewQueue({ clientId = '', embedded = false }) {
                       >
                         {STATUS_OPTIONS.map((option) => (
                           <option key={option.value} value={option.value}>{option.label}</option>
-                        ))}
-                      </select>
-                    );
-                  }
-
-                  if (field.key === 'client') {
-                    return (
-                      <select
-                        key={field.key}
-                        className="select"
-                        value={filters.clientId}
-                        onChange={(event) => handleFilterChange('clientId', event.target.value)}
-                        disabled={field.disabled}
-                      >
-                        <option value="">All Clients</option>
-                        {clients.map((client) => (
-                          <option key={client.id} value={client.id}>
-                            {client.firstName} {client.lastName}
-                          </option>
                         ))}
                       </select>
                     );

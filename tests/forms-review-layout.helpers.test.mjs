@@ -12,17 +12,15 @@ function runTest(name, fn) {
   }
 }
 
-runTest('embedded forms review uses two deliberate filter rows', () => {
-  const rows = buildFormsReviewFilterRows({ embedded: true, clientLocked: true });
+runTest('embedded forms review uses status and template filters on the first row', () => {
+  const rows = buildFormsReviewFilterRows({ embedded: true });
 
-  assert.deepEqual(rows[0].map((field) => field.key), ['status', 'client', 'template']);
+  assert.deepEqual(rows[0].map((field) => field.key), ['status', 'template']);
   assert.deepEqual(rows[1].map((field) => field.key), ['dateRange']);
-  assert.equal(rows[0][1].disabled, true);
 });
 
-runTest('standalone forms review keeps client filter unlocked', () => {
-  const rows = buildFormsReviewFilterRows({ embedded: false, clientLocked: false });
+runTest('standalone forms review also omits the client filter', () => {
+  const rows = buildFormsReviewFilterRows({ embedded: false });
 
-  assert.deepEqual(rows[0].map((field) => field.key), ['status', 'client', 'template']);
-  assert.equal(rows[0][1].disabled, false);
+  assert.deepEqual(rows[0].map((field) => field.key), ['status', 'template']);
 });

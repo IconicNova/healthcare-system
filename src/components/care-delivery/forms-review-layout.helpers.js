@@ -1,12 +1,7 @@
-export function buildFormsReviewFilterRows({ embedded, clientLocked }) {
+export function buildFormsReviewFilterRows({ embedded }) {
   return [
     [
       { key: 'status', width: embedded ? 'minmax(180px, 220px)' : 'minmax(180px, 1fr)' },
-      {
-        key: 'client',
-        width: embedded ? 'minmax(180px, 220px)' : 'minmax(180px, 1fr)',
-        disabled: clientLocked,
-      },
       { key: 'template', width: embedded ? 'minmax(200px, 1fr)' : 'minmax(180px, 1fr)' },
     ],
     [
