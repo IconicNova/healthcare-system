@@ -38,7 +38,7 @@ export default function VisitReportBuilder({ clientId, onClose, onSuccess }) {
 
     setStartDate(start.toISOString().split('T')[0]);
     setEndDate(today.toISOString().split('T')[0]);
-  }, []);
+  }, [period]);
 
   useEffect(() => {
     // Fetch recent visits when component mounts
