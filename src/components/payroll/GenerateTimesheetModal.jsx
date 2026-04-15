@@ -54,37 +54,38 @@ export default function GenerateTimesheetModal({ isOpen, onClose, onSuccess }) {
 
       if (response.ok) {
         const data = await response.json();
-        const visits = data.visits?.filter(v => {
-          const visitDate = new Date(v.date);
+        const visits = (Array.isArray(data) ? data : data.visits || []).filter(v => {
+          const visitDate = new Date(v.startTime);
           return (
-            v.status === 'COMPLETED' &&
+            ['COMPLETED', 'APPROVED'].includes(v.status) &&
             visitDate >= startDate &&
             visitDate <= endDate &&
-            v.staffId
+            v.staffId &&
+            v.staff // Ensure staff object exists
           );
-        }) || [];
+        });
 
         // Group by staff
         const grouped = visits.reduce((acc, visit) => {
           if (!acc[visit.staffId]) {
             acc[visit.staffId] = {
               staffId: visit.staffId,
-              staffName: `${visit.staffFirstName || ''} ${visit.staffLastName || ''}`.trim() || 'Unknown',
+              staffName: `${visit.staff?.firstName || ''} ${visit.staff?.lastName || ''}`.trim() || 'Unknown',
               visits: [],
               totalHours: 0,
             };
           }
           acc[visit.staffId].visits.push(visit);
 
-          // Calculate hours
+          // Calculate hours - Priority 1: actual times, Priority 2: scheduled times
           let hours = 0;
           if (visit.actualStart && visit.actualEnd) {
             const start = new Date(visit.actualStart);
             const end = new Date(visit.actualEnd);
             hours = (end - start) / (1000 * 60 * 60);
-          } else if (visit.scheduledStart && visit.scheduledEnd) {
-            const start = new Date(visit.scheduledStart);
-            const end = new Date(visit.scheduledEnd);
+          } else if (visit.startTime && visit.endTime) {
+            const start = new Date(visit.startTime);
+            const end = new Date(visit.endTime);
             hours = (end - start) / (1000 * 60 * 60);
           }
           acc[visit.staffId].totalHours += hours;
@@ -173,7 +174,7 @@ export default function GenerateTimesheetModal({ isOpen, onClose, onSuccess }) {
         {preview.length > 0 && (
           <>
             <div style={{ marginBottom: '16px' }}>
-              <h4 style={{ fontSize: '14px', fontWeight: 600, marginBottom: '12px' }}>Staff with Completed Visits</h4>
+              <h4 style={{ fontSize: '14px', fontWeight: 600, marginBottom: '12px' }}>Staff with Completed/Approved Visits</h4>
               <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                   <thead style={{ backgroundColor: 'var(--color-background-secondary)', position: 'sticky', top: 0 }}>

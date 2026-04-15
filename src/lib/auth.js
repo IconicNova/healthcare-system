@@ -16,14 +16,31 @@ const NextAuthConfig = {
           throw new Error('Invalid credentials');
         }
 
-        const user = await prisma.user.findUnique({
-          where: { email: credentials.email },
+        // Use findMany instead of findUnique since email is no longer globally unique
+        // Email uniqueness is now scoped to organization
+        const users = await prisma.user.findMany({
+          where: {
+            email: credentials.email,
+            status: true,
+          },
           include: {
             staff: true,
             client: true,
-            branch: true
-          }
+            branch: true,
+          },
         });
+
+        if (users.length === 0) {
+          throw new Error('Invalid credentials');
+        }
+
+        // If more than one active user matches the email, fail closed
+        // This prevents silent cross-tenant login ambiguity
+        if (users.length > 1) {
+          throw new Error('Multiple accounts exist for this email. Contact your administrator.');
+        }
+
+        const user = users[0];
 
         if (!user || !user.password) {
           throw new Error('Invalid credentials');

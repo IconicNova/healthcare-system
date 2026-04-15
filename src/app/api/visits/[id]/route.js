@@ -169,8 +169,8 @@ export async function PATCH(request, { params }) {
             id: { not: id },
             status: { not: 'CANCELLED' },
             OR: [{
-              startTime: { lte: newEnd },
-              endTime: { gte: newStart },
+              startTime: { lt: newEnd },
+              endTime: { gt: newStart },
             }],
           },
         });
@@ -187,8 +187,8 @@ export async function PATCH(request, { params }) {
           id: { not: id },
           status: { not: 'CANCELLED' },
           OR: [{
-            startTime: { lte: newEnd },
-            endTime: { gte: newStart },
+            startTime: { lt: newEnd },
+            endTime: { gt: newStart },
           }],
         },
       });

@@ -37,8 +37,8 @@ export async function GET(request) {
         ...(excludeVisitId && { id: { not: excludeVisitId } }),
         OR: [
           {
-            startTime: { lte: end },
-            endTime: { gte: start },
+            startTime: { lt: end },
+            endTime: { gt: start },
           },
         ],
       },

@@ -34,11 +34,11 @@ export async function POST(request) {
 
     const organizationId = session.user.organizationId;
 
-    // Find all COMPLETED visits in the date range
+    // Find all COMPLETED or APPROVED visits in the date range
     const visits = await prisma.visit.findMany({
       where: {
         organizationId,
-        status: 'COMPLETED',
+        status: { in: ['COMPLETED', 'APPROVED'] },
         startTime: {
           gte: start,
           lte: end,
@@ -57,13 +57,19 @@ export async function POST(request) {
             lastName: true,
           },
         },
+        staff: {
+          select: {
+            firstName: true,
+            lastName: true,
+          },
+        },
       },
       orderBy: { startTime: 'asc' },
     });
 
     if (visits.length === 0) {
       return NextResponse.json(
-        { error: 'No completed visits found for the specified date range' },
+        { error: 'No completed or approved visits found for the specified date range' },
         { status: 400 }
       );
     }

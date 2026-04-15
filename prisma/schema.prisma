@@ -184,7 +184,7 @@ model Branch {
 
 model User {
   id             String     @id @default(uuid())
-  email          String     @unique
+  email          String
   password       String
   firstName      String
   lastName       String
@@ -304,7 +304,7 @@ model Staff {
   employeeId     String       @unique
   firstName      String
   lastName       String
-  email          String       @unique
+  email          String
   phone          String
   role           String
   payType        PayType      @default(HOURLY)
@@ -332,6 +332,7 @@ model Staff {
 
   @@index([organizationId, status])
   @@index([organizationId, branchId])
+  @@unique([organizationId, email])
   @@map("staff")
 }
 

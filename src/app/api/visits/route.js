@@ -140,8 +140,8 @@ export async function POST(request) {
           status: { not: 'CANCELLED' },
           OR: [
             {
-              startTime: { lte: new Date(endTime) },
-              endTime: { gte: new Date(startTime) },
+              startTime: { lt: new Date(endTime) },
+              endTime: { gt: new Date(startTime) },
             },
           ],
         },
@@ -162,8 +162,8 @@ export async function POST(request) {
         status: { not: 'CANCELLED' },
         OR: [
           {
-            startTime: { lte: new Date(endTime) },
-            endTime: { gte: new Date(startTime) },
+            startTime: { lt: new Date(endTime) },
+            endTime: { gt: new Date(startTime) },
           },
         ],
       },
@@ -284,8 +284,8 @@ export async function POST(request) {
       // Batch conflict detection
       if (proposedVisits.length > 0) {
         const timeConditions = proposedVisits.map(v => ({
-          startTime: { lte: v.endTime },
-          endTime: { gte: v.startTime }
+          startTime: { lt: v.endTime },
+          endTime: { gt: v.startTime }
         }));
 
         const [batchedStaffConflicts, batchedClientConflicts] = await Promise.all([
@@ -309,11 +309,11 @@ export async function POST(request) {
 
         const validVisits = [];
         for (const pv of proposedVisits) {
-          const hasStaffConflict = staffId && batchedStaffConflicts.some(c => 
-            c.startTime <= pv.endTime && c.endTime >= pv.startTime
+          const hasStaffConflict = staffId && batchedStaffConflicts.some(c =>
+            c.startTime < pv.endTime && c.endTime > pv.startTime
           );
-          const hasClientConflict = batchedClientConflicts.some(c => 
-            c.startTime <= pv.endTime && c.endTime >= pv.startTime
+          const hasClientConflict = batchedClientConflicts.some(c =>
+            c.startTime < pv.endTime && c.endTime > pv.startTime
           );
 
           if (hasStaffConflict || hasClientConflict) {

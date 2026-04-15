@@ -51,8 +51,15 @@ export async function POST(request, { params }) {
     }
 
     // Staff can only modify their own timesheets
-    if (session.user.role === 'STAFF' && timesheet.staffId !== session.user.id) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    if (session.user.role === 'STAFF') {
+      // Resolve staff record by userId first, then compare Staff.id
+      const staffRecord = await prisma.staff.findFirst({
+        where: { userId: session.user.id },
+        select: { id: true },
+      });
+      if (!staffRecord || timesheet.staffId !== staffRecord.id) {
+        return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+      }
     }
 
     // Can only add entries to DRAFT timesheets

@@ -67,9 +67,23 @@ async function main() {
     });
   }
 
-  // Create Users
-  const adminUser = await prisma.user.create({
-    data: {
+  // Create or update Users
+  const adminUser = await prisma.user.upsert({
+    where: {
+      organizationId_email: {
+        organizationId: organization.id,
+        email: 'admin@homecarepro.com',
+      },
+    },
+    update: {
+      password: hashedPassword,
+      firstName: 'Sarah',
+      lastName: 'Mitchell',
+      role: 'ADMIN',
+      status: true,
+      branchId: atlantaMain.id,
+    },
+    create: {
       email: 'admin@homecarepro.com',
       password: hashedPassword,
       firstName: 'Sarah',
@@ -81,8 +95,22 @@ async function main() {
     },
   });
 
-  const superAdminUser = await prisma.user.create({
-    data: {
+  const superAdminUser = await prisma.user.upsert({
+    where: {
+      organizationId_email: {
+        organizationId: organization.id,
+        email: 'superadmin@homecarepro.com',
+      },
+    },
+    update: {
+      password: hashedPassword,
+      firstName: 'Michael',
+      lastName: 'Thompson',
+      role: 'SUPER_ADMIN',
+      status: true,
+      branchId: atlantaMain.id,
+    },
+    create: {
       email: 'superadmin@homecarepro.com',
       password: hashedPassword,
       firstName: 'Michael',
@@ -94,8 +122,22 @@ async function main() {
     },
   });
 
-  const managerUser = await prisma.user.create({
-    data: {
+  const managerUser = await prisma.user.upsert({
+    where: {
+      organizationId_email: {
+        organizationId: organization.id,
+        email: 'manager@homecarepro.com',
+      },
+    },
+    update: {
+      password: hashedPassword,
+      firstName: 'Jennifer',
+      lastName: 'Davis',
+      role: 'MANAGER',
+      status: true,
+      branchId: atlantaMain.id,
+    },
+    create: {
       email: 'manager@homecarepro.com',
       password: hashedPassword,
       firstName: 'Jennifer',
@@ -107,8 +149,22 @@ async function main() {
     },
   });
 
-  const supervisorUser = await prisma.user.create({
-    data: {
+  const supervisorUser = await prisma.user.upsert({
+    where: {
+      organizationId_email: {
+        organizationId: organization.id,
+        email: 'supervisor@homecarepro.com',
+      },
+    },
+    update: {
+      password: hashedPassword,
+      firstName: 'Robert',
+      lastName: 'Wilson',
+      role: 'SUPERVISOR',
+      status: true,
+      branchId: mariettaBranch.id,
+    },
+    create: {
       email: 'supervisor@homecarepro.com',
       password: hashedPassword,
       firstName: 'Robert',
@@ -120,8 +176,22 @@ async function main() {
     },
   });
 
-  const staffUser = await prisma.user.create({
-    data: {
+  const staffUser = await prisma.user.upsert({
+    where: {
+      organizationId_email: {
+        organizationId: organization.id,
+        email: 'staff@homecarepro.com',
+      },
+    },
+    update: {
+      password: hashedPassword,
+      firstName: 'Emily',
+      lastName: 'Rodriguez',
+      role: 'STAFF',
+      status: true,
+      branchId: atlantaMain.id,
+    },
+    create: {
       email: 'staff@homecarepro.com',
       password: hashedPassword,
       firstName: 'Emily',
@@ -134,8 +204,28 @@ async function main() {
   });
 
   // Create Staff Profiles
-  const staff1 = await prisma.staff.create({
-    data: {
+  const staff1 = await prisma.staff.upsert({
+    where: {
+      organizationId_email: {
+        organizationId: organization.id,
+        email: 'emily.rodriguez@advancedcarepartners.com',
+      },
+    },
+    update: {
+      employeeId: 'EMP-001',
+      firstName: 'Emily',
+      lastName: 'Rodriguez',
+      phone: '(555) 234-5001',
+      role: 'Registered Nurse',
+      payType: 'HOURLY',
+      hourlyRate: 45.00,
+      status: 'ACTIVE',
+      licenseNumber: 'RN-GA-12345',
+      licenseExpiry: new Date('2025-12-31'),
+      branchId: atlantaMain.id,
+      userId: staffUser.id,
+    },
+    create: {
       employeeId: 'EMP-001',
       firstName: 'Emily',
       lastName: 'Rodriguez',

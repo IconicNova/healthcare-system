@@ -163,9 +163,12 @@ export async function POST(request) {
       );
     }
 
-    // Check for duplicate email
-    const existingUser = await prisma.user.findUnique({
-      where: { email },
+    // Check for duplicate email within organization
+    const existingUser = await prisma.user.findFirst({
+      where: {
+        email,
+        organizationId: session.user.organizationId,
+      },
     });
 
     if (existingUser) {
@@ -175,9 +178,12 @@ export async function POST(request) {
       );
     }
 
-    // Check for duplicate staff email
-    const existingStaff = await prisma.staff.findUnique({
-      where: { email },
+    // Check for duplicate staff email within organization
+    const existingStaff = await prisma.staff.findFirst({
+      where: {
+        email,
+        organizationId: session.user.organizationId,
+      },
     });
 
     if (existingStaff) {

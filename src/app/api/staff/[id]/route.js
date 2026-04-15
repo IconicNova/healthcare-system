@@ -14,7 +14,7 @@ export async function GET(request, { params }) {
 
     const { id } = params;
 
-    const staff = await prisma.staff.findUnique({
+    const staff = await prisma.staff.findFirst({
       where: {
         id,
         organizationId: session.user.organizationId,
@@ -127,7 +127,7 @@ export async function PATCH(request, { params }) {
     const body = await request.json();
 
     // Check if staff exists
-    const existing = await prisma.staff.findUnique({
+    const existing = await prisma.staff.findFirst({
       where: {
         id,
         organizationId: session.user.organizationId,
@@ -145,14 +145,36 @@ export async function PATCH(request, { params }) {
       userData.password = await bcrypt.hash(body.password, 10);
     }
 
-    // Update email if provided and check for duplicates
+    // Update email if provided and check for duplicates within organization
     if (body.email && body.email !== existing.email) {
-      const duplicate = await prisma.user.findUnique({
-        where: { email: body.email },
+      // Check User duplicates within org excluding existing.userId
+      const duplicateUser = await prisma.user.findFirst({
+        where: {
+          email: body.email,
+          organizationId: session.user.organizationId,
+          id: { not: existing.userId },
+        },
       });
-      if (duplicate) {
+
+      if (duplicateUser) {
         return NextResponse.json(
           { error: 'Email already exists' },
+          { status: 400 }
+        );
+      }
+
+      // Check Staff duplicates within org excluding existing.id
+      const duplicateStaff = await prisma.staff.findFirst({
+        where: {
+          email: body.email,
+          organizationId: session.user.organizationId,
+          id: { not: existing.id },
+        },
+      });
+
+      if (duplicateStaff) {
+        return NextResponse.json(
+          { error: 'Staff with this email already exists' },
           { status: 400 }
         );
       }
@@ -282,7 +304,7 @@ export async function DELETE(request, { params }) {
     const { id } = params;
 
     // Check if staff exists
-    const existing = await prisma.staff.findUnique({
+    const existing = await prisma.staff.findFirst({
       where: {
         id,
         organizationId: session.user.organizationId,

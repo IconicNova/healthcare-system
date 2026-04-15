@@ -177,12 +177,12 @@ export default function TimesheetDetail({ timesheet, onClose, onUpdated }) {
                       </td>
                       <td style={{ padding: '12px' }}>
                         <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)' }}>
-                          {entry.visit?.actualStart ? formatTime(entry.visit.actualStart) : entry.visit?.scheduledStart ? formatTime(entry.visit.scheduledStart) : '-'}
+                          {entry.visit?.actualStart ? formatTime(entry.visit.actualStart) : entry.visit?.startTime ? formatTime(entry.visit.startTime) : '-'}
                         </div>
                       </td>
                       <td style={{ padding: '12px' }}>
                         <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)' }}>
-                          {entry.visit?.actualEnd ? formatTime(entry.visit.actualEnd) : entry.visit?.scheduledEnd ? formatTime(entry.visit.scheduledEnd) : '-'}
+                          {entry.visit?.actualEnd ? formatTime(entry.visit.actualEnd) : entry.visit?.endTime ? formatTime(entry.visit.endTime) : '-'}
                         </div>
                       </td>
                       <td style={{ padding: '12px' }}>

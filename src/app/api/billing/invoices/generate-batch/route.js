@@ -33,8 +33,8 @@ export async function POST(request) {
     // Build where clause for visits
     const where = {
       organizationId,
-      status: 'COMPLETED',
-      invoiceId: null, // Not yet invoiced
+      status: { in: ['COMPLETED', 'APPROVED'] },
+      invoiceItems: { none: {} }, // Not yet invoiced (no invoice items associated)
       clientId: { in: clientIds },
     };
 
@@ -60,7 +60,7 @@ export async function POST(request) {
           select: {
             id: true,
             name: true,
-            rate: true,
+            baseRate: true,
             duration: true,
           },
         },
@@ -89,6 +89,23 @@ export async function POST(request) {
       const invoices = [];
 
       for (const [clientId, clientVisits] of Object.entries(visitsByClient)) {
+        // Re-check visits inside transaction to prevent duplicate invoice items
+        // This ensures no invoice items were created between our initial query and now
+        const visitIds = clientVisits.map(v => v.id);
+        const visitsWithNoInvoiceItems = await tx.visit.findMany({
+          where: {
+            id: { in: visitIds },
+            invoiceItems: { none: {} }, // Ensure still no invoice items
+          },
+        });
+
+        // Filter to only visits that still have no invoice items
+        const validVisitIds = new Set(visitsWithNoInvoiceItems.map(v => v.id));
+        const validVisits = clientVisits.filter(v => validVisitIds.has(v.id));
+
+        if (validVisits.length === 0) {
+          continue; // Skip this client if all visits are already invoiced
+        }
         // Generate invoice number: INV-{YYYYMM}-{sequence}
         const now = new Date();
         const yearMonth = now.toISOString().slice(0, 7).replace('-', '');
@@ -102,23 +119,25 @@ export async function POST(request) {
         const invoiceNumber = `INV-${yearMonth}-${sequence}`;
 
         // Calculate line items and total
-        const lineItems = clientVisits.map((visit) => {
+        const lineItems = validVisits.map((visit) => {
           let hours = 0;
 
-          // Use actual times if available
+          // Priority 1: Use actual times if both available
           if (visit.actualStart && visit.actualEnd) {
             const start = new Date(visit.actualStart);
             const end = new Date(visit.actualEnd);
             hours = (end - start) / (1000 * 60 * 60);
-          } else if (visit.scheduledStart && visit.scheduledEnd) {
-            const start = new Date(visit.scheduledStart);
-            const end = new Date(visit.scheduledEnd);
+          } else if (visit.startTime && visit.endTime) {
+            // Priority 2: Use scheduled times if both available
+            const start = new Date(visit.startTime);
+            const end = new Date(visit.endTime);
             hours = (end - start) / (1000 * 60 * 60);
           } else if (visit.service?.duration) {
+            // Priority 3: Use service duration if available
             hours = visit.service.duration / 60;
           }
 
-          const rate = visit.service?.rate || 0;
+          const rate = visit.service?.baseRate || 0;
           const amount = hours * rate;
 
           return {
@@ -170,7 +189,7 @@ export async function POST(request) {
         invoices.push({
           ...invoice,
           clientName: `${invoice.client.firstName} ${invoice.client.lastName}`,
-          visitCount: clientVisits.length,
+          visitCount: validVisits.length,
         });
       }
 

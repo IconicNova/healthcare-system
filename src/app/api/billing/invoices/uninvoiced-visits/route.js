@@ -29,8 +29,8 @@ export async function GET(request) {
     // Build where clause
     const where = {
       organizationId,
-      status: 'COMPLETED',
-      invoiceId: null, // Not yet invoiced
+      status: { in: ['COMPLETED', 'APPROVED'] },
+      invoiceItems: { none: {} }, // Not yet invoiced (no invoice items associated)
     };
 
     // Add client filter if provided
@@ -59,7 +59,7 @@ export async function GET(request) {
         service: {
           select: {
             name: true,
-            rate: true,
+            baseRate: true,
             duration: true,
           },
         },
@@ -76,20 +76,22 @@ export async function GET(request) {
     const formattedVisits = visits.map((visit) => {
       let hours = 0;
 
-      // Use actual times if available, otherwise use scheduled times
+      // Priority 1: Use actual times if both available
       if (visit.actualStart && visit.actualEnd) {
         const start = new Date(visit.actualStart);
         const end = new Date(visit.actualEnd);
         hours = (end - start) / (1000 * 60 * 60); // Convert ms to hours
-      } else if (visit.scheduledStart && visit.scheduledEnd) {
-        const start = new Date(visit.scheduledStart);
-        const end = new Date(visit.scheduledEnd);
+      } else if (visit.startTime && visit.endTime) {
+        // Priority 2: Use scheduled times if both available
+        const start = new Date(visit.startTime);
+        const end = new Date(visit.endTime);
         hours = (end - start) / (1000 * 60 * 60);
       } else if (visit.service?.duration) {
+        // Priority 3: Use service duration if available
         hours = visit.service.duration / 60; // Convert minutes to hours
       }
 
-      const rate = visit.service?.rate || 0;
+      const rate = visit.service?.baseRate || 0;
       const amount = hours * rate;
 
       return {

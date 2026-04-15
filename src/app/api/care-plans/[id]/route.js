@@ -13,7 +13,7 @@ export async function GET(request, { params }) {
 
     const { id } = params;
 
-    const carePlan = await prisma.carePlan.findUnique({
+    const carePlan = await prisma.carePlan.findFirst({
       where: {
         id,
         organizationId: session.user.organizationId,
@@ -81,7 +81,7 @@ export async function PATCH(request, { params }) {
     const { id } = params;
     const body = await request.json();
 
-    const carePlan = await prisma.carePlan.findUnique({
+    const carePlan = await prisma.carePlan.findFirst({
       where: {
         id,
         organizationId: session.user.organizationId,
@@ -187,7 +187,7 @@ export async function DELETE(request, { params }) {
 
     const { id } = params;
 
-    const carePlan = await prisma.carePlan.findUnique({
+    const carePlan = await prisma.carePlan.findFirst({
       where: {
         id,
         organizationId: session.user.organizationId,
