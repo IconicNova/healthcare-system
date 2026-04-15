@@ -248,7 +248,7 @@ export default function NotificationDropdown() {
               textAlign: 'center',
             }}
           >
-            <Link href="/notifications" style={{ color: 'var(--color-accent)', fontSize: '13px' }}>
+            <Link href="/notifications" onClick={() => setIsOpen(false)} style={{ color: 'var(--color-accent)', fontSize: '13px' }}>
               View all notifications →
             </Link>
           </div>
