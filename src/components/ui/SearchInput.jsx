@@ -18,7 +18,7 @@ export default function SearchInput({
       <div style={{
         position: 'absolute',
         left: '12px',
-        top: '50%',
+        top: 'calc(50% - 1px)',
         transform: 'translateY(-50%)',
         display: 'flex',
         alignItems: 'center',
@@ -38,14 +38,14 @@ export default function SearchInput({
           paddingLeft: '40px',
           paddingRight: value ? '40px' : '12px',
           width: '100%',
-          lineHeight: 'normal',
+          lineHeight: 1,
         }}
       />
       {value && (
         <div style={{
           position: 'absolute',
           right: '8px',
-          top: '50%',
+          top: 'calc(50% - 1px)',
           transform: 'translateY(-50%)',
           display: 'flex',
           alignItems: 'center',
