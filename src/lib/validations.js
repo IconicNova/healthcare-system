@@ -1,9 +1,11 @@
 import { z } from 'zod';
 
 const canadianPhoneRegex = /^\+?1?(?:\.|\s|-)?\(?([0-9]{3})\)?(?:\.|\s|-)?([0-9]{3})(?:\.|\s|-)?([0-9]{4})$/;
-const canadianPostalCodeRegex = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/;
+const northAmericanPostalCodeRegex = /^(?:\d{5}(?:-\d{4})?|[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d)$/;
+const htmlDateInputRegex = /^\d{4}-\d{2}-\d{2}$/;
 const humanNameRegex = /^[\p{L}](?:[\p{L}' .-]*[\p{L}])?$/u;
 const suspiciousNameFragments = ['asdf', 'qwer', 'zxcv', 'poiuy', 'lkjh', 'mnbv'];
+const clientGenderValues = ['MALE', 'FEMALE', 'OTHER', 'PREFER_NOT_TO_SAY', 'Male', 'Female', 'Other', 'Prefer not to say'];
 
 export const staffPhonePattern = '^\\+?1?(?:\\.|\\s|-)?\\(?([0-9]{3})\\)?(?:\\.|\\s|-)?([0-9]{3})(?:\\.|\\s|-)?([0-9]{4})$';
 
@@ -180,17 +182,22 @@ export function validateStaffFormData(formData, { isEdit = false } = {}) {
 export const ClientSchema = z.object({
   firstName: z.string().min(1, "First name is required").max(50),
   lastName: z.string().min(1, "Last name is required").max(50),
-  email: z.string().email("Invalid email format").max(255).optional().nullable(),
+  email: z.string().email("Invalid email format").max(255).optional().nullable().or(z.literal('')),
   phone: z.string()
-    .regex(canadianPhoneRegex, "Invalid Canadian phone format")
+    .regex(canadianPhoneRegex, "Invalid North American phone format")
     .optional()
     .nullable()
     .or(z.literal('')),
-  dateOfBirth: z.string().datetime().or(z.date())
+  dateOfBirth: z.union([
+    z.string().datetime(),
+    z.string().regex(htmlDateInputRegex, "Invalid date format"),
+    z.date(),
+    z.literal(''),
+  ])
     .refine(...minDateRefinement)
     .optional()
     .nullable(),
-  gender: z.enum(['MALE', 'FEMALE', 'OTHER', 'PREFER_NOT_TO_SAY']).optional().nullable(),
+  gender: z.enum(clientGenderValues).optional().nullable().or(z.literal('')),
   ssn: z.string().refine(val => !val || /^(\d{3}-\d{2}-\d{4}|\d{9})$/.test(val), {
     message: "Invalid SSN format"
   }).optional().nullable(),
@@ -198,7 +205,7 @@ export const ClientSchema = z.object({
   city: z.string().max(50).optional().nullable(),
   state: z.string().max(50).optional().nullable(),
   zipCode: z.string()
-    .regex(canadianPostalCodeRegex, "Invalid Postal Code format")
+    .regex(northAmericanPostalCodeRegex, "Invalid ZIP or Postal Code format")
     .optional()
     .nullable()
     .or(z.literal('')),
