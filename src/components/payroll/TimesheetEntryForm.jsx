@@ -1,17 +1,47 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Modal from '@/components/ui/Modal';
 import { useToast } from '@/components/ui/useToast';
 
-export default function TimesheetEntryForm({ isOpen, onClose, timesheetId, onSuccess }) {
-  const { showToast } = useToast();
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.error('TimesheetEntryForm error:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <Modal isOpen={this.props.isOpen} onClose={this.props.onClose} title="Add Manual Entry" size="md">
+          <div className="modal-body">
+            <p style={{ color: 'red' }}>Something went wrong: {this.state.error?.message}</p>
+            <button onClick={() => this.setState({ hasError: false })} className="btn btn-secondary">
+              Try Again
+            </button>
+          </div>
+        </Modal>
+      );
+    }
+
+    return this.props.children;
+  }
+}
+
+function TimesheetEntryFormContent({ isOpen, onClose, timesheetId, onSuccess, showToast }) {
   const [loading, setLoading] = useState(false);
   const [timesheet, setTimesheet] = useState(null);
-  const [renderError, setRenderError] = useState(null);
 
   const [formData, setFormData] = useState({
-    date: new Date().toISOString().split('T')[0],
+    date: '',
     hours: '',
     notes: '',
     billable: true,
@@ -20,7 +50,6 @@ export default function TimesheetEntryForm({ isOpen, onClose, timesheetId, onSuc
 
   useEffect(() => {
     if (isOpen && timesheetId) {
-      setRenderError(null);
       fetchTimesheet();
     }
   }, [isOpen, timesheetId]);
@@ -45,14 +74,14 @@ export default function TimesheetEntryForm({ isOpen, onClose, timesheetId, onSuc
       const data = await response.json();
       setTimesheet(data);
       if (data.startDate) {
+        const formattedDate = formatDateString(data.startDate);
         setFormData(prev => ({
           ...prev,
-          date: formatDateString(data.startDate) || prev.date,
+          date: formattedDate || prev.date,
         }));
       }
     } catch (err) {
       console.error('Error fetching timesheet:', err);
-      setRenderError(err.message);
       showToast('Failed to load timesheet data', 'error');
     }
   };
@@ -95,24 +124,11 @@ export default function TimesheetEntryForm({ isOpen, onClose, timesheetId, onSuc
     }
   };
 
-  if (renderError) {
-    return (
-      <Modal isOpen={isOpen} onClose={onClose} title="Add Manual Entry" size="md">
-        <div className="modal-body">
-          <p style={{ color: 'red' }}>Error: {renderError}</p>
-          <button onClick={onClose} className="btn btn-secondary">Close</button>
-        </div>
-      </Modal>
-    );
-  }
-
   const startDateStr = formatDateString(timesheet?.startDate);
   const endDateStr = formatDateString(timesheet?.endDate);
 
-  if (!isOpen) return null;
-
   return (
-    <Modal isOpen={true} onClose={onClose} title="Add Manual Entry" size="md">
+    <Modal isOpen={isOpen} onClose={onClose} title="Add Manual Entry" size="md">
       <form onSubmit={handleSubmit}>
         <div className="modal-body">
           <div className="form-group" style={{ marginBottom: '16px' }}>
@@ -180,5 +196,15 @@ export default function TimesheetEntryForm({ isOpen, onClose, timesheetId, onSuc
         </div>
       </form>
     </Modal>
+  );
+}
+
+export default function TimesheetEntryForm(props) {
+  const { showToast } = useToast();
+
+  return (
+    <ErrorBoundary>
+      <TimesheetEntryFormContent {...props} showToast={showToast} />
+    </ErrorBoundary>
   );
 }
