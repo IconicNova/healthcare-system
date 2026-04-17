@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Edit2, Calendar, Clock, User, CheckCircle, Plus } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Modal from '@/components/ui/Modal';
@@ -9,6 +9,7 @@ import CarePlanForm from '@/components/care-plans/CarePlanForm';
 
 export default function CarePlanDetailPage({ params }) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [loading, setLoading] = useState(true);
   const [carePlan, setCarePlan] = useState(null);
   const [clients, setClients] = useState([]);
@@ -20,6 +21,10 @@ export default function CarePlanDetailPage({ params }) {
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.id]);
+
+  useEffect(() => {
+    setShowEditModal(searchParams.get('edit') === 'true');
+  }, [searchParams]);
 
   const fetchData = async () => {
     setLoading(true);
@@ -43,7 +48,11 @@ export default function CarePlanDetailPage({ params }) {
   };
 
   const handleEdit = () => {
-    setShowEditModal(true);
+    router.replace(`/care-plans/${params.id}?edit=true`);
+  };
+
+  const handleCloseEditModal = () => {
+    router.replace(`/care-plans/${params.id}`);
   };
 
   const handleUpdate = async (data) => {
@@ -56,7 +65,7 @@ export default function CarePlanDetailPage({ params }) {
 
       if (response.ok) {
         fetchData();
-        setShowEditModal(false);
+        handleCloseEditModal();
       }
     } catch (error) {
       console.error('Error updating care plan:', error);
@@ -331,12 +340,12 @@ export default function CarePlanDetailPage({ params }) {
       </div>
 
       {/* Edit Modal */}
-      <Modal isOpen={showEditModal} onClose={() => setShowEditModal(false)} title="Edit Care Plan" size="lg">
+      <Modal isOpen={showEditModal} onClose={handleCloseEditModal} title="Edit Care Plan" size="lg">
         <CarePlanForm
           isOpen={showEditModal}
           carePlan={carePlan}
           onSubmit={handleUpdate}
-          onClose={() => setShowEditModal(false)}
+          onClose={handleCloseEditModal}
           clients={clients}
           staff={staff}
           services={services}

@@ -203,7 +203,7 @@ export default function CarePlansPage() {
             View
           </button>
           <button
-            onClick={() => router.push(`/care-plans/${plan.id}`)}
+            onClick={() => router.push(`/care-plans/${plan.id}?edit=true`)}
             style={{
               padding: '6px 10px',
               borderRadius: '6px',

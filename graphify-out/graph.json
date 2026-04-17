@@ -9,7 +9,7 @@
       "source_file": "next-env.d.ts",
       "source_location": "L1",
       "id": "next_env_d_ts",
-      "community": 152
+      "community": 153
     },
     {
       "label": "postcss.config.js",
@@ -17,7 +17,7 @@
       "source_file": "postcss.config.js",
       "source_location": "L1",
       "id": "postcss_config_js",
-      "community": 153
+      "community": 154
     },
     {
       "label": "tailwind.config.js",
@@ -25,7 +25,7 @@
       "source_file": "tailwind.config.js",
       "source_location": "L1",
       "id": "tailwind_config_js",
-      "community": 154
+      "community": 155
     },
     {
       "label": "addDocuments.js",
@@ -327,7 +327,7 @@
       "label": "getStatusColor()",
       "file_type": "code",
       "source_file": "src\\app\\(dashboard)\\care-plans\\[id]\\page.js",
-      "source_location": "L349",
+      "source_location": "L358",
       "id": "page_getstatuscolor",
       "community": 13
     },
@@ -343,7 +343,7 @@
       "label": "CarePlanEditPage()",
       "file_type": "code",
       "source_file": "src\\app\\(dashboard)\\care-plans\\[id]\\edit\\page.js",
-      "source_location": "L9",
+      "source_location": "L3",
       "id": "page_careplaneditpage",
       "community": 36
     },
@@ -1959,7 +1959,7 @@
       "label": "VisitReportBuilder()",
       "file_type": "code",
       "source_file": "src\\components\\care-delivery\\VisitReportBuilder.jsx",
-      "source_location": "L6",
+      "source_location": "L12",
       "id": "visitreportbuilder_visitreportbuilder",
       "community": 75
     },
@@ -3241,7 +3241,7 @@
       "source_file": "src\\lib\\api-response.js",
       "source_location": "L1",
       "id": "src_lib_api_response_js",
-      "community": 155
+      "community": 156
     },
     {
       "label": "auth.js",
@@ -3249,7 +3249,7 @@
       "source_file": "src\\lib\\auth.js",
       "source_location": "L1",
       "id": "src_lib_auth_js",
-      "community": 156
+      "community": 157
     },
     {
       "label": "charting-templates.js",
@@ -3385,7 +3385,7 @@
       "source_file": "src\\lib\\prisma.js",
       "source_location": "L1",
       "id": "src_lib_prisma_js",
-      "community": 157
+      "community": 158
     },
     {
       "label": "rate-limit.js",
@@ -3577,7 +3577,15 @@
       "source_file": "tests\\create-care-plan.spec.js",
       "source_location": "L1",
       "id": "tests_create_care_plan_spec_js",
-      "community": 158
+      "community": 151
+    },
+    {
+      "label": "loginAsAdmin()",
+      "file_type": "code",
+      "source_file": "tests\\create-care-plan.spec.js",
+      "source_location": "L3",
+      "id": "create_care_plan_spec_loginasadmin",
+      "community": 151
     },
     {
       "label": "homecare-pro Project",
@@ -3611,7 +3619,7 @@
       "label": "Care Plans Feature",
       "file_type": "document",
       "source_file": "USER_GUIDE.md",
-      "community": 151,
+      "community": 152,
       "id": "USER_GUIDE_care_plans"
     },
     {
@@ -3625,7 +3633,7 @@
       "label": "Scheduling System",
       "file_type": "document",
       "source_file": "USER_GUIDE.md",
-      "community": 151,
+      "community": 152,
       "id": "USER_GUIDE_scheduling"
     }
   ],
@@ -3862,7 +3870,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\app\\(dashboard)\\care-plans\\[id]\\page.js",
-      "source_location": "L349",
+      "source_location": "L358",
       "weight": 1.0,
       "_src": "src_app_dashboard_care_plans_id_page_js",
       "_tgt": "page_getstatuscolor",
@@ -3874,7 +3882,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\app\\(dashboard)\\care-plans\\[id]\\edit\\page.js",
-      "source_location": "L9",
+      "source_location": "L3",
       "weight": 1.0,
       "_src": "src_app_dashboard_care_plans_id_edit_page_js",
       "_tgt": "page_careplaneditpage",
@@ -6442,7 +6450,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\components\\care-delivery\\VisitReportBuilder.jsx",
-      "source_location": "L6",
+      "source_location": "L12",
       "weight": 1.0,
       "_src": "src_components_care_delivery_visitreportbuilder_jsx",
       "_tgt": "visitreportbuilder_visitreportbuilder",
@@ -7960,6 +7968,18 @@
       "_tgt": "validations_normalizestaffformdata",
       "source": "validations_normalizestaffformdata",
       "target": "validations_validatestaffformdata",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\create-care-plan.spec.js",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_src": "tests_create_care_plan_spec_js",
+      "_tgt": "create_care_plan_spec_loginasadmin",
+      "source": "tests_create_care_plan_spec_js",
+      "target": "create_care_plan_spec_loginasadmin",
       "confidence_score": 1.0
     },
     {

@@ -1,7 +1,7 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 const { test, expect } = require('@playwright/test');
 
-test('create a new care plan', { timeout: 120000 }, async ({ page }) => {
-  // Log in
+async function loginAsAdmin(page) {
   await page.goto('http://localhost:3000/login');
   await page.waitForLoadState('networkidle');
 
@@ -9,6 +9,10 @@ test('create a new care plan', { timeout: 120000 }, async ({ page }) => {
   await page.fill('input[type="password"]', 'password123');
   await page.click('button:has-text("Sign In")');
   await page.waitForURL('**/dashboard', { timeout: 10000 });
+}
+
+test('create a new care plan', { timeout: 120000 }, async ({ page }) => {
+  await loginAsAdmin(page);
 
   // Navigate to Care Plans page
   await page.goto('http://localhost:3000/care-plans');
@@ -60,4 +64,24 @@ test('create a new care plan', { timeout: 120000 }, async ({ page }) => {
 
   // Verify care plan appears in the table
   await expect(page.locator('text=Test Care Plan - Post Surgery Recovery')).toBeVisible();
+});
+
+test('open edit modal from listing and direct query link', { timeout: 120000 }, async ({ page }) => {
+  await loginAsAdmin(page);
+
+  await page.goto('http://localhost:3000/care-plans');
+  await page.waitForLoadState('networkidle');
+
+  const firstRow = page.locator('tbody tr').first();
+  await expect(firstRow).toBeVisible();
+
+  await firstRow.getByRole('button', { name: 'Edit' }).click();
+  await page.waitForURL(/\/care-plans\/[^/]+(\?edit=true)?$/);
+  await expect(page.locator('.modal-title', { hasText: 'Edit Care Plan' })).toBeVisible();
+
+  const detailPath = new URL(page.url()).pathname;
+
+  await page.goto(`http://localhost:3000${detailPath}?edit=true`);
+  await page.waitForLoadState('networkidle');
+  await expect(page.locator('.modal-title', { hasText: 'Edit Care Plan' })).toBeVisible();
 });

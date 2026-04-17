@@ -1,11 +1,11 @@
-# Graph Report - .  (2026-04-16)
+# Graph Report - .  (2026-04-17)
 
 ## Corpus Check
-- 240 files · ~162,676 words
+- 240 files · ~163,484 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 454 nodes · 365 edges · 160 communities detected
+- 455 nodes · 366 edges · 160 communities detected
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 1 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
@@ -803,11 +803,11 @@ Nodes (0):
 
 ### Community 151 - "Community 151"
 Cohesion: 1.0
-Nodes (2): Care Plans Feature, Scheduling System
+Nodes (0): 
 
 ### Community 152 - "Community 152"
 Cohesion: 1.0
-Nodes (0): 
+Nodes (2): Care Plans Feature, Scheduling System
 
 ### Community 153 - "Community 153"
 Cohesion: 1.0
@@ -1102,21 +1102,21 @@ Nodes (1): Billing System
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 - **Thin community `Community 150`** (2 nodes): `rateLimit()`, `rate-limit.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 151`** (2 nodes): `Care Plans Feature`, `Scheduling System`
+- **Thin community `Community 151`** (2 nodes): `loginAsAdmin()`, `create-care-plan.spec.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 152`** (1 nodes): `next-env.d.ts`
+- **Thin community `Community 152`** (2 nodes): `Care Plans Feature`, `Scheduling System`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 153`** (1 nodes): `postcss.config.js`
+- **Thin community `Community 153`** (1 nodes): `next-env.d.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 154`** (1 nodes): `tailwind.config.js`
+- **Thin community `Community 154`** (1 nodes): `postcss.config.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 155`** (1 nodes): `api-response.js`
+- **Thin community `Community 155`** (1 nodes): `tailwind.config.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 156`** (1 nodes): `auth.js`
+- **Thin community `Community 156`** (1 nodes): `api-response.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 157`** (1 nodes): `prisma.js`
+- **Thin community `Community 157`** (1 nodes): `auth.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 158`** (1 nodes): `create-care-plan.spec.js`
+- **Thin community `Community 158`** (1 nodes): `prisma.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 - **Thin community `Community 159`** (1 nodes): `Billing System`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
@@ -1125,7 +1125,7 @@ Nodes (1): Billing System
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `GET()` connect `Community 0` to `Community 1`?**
-  _High betweenness centrality (0.037) - this node is a cross-community bridge._
+  _High betweenness centrality (0.036) - this node is a cross-community bridge._
 - **Why does `POST()` connect `Community 0` to `Community 1`, `Community 6`?**
   _High betweenness centrality (0.016) - this node is a cross-community bridge._
 - **Why does `DELETE()` connect `Community 1` to `Community 0`?**
