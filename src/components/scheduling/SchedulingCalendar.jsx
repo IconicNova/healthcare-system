@@ -108,16 +108,18 @@ export default function SchedulingCalendar({
           selectable={true}
           selectMirror={true}
           dayMaxEvents={true}
-          slotMinTime="08:00:00"
-          slotMaxTime="20:00:00"
-          slotDuration="00:30:00"
-          slotLabelInterval="01:00:00"
+          slotMinTime="06:00:00"
+          slotMaxTime="22:00:00"
+          scrollTime="08:00:00"
           height="auto"
           contentHeight="auto"
           eventDisplay="block"
           eventClick={handleEventClick}
           eventDrop={handleEventDrop}
           dateClick={handleDateClick}
+          slotLabelFormat={[
+            { hour: 'numeric', minute: '2-digit', hour12: true },
+          ]}
           views={{
             dayGridMonth: {
               dayHeaderFormat: { weekday: 'short' },
