@@ -4855,7 +4855,7 @@ a:hover {
 
 .scheduling-calendar .fc-event {
   border-radius: var(--radius-md) !important;
-  padding: 2px var(--spacing-2) !important;
+  padding: 2px 0 !important;
   font-size: var(--font-size-xs) !important;
   font-weight: var(--font-weight-medium) !important;
   border: none !important;
