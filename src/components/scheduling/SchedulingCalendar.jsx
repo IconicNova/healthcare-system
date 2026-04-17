@@ -108,6 +108,7 @@ export default function SchedulingCalendar({
           selectable={true}
           selectMirror={true}
           dayMaxEvents={true}
+          eventMargin={0}
           slotMinTime="06:00:00"
           slotMaxTime="22:00:00"
           scrollTime="08:00:00"

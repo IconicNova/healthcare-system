@@ -4873,6 +4873,7 @@ a:hover {
 .scheduling-calendar .fc-timegrid-event {
   border-radius: var(--radius-md) !important;
   border-left: 3px solid !important;
+  margin: 0 !important;
 }
 
 .scheduling-calendar .fc-scrollgrid {
