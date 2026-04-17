@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 export default function TimesheetEntryForm({ isOpen, onClose, timesheetId, onSuccess }) {
   console.log('Rendering TimesheetEntryForm', { isOpen, timesheetId });
@@ -24,7 +24,7 @@ export default function TimesheetEntryForm({ isOpen, onClose, timesheetId, onSuc
       console.log('Fetching timesheet...');
       fetchTimesheet();
     }
-  }, [isOpen, timesheetId]);
+  }, [isOpen, timesheetId, fetchTimesheet]);
 
   const formatDateString = (dateValue) => {
     console.log('formatDateString input:', dateValue);
@@ -40,7 +40,7 @@ export default function TimesheetEntryForm({ isOpen, onClose, timesheetId, onSuc
     }
   };
 
-  const fetchTimesheet = async () => {
+  const fetchTimesheet = useCallback(async () => {
     try {
       console.log('fetchTimesheet called with timesheetId:', timesheetId);
       const response = await fetch(`/api/payroll/timesheets/${timesheetId}`);
@@ -63,7 +63,7 @@ export default function TimesheetEntryForm({ isOpen, onClose, timesheetId, onSuc
       console.error('Error fetching timesheet:', err);
       setError(err.message);
     }
-  };
+  }, [timesheetId]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
