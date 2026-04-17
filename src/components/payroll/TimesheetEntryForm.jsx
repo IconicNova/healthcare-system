@@ -6,10 +6,10 @@ import Input from '@/components/ui/Input';
 import { useToast } from '@/components/ui/useToast';
 
 export default function TimesheetEntryForm({ isOpen, onClose, timesheetId, onSuccess }) {
-  console.log('TimesheetEntryForm rendering', { isOpen, timesheetId });
   const { showToast } = useToast();
   const [loading, setLoading] = useState(false);
   const [timesheet, setTimesheet] = useState(null);
+  const [error, setError] = useState(null);
 
   const [formData, setFormData] = useState({
     date: new Date().toISOString().split('T')[0],
@@ -20,41 +20,41 @@ export default function TimesheetEntryForm({ isOpen, onClose, timesheetId, onSuc
   });
 
   useEffect(() => {
-    console.log('useEffect triggered', { isOpen, timesheetId });
     if (isOpen && timesheetId) {
+      setError(null);
       fetchTimesheet();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, timesheetId]);
 
   const formatDateString = (dateValue) => {
-    console.log('formatDateString called with:', dateValue);
     if (!dateValue) return '';
     try {
-      return new Date(dateValue).toISOString().split('T')[0];
-    } catch (e) {
-      console.error('formatDateString error:', e);
+      const d = new Date(dateValue);
+      if (isNaN(d.getTime())) return '';
+      return d.toISOString().split('T')[0];
+    } catch {
       return '';
     }
   };
 
   const fetchTimesheet = async () => {
-    console.log('fetchTimesheet called', timesheetId);
     try {
       const response = await fetch(`/api/payroll/timesheets/${timesheetId}`);
-      console.log('fetchTimesheet response:', response.status);
-      if (response.ok) {
-        const data = await response.json();
-        console.log('fetchTimesheet data:', data);
-        setTimesheet(data);
-        // Set date to be within timesheet period
+      if (!response.ok) {
+        throw new Error(`API error: ${response.status}`);
+      }
+      const data = await response.json();
+      setTimesheet(data);
+      if (data.startDate) {
         setFormData(prev => ({
           ...prev,
-          date: data.startDate ? new Date(data.startDate).toISOString().split('T')[0] : prev.date,
+          date: formatDateString(data.startDate) || prev.date,
         }));
       }
-    } catch (error) {
-      console.error('Error fetching timesheet:', error);
+    } catch (err) {
+      console.error('Error fetching timesheet:', err);
+      setError(err.message);
+      showToast('Failed to load timesheet data', 'error');
     }
   };
 
@@ -65,17 +65,6 @@ export default function TimesheetEntryForm({ isOpen, onClose, timesheetId, onSuc
     if (isNaN(hours) || hours <= 0) {
       showToast('Please enter valid hours', 'warning');
       return;
-    }
-
-    // Check date is within timesheet period
-    if (timesheet) {
-      const entryDate = new Date(formData.date);
-      const startDate = new Date(timesheet.startDate);
-      const endDate = new Date(timesheet.endDate);
-      if (entryDate < startDate || entryDate > endDate) {
-        showToast(`Date must be between ${formatDateString(timesheet.startDate)} and ${formatDateString(timesheet.endDate)}`, 'error');
-        return;
-      }
     }
 
     setLoading(true);
@@ -107,6 +96,17 @@ export default function TimesheetEntryForm({ isOpen, onClose, timesheetId, onSuc
     }
   };
 
+  if (error) {
+    return (
+      <Modal isOpen={isOpen} onClose={onClose} title="Add Manual Entry" size="md">
+        <div className="modal-body">
+          <p style={{ color: 'red' }}>Error: {error}</p>
+          <button onClick={onClose} className="btn btn-secondary">Close</button>
+        </div>
+      </Modal>
+    );
+  }
+
   const startDateStr = formatDateString(timesheet?.startDate);
   const endDateStr = formatDateString(timesheet?.endDate);
 
@@ -114,25 +114,23 @@ export default function TimesheetEntryForm({ isOpen, onClose, timesheetId, onSuc
     <Modal isOpen={isOpen} onClose={onClose} title="Add Manual Entry" size="md">
       <form onSubmit={handleSubmit}>
         <div className="modal-body">
-          {/* Date */}
           <div className="form-group" style={{ marginBottom: '16px' }}>
             <label className="form-label">Date *</label>
             <Input
               type="date"
               value={formData.date}
               onChange={(e) => setFormData(prev => ({ ...prev, date: e.target.value }))}
-              min={startDateStr}
-              max={endDateStr}
+              min={startDateStr || undefined}
+              max={endDateStr || undefined}
               required
             />
-            {timesheet && (
+            {timesheet && startDateStr && endDateStr && (
               <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginTop: '4px' }}>
                 Must be within: {startDateStr} to {endDateStr}
               </p>
             )}
           </div>
 
-          {/* Hours */}
           <div className="form-group" style={{ marginBottom: '16px' }}>
             <label className="form-label">Hours *</label>
             <Input
@@ -146,7 +144,6 @@ export default function TimesheetEntryForm({ isOpen, onClose, timesheetId, onSuc
             />
           </div>
 
-          {/* Notes */}
           <div className="form-group" style={{ marginBottom: '16px' }}>
             <label className="form-label">Description</label>
             <Input
@@ -157,7 +154,6 @@ export default function TimesheetEntryForm({ isOpen, onClose, timesheetId, onSuc
             />
           </div>
 
-          {/* Billable */}
           <div className="form-group" style={{ marginBottom: '20px' }}>
             <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
               <input
@@ -169,7 +165,6 @@ export default function TimesheetEntryForm({ isOpen, onClose, timesheetId, onSuc
             </label>
           </div>
 
-          {/* Actions */}
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
             <button type="button" onClick={onClose} className="btn btn-secondary btn-md">
               Cancel

@@ -172,7 +172,7 @@ export default function TimesheetDetail({ timesheet, onClose, onUpdated }) {
                       </td>
                       <td style={{ padding: '12px' }}>
                         <div style={{ fontSize: '13px', color: 'var(--color-text)' }}>
-                          {entry.notes || entry.visit ? `${entry.visit.service?.name || 'Service'} - ${entry.visit.client.firstName} ${entry.visit.client.lastName}` : 'Manual Entry'}
+                          {entry.notes || entry.visit ? `${entry.visit?.service?.name || 'Service'} - ${entry.visit?.client?.firstName || ''} ${entry.visit?.client?.lastName || ''}` : 'Manual Entry'}
                         </div>
                       </td>
                       <td style={{ padding: '12px' }}>
