@@ -603,26 +603,30 @@ export default function SchedulingPageClient({ viewSlug }) {
       </div>
 
       <div style={{ display: 'flex', gap: '12px', marginBottom: '20px', flexWrap: 'wrap', alignItems: 'center' }}>
-        <span style={{ fontSize: '13px', color: 'var(--color-text-secondary)', alignSelf: 'center' }}>Filters:</span>
+        <span style={{ fontSize: '13px', color: 'var(--color-text-secondary)', lineHeight: '40px' }}>Filters:</span>
         <Select
+          inline
           value={filters.staffId}
           onChange={(event) => handleFilterChange('staffId', event.target.value)}
           options={staffOptions}
           style={{ width: '180px' }}
         />
         <Select
+          inline
           value={filters.clientId}
           onChange={(event) => handleFilterChange('clientId', event.target.value)}
           options={clientOptions}
           style={{ width: '180px' }}
         />
         <Select
+          inline
           value={filters.branchId}
           onChange={(event) => handleFilterChange('branchId', event.target.value)}
           options={branchOptions}
           style={{ width: '160px' }}
         />
         <Select
+          inline
           value={filters.status}
           onChange={(event) => handleFilterChange('status', event.target.value)}
           options={statusOptions}
@@ -637,7 +641,11 @@ export default function SchedulingPageClient({ viewSlug }) {
               branchId: '',
             })}
             style={{
-              padding: '8px 16px',
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              minHeight: '40px',
+              padding: '0 16px',
               borderRadius: '6px',
               border: '1px solid var(--color-border)',
               backgroundColor: 'white',
