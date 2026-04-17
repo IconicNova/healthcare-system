@@ -31,13 +31,10 @@ export default function PayrollPage() {
   const canGenerate = hasRoleAccess(session?.user?.role, ['ADMIN', 'MANAGER']);
 
   const handleTimesheetClick = async (timesheet) => {
-    console.log('handleTimesheetClick called', timesheet);
     try {
       const response = await fetch(`/api/payroll/timesheets/${timesheet.id}`);
-      console.log('API response status:', response.status);
       if (response.ok) {
         const data = await response.json();
-        console.log('API response data:', data);
         setSelectedTimesheet(data);
       }
     } catch (error) {
