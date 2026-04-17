@@ -53,18 +53,9 @@ export default function DataTable({
       style.width = column.width;
     }
 
-    if (column.headerAlign) {
-      style.textAlign = column.headerAlign;
-    }
-
-    return Object.keys(style).length > 0 ? style : undefined;
-  };
-
-  const getCellStyle = (column) => {
-    const style = {};
-
-    if (column.cellAlign) {
-      style.textAlign = column.cellAlign;
+    if (column.headerInsetStart) {
+      style.paddingLeft = `calc(var(--spacing-4) + ${column.headerInsetStart})`;
+      style.textAlign = 'center';
     }
 
     return Object.keys(style).length > 0 ? style : undefined;
@@ -97,7 +88,7 @@ export default function DataTable({
             {sortedData.map((row, rowIndex) => (
               <tr key={rowIndex}>
                 {columns.map((column) => (
-                  <td key={column.key} style={getCellStyle(column)}>
+                  <td key={column.key}>
                     {renderCell ? renderCell(row, column.key) : column.render ? column.render(row[column.key], row) : row[column.key]}
                   </td>
                 ))}

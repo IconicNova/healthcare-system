@@ -15,14 +15,14 @@ import ClientForm from './ClientForm';
 import { useToast } from '@/components/ui/useToast';
 
 const COLUMNS = [
-  { key: 'fullName', label: 'Name', sortable: true, width: '200px', headerAlign: 'center' },
-  { key: 'phone', label: 'Phone', sortable: true, width: '150px', headerAlign: 'center' },
-  { key: 'email', label: 'Email', sortable: true, width: '200px', headerAlign: 'center' },
-  { key: 'address', label: 'Address', sortable: true, headerAlign: 'center' },
-  { key: 'status', label: 'Status', sortable: true, width: '120px', headerAlign: 'center' },
-  { key: 'carePlans', label: 'Care Plans', sortable: false, width: '100px', headerAlign: 'center' },
-  { key: 'visits', label: 'Visits', sortable: false, width: '100px', headerAlign: 'center' },
-  { key: 'actions', label: '', sortable: false, width: '120px', cellAlign: 'right' },
+  { key: 'fullName', label: 'Name', sortable: true, width: '200px', headerInsetStart: '52px' },
+  { key: 'phone', label: 'Phone', sortable: true, width: '150px' },
+  { key: 'email', label: 'Email', sortable: true, width: '200px' },
+  { key: 'address', label: 'Address', sortable: true },
+  { key: 'status', label: 'Status', sortable: true, width: '120px' },
+  { key: 'carePlans', label: 'Care Plans', sortable: false, width: '100px' },
+  { key: 'visits', label: 'Visits', sortable: false, width: '100px' },
+  { key: 'actions', label: '', sortable: false, width: '120px' },
 ];
 
 const STATUS_OPTIONS = [
