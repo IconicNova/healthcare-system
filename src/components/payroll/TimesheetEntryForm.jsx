@@ -25,6 +25,15 @@ export default function TimesheetEntryForm({ isOpen, onClose, timesheetId, onSuc
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, timesheetId]);
 
+  const formatDateString = (dateValue) => {
+    if (!dateValue) return undefined;
+    try {
+      return new Date(dateValue).toISOString().split('T')[0];
+    } catch {
+      return undefined;
+    }
+  };
+
   const fetchTimesheet = async () => {
     try {
       const response = await fetch(`/api/payroll/timesheets/${timesheetId}`);
@@ -54,8 +63,10 @@ export default function TimesheetEntryForm({ isOpen, onClose, timesheetId, onSuc
     // Check date is within timesheet period
     if (timesheet) {
       const entryDate = new Date(formData.date);
-      if (entryDate < timesheet.startDate || entryDate > timesheet.endDate) {
-        showToast(`Date must be between ${new Date(timesheet.startDate).toISOString().split('T')[0]} and ${new Date(timesheet.endDate).toISOString().split('T')[0]}`, 'error');
+      const startDate = new Date(timesheet.startDate);
+      const endDate = new Date(timesheet.endDate);
+      if (entryDate < startDate || entryDate > endDate) {
+        showToast(`Date must be between ${formatDateString(timesheet.startDate)} and ${formatDateString(timesheet.endDate)}`, 'error');
         return;
       }
     }
@@ -89,6 +100,9 @@ export default function TimesheetEntryForm({ isOpen, onClose, timesheetId, onSuc
     }
   };
 
+  const startDateStr = formatDateString(timesheet?.startDate);
+  const endDateStr = formatDateString(timesheet?.endDate);
+
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Add Manual Entry" size="md">
       <form onSubmit={handleSubmit}>
@@ -100,13 +114,13 @@ export default function TimesheetEntryForm({ isOpen, onClose, timesheetId, onSuc
               type="date"
               value={formData.date}
               onChange={(e) => setFormData(prev => ({ ...prev, date: e.target.value }))}
-              min={timesheet?.startDate ? new Date(timesheet.startDate).toISOString().split('T')[0] : undefined}
-              max={timesheet?.endDate ? new Date(timesheet.endDate).toISOString().split('T')[0] : undefined}
+              min={startDateStr}
+              max={endDateStr}
               required
             />
             {timesheet && (
               <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginTop: '4px' }}>
-                Must be within: {new Date(timesheet.startDate).toISOString().split('T')[0]} to {new Date(timesheet.endDate).toISOString().split('T')[0]}
+                Must be within: {startDateStr} to {endDateStr}
               </p>
             )}
           </div>
