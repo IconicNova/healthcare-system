@@ -55,7 +55,6 @@ export default function DataTable({
 
     if (column.headerInsetStart) {
       style.paddingLeft = `calc(var(--spacing-4) + ${column.headerInsetStart})`;
-      style.textAlign = 'center';
     }
 
     return Object.keys(style).length > 0 ? style : undefined;
