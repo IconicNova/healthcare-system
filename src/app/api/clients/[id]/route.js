@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
-import { encrypt, maskSSN } from '@/lib/encryption';
+import { encrypt, getEncryptionConfigurationError, maskSSN } from '@/lib/encryption';
 
 export async function GET(request, { params }) {
   try {
@@ -120,6 +120,19 @@ export async function PATCH(request, { params }) {
 
     if (!existing) {
       return NextResponse.json({ error: 'Client not found' }, { status: 404 });
+    }
+
+    if (body.ssn) {
+      const encryptionConfigurationError = getEncryptionConfigurationError();
+      if (encryptionConfigurationError) {
+        return NextResponse.json(
+          {
+            error: 'SSN encryption is not configured on the server. Add ENCRYPTION_KEY and redeploy, or leave SSN blank.',
+            details: { ssn: [encryptionConfigurationError] },
+          },
+          { status: 503 }
+        );
+      }
     }
 
     // Check for duplicate email if provided and changed

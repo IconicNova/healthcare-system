@@ -9,6 +9,7 @@ import Select from '@/components/ui/Select';
 import { Plus, X, Upload } from 'lucide-react';
 import ImageEditorModal from '@/components/ui/ImageEditorModal';
 import { format } from 'date-fns';
+import { normalizeSsnForSubmission, shouldValidateSsn } from '@/lib/client-ssn';
 
 const STATUS_OPTIONS = [
   { value: 'PENDING', label: 'Pending' },
@@ -279,7 +280,7 @@ export default function ClientForm({ client = null, onSuccess, onCancel }) {
     }
 
     // SSN validation (optional but must be valid if provided)
-    if (formData.ssn.trim()) {
+    if (shouldValidateSsn(formData.ssn)) {
       const ssnPattern = /^(\d{3}-\d{2}-\d{4}|\d{9})$/;
       if (!ssnPattern.test(formData.ssn.trim())) {
         newErrors.ssn = 'SSN must be 9 digits (XXX-XX-XXXX or XXXXXXXXX)';
@@ -307,14 +308,16 @@ export default function ClientForm({ client = null, onSuccess, onCancel }) {
 
       const endpoint = client ? `/api/clients/${client.id}` : '/api/clients';
       const method = client ? 'PATCH' : 'POST';
+      const submissionData = {
+        ...formData,
+        ssn: normalizeSsnForSubmission(formData.ssn),
+        emergencyContacts: formData.emergencyContacts.filter(c => c.name.trim()),
+      };
 
       const response = await fetch(endpoint, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...formData,
-          emergencyContacts: formData.emergencyContacts.filter(c => c.name.trim()),
-        }),
+        body: JSON.stringify(submissionData),
       });
 
       if (!response.ok) {

@@ -4,15 +4,32 @@ const ALGORITHM = 'aes-256-gcm';
 const IV_LENGTH = 16;
 
 /**
+ * Return a human-readable error when SSN encryption is not configured.
+ */
+export function getEncryptionConfigurationError() {
+  const key = process.env.ENCRYPTION_KEY;
+  if (!key) {
+    return 'ENCRYPTION_KEY environment variable is required for SSN encryption';
+  }
+
+  if (!/^[0-9a-fA-F]{64}$/.test(key)) {
+    return 'ENCRYPTION_KEY must be a 64-character hex string (32 bytes)';
+  }
+
+  return null;
+}
+
+/**
  * Get the encryption key from environment variable.
  * Key must be 32 bytes (64 hex characters).
  */
 function getKey() {
-  const key = process.env.ENCRYPTION_KEY;
-  if (!key) {
-    throw new Error('ENCRYPTION_KEY environment variable is required for SSN encryption');
+  const configurationError = getEncryptionConfigurationError();
+  if (configurationError) {
+    throw new Error(configurationError);
   }
-  return Buffer.from(key, 'hex');
+
+  return Buffer.from(process.env.ENCRYPTION_KEY, 'hex');
 }
 
 /**

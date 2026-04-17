@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
-import { encrypt } from '@/lib/encryption';
+import { encrypt, getEncryptionConfigurationError } from '@/lib/encryption';
 import { ClientSchema } from '@/lib/validations';
 import { ApiResponse } from '@/lib/api-response';
 
@@ -106,6 +106,17 @@ export async function POST(request) {
     const validationResult = ClientSchema.safeParse(body);
     if (!validationResult.success) {
       return ApiResponse.error('Validation failed', 400, validationResult.error.format());
+    }
+
+    if (body.ssn) {
+      const encryptionConfigurationError = getEncryptionConfigurationError();
+      if (encryptionConfigurationError) {
+        return ApiResponse.error(
+          'SSN encryption is not configured on the server. Add ENCRYPTION_KEY and redeploy, or leave SSN blank.',
+          503,
+          { ssn: [encryptionConfigurationError] }
+        );
+      }
     }
 
     const {
