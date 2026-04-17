@@ -14,7 +14,7 @@ export default function SearchInput({
   };
 
   return (
-    <div className={`search-input-wrapper ${className}`} style={{ position: 'relative', ...style }}>
+    <div className={`search-input-wrapper ${className}`} style={{ position: 'relative', height: '40px', ...style }}>
       <SearchIcon
         size={16}
         style={{
