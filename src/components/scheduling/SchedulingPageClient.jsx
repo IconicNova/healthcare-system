@@ -13,11 +13,13 @@ import { useToast } from '@/components/ui/useToast';
 import {
   ALL_SCHEDULING_STATUSES,
   STATUS_COLORS,
+  buildVisitCreateFormState,
   buildSchedulingStatusPillSections,
   buildSchedulingRange,
   buildSchedulingSearchParams,
   formatSchedulingDateParam,
   getVisitStatusLabel,
+  hasEventTimingChanged,
   normalizeSchedulingViewSlug,
   normalizeVisitPayload,
   parseSchedulingDateParam,
@@ -103,6 +105,7 @@ export default function SchedulingPageClient({ viewSlug }) {
   const [statusCounts, setStatusCounts] = useState({});
   const [loading, setLoading] = useState(true);
   const [showVisitForm, setShowVisitForm] = useState(false);
+  const [visitFormInitialValues, setVisitFormInitialValues] = useState(null);
   const [selectedVisit, setSelectedVisit] = useState(null);
   const [showEditForm, setShowEditForm] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
@@ -273,6 +276,16 @@ export default function SchedulingPageClient({ viewSlug }) {
     setRefreshKey((currentValue) => currentValue + 1);
   };
 
+  const openCreateVisitForm = (initialValues = null) => {
+    setVisitFormInitialValues(initialValues);
+    setShowVisitForm(true);
+  };
+
+  const closeCreateVisitForm = () => {
+    setShowVisitForm(false);
+    setVisitFormInitialValues(null);
+  };
+
   const handleFilterChange = (key, value) => {
     if (key === 'status') {
       setShowMoreStatuses(false);
@@ -324,7 +337,29 @@ export default function SchedulingPageClient({ viewSlug }) {
     }
   };
 
+  const handleCalendarDateClick = ({ date }) => {
+    openCreateVisitForm(
+      buildVisitCreateFormState({
+        date,
+      })
+    );
+  };
+
   const handleEventDrop = async (eventChange) => {
+    if (
+      !hasEventTimingChanged({
+        previousStart: eventChange.oldStart,
+        previousEnd: eventChange.oldEnd,
+        nextStart: eventChange.newStart,
+        nextEnd: eventChange.newEnd,
+        previousAllDay: eventChange.oldAllDay,
+        nextAllDay: eventChange.newAllDay,
+      })
+    ) {
+      eventChange.revert?.();
+      return;
+    }
+
     const response = await fetch(`/api/visits/${eventChange.visitId}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
@@ -468,7 +503,7 @@ export default function SchedulingPageClient({ viewSlug }) {
         </div>
 
         <button
-          onClick={() => setShowVisitForm(true)}
+          onClick={() => openCreateVisitForm()}
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -664,6 +699,7 @@ export default function SchedulingPageClient({ viewSlug }) {
         viewSlug={currentView}
         currentDate={currentDate}
         onCalendarStateChange={({ view, date }) => replaceSchedulingRoute(view, date, filters)}
+        onDateClick={handleCalendarDateClick}
         onEventClick={setSelectedVisit}
         onEventDrop={handleEventDrop}
         loading={loading}
@@ -671,8 +707,9 @@ export default function SchedulingPageClient({ viewSlug }) {
 
       <VisitCreateForm
         isOpen={showVisitForm}
-        onClose={() => setShowVisitForm(false)}
+        onClose={closeCreateVisitForm}
         onSubmit={handleCreateVisit}
+        initialValues={visitFormInitialValues}
         clients={clients}
         staff={staff}
         services={services}

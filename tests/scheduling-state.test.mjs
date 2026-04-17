@@ -1,12 +1,14 @@
 import assert from 'node:assert/strict';
 
 import {
+  buildVisitCreateFormState,
   buildSchedulingStatusPillSections,
   buildSchedulingRange,
   buildSchedulingSearchParams,
   CORE_SCHEDULING_STATUSES,
   formatRecurrenceSummary,
   getCalendarViewForSlug,
+  hasEventTimingChanged,
   normalizeSchedulingViewSlug,
   normalizeVisitPayload,
   parseSchedulingDateParam,
@@ -131,6 +133,43 @@ runTest('normalizeVisitPayload clears staff assignments for vacant visits', () =
       staffId: null,
       status: 'VACANT',
     }
+  );
+});
+
+runTest('buildVisitCreateFormState applies the clicked calendar date while preserving default times', () => {
+  const formState = buildVisitCreateFormState({
+    date: new Date(2026, 3, 10, 14, 30, 0, 0),
+  });
+
+  assert.equal(formState.date, '2026-04-10');
+  assert.equal(formState.startTime, '09:00');
+  assert.equal(formState.endTime, '10:00');
+  assert.equal(formState.status, 'SCHEDULED');
+});
+
+runTest('hasEventTimingChanged treats same-slot drops as no-op moves', () => {
+  assert.equal(
+    hasEventTimingChanged({
+      previousStart: '2026-04-14T09:00:00.000Z',
+      previousEnd: '2026-04-14T10:00:00.000Z',
+      nextStart: '2026-04-14T09:00:00.000Z',
+      nextEnd: '2026-04-14T10:00:00.000Z',
+      previousAllDay: false,
+      nextAllDay: false,
+    }),
+    false
+  );
+
+  assert.equal(
+    hasEventTimingChanged({
+      previousStart: '2026-04-14T09:00:00.000Z',
+      previousEnd: '2026-04-14T10:00:00.000Z',
+      nextStart: '2026-04-14T11:00:00.000Z',
+      nextEnd: '2026-04-14T12:00:00.000Z',
+      previousAllDay: false,
+      nextAllDay: false,
+    }),
+    true
   );
 });
 

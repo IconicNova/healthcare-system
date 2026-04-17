@@ -12,6 +12,7 @@ export default function SchedulingCalendar({
   viewSlug = 'month',
   currentDate,
   onCalendarStateChange,
+  onDateClick,
   onEventClick,
   onEventDrop,
   loading = false,
@@ -39,14 +40,23 @@ export default function SchedulingCalendar({
   };
 
   const handleDateClick = (info) => {
-    // Handle date click - could open create visit modal
-    console.log('Date clicked:', info.dateStr);
+    if (onDateClick) {
+      onDateClick({
+        date: info.date,
+        dateStr: info.dateStr,
+        allDay: info.allDay,
+        view: getSlugForCalendarView(info.view.type),
+      });
+    }
   };
 
   const handleEventDrop = (info) => {
     if (onEventDrop) {
       onEventDrop({
         visitId: info.event.id,
+        oldStart: info.oldEvent?.start,
+        oldEnd: info.oldEvent?.end,
+        oldAllDay: info.oldEvent?.allDay ?? false,
         newStart: info.event.start,
         newEnd: info.event.end,
         newAllDay: info.event.allDay,

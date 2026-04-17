@@ -49,6 +49,8 @@ export const SECONDARY_SCHEDULING_STATUSES = [
 ];
 
 export const CREATE_VISIT_STATUSES = ['SCHEDULED', 'VACANT', 'OFFERED', 'ON_HOLD'];
+export const DEFAULT_VISIT_START_TIME = '09:00';
+export const DEFAULT_VISIT_END_TIME = '10:00';
 
 export const VALID_VISIT_STATUS_TRANSITIONS = {
   VACANT: ['SCHEDULED', 'OFFERED', 'CANCELLED'],
@@ -236,6 +238,61 @@ export function normalizeVisitPayload(payload = {}) {
   }
 
   return normalized;
+}
+
+export function normalizeVisitFormDate(value, fallback = new Date()) {
+  if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    return value;
+  }
+
+  if (value instanceof Date || typeof value === 'string' || typeof value === 'number') {
+    const parsed = new Date(value);
+    if (!Number.isNaN(parsed.getTime())) {
+      return formatSchedulingDateParam(parsed);
+    }
+  }
+
+  return formatSchedulingDateParam(parseSchedulingDateParam(fallback));
+}
+
+export function buildVisitCreateFormState(initialValues = {}) {
+  return {
+    clientId: '',
+    staffId: '',
+    serviceId: '',
+    carePlanId: '',
+    branchId: '',
+    date: normalizeVisitFormDate(initialValues.date),
+    startTime: initialValues.startTime || DEFAULT_VISIT_START_TIME,
+    endTime: initialValues.endTime || DEFAULT_VISIT_END_TIME,
+    status: initialValues.status || 'SCHEDULED',
+    notes: initialValues.notes || '',
+    recurrence: initialValues.recurrence || { type: 'NONE' },
+  };
+}
+
+function getEventTimestamp(value) {
+  if (!value) {
+    return null;
+  }
+
+  const parsed = value instanceof Date ? value : new Date(value);
+  return Number.isNaN(parsed.getTime()) ? null : parsed.getTime();
+}
+
+export function hasEventTimingChanged({
+  previousStart,
+  previousEnd,
+  nextStart,
+  nextEnd,
+  previousAllDay = false,
+  nextAllDay = false,
+}) {
+  return (
+    getEventTimestamp(previousStart) !== getEventTimestamp(nextStart) ||
+    getEventTimestamp(previousEnd) !== getEventTimestamp(nextEnd) ||
+    previousAllDay !== nextAllDay
+  );
 }
 
 export function validateRecurrence(recurrence) {

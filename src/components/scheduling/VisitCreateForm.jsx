@@ -7,28 +7,13 @@ import Input from '@/components/ui/Input';
 import Modal from '@/components/ui/Modal';
 import Select from '@/components/ui/Select';
 import {
+  buildVisitCreateFormState,
   CREATE_VISIT_STATUSES,
   formatRecurrenceSummary,
   getCarePlanStaffWarning,
   getVisitStatusLabel,
   validateRecurrence,
 } from '@/lib/scheduling';
-
-function buildInitialState() {
-  return {
-    clientId: '',
-    staffId: '',
-    serviceId: '',
-    carePlanId: '',
-    branchId: '',
-    date: new Date().toISOString().split('T')[0],
-    startTime: '09:00',
-    endTime: '10:00',
-    status: 'SCHEDULED',
-    notes: '',
-    recurrence: { type: 'NONE' },
-  };
-}
 
 function mapFrequencyToRecurrence(frequency) {
   const map = {
@@ -45,6 +30,7 @@ export default function VisitCreateForm({
   isOpen,
   onClose,
   onSubmit,
+  initialValues = null,
   clients = [],
   staff = [],
   services = [],
@@ -52,17 +38,17 @@ export default function VisitCreateForm({
   carePlans = [],
   loading = false,
 }) {
-  const [formData, setFormData] = useState(buildInitialState);
+  const [formData, setFormData] = useState(() => buildVisitCreateFormState(initialValues || {}));
   const [errors, setErrors] = useState({});
   const [submitError, setSubmitError] = useState('');
 
   useEffect(() => {
     if (isOpen) {
-      setFormData(buildInitialState());
+      setFormData(buildVisitCreateFormState(initialValues || {}));
       setErrors({});
       setSubmitError('');
     }
-  }, [isOpen]);
+  }, [initialValues, isOpen]);
 
   const selectedCarePlan = carePlans.find((carePlan) => carePlan.id === formData.carePlanId) || null;
   const carePlanServiceIds = selectedCarePlan?.services?.map((service) => service.serviceId) || [];
@@ -202,7 +188,7 @@ export default function VisitCreateForm({
         recurrence: formData.recurrence.type === 'NONE' ? null : formData.recurrence,
       });
 
-      setFormData(buildInitialState());
+      setFormData(buildVisitCreateFormState(initialValues || {}));
       setErrors({});
       setSubmitError('');
       onClose();
