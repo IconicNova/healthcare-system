@@ -2,14 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import Modal from '@/components/ui/Modal';
-import Input from '@/components/ui/Input';
 import { useToast } from '@/components/ui/useToast';
 
 export default function TimesheetEntryForm({ isOpen, onClose, timesheetId, onSuccess }) {
   const { showToast } = useToast();
   const [loading, setLoading] = useState(false);
   const [timesheet, setTimesheet] = useState(null);
-  const [error, setError] = useState(null);
+  const [renderError, setRenderError] = useState(null);
 
   const [formData, setFormData] = useState({
     date: new Date().toISOString().split('T')[0],
@@ -21,7 +20,7 @@ export default function TimesheetEntryForm({ isOpen, onClose, timesheetId, onSuc
 
   useEffect(() => {
     if (isOpen && timesheetId) {
-      setError(null);
+      setRenderError(null);
       fetchTimesheet();
     }
   }, [isOpen, timesheetId]);
@@ -53,7 +52,7 @@ export default function TimesheetEntryForm({ isOpen, onClose, timesheetId, onSuc
       }
     } catch (err) {
       console.error('Error fetching timesheet:', err);
-      setError(err.message);
+      setRenderError(err.message);
       showToast('Failed to load timesheet data', 'error');
     }
   };
@@ -96,11 +95,11 @@ export default function TimesheetEntryForm({ isOpen, onClose, timesheetId, onSuc
     }
   };
 
-  if (error) {
+  if (renderError) {
     return (
       <Modal isOpen={isOpen} onClose={onClose} title="Add Manual Entry" size="md">
         <div className="modal-body">
-          <p style={{ color: 'red' }}>Error: {error}</p>
+          <p style={{ color: 'red' }}>Error: {renderError}</p>
           <button onClick={onClose} className="btn btn-secondary">Close</button>
         </div>
       </Modal>
@@ -110,14 +109,17 @@ export default function TimesheetEntryForm({ isOpen, onClose, timesheetId, onSuc
   const startDateStr = formatDateString(timesheet?.startDate);
   const endDateStr = formatDateString(timesheet?.endDate);
 
+  if (!isOpen) return null;
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Add Manual Entry" size="md">
+    <Modal isOpen={true} onClose={onClose} title="Add Manual Entry" size="md">
       <form onSubmit={handleSubmit}>
         <div className="modal-body">
           <div className="form-group" style={{ marginBottom: '16px' }}>
             <label className="form-label">Date *</label>
-            <Input
+            <input
               type="date"
+              className="input"
               value={formData.date}
               onChange={(e) => setFormData(prev => ({ ...prev, date: e.target.value }))}
               min={startDateStr || undefined}
@@ -133,8 +135,9 @@ export default function TimesheetEntryForm({ isOpen, onClose, timesheetId, onSuc
 
           <div className="form-group" style={{ marginBottom: '16px' }}>
             <label className="form-label">Hours *</label>
-            <Input
+            <input
               type="number"
+              className="input"
               step="0.25"
               min="0"
               value={formData.hours}
@@ -146,8 +149,9 @@ export default function TimesheetEntryForm({ isOpen, onClose, timesheetId, onSuc
 
           <div className="form-group" style={{ marginBottom: '16px' }}>
             <label className="form-label">Description</label>
-            <Input
+            <input
               type="text"
+              className="input"
               value={formData.notes}
               onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
               placeholder="e.g., Admin time, Training, Travel"
