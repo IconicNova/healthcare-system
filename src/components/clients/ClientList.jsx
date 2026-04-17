@@ -16,12 +16,12 @@ import { useToast } from '@/components/ui/useToast';
 
 const COLUMNS = [
   { key: 'fullName', label: 'Name', sortable: true, width: '200px', headerInsetStart: '52px' },
-  { key: 'phone', label: 'Phone', sortable: true, width: '150px' },
-  { key: 'email', label: 'Email', sortable: true, width: '200px' },
-  { key: 'address', label: 'Address', sortable: true },
-  { key: 'status', label: 'Status', sortable: true, width: '120px' },
-  { key: 'carePlans', label: 'Care Plans', sortable: false, width: '100px' },
-  { key: 'visits', label: 'Visits', sortable: false, width: '100px' },
+  { key: 'phone', label: 'Phone', sortable: true, width: '150px', headerContentWidth: '100px' },
+  { key: 'email', label: 'Email', sortable: true, width: '200px', headerContentWidth: '190px' },
+  { key: 'address', label: 'Address', sortable: true, headerContentWidth: '180px' },
+  { key: 'status', label: 'Status', sortable: true, width: '120px', headerContentWidth: '64px' },
+  { key: 'carePlans', label: 'Care Plans', sortable: false, width: '100px', headerContentWidth: '18px' },
+  { key: 'visits', label: 'Visits', sortable: false, width: '100px', headerContentWidth: '18px' },
   { key: 'actions', label: '', sortable: false, width: '120px' },
 ];
 

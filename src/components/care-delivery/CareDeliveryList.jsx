@@ -13,11 +13,11 @@ import { buildCareDeliveryClientPath } from '@/components/care-delivery/care-del
 
 const COLUMNS = [
   { key: 'fullName', label: 'Client', sortable: true, headerInsetStart: '52px' },
-  { key: 'phone', label: 'Phone', sortable: true, width: '150px' },
-  { key: 'status', label: 'Status', sortable: true, width: '120px' },
-  { key: 'upcomingVisits', label: 'Upcoming Visits', sortable: false, width: '130px' },
-  { key: 'totalVisits', label: 'Visits', sortable: false, width: '100px' },
-  { key: 'reviewQueue', label: 'Forms Review', sortable: false, width: '120px' },
+  { key: 'phone', label: 'Phone', sortable: true, width: '150px', headerContentWidth: '100px' },
+  { key: 'status', label: 'Status', sortable: true, width: '120px', headerContentWidth: '64px' },
+  { key: 'upcomingVisits', label: 'Upcoming Visits', sortable: false, width: '130px', headerContentWidth: '18px' },
+  { key: 'totalVisits', label: 'Visits', sortable: false, width: '100px', headerContentWidth: '18px' },
+  { key: 'reviewQueue', label: 'Forms Review', sortable: false, width: '120px', headerContentWidth: '18px' },
   { key: 'actions', label: '', sortable: false, width: '180px' },
 ];
 

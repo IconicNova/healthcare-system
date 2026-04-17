@@ -16,13 +16,13 @@ import { useToast } from '@/components/ui/useToast';
 
 const COLUMNS = [
   { key: 'fullName', label: 'Employee', sortable: true, width: '200px', headerInsetStart: '52px' },
-  { key: 'role', label: 'Role', sortable: true, width: '120px' },
-  { key: 'branch', label: 'Branch', sortable: true, width: '150px' },
-  { key: 'phone', label: 'Phone', sortable: true, width: '140px' },
-  { key: 'skills', label: 'Skills', sortable: false, width: '180px' },
-  { key: 'status', label: 'Status', sortable: true, width: '120px' },
-  { key: 'hireDate', label: 'Hire Date', sortable: true, width: '120px' },
-  { key: 'payRate', label: 'Pay Rate', sortable: true, width: '120px' },
+  { key: 'role', label: 'Role', sortable: true, width: '120px', headerContentWidth: '96px' },
+  { key: 'branch', label: 'Branch', sortable: true, width: '150px', headerContentWidth: '140px' },
+  { key: 'phone', label: 'Phone', sortable: true, width: '140px', headerContentWidth: '100px' },
+  { key: 'skills', label: 'Skills', sortable: false, width: '180px', headerContentWidth: '160px' },
+  { key: 'status', label: 'Status', sortable: true, width: '120px', headerContentWidth: '64px' },
+  { key: 'hireDate', label: 'Hire Date', sortable: true, width: '120px', headerContentWidth: '88px' },
+  { key: 'payRate', label: 'Pay Rate', sortable: true, width: '120px', headerContentWidth: '110px' },
   { key: 'actions', label: '', sortable: false, width: '140px' },
 ];
 

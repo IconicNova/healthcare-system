@@ -13,13 +13,13 @@ import Modal from '@/components/ui/Modal';
 import CarePlanForm from '@/components/care-plans/CarePlanForm';
 
 const COLUMNS = [
-  { key: 'name', label: 'Care Plan Name', sortable: true, width: '250px' },
-  { key: 'client', label: 'Client', sortable: true, width: '200px' },
-  { key: 'staff', label: 'Primary Staff', sortable: true, width: '180px' },
-  { key: 'services', label: 'Services', sortable: false, width: '200px' },
-  { key: 'startDate', label: 'Start Date', sortable: true, width: '120px' },
-  { key: 'endDate', label: 'End Date', sortable: true, width: '120px' },
-  { key: 'status', label: 'Status', sortable: true, width: '100px' },
+  { key: 'name', label: 'Care Plan Name', sortable: true, width: '250px', headerContentWidth: '190px' },
+  { key: 'client', label: 'Client', sortable: true, width: '200px', headerContentWidth: '125px' },
+  { key: 'staff', label: 'Primary Staff', sortable: true, width: '180px', headerContentWidth: '120px' },
+  { key: 'services', label: 'Services', sortable: false, width: '200px', headerContentWidth: '110px' },
+  { key: 'startDate', label: 'Start Date', sortable: true, width: '120px', headerContentWidth: '82px' },
+  { key: 'endDate', label: 'End Date', sortable: true, width: '120px', headerContentWidth: '82px' },
+  { key: 'status', label: 'Status', sortable: true, width: '100px', headerContentWidth: '64px' },
   { key: 'actions', label: '', sortable: false, width: '150px' },
 ];
 

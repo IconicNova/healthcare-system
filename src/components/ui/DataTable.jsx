@@ -46,18 +46,61 @@ export default function DataTable({
     );
   }
 
-  const getHeaderStyle = (column) => {
+  const getHeaderCellStyle = (column) => {
     const style = {};
 
     if (column.width) {
       style.width = column.width;
     }
 
-    if (column.headerInsetStart) {
-      style.paddingLeft = `calc(var(--spacing-4) + ${column.headerInsetStart})`;
+    return Object.keys(style).length > 0 ? style : undefined;
+  };
+
+  const getHeaderContentStyle = (column) => {
+    if (!column.headerInsetStart && !column.headerContentWidth) {
+      return undefined;
     }
 
-    return Object.keys(style).length > 0 ? style : undefined;
+    return {
+      display: 'inline-flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: '8px',
+      marginLeft: column.headerInsetStart || '0px',
+      width: column.headerContentWidth,
+      maxWidth: column.headerContentWidth ? `calc(100% - (${column.headerInsetStart || '0px'}))` : '100%',
+      textAlign: 'center',
+      verticalAlign: 'middle',
+    };
+  };
+
+  const renderSortArrow = (column) => {
+    if (sortConfig.key !== column.key) {
+      return null;
+    }
+
+    return sortConfig.direction === 'asc' ? '↑' : '↓';
+  };
+
+  const renderHeaderContent = (column) => {
+    const sortArrow = renderSortArrow(column);
+    const contentStyle = getHeaderContentStyle(column);
+
+    if (!contentStyle) {
+      return (
+        <>
+          {column.label}
+          {sortArrow && <span style={{ marginLeft: '8px' }}>{sortArrow}</span>}
+        </>
+      );
+    }
+
+    return (
+      <span style={contentStyle}>
+        <span>{column.label}</span>
+        {sortArrow && <span>{sortArrow}</span>}
+      </span>
+    );
   };
 
   return (
@@ -71,14 +114,9 @@ export default function DataTable({
                   key={column.key}
                   className={column.sortable ? 'sortable' : ''}
                   onClick={() => column.sortable && handleSort(column.key)}
-                  style={getHeaderStyle(column)}
+                  style={getHeaderCellStyle(column)}
                 >
-                  {column.label}
-                  {sortConfig.key === column.key && (
-                    <span style={{ marginLeft: '8px' }}>
-                      {sortConfig.direction === 'asc' ? '↑' : '↓'}
-                    </span>
-                  )}
+                  {renderHeaderContent(column)}
                 </th>
               ))}
             </tr>
