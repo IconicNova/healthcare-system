@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Plus, Calendar as CalendarIcon, Clock, List } from 'lucide-react';
+import { ChevronDown, Plus, Calendar as CalendarIcon, Clock, List } from 'lucide-react';
 
 import SchedulingCalendar from '@/components/scheduling/SchedulingCalendar';
 import VisitCreateForm from '@/components/scheduling/VisitCreateForm';
@@ -13,6 +13,7 @@ import { useToast } from '@/components/ui/useToast';
 import {
   ALL_SCHEDULING_STATUSES,
   STATUS_COLORS,
+  buildSchedulingStatusPillSections,
   buildSchedulingRange,
   buildSchedulingSearchParams,
   formatSchedulingDateParam,
@@ -107,6 +108,8 @@ export default function SchedulingPageClient({ viewSlug }) {
   const [refreshKey, setRefreshKey] = useState(0);
   const [creatingVisit, setCreatingVisit] = useState(false);
   const [updatingVisit, setUpdatingVisit] = useState(false);
+  const [showMoreStatuses, setShowMoreStatuses] = useState(false);
+  const moreStatusesRef = useRef(null);
 
   const currentView = normalizeSchedulingViewSlug(viewSlug);
   const currentDate = parseSchedulingDateParam(searchParams.get('date'));
@@ -120,6 +123,10 @@ export default function SchedulingPageClient({ viewSlug }) {
   const visibleRange = buildSchedulingRange(currentView, currentDate);
   const visibleRangeStart = visibleRange.start.toISOString();
   const visibleRangeEnd = visibleRange.end.toISOString();
+  const statusPillSections = buildSchedulingStatusPillSections(statusCounts, filters.status);
+  const activeSecondaryStatusLabel = statusPillSections.activeSecondaryStatus
+    ? getVisitStatusLabel(statusPillSections.activeSecondaryStatus)
+    : '';
 
   useEffect(() => {
     const fetchReferenceData = async () => {
@@ -155,6 +162,22 @@ export default function SchedulingPageClient({ viewSlug }) {
 
     fetchReferenceData();
   }, [toast]);
+
+  useEffect(() => {
+    const handleDocumentClick = (event) => {
+      if (!moreStatusesRef.current?.contains(event.target)) {
+        setShowMoreStatuses(false);
+      }
+    };
+
+    if (showMoreStatuses) {
+      document.addEventListener('mousedown', handleDocumentClick);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleDocumentClick);
+    };
+  }, [showMoreStatuses]);
 
   useEffect(() => {
     const fetchSchedulingData = async () => {
@@ -251,6 +274,10 @@ export default function SchedulingPageClient({ viewSlug }) {
   };
 
   const handleFilterChange = (key, value) => {
+    if (key === 'status') {
+      setShowMoreStatuses(false);
+    }
+
     replaceSchedulingRoute(currentView, currentDate, {
       ...filters,
       [key]: value,
@@ -461,8 +488,8 @@ export default function SchedulingPageClient({ viewSlug }) {
         </button>
       </div>
 
-      <div style={{ display: 'flex', gap: '12px', marginBottom: '20px', flexWrap: 'wrap' }}>
-        {Object.entries(statusCounts).map(([status, count]) => (
+      <div style={{ display: 'flex', gap: '12px', marginBottom: '20px', flexWrap: 'wrap', alignItems: 'center' }}>
+        {statusPillSections.coreStatuses.map(({ status, count, isActive }) => (
           <button
             key={status}
             onClick={() => handleFilterChange('status', filters.status === status ? '' : status)}
@@ -472,7 +499,7 @@ export default function SchedulingPageClient({ viewSlug }) {
               gap: '6px',
               padding: '6px 12px',
               borderRadius: '20px',
-              border: filters.status === status ? `2px solid ${STATUS_COLORS[status] || '#6B7280'}` : '1px solid transparent',
+              border: isActive ? `2px solid ${STATUS_COLORS[status] || '#6B7280'}` : '1px solid transparent',
               backgroundColor: `${STATUS_COLORS[status] || '#6B7280'}15`,
               color: STATUS_COLORS[status] || '#6B7280',
               cursor: 'pointer',
@@ -484,6 +511,95 @@ export default function SchedulingPageClient({ viewSlug }) {
             {getVisitStatusLabel(status)}: {count}
           </button>
         ))}
+
+        {statusPillSections.hasSecondaryStatuses && (
+          <div ref={moreStatusesRef} style={{ position: 'relative' }}>
+            <button
+              onClick={() => setShowMoreStatuses((currentValue) => !currentValue)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                padding: '6px 12px',
+                borderRadius: '20px',
+                border: statusPillSections.activeSecondaryStatus
+                  ? `2px solid ${STATUS_COLORS[statusPillSections.activeSecondaryStatus] || '#6B7280'}`
+                  : '1px solid var(--color-border)',
+                backgroundColor: statusPillSections.activeSecondaryStatus
+                  ? `${STATUS_COLORS[statusPillSections.activeSecondaryStatus] || '#6B7280'}15`
+                  : 'white',
+                color: statusPillSections.activeSecondaryStatus
+                  ? STATUS_COLORS[statusPillSections.activeSecondaryStatus] || '#6B7280'
+                  : 'var(--color-text)',
+                cursor: 'pointer',
+                fontSize: '12px',
+                fontWeight: 500,
+              }}
+            >
+              {activeSecondaryStatusLabel ? `More: ${activeSecondaryStatusLabel}` : 'More'}
+              <ChevronDown size={14} />
+            </button>
+
+            {showMoreStatuses && (
+              <div
+                style={{
+                  position: 'absolute',
+                  top: 'calc(100% + 8px)',
+                  right: 0,
+                  minWidth: '200px',
+                  padding: '8px',
+                  borderRadius: '12px',
+                  border: '1px solid var(--color-border)',
+                  backgroundColor: 'white',
+                  boxShadow: 'var(--shadow-lg)',
+                  zIndex: 20,
+                }}
+              >
+                {statusPillSections.secondaryStatuses.length > 0 ? (
+                  statusPillSections.secondaryStatuses.map(({ status, count, isActive }) => (
+                    <button
+                      key={status}
+                      onClick={() => handleFilterChange('status', isActive ? '' : status)}
+                      style={{
+                        width: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        gap: '12px',
+                        padding: '10px 12px',
+                        borderRadius: '8px',
+                        border: 'none',
+                        backgroundColor: isActive ? `${STATUS_COLORS[status] || '#6B7280'}15` : 'transparent',
+                        color: isActive ? STATUS_COLORS[status] || '#6B7280' : 'var(--color-text)',
+                        cursor: 'pointer',
+                        fontSize: '12px',
+                        fontWeight: 500,
+                        textAlign: 'left',
+                      }}
+                    >
+                      <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span
+                          style={{
+                            width: '8px',
+                            height: '8px',
+                            borderRadius: '50%',
+                            backgroundColor: STATUS_COLORS[status] || '#6B7280',
+                          }}
+                        />
+                        {getVisitStatusLabel(status)}
+                      </span>
+                      <span>{count}</span>
+                    </button>
+                  ))
+                ) : (
+                  <p style={{ margin: 0, padding: '10px 12px', fontSize: '12px', color: 'var(--color-text-secondary)' }}>
+                    No secondary statuses in this view.
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       <div style={{ display: 'flex', gap: '12px', marginBottom: '20px', flexWrap: 'wrap', alignItems: 'center' }}>

@@ -1,13 +1,16 @@
 import assert from 'node:assert/strict';
 
 import {
+  buildSchedulingStatusPillSections,
   buildSchedulingRange,
   buildSchedulingSearchParams,
+  CORE_SCHEDULING_STATUSES,
   formatRecurrenceSummary,
   getCalendarViewForSlug,
   normalizeSchedulingViewSlug,
   normalizeVisitPayload,
   parseSchedulingDateParam,
+  SECONDARY_SCHEDULING_STATUSES,
   validateRecurrence,
 } from '../src/lib/scheduling.js';
 import { VisitSchema } from '../src/lib/validations.js';
@@ -74,6 +77,48 @@ runTest('buildSchedulingSearchParams includes view date and active filters', () 
   assert.equal(params.get('branchId'), 'branch-2');
   assert.equal(params.get('status'), 'SCHEDULED');
   assert.equal(params.has('clientId'), false);
+});
+
+runTest('buildSchedulingStatusPillSections keeps all core statuses visible and hides zero secondary statuses', () => {
+  const sections = buildSchedulingStatusPillSections(
+    {
+      SCHEDULED: 3,
+      COMPLETED: 2,
+      APPROVED: 0,
+      LATE: 1,
+    },
+    ''
+  );
+
+  assert.deepEqual(
+    sections.coreStatuses.map((item) => item.status),
+    CORE_SCHEDULING_STATUSES
+  );
+  assert.deepEqual(
+    sections.secondaryStatuses.map((item) => item.status),
+    ['COMPLETED', 'LATE']
+  );
+  assert.equal(sections.hasSecondaryStatuses, true);
+  assert.equal(sections.activeSecondaryStatus, '');
+});
+
+runTest('buildSchedulingStatusPillSections preserves the active secondary filter in the overflow trigger', () => {
+  const sections = buildSchedulingStatusPillSections(
+    {
+      SCHEDULED: 0,
+      COMPLETED: 0,
+      CANCELLED: 0,
+    },
+    'COMPLETED'
+  );
+
+  assert.equal(sections.activeSecondaryStatus, 'COMPLETED');
+  assert.equal(sections.hasSecondaryStatuses, true);
+  assert.deepEqual(
+    sections.secondaryStatuses.map((item) => item.status),
+    []
+  );
+  assert.deepEqual(SECONDARY_SCHEDULING_STATUSES.includes(sections.activeSecondaryStatus), true);
 });
 
 runTest('normalizeVisitPayload clears staff assignments for vacant visits', () => {

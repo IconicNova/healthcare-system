@@ -31,6 +31,22 @@ export const STATUS_COLORS = {
 };
 
 export const ALL_SCHEDULING_STATUSES = Object.keys(SCHEDULING_STATUS_LABELS);
+export const CORE_SCHEDULING_STATUSES = [
+  'SCHEDULED',
+  'VACANT',
+  'OFFERED',
+  'IN_PROGRESS',
+  'CLOCKED_IN',
+  'ON_HOLD',
+];
+export const SECONDARY_SCHEDULING_STATUSES = [
+  'COMPLETED',
+  'CANCELLED',
+  'APPROVED',
+  'NO_SHOW',
+  'MISSED',
+  'LATE',
+];
 
 export const CREATE_VISIT_STATUSES = ['SCHEDULED', 'VACANT', 'OFFERED', 'ON_HOLD'];
 
@@ -84,6 +100,35 @@ export function getAllowedVisitStatuses(currentStatus) {
 
 export function getVisitStatusLabel(status) {
   return SCHEDULING_STATUS_LABELS[status] || status || 'Unknown';
+}
+
+export function isSecondarySchedulingStatus(status) {
+  return SECONDARY_SCHEDULING_STATUSES.includes(status);
+}
+
+export function buildSchedulingStatusPillSections(statusCounts = {}, activeStatus = '') {
+  const coreStatuses = CORE_SCHEDULING_STATUSES.map((status) => ({
+    status,
+    count: statusCounts[status] ?? 0,
+    isActive: activeStatus === status,
+  }));
+
+  const secondaryStatuses = SECONDARY_SCHEDULING_STATUSES
+    .map((status) => ({
+      status,
+      count: statusCounts[status] ?? 0,
+      isActive: activeStatus === status,
+    }))
+    .filter((item) => item.count > 0);
+
+  const activeSecondaryStatus = isSecondarySchedulingStatus(activeStatus) ? activeStatus : '';
+
+  return {
+    coreStatuses,
+    secondaryStatuses,
+    activeSecondaryStatus,
+    hasSecondaryStatuses: secondaryStatuses.length > 0 || Boolean(activeSecondaryStatus),
+  };
 }
 
 export function parseSchedulingDateParam(value, fallback = new Date()) {
