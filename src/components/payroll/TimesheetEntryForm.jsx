@@ -6,6 +6,7 @@ import Input from '@/components/ui/Input';
 import { useToast } from '@/components/ui/useToast';
 
 export default function TimesheetEntryForm({ isOpen, onClose, timesheetId, onSuccess }) {
+  console.log('TimesheetEntryForm rendering', { isOpen, timesheetId });
   const { showToast } = useToast();
   const [loading, setLoading] = useState(false);
   const [timesheet, setTimesheet] = useState(null);
@@ -19,6 +20,7 @@ export default function TimesheetEntryForm({ isOpen, onClose, timesheetId, onSuc
   });
 
   useEffect(() => {
+    console.log('useEffect triggered', { isOpen, timesheetId });
     if (isOpen && timesheetId) {
       fetchTimesheet();
     }
@@ -26,19 +28,24 @@ export default function TimesheetEntryForm({ isOpen, onClose, timesheetId, onSuc
   }, [isOpen, timesheetId]);
 
   const formatDateString = (dateValue) => {
-    if (!dateValue) return undefined;
+    console.log('formatDateString called with:', dateValue);
+    if (!dateValue) return '';
     try {
       return new Date(dateValue).toISOString().split('T')[0];
-    } catch {
-      return undefined;
+    } catch (e) {
+      console.error('formatDateString error:', e);
+      return '';
     }
   };
 
   const fetchTimesheet = async () => {
+    console.log('fetchTimesheet called', timesheetId);
     try {
       const response = await fetch(`/api/payroll/timesheets/${timesheetId}`);
+      console.log('fetchTimesheet response:', response.status);
       if (response.ok) {
         const data = await response.json();
+        console.log('fetchTimesheet data:', data);
         setTimesheet(data);
         // Set date to be within timesheet period
         setFormData(prev => ({
