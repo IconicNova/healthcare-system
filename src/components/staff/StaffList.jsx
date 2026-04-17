@@ -210,15 +210,12 @@ export default function StaffList() {
         return <span style={{ fontSize: '13px', color: 'var(--color-text-muted)' }}>No skills</span>;
       }
       return (
-        <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
           {skills.slice(0, 2).map(skill => (
             <span
               key={skill.id}
               style={{
-                fontSize: '11px',
-                padding: '2px 8px',
-                borderRadius: '12px',
-                backgroundColor: 'var(--color-gray-100)',
+                fontSize: '13px',
                 color: 'var(--color-text-secondary)',
               }}
             >
@@ -227,6 +224,7 @@ export default function StaffList() {
           ))}
           {skills.length > 2 && (
             <span style={{
+              alignSelf: 'flex-start',
               fontSize: '11px',
               padding: '2px 8px',
               borderRadius: '12px',
