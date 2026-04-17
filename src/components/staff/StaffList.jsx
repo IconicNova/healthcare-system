@@ -15,15 +15,15 @@ import StaffForm from './StaffForm';
 import { useToast } from '@/components/ui/useToast';
 
 const COLUMNS = [
-  { key: 'fullName', label: 'Employee', sortable: true, width: '200px' },
-  { key: 'role', label: 'Role', sortable: true, width: '120px' },
-  { key: 'branch', label: 'Branch', sortable: true, width: '150px' },
-  { key: 'phone', label: 'Phone', sortable: true, width: '140px' },
-  { key: 'skills', label: 'Skills', sortable: false, width: '180px' },
-  { key: 'status', label: 'Status', sortable: true, width: '120px' },
-  { key: 'hireDate', label: 'Hire Date', sortable: true, width: '120px' },
-  { key: 'payRate', label: 'Pay Rate', sortable: true, width: '120px' },
-  { key: 'actions', label: '', sortable: false, width: '140px' },
+  { key: 'fullName', label: 'Employee', sortable: true, width: '200px', headerAlign: 'center' },
+  { key: 'role', label: 'Role', sortable: true, width: '120px', headerAlign: 'center' },
+  { key: 'branch', label: 'Branch', sortable: true, width: '150px', headerAlign: 'center' },
+  { key: 'phone', label: 'Phone', sortable: true, width: '140px', headerAlign: 'center' },
+  { key: 'skills', label: 'Skills', sortable: false, width: '180px', headerAlign: 'center' },
+  { key: 'status', label: 'Status', sortable: true, width: '120px', headerAlign: 'center' },
+  { key: 'hireDate', label: 'Hire Date', sortable: true, width: '120px', headerAlign: 'center' },
+  { key: 'payRate', label: 'Pay Rate', sortable: true, width: '120px', headerAlign: 'center' },
+  { key: 'actions', label: '', sortable: false, width: '140px', cellAlign: 'right' },
 ];
 
 const STATUS_OPTIONS = [

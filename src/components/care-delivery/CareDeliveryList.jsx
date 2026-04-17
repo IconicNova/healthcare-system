@@ -12,13 +12,13 @@ import Button from '@/components/ui/Button';
 import { buildCareDeliveryClientPath } from '@/components/care-delivery/care-delivery.helpers';
 
 const COLUMNS = [
-  { key: 'fullName', label: 'Client', sortable: true },
-  { key: 'phone', label: 'Phone', sortable: true, width: '150px' },
-  { key: 'status', label: 'Status', sortable: true, width: '120px' },
-  { key: 'upcomingVisits', label: 'Upcoming Visits', sortable: false, width: '130px' },
-  { key: 'totalVisits', label: 'Visits', sortable: false, width: '100px' },
-  { key: 'reviewQueue', label: 'Forms Review', sortable: false, width: '120px' },
-  { key: 'actions', label: '', sortable: false, width: '180px' },
+  { key: 'fullName', label: 'Client', sortable: true, headerAlign: 'center' },
+  { key: 'phone', label: 'Phone', sortable: true, width: '150px', headerAlign: 'center' },
+  { key: 'status', label: 'Status', sortable: true, width: '120px', headerAlign: 'center' },
+  { key: 'upcomingVisits', label: 'Upcoming Visits', sortable: false, width: '130px', headerAlign: 'center' },
+  { key: 'totalVisits', label: 'Visits', sortable: false, width: '100px', headerAlign: 'center' },
+  { key: 'reviewQueue', label: 'Forms Review', sortable: false, width: '120px', headerAlign: 'center' },
+  { key: 'actions', label: '', sortable: false, width: '180px', cellAlign: 'right' },
 ];
 
 const STATUS_OPTIONS = [

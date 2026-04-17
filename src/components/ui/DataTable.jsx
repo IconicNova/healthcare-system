@@ -46,6 +46,30 @@ export default function DataTable({
     );
   }
 
+  const getHeaderStyle = (column) => {
+    const style = {};
+
+    if (column.width) {
+      style.width = column.width;
+    }
+
+    if (column.headerAlign) {
+      style.textAlign = column.headerAlign;
+    }
+
+    return Object.keys(style).length > 0 ? style : undefined;
+  };
+
+  const getCellStyle = (column) => {
+    const style = {};
+
+    if (column.cellAlign) {
+      style.textAlign = column.cellAlign;
+    }
+
+    return Object.keys(style).length > 0 ? style : undefined;
+  };
+
   return (
     <>
       <div className="table-container">
@@ -57,7 +81,7 @@ export default function DataTable({
                   key={column.key}
                   className={column.sortable ? 'sortable' : ''}
                   onClick={() => column.sortable && handleSort(column.key)}
-                  style={column.width ? { width: column.width } : undefined}
+                  style={getHeaderStyle(column)}
                 >
                   {column.label}
                   {sortConfig.key === column.key && (
@@ -73,7 +97,7 @@ export default function DataTable({
             {sortedData.map((row, rowIndex) => (
               <tr key={rowIndex}>
                 {columns.map((column) => (
-                  <td key={column.key}>
+                  <td key={column.key} style={getCellStyle(column)}>
                     {renderCell ? renderCell(row, column.key) : column.render ? column.render(row[column.key], row) : row[column.key]}
                   </td>
                 ))}

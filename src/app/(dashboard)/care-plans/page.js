@@ -13,14 +13,14 @@ import Modal from '@/components/ui/Modal';
 import CarePlanForm from '@/components/care-plans/CarePlanForm';
 
 const COLUMNS = [
-  { key: 'name', label: 'Care Plan Name', sortable: true, width: '250px' },
-  { key: 'client', label: 'Client', sortable: true, width: '200px' },
-  { key: 'staff', label: 'Primary Staff', sortable: true, width: '180px' },
-  { key: 'services', label: 'Services', sortable: false, width: '200px' },
-  { key: 'startDate', label: 'Start Date', sortable: true, width: '120px' },
-  { key: 'endDate', label: 'End Date', sortable: true, width: '120px' },
-  { key: 'status', label: 'Status', sortable: true, width: '100px' },
-  { key: 'actions', label: '', sortable: false, width: '150px' },
+  { key: 'name', label: 'Care Plan Name', sortable: true, width: '250px', headerAlign: 'center' },
+  { key: 'client', label: 'Client', sortable: true, width: '200px', headerAlign: 'center' },
+  { key: 'staff', label: 'Primary Staff', sortable: true, width: '180px', headerAlign: 'center' },
+  { key: 'services', label: 'Services', sortable: false, width: '200px', headerAlign: 'center' },
+  { key: 'startDate', label: 'Start Date', sortable: true, width: '120px', headerAlign: 'center' },
+  { key: 'endDate', label: 'End Date', sortable: true, width: '120px', headerAlign: 'center' },
+  { key: 'status', label: 'Status', sortable: true, width: '100px', headerAlign: 'center' },
+  { key: 'actions', label: '', sortable: false, width: '150px', cellAlign: 'right' },
 ];
 
 const STATUS_OPTIONS = [
