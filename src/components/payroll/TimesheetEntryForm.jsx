@@ -34,7 +34,7 @@ export default function TimesheetEntryForm({ isOpen, onClose, timesheetId, onSuc
         // Set date to be within timesheet period
         setFormData(prev => ({
           ...prev,
-          date: data.startDate ? data.startDate.toISOString().split('T')[0] : prev.date,
+          date: data.startDate ? new Date(data.startDate).toISOString().split('T')[0] : prev.date,
         }));
       }
     } catch (error) {
@@ -55,7 +55,7 @@ export default function TimesheetEntryForm({ isOpen, onClose, timesheetId, onSuc
     if (timesheet) {
       const entryDate = new Date(formData.date);
       if (entryDate < timesheet.startDate || entryDate > timesheet.endDate) {
-        showToast(`Date must be between ${timesheet.startDate.toISOString().split('T')[0]} and ${timesheet.endDate.toISOString().split('T')[0]}`, 'error');
+        showToast(`Date must be between ${new Date(timesheet.startDate).toISOString().split('T')[0]} and ${new Date(timesheet.endDate).toISOString().split('T')[0]}`, 'error');
         return;
       }
     }
@@ -100,13 +100,13 @@ export default function TimesheetEntryForm({ isOpen, onClose, timesheetId, onSuc
               type="date"
               value={formData.date}
               onChange={(e) => setFormData(prev => ({ ...prev, date: e.target.value }))}
-              min={timesheet?.startDate?.toISOString().split('T')[0]}
-              max={timesheet?.endDate?.toISOString().split('T')[0]}
+              min={timesheet?.startDate ? new Date(timesheet.startDate).toISOString().split('T')[0] : undefined}
+              max={timesheet?.endDate ? new Date(timesheet.endDate).toISOString().split('T')[0] : undefined}
               required
             />
             {timesheet && (
               <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginTop: '4px' }}>
-                Must be within: {timesheet.startDate.toISOString().split('T')[0]} to {timesheet.endDate.toISOString().split('T')[0]}
+                Must be within: {new Date(timesheet.startDate).toISOString().split('T')[0]} to {new Date(timesheet.endDate).toISOString().split('T')[0]}
               </p>
             )}
           </div>
