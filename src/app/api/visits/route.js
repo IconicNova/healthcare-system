@@ -4,6 +4,12 @@ import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { VisitSchema } from '@/lib/validations';
 import { ApiResponse } from '@/lib/api-response';
+import { normalizeVisitPayload } from '@/lib/scheduling';
+import {
+  buildRecurringVisitPayloads,
+  collectVisitConflicts,
+  validateVisitBusinessRules,
+} from '@/lib/visit-business-rules';
 
 export async function GET(request) {
   try {
@@ -59,6 +65,7 @@ export async function GET(request) {
             address: true,
             city: true,
             state: true,
+            zipCode: true,
           },
         },
         staff: {
@@ -66,18 +73,34 @@ export async function GET(request) {
             id: true,
             firstName: true,
             lastName: true,
+            phone: true,
+          },
+        },
+        branch: {
+          select: {
+            id: true,
+            name: true,
           },
         },
         carePlan: {
           select: {
             id: true,
             name: true,
+            staffId: true,
+            staff: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+              },
+            },
           },
         },
         service: {
           select: {
             id: true,
             name: true,
+            duration: true,
             baseRate: true,
           },
         },
@@ -100,7 +123,14 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const body = await request.json();
+    const rawBody = await request.json();
+    if (rawBody.status === 'VACANT' && rawBody.staffId) {
+      return ApiResponse.error('Vacant visits cannot have assigned staff', 400, {
+        staffId: ['Vacant visits cannot have assigned staff.'],
+      });
+    }
+
+    const body = normalizeVisitPayload(rawBody);
 
     const validationResult = VisitSchema.safeParse(body);
     if (!validationResult.success) {
@@ -130,54 +160,54 @@ export async function POST(request) {
       return ApiResponse.error('End time must be after start time', 400);
     }
 
-    // Check for staff availability conflict
-    let conflicts = [];
-    if (staffId) {
-      const staffConflicts = await prisma.visit.findMany({
-        where: {
-          staffId,
-          organizationId: session.user.organizationId,
-          status: { not: 'CANCELLED' },
-          OR: [
-            {
-              startTime: { lt: new Date(endTime) },
-              endTime: { gt: new Date(startTime) },
-            },
-          ],
-        },
-      });
-      conflicts = staffConflicts.map(v => ({
-        type: 'STAFF',
-        visitId: v.id,
-        startTime: v.startTime,
-        endTime: v.endTime,
-      }));
+    const businessValidation = await validateVisitBusinessRules({
+      organizationId: session.user.organizationId,
+      clientId,
+      staffId,
+      serviceId,
+      carePlanId,
+      branchId,
+    });
+    if (Object.keys(businessValidation.errors).length > 0) {
+      return ApiResponse.error('Validation failed', 400, businessValidation.errors);
     }
 
-    // Check for client conflict (prevent duplicate visits for same client at same time)
-    const clientConflicts = await prisma.visit.findMany({
-      where: {
+    const normalizedStartTime = new Date(startTime);
+    const normalizedEndTime = new Date(endTime);
+    const recurrencePlan = buildRecurringVisitPayloads({
+      recurrence,
+      startTime: normalizedStartTime,
+      endTime: normalizedEndTime,
+      baseData: {
         clientId,
+        staffId: staffId || null,
+        serviceId: serviceId || null,
+        carePlanId: carePlanId || null,
+        startTime: normalizedStartTime,
+        endTime: normalizedEndTime,
+        status: status || 'SCHEDULED',
+        title: title || null,
+        description: description || null,
+        notes: notes || null,
         organizationId: session.user.organizationId,
-        status: { not: 'CANCELLED' },
-        OR: [
-          {
-            startTime: { lt: new Date(endTime) },
-            endTime: { gt: new Date(startTime) },
-          },
-        ],
+        branchId: branchId || null,
+        userId: session.user.id,
       },
     });
-    conflicts = conflicts.concat(
-      clientConflicts.map(v => ({
-        type: 'CLIENT',
-        visitId: v.id,
-        startTime: v.startTime,
-        endTime: v.endTime,
-      }))
-    );
+    if (recurrencePlan.error) {
+      return ApiResponse.error(recurrencePlan.error, 400, {
+        recurrence: [recurrencePlan.error],
+      });
+    }
 
-    // If there are any conflicts, return error
+    const conflicts = await collectVisitConflicts({
+      organizationId: session.user.organizationId,
+      clientId,
+      staffId,
+      startTime: normalizedStartTime,
+      endTime: normalizedEndTime,
+    });
+
     if (conflicts.length > 0) {
       return NextResponse.json(
         { error: 'Time slot conflict detected', conflicts },
@@ -192,8 +222,8 @@ export async function POST(request) {
         staffId: staffId || null,
         serviceId: serviceId || null,
         carePlanId: carePlanId || null,
-        startTime: new Date(startTime),
-        endTime: new Date(endTime),
+        startTime: normalizedStartTime,
+        endTime: normalizedEndTime,
         status: status || 'SCHEDULED',
         title: title || null,
         description: description || null,
@@ -208,6 +238,10 @@ export async function POST(request) {
             id: true,
             firstName: true,
             lastName: true,
+            address: true,
+            city: true,
+            state: true,
+            zipCode: true,
           },
         },
         staff: {
@@ -215,121 +249,94 @@ export async function POST(request) {
             id: true,
             firstName: true,
             lastName: true,
+            phone: true,
+          },
+        },
+        branch: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        carePlan: {
+          select: {
+            id: true,
+            name: true,
+            staffId: true,
+            staff: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+              },
+            },
+          },
+        },
+        service: {
+          select: {
+            id: true,
+            name: true,
+            duration: true,
+            baseRate: true,
           },
         },
       },
     });
 
-    // Handle recurrence
     const occurrences = [];
     const skippedDates = [];
-    if (recurrence && recurrence.type && recurrence.type !== 'NONE') {
-      const baseStart = new Date(startTime);
-      const duration = new Date(endTime) - new Date(startTime);
+    if (recurrencePlan.proposedVisits.length > 0) {
+      const timeConditions = recurrencePlan.proposedVisits.map((proposedVisit) => ({
+        startTime: { lt: proposedVisit.endTime },
+        endTime: { gt: proposedVisit.startTime },
+      }));
 
-      // Calculate iterations and day increment based on recurrence type
-      let totalIterations = 0;
-      let dayIncrement = 1;
-
-      switch (recurrence.type) {
-        case 'DAILY':
-          totalIterations = recurrence.count || 0;
-          dayIncrement = 1;
-          break;
-        case 'WEEKLY':
-          totalIterations = recurrence.weeks || recurrence.count || 0;
-          dayIncrement = 7;
-          break;
-        case 'BI_WEEKLY':
-          totalIterations = recurrence.count || 0;
-          dayIncrement = 14;
-          break;
-        case 'MONTHLY':
-          totalIterations = recurrence.count || 0;
-          dayIncrement = 0; // handled separately since months have variable days
-          break;
-      }
-
-      const proposedVisits = [];
-      for (let i = 1; i < totalIterations; i++) {
-        const newStart = new Date(baseStart);
-        if (recurrence.type === 'MONTHLY') {
-          newStart.setMonth(newStart.getMonth() + i);
-        } else {
-          newStart.setDate(newStart.getDate() + (i * dayIncrement));
-        }
-        const newEnd = new Date(newStart.getTime() + duration);
-        
-        proposedVisits.push({
-          startTime: newStart,
-          endTime: newEnd,
-          data: {
+      const [batchedStaffConflicts, batchedClientConflicts] = await Promise.all([
+        staffId
+          ? prisma.visit.findMany({
+              where: {
+                staffId,
+                organizationId: session.user.organizationId,
+                status: { not: 'CANCELLED' },
+                OR: timeConditions,
+              },
+              select: { startTime: true, endTime: true },
+            })
+          : Promise.resolve([]),
+        prisma.visit.findMany({
+          where: {
             clientId,
-            staffId: staffId || null,
-            serviceId: serviceId || null,
-            carePlanId: carePlanId || null,
-            startTime: newStart,
-            endTime: newEnd,
-            status: status || 'SCHEDULED',
-            title: title || null,
-            description: description || null,
-            notes: notes || null,
             organizationId: session.user.organizationId,
-            branchId: branchId || null,
-            userId: session.user.id,
-          }
-        });
+            status: { not: 'CANCELLED' },
+            OR: timeConditions,
+          },
+          select: { startTime: true, endTime: true },
+        }),
+      ]);
+
+      const validVisits = [];
+      for (const proposedVisit of recurrencePlan.proposedVisits) {
+        const hasStaffConflict =
+          staffId &&
+          batchedStaffConflicts.some(
+            (conflict) => conflict.startTime < proposedVisit.endTime && conflict.endTime > proposedVisit.startTime
+          );
+        const hasClientConflict = batchedClientConflicts.some(
+          (conflict) => conflict.startTime < proposedVisit.endTime && conflict.endTime > proposedVisit.startTime
+        );
+
+        if (hasStaffConflict || hasClientConflict) {
+          skippedDates.push(proposedVisit.startTime.toISOString());
+        } else {
+          validVisits.push(proposedVisit.data);
+        }
       }
 
-      // Batch conflict detection
-      if (proposedVisits.length > 0) {
-        const timeConditions = proposedVisits.map(v => ({
-          startTime: { lt: v.endTime },
-          endTime: { gt: v.startTime }
-        }));
-
-        const [batchedStaffConflicts, batchedClientConflicts] = await Promise.all([
-          staffId ? prisma.visit.findMany({
-            where: {
-              staffId,
-              organizationId: session.user.organizationId,
-              status: { not: 'CANCELLED' },
-              OR: timeConditions
-            }
-          }) : Promise.resolve([]),
-          prisma.visit.findMany({
-            where: {
-              clientId,
-              organizationId: session.user.organizationId,
-              status: { not: 'CANCELLED' },
-              OR: timeConditions
-            }
-          })
-        ]);
-
-        const validVisits = [];
-        for (const pv of proposedVisits) {
-          const hasStaffConflict = staffId && batchedStaffConflicts.some(c =>
-            c.startTime < pv.endTime && c.endTime > pv.startTime
-          );
-          const hasClientConflict = batchedClientConflicts.some(c =>
-            c.startTime < pv.endTime && c.endTime > pv.startTime
-          );
-
-          if (hasStaffConflict || hasClientConflict) {
-            skippedDates.push(pv.startTime.toISOString());
-          } else {
-            validVisits.push(pv.data);
-          }
-        }
-
-        if (validVisits.length > 0) {
-          // Use transaction to create all non-conflicting visits efficiently and return their IDs
-          const createdVisits = await prisma.$transaction(
-            validVisits.map(data => prisma.visit.create({ data }))
-          );
-          occurrences.push(...createdVisits.map(v => v.id));
-        }
+      if (validVisits.length > 0) {
+        const createdVisits = await prisma.$transaction(
+          validVisits.map((data) => prisma.visit.create({ data }))
+        );
+        occurrences.push(...createdVisits.map((createdVisit) => createdVisit.id));
       }
     }
 
@@ -338,6 +345,7 @@ export async function POST(request) {
       conflicts,
       recurringOccurrences: occurrences,
       skippedDates,
+      warnings: businessValidation.warnings,
     }, { status: 201 });
   } catch (error) {
     console.error('Error creating visit:', error);

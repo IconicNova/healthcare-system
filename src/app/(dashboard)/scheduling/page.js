@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Plus, Calendar as CalendarIcon, Clock, List } from 'lucide-react';
 import SchedulingCalendar from '@/components/scheduling/SchedulingCalendar';
 import VisitForm from '@/components/scheduling/VisitForm';
@@ -30,6 +31,14 @@ const STATUS_CONFIG = {
 };
 
 export default function SchedulingPage() {
+  const router = useRouter();
+
+  useEffect(() => {
+    router.replace('/scheduling/month');
+  }, [router]);
+
+  return null;
+
   const [visits, setVisits] = useState([]);
   const [clients, setClients] = useState([]);
   const [staff, setStaff] = useState([]);

@@ -5,30 +5,19 @@ import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
-const STATUS_COLORS = {
-  SCHEDULED: '#3B82F6',
-  VACANT: '#8B5CF6',
-  OFFERED: '#6366F1',
-  IN_PROGRESS: '#F59E0B',
-  CLOCKED_IN: '#0EA5E9',
-  COMPLETED: '#16A34A',
-  APPROVED: '#059669',
-  CANCELLED: '#9CA3AF',
-  ON_HOLD: '#D97706',
-  NO_SHOW: '#EF4444',
-  MISSED: '#DC2626',
-  LATE: '#EA580C',
-};
+import { formatSchedulingDateParam, getCalendarViewForSlug, getSlugForCalendarView, STATUS_COLORS } from '@/lib/scheduling';
 
 export default function SchedulingCalendar({
   visits = [],
-  view = 'dayGridMonth',
+  viewSlug = 'month',
   currentDate,
+  onCalendarStateChange,
   onEventClick,
   onEventDrop,
   loading = false,
 }) {
   const calendarRef = useRef(null);
+  const calendarView = getCalendarViewForSlug(viewSlug);
 
   const getEvents = () => {
     if (!visits || !Array.isArray(visits)) return [];
@@ -61,6 +50,7 @@ export default function SchedulingCalendar({
         newStart: info.event.start,
         newEnd: info.event.end,
         newAllDay: info.event.allDay,
+        revert: info.revert,
       });
     }
   };
@@ -80,10 +70,10 @@ export default function SchedulingCalendar({
 
   useEffect(() => {
     const api = calendarRef.current?.getApi();
-    if (api && view) {
-      api.changeView(view);
+    if (api && calendarView) {
+      api.changeView(calendarView);
     }
-  }, [view]);
+  }, [calendarView]);
 
   return (
     <div className="scheduling-calendar" style={{ backgroundColor: 'white', borderRadius: '8px', padding: '16px' }}>
@@ -92,11 +82,29 @@ export default function SchedulingCalendar({
           <div className="loading-spinner" />
           <p style={{ marginTop: '16px', color: 'var(--color-text-secondary)' }}>Loading calendar...</p>
         </div>
+      ) : visits.length === 0 ? (
+        <div
+          style={{
+            textAlign: 'center',
+            padding: '72px 24px',
+            border: '1px dashed var(--color-border)',
+            borderRadius: '12px',
+            backgroundColor: 'var(--color-gray-50)',
+          }}
+        >
+          <p style={{ fontSize: '15px', fontWeight: 600, color: 'var(--color-text)', margin: '0 0 6px 0' }}>
+            No visits match this schedule view
+          </p>
+          <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', margin: 0 }}>
+            Try a different date range or clear one of the active filters.
+          </p>
+        </div>
       ) : (
         <FullCalendar
           ref={calendarRef}
           plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-          initialView={view}
+          initialView={calendarView}
+          initialDate={currentDate}
           headerToolbar={{
             left: 'prev,next today',
             center: 'title',
@@ -108,7 +116,6 @@ export default function SchedulingCalendar({
           selectable={true}
           selectMirror={true}
           dayMaxEvents={true}
-          eventMargin={0}
           slotMinTime="06:00:00"
           slotMaxTime="22:00:00"
           scrollTime="08:00:00"
@@ -118,6 +125,29 @@ export default function SchedulingCalendar({
           eventClick={handleEventClick}
           eventDrop={handleEventDrop}
           dateClick={handleDateClick}
+          datesSet={(info) => {
+            if (!onCalendarStateChange) {
+              return;
+            }
+
+            const api = calendarRef.current?.getApi();
+            const nextDate = api?.getDate();
+            const nextViewSlug = getSlugForCalendarView(info.view.type);
+
+            if (!nextDate) {
+              return;
+            }
+
+            const currentDateParam = currentDate ? formatSchedulingDateParam(currentDate) : null;
+            const nextDateParam = formatSchedulingDateParam(nextDate);
+
+            if (nextViewSlug !== viewSlug || nextDateParam !== currentDateParam) {
+              onCalendarStateChange({
+                view: nextViewSlug,
+                date: nextDate,
+              });
+            }
+          }}
           slotLabelFormat={[
             { hour: 'numeric', minute: '2-digit', hour12: true },
           ]}

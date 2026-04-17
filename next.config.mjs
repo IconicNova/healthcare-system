@@ -1,6 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  async redirects() {
+    return [
+      {
+        source: '/scheduling',
+        destination: '/scheduling/month',
+        permanent: false,
+      },
+    ];
+  },
   async headers() {
     return [
       {

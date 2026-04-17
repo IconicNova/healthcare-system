@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import { ALL_SCHEDULING_STATUSES } from '@/lib/scheduling';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,6 +17,10 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const startDate = searchParams.get('startDate');
     const endDate = searchParams.get('endDate');
+    const staffId = searchParams.get('staffId');
+    const clientId = searchParams.get('clientId');
+    const status = searchParams.get('status');
+    const branchId = searchParams.get('branchId');
 
     const where = {
       organizationId: session.user.organizationId,
@@ -28,23 +33,35 @@ export async function GET(request) {
       };
     }
 
+    if (staffId) {
+      where.staffId = staffId;
+    }
+
+    if (clientId) {
+      where.clientId = clientId;
+    }
+
+    if (status) {
+      where.status = status;
+    }
+
+    if (branchId) {
+      where.branchId = branchId;
+    }
+
     const counts = await prisma.visit.groupBy({
       by: ['status'],
       where,
       _count: true,
     });
 
-    // Create a map of status counts
     const statusCounts = {};
-    const allStatuses = ['SCHEDULED', 'VACANT', 'OFFERED', 'IN_PROGRESS', 'CLOCKED_IN', 'COMPLETED', 'APPROVED', 'CANCELLED', 'ON_HOLD', 'NO_SHOW', 'MISSED', 'LATE'];
 
-    // Initialize all statuses to 0
-    allStatuses.forEach(status => {
+    ALL_SCHEDULING_STATUSES.forEach((status) => {
       statusCounts[status] = 0;
     });
 
-    // Update with actual counts
-    counts.forEach(count => {
+    counts.forEach((count) => {
       statusCounts[count.status] = count._count;
     });
 

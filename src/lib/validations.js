@@ -214,7 +214,7 @@ export const VisitSchema = z.object({
   carePlanId: z.string().uuid("Invalid care plan ID").optional().nullable(),
   startTime: z.string().datetime().or(z.date()).refine(...minDateRefinement),
   endTime: z.string().datetime().or(z.date()).refine(...minDateRefinement),
-  status: z.enum(['SCHEDULED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED', 'MISSED', 'CLOCKED_IN', 'OFFERED', 'VACANT']).optional(),
+  status: z.enum(['SCHEDULED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED', 'MISSED', 'CLOCKED_IN', 'OFFERED', 'VACANT', 'ON_HOLD']).optional(),
   title: z.string().max(255).optional().nullable(),
   description: z.string().max(1000).optional().nullable(),
   branchId: z.string().uuid().optional().nullable()

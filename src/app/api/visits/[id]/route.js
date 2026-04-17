@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import { ApiResponse } from '@/lib/api-response';
+import { normalizeVisitPayload, VALID_VISIT_STATUS_TRANSITIONS } from '@/lib/scheduling';
+import { collectVisitConflicts, validateVisitBusinessRules } from '@/lib/visit-business-rules';
 
 export async function GET(request, { params }) {
   try {
@@ -51,6 +54,20 @@ export async function GET(request, { params }) {
           },
         },
         carePlan: {
+          select: {
+            id: true,
+            name: true,
+            staffId: true,
+            staff: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+              },
+            },
+          },
+        },
+        branch: {
           select: {
             id: true,
             name: true,
@@ -108,6 +125,7 @@ const VALID_STATUS_TRANSITIONS = {
   ON_HOLD: ['SCHEDULED', 'CANCELLED'],
   NO_SHOW: ['SCHEDULED'], // Allow rescheduling
 };
+void VALID_STATUS_TRANSITIONS;
 
 export async function PATCH(request, { params }) {
   try {
@@ -118,7 +136,15 @@ export async function PATCH(request, { params }) {
     }
 
     const { id } = params;
-    const body = await request.json();
+    const rawBody = await request.json();
+
+    if (rawBody.status === 'VACANT' && rawBody.staffId) {
+      return ApiResponse.error('Vacant visits cannot have assigned staff', 400, {
+        staffId: ['Vacant visits cannot have assigned staff.'],
+      });
+    }
+
+    const body = normalizeVisitPayload(rawBody);
 
     const existing = await prisma.visit.findFirst({
       where: {
@@ -133,7 +159,7 @@ export async function PATCH(request, { params }) {
 
     // Validate status transition if status is being changed
     if (body.status && body.status !== existing.status) {
-      const allowed = VALID_STATUS_TRANSITIONS[existing.status];
+      const allowed = VALID_VISIT_STATUS_TRANSITIONS[existing.status];
       if (!allowed || !allowed.includes(body.status)) {
         return NextResponse.json(
           { error: `Cannot transition from "${existing.status}" to "${body.status}". Allowed transitions: ${(allowed || []).join(', ') || 'none (terminal status)'}` },
@@ -146,55 +172,43 @@ export async function PATCH(request, { params }) {
     const newStart = body.startTime ? new Date(body.startTime) : existing.startTime;
     const newEnd = body.endTime ? new Date(body.endTime) : existing.endTime;
     if (newEnd <= newStart) {
-      return NextResponse.json(
-        { error: 'End time must be after start time' },
-        { status: 400 }
-      );
+      return ApiResponse.error('End time must be after start time', 400);
     }
 
-    // Re-run scheduling conflict checks when times or assignments change
     const effectiveStaffId = body.staffId !== undefined ? body.staffId : existing.staffId;
     const effectiveClientId = body.clientId || existing.clientId;
-    const timesOrAssignmentsChanged = body.startTime || body.endTime || body.staffId !== undefined || body.clientId;
+    const effectiveServiceId = body.serviceId !== undefined ? body.serviceId : existing.serviceId;
+    const effectiveCarePlanId = body.carePlanId !== undefined ? body.carePlanId : existing.carePlanId;
+    const effectiveBranchId = body.branchId !== undefined ? body.branchId : existing.branchId;
+    const businessValidation = await validateVisitBusinessRules({
+      organizationId: session.user.organizationId,
+      clientId: effectiveClientId,
+      staffId: effectiveStaffId,
+      serviceId: effectiveServiceId,
+      carePlanId: effectiveCarePlanId,
+      branchId: effectiveBranchId,
+    });
+    if (Object.keys(businessValidation.errors).length > 0) {
+      return ApiResponse.error('Validation failed', 400, businessValidation.errors);
+    }
+
+    const timesOrAssignmentsChanged =
+      body.startTime ||
+      body.endTime ||
+      body.staffId !== undefined ||
+      body.clientId ||
+      body.serviceId !== undefined ||
+      body.carePlanId !== undefined;
 
     if (timesOrAssignmentsChanged && existing.status !== 'CANCELLED') {
-      let conflicts = [];
-
-      // Staff conflict check
-      if (effectiveStaffId) {
-        const staffConflicts = await prisma.visit.findMany({
-          where: {
-            staffId: effectiveStaffId,
-            organizationId: session.user.organizationId,
-            id: { not: id },
-            status: { not: 'CANCELLED' },
-            OR: [{
-              startTime: { lt: newEnd },
-              endTime: { gt: newStart },
-            }],
-          },
-        });
-        conflicts = staffConflicts.map(v => ({
-          type: 'STAFF', visitId: v.id, startTime: v.startTime, endTime: v.endTime,
-        }));
-      }
-
-      // Client conflict check
-      const clientConflicts = await prisma.visit.findMany({
-        where: {
-          clientId: effectiveClientId,
-          organizationId: session.user.organizationId,
-          id: { not: id },
-          status: { not: 'CANCELLED' },
-          OR: [{
-            startTime: { lt: newEnd },
-            endTime: { gt: newStart },
-          }],
-        },
+      const conflicts = await collectVisitConflicts({
+        organizationId: session.user.organizationId,
+        visitId: id,
+        clientId: effectiveClientId,
+        staffId: effectiveStaffId,
+        startTime: newStart,
+        endTime: newEnd,
       });
-      conflicts = conflicts.concat(clientConflicts.map(v => ({
-        type: 'CLIENT', visitId: v.id, startTime: v.startTime, endTime: v.endTime,
-      })));
 
       if (conflicts.length > 0) {
         return NextResponse.json(
@@ -217,8 +231,8 @@ export async function PATCH(request, { params }) {
         ...(body.actualEnd !== undefined && { actualEnd: body.actualEnd ? new Date(body.actualEnd) : null }),
         ...(body.clientId && { clientId: body.clientId }),
         ...(body.staffId !== undefined && { staffId: body.staffId }),
-        ...(body.serviceId && { serviceId: body.serviceId }),
-        ...(body.carePlanId && { carePlanId: body.carePlanId }),
+        ...(body.serviceId !== undefined && { serviceId: body.serviceId }),
+        ...(body.carePlanId !== undefined && { carePlanId: body.carePlanId }),
         ...(body.branchId !== undefined && { branchId: body.branchId }),
       },
       include: {
@@ -230,6 +244,7 @@ export async function PATCH(request, { params }) {
             address: true,
             city: true,
             state: true,
+            zipCode: true,
           },
         },
         staff: {
@@ -238,6 +253,7 @@ export async function PATCH(request, { params }) {
             firstName: true,
             lastName: true,
             role: true,
+            phone: true,
           },
         },
         service: {
@@ -247,10 +263,33 @@ export async function PATCH(request, { params }) {
             duration: true,
           },
         },
+        branch: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        carePlan: {
+          select: {
+            id: true,
+            name: true,
+            staffId: true,
+            staff: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+              },
+            },
+          },
+        },
       },
     });
 
-    return NextResponse.json(visit);
+    return NextResponse.json({
+      ...visit,
+      warnings: businessValidation.warnings,
+    });
   } catch (error) {
     console.error('Error updating visit:', error);
     return NextResponse.json({ error: 'Failed to update visit' }, { status: 500 });
