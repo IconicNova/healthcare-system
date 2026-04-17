@@ -66,7 +66,7 @@ export default function EVVWidget() {
         </div>
         <div>
           <h3 className="evv-widget-title">Visit Verification</h3>
-          <p style={{ fontSize: '12px', opacity: 0.9 }}>Today&apos;s EVV Stats</p>
+          <p style={{ fontSize: '12px', opacity: 0.9, margin: 0 }}>Today&apos;s EVV Stats</p>
         </div>
       </div>
 
