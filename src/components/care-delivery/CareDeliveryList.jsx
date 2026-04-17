@@ -200,7 +200,7 @@ export default function CareDeliveryList() {
 
     if (key === 'actions') {
       return (
-        <div style={{ display: 'flex', gap: '8px', paddingRight: 0 }}>
+        <div style={{ display: 'flex', gap: '8px' }}>
           <button
             onClick={() => router.push(buildCareDeliveryClientPath(client.id))}
             style={{
