@@ -1,11 +1,11 @@
 # Graph Report - .  (2026-04-17)
 
 ## Corpus Check
-- 244 files · ~163,635 words
+- 244 files · ~163,772 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 469 nodes · 380 edges · 164 communities detected
+- 472 nodes · 387 edges · 164 communities detected
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 1 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
@@ -182,10 +182,10 @@
 4. `DELETE()` - 18 edges
 5. `ErrorBoundary` - 5 edges
 6. `compareMedicationLists()` - 4 edges
-7. `PUT()` - 3 edges
-8. `checkInteractions()` - 3 edges
-9. `trimText()` - 3 edges
-10. `getKey()` - 3 edges
+7. `normalizeFormStatus()` - 4 edges
+8. `shouldOpenFormDetailFromReviewQueue()` - 4 edges
+9. `PUT()` - 3 edges
+10. `checkInteractions()` - 3 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `POST()` --calls--> `mergeMedications()`  [EXTRACTED]
@@ -210,12 +210,12 @@ Cohesion: 0.1
 Nodes (3): DELETE(), PATCH(), PUT()
 
 ### Community 2 - "Community 2"
-Cohesion: 0.15
-Nodes (0): 
+Cohesion: 0.28
+Nodes (11): buildReviewMetadataPatch(), buildReviewQueueWhereClause(), canTransitionFormStatus(), getReviewableStatuses(), hasMeaningfulFormContent(), hasMeaningfulValue(), normalizeFormStatus(), normalizeRejectionReason() (+3 more)
 
 ### Community 3 - "Community 3"
-Cohesion: 0.33
-Nodes (8): buildReviewMetadataPatch(), buildReviewQueueWhereClause(), canTransitionFormStatus(), getReviewableStatuses(), normalizeFormStatus(), normalizeRejectionReason(), shouldAutosaveDraft(), shouldScheduleFormAutosave()
+Cohesion: 0.15
+Nodes (0): 
 
 ### Community 4 - "Community 4"
 Cohesion: 0.36

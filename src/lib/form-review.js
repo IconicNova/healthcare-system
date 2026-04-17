@@ -70,6 +70,44 @@ export function countSubmittedLikeStatuses(statuses = []) {
   ).length;
 }
 
+function hasMeaningfulValue(value) {
+  if (value === null || value === undefined) {
+    return false;
+  }
+
+  if (typeof value === 'string') {
+    return value.trim().length > 0;
+  }
+
+  if (typeof value === 'number' || typeof value === 'boolean') {
+    return true;
+  }
+
+  if (Array.isArray(value)) {
+    return value.some(hasMeaningfulValue);
+  }
+
+  if (typeof value === 'object') {
+    return Object.values(value).some(hasMeaningfulValue);
+  }
+
+  return false;
+}
+
+export function hasMeaningfulFormContent(formData) {
+  return hasMeaningfulValue(formData);
+}
+
+export function shouldOpenFormDetailFromReviewQueue({ status, formData } = {}) {
+  const normalizedStatus = normalizeFormStatus(status);
+
+  if (getReviewableStatuses().includes(normalizedStatus)) {
+    return true;
+  }
+
+  return hasMeaningfulFormContent(formData);
+}
+
 export function shouldAutosaveDraft({ status, hasValidationErrors } = {}) {
   void hasValidationErrors;
   return normalizeFormStatus(status) === 'DRAFT';

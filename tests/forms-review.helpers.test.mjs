@@ -3,12 +3,15 @@ import {
   getReviewableStatuses,
   normalizeFormStatus,
   buildReviewMetadataPatch,
+  hasMeaningfulFormContent,
   shouldAutosaveDraft,
+  shouldOpenFormDetailFromReviewQueue,
   shouldScheduleFormAutosave,
   countSubmittedLikeStatuses,
   canTransitionFormStatus,
   normalizeRejectionReason,
 } from '../src/lib/form-review.js';
+import { buildCareDeliveryClientPath } from '../src/components/care-delivery/care-delivery.helpers.js';
 import { buildReviewQueueFilters } from '../src/components/care-delivery/forms-review.helpers.js';
 
 function run() {
@@ -111,6 +114,27 @@ function run() {
   assert.equal(
     shouldScheduleFormAutosave({ status: 'DRAFT', saving: true, saveStatus: 'idle' }),
     false
+  );
+  assert.equal(hasMeaningfulFormContent({}), false);
+  assert.equal(hasMeaningfulFormContent({ notes: '   ' }), false);
+  assert.equal(hasMeaningfulFormContent({ completed: false }), true);
+  assert.equal(hasMeaningfulFormContent({ sections: [{ value: '' }, { value: 'done' }] }), true);
+  assert.equal(
+    shouldOpenFormDetailFromReviewQueue({ status: 'APPROVED', formData: {} }),
+    false
+  );
+  assert.equal(
+    shouldOpenFormDetailFromReviewQueue({ status: 'APPROVED', formData: { notes: 'Reviewed content' } }),
+    true
+  );
+  assert.equal(
+    shouldOpenFormDetailFromReviewQueue({ status: 'SUBMITTED', formData: {} }),
+    true
+  );
+
+  assert.equal(
+    buildCareDeliveryClientPath('client-1', 'forms-review'),
+    '/care-delivery/client-1?tab=forms-review'
   );
 
   assert.equal(

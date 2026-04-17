@@ -1935,7 +1935,7 @@
       "label": "formatClientName()",
       "file_type": "code",
       "source_file": "src\\components\\care-delivery\\FormsReviewQueue.jsx",
-      "source_location": "L36",
+      "source_location": "L40",
       "id": "formsreviewqueue_formatclientname",
       "community": 9
     },
@@ -1943,7 +1943,7 @@
       "label": "formatStatusLabel()",
       "file_type": "code",
       "source_file": "src\\components\\care-delivery\\FormsReviewQueue.jsx",
-      "source_location": "L44",
+      "source_location": "L48",
       "id": "formsreviewqueue_formatstatuslabel",
       "community": 9
     },
@@ -1951,7 +1951,7 @@
       "label": "FormsReviewQueue()",
       "file_type": "code",
       "source_file": "src\\components\\care-delivery\\FormsReviewQueue.jsx",
-      "source_location": "L48",
+      "source_location": "L52",
       "id": "formsreviewqueue_formsreviewqueue",
       "community": 9
     },
@@ -3417,7 +3417,7 @@
       "source_file": "src\\lib\\form-review.js",
       "source_location": "L1",
       "id": "src_lib_form_review_js",
-      "community": 3
+      "community": 2
     },
     {
       "label": "normalizeFormStatus()",
@@ -3425,7 +3425,7 @@
       "source_file": "src\\lib\\form-review.js",
       "source_location": "L1",
       "id": "form_review_normalizeformstatus",
-      "community": 3
+      "community": 2
     },
     {
       "label": "normalizeRejectionReason()",
@@ -3433,7 +3433,7 @@
       "source_file": "src\\lib\\form-review.js",
       "source_location": "L7",
       "id": "form_review_normalizerejectionreason",
-      "community": 3
+      "community": 2
     },
     {
       "label": "getReviewableStatuses()",
@@ -3441,7 +3441,7 @@
       "source_file": "src\\lib\\form-review.js",
       "source_location": "L11",
       "id": "form_review_getreviewablestatuses",
-      "community": 3
+      "community": 2
     },
     {
       "label": "buildReviewQueueWhereClause()",
@@ -3449,7 +3449,7 @@
       "source_file": "src\\lib\\form-review.js",
       "source_location": "L15",
       "id": "form_review_buildreviewqueuewhereclause",
-      "community": 3
+      "community": 2
     },
     {
       "label": "canTransitionFormStatus()",
@@ -3457,7 +3457,7 @@
       "source_file": "src\\lib\\form-review.js",
       "source_location": "L47",
       "id": "form_review_cantransitionformstatus",
-      "community": 3
+      "community": 2
     },
     {
       "label": "countSubmittedLikeStatuses()",
@@ -3465,31 +3465,55 @@
       "source_file": "src\\lib\\form-review.js",
       "source_location": "L67",
       "id": "form_review_countsubmittedlikestatuses",
-      "community": 3
+      "community": 2
+    },
+    {
+      "label": "hasMeaningfulValue()",
+      "file_type": "code",
+      "source_file": "src\\lib\\form-review.js",
+      "source_location": "L73",
+      "id": "form_review_hasmeaningfulvalue",
+      "community": 2
+    },
+    {
+      "label": "hasMeaningfulFormContent()",
+      "file_type": "code",
+      "source_file": "src\\lib\\form-review.js",
+      "source_location": "L97",
+      "id": "form_review_hasmeaningfulformcontent",
+      "community": 2
+    },
+    {
+      "label": "shouldOpenFormDetailFromReviewQueue()",
+      "file_type": "code",
+      "source_file": "src\\lib\\form-review.js",
+      "source_location": "L101",
+      "id": "form_review_shouldopenformdetailfromreviewqueue",
+      "community": 2
     },
     {
       "label": "shouldAutosaveDraft()",
       "file_type": "code",
       "source_file": "src\\lib\\form-review.js",
-      "source_location": "L73",
+      "source_location": "L111",
       "id": "form_review_shouldautosavedraft",
-      "community": 3
+      "community": 2
     },
     {
       "label": "shouldScheduleFormAutosave()",
       "file_type": "code",
       "source_file": "src\\lib\\form-review.js",
-      "source_location": "L78",
+      "source_location": "L116",
       "id": "form_review_shouldscheduleformautosave",
-      "community": 3
+      "community": 2
     },
     {
       "label": "buildReviewMetadataPatch()",
       "file_type": "code",
       "source_file": "src\\lib\\form-review.js",
-      "source_location": "L86",
+      "source_location": "L124",
       "id": "form_review_buildreviewmetadatapatch",
-      "community": 3
+      "community": 2
     },
     {
       "label": "prisma.js",
@@ -3521,7 +3545,7 @@
       "source_file": "src\\lib\\utils.js",
       "source_location": "L1",
       "id": "src_lib_utils_js",
-      "community": 2
+      "community": 3
     },
     {
       "label": "cn()",
@@ -3529,7 +3553,7 @@
       "source_file": "src\\lib\\utils.js",
       "source_location": "L4",
       "id": "utils_cn",
-      "community": 2
+      "community": 3
     },
     {
       "label": "formatCurrency()",
@@ -3537,7 +3561,7 @@
       "source_file": "src\\lib\\utils.js",
       "source_location": "L11",
       "id": "utils_formatcurrency",
-      "community": 2
+      "community": 3
     },
     {
       "label": "formatDate()",
@@ -3545,7 +3569,7 @@
       "source_file": "src\\lib\\utils.js",
       "source_location": "L22",
       "id": "utils_formatdate",
-      "community": 2
+      "community": 3
     },
     {
       "label": "formatTime()",
@@ -3553,7 +3577,7 @@
       "source_file": "src\\lib\\utils.js",
       "source_location": "L35",
       "id": "utils_formattime",
-      "community": 2
+      "community": 3
     },
     {
       "label": "formatDateTime()",
@@ -3561,7 +3585,7 @@
       "source_file": "src\\lib\\utils.js",
       "source_location": "L47",
       "id": "utils_formatdatetime",
-      "community": 2
+      "community": 3
     },
     {
       "label": "getInitials()",
@@ -3569,7 +3593,7 @@
       "source_file": "src\\lib\\utils.js",
       "source_location": "L62",
       "id": "utils_getinitials",
-      "community": 2
+      "community": 3
     },
     {
       "label": "getStatusColor()",
@@ -3577,7 +3601,7 @@
       "source_file": "src\\lib\\utils.js",
       "source_location": "L73",
       "id": "utils_getstatuscolor",
-      "community": 2
+      "community": 3
     },
     {
       "label": "calculateAge()",
@@ -3585,7 +3609,7 @@
       "source_file": "src\\lib\\utils.js",
       "source_location": "L117",
       "id": "utils_calculateage",
-      "community": 2
+      "community": 3
     },
     {
       "label": "truncate()",
@@ -3593,7 +3617,7 @@
       "source_file": "src\\lib\\utils.js",
       "source_location": "L132",
       "id": "utils_truncate",
-      "community": 2
+      "community": 3
     },
     {
       "label": "formatPhone()",
@@ -3601,7 +3625,7 @@
       "source_file": "src\\lib\\utils.js",
       "source_location": "L141",
       "id": "utils_formatphone",
-      "community": 2
+      "community": 3
     },
     {
       "label": "getRoleDisplayName()",
@@ -3609,7 +3633,7 @@
       "source_file": "src\\lib\\utils.js",
       "source_location": "L153",
       "id": "utils_getroledisplayname",
-      "community": 2
+      "community": 3
     },
     {
       "label": "hasRoleAccess()",
@@ -3617,7 +3641,7 @@
       "source_file": "src\\lib\\utils.js",
       "source_location": "L171",
       "id": "utils_hasroleaccess",
-      "community": 2
+      "community": 3
     },
     {
       "label": "validations.js",
@@ -6562,7 +6586,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\components\\care-delivery\\FormsReviewQueue.jsx",
-      "source_location": "L36",
+      "source_location": "L40",
       "weight": 1.0,
       "_src": "src_components_care_delivery_formsreviewqueue_jsx",
       "_tgt": "formsreviewqueue_formatclientname",
@@ -6574,7 +6598,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\components\\care-delivery\\FormsReviewQueue.jsx",
-      "source_location": "L44",
+      "source_location": "L48",
       "weight": 1.0,
       "_src": "src_components_care_delivery_formsreviewqueue_jsx",
       "_tgt": "formsreviewqueue_formatstatuslabel",
@@ -6586,7 +6610,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\components\\care-delivery\\FormsReviewQueue.jsx",
-      "source_location": "L48",
+      "source_location": "L52",
       "weight": 1.0,
       "_src": "src_components_care_delivery_formsreviewqueue_jsx",
       "_tgt": "formsreviewqueue_formsreviewqueue",
@@ -7873,6 +7897,42 @@
       "source_location": "L73",
       "weight": 1.0,
       "_src": "src_lib_form_review_js",
+      "_tgt": "form_review_hasmeaningfulvalue",
+      "source": "src_lib_form_review_js",
+      "target": "form_review_hasmeaningfulvalue",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\form-review.js",
+      "source_location": "L97",
+      "weight": 1.0,
+      "_src": "src_lib_form_review_js",
+      "_tgt": "form_review_hasmeaningfulformcontent",
+      "source": "src_lib_form_review_js",
+      "target": "form_review_hasmeaningfulformcontent",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\form-review.js",
+      "source_location": "L101",
+      "weight": 1.0,
+      "_src": "src_lib_form_review_js",
+      "_tgt": "form_review_shouldopenformdetailfromreviewqueue",
+      "source": "src_lib_form_review_js",
+      "target": "form_review_shouldopenformdetailfromreviewqueue",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\form-review.js",
+      "source_location": "L111",
+      "weight": 1.0,
+      "_src": "src_lib_form_review_js",
       "_tgt": "form_review_shouldautosavedraft",
       "source": "src_lib_form_review_js",
       "target": "form_review_shouldautosavedraft",
@@ -7882,7 +7942,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\lib\\form-review.js",
-      "source_location": "L78",
+      "source_location": "L116",
       "weight": 1.0,
       "_src": "src_lib_form_review_js",
       "_tgt": "form_review_shouldscheduleformautosave",
@@ -7894,7 +7954,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\lib\\form-review.js",
-      "source_location": "L86",
+      "source_location": "L124",
       "weight": 1.0,
       "_src": "src_lib_form_review_js",
       "_tgt": "form_review_buildreviewmetadatapatch",
@@ -7906,7 +7966,19 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "src\\lib\\form-review.js",
-      "source_location": "L75",
+      "source_location": "L102",
+      "weight": 1.0,
+      "_src": "form_review_shouldopenformdetailfromreviewqueue",
+      "_tgt": "form_review_normalizeformstatus",
+      "source": "form_review_normalizeformstatus",
+      "target": "form_review_shouldopenformdetailfromreviewqueue",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\form-review.js",
+      "source_location": "L113",
       "weight": 1.0,
       "_src": "form_review_shouldautosavedraft",
       "_tgt": "form_review_normalizeformstatus",
@@ -7918,7 +7990,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "src\\lib\\form-review.js",
-      "source_location": "L95",
+      "source_location": "L133",
       "weight": 1.0,
       "_src": "form_review_buildreviewmetadatapatch",
       "_tgt": "form_review_normalizeformstatus",
@@ -7942,7 +8014,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "src\\lib\\form-review.js",
-      "source_location": "L113",
+      "source_location": "L151",
       "weight": 1.0,
       "_src": "form_review_buildreviewmetadatapatch",
       "_tgt": "form_review_normalizerejectionreason",
@@ -7966,7 +8038,43 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "src\\lib\\form-review.js",
-      "source_location": "L83",
+      "source_location": "L104",
+      "weight": 1.0,
+      "_src": "form_review_shouldopenformdetailfromreviewqueue",
+      "_tgt": "form_review_getreviewablestatuses",
+      "source": "form_review_getreviewablestatuses",
+      "target": "form_review_shouldopenformdetailfromreviewqueue",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\form-review.js",
+      "source_location": "L98",
+      "weight": 1.0,
+      "_src": "form_review_hasmeaningfulformcontent",
+      "_tgt": "form_review_hasmeaningfulvalue",
+      "source": "form_review_hasmeaningfulvalue",
+      "target": "form_review_hasmeaningfulformcontent",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\form-review.js",
+      "source_location": "L108",
+      "weight": 1.0,
+      "_src": "form_review_shouldopenformdetailfromreviewqueue",
+      "_tgt": "form_review_hasmeaningfulformcontent",
+      "source": "form_review_hasmeaningfulformcontent",
+      "target": "form_review_shouldopenformdetailfromreviewqueue",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\form-review.js",
+      "source_location": "L121",
       "weight": 1.0,
       "_src": "form_review_shouldscheduleformautosave",
       "_tgt": "form_review_shouldautosavedraft",

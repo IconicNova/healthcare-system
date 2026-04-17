@@ -3,8 +3,12 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Eye, Filter, FileText } from 'lucide-react';
-import { buildCareDeliveryFormPath } from '@/components/care-delivery/care-delivery.helpers';
+import {
+  buildCareDeliveryClientPath,
+  buildCareDeliveryFormPath,
+} from '@/components/care-delivery/care-delivery.helpers';
 import { buildFormsReviewFilterRows } from '@/components/care-delivery/forms-review-layout.helpers';
+import { shouldOpenFormDetailFromReviewQueue } from '@/lib/form-review';
 
 const STATUS_OPTIONS = [
   { value: '', label: 'Reviewable' },
@@ -282,68 +286,82 @@ export default function FormsReviewQueue({ clientId = '', embedded = false, retu
                   </tr>
                 </thead>
                 <tbody>
-                  {forms.map((form, index) => (
-                    <tr
-                      key={form.id}
-                      style={{
-                        borderBottom: index < forms.length - 1 ? '1px solid var(--color-border)' : 'none',
-                      }}
-                    >
-                      <td style={bodyCellStyle}>
-                        <div style={{ fontSize: '14px', fontWeight: 500, color: 'var(--color-text)' }}>
-                          {formatClientName(form.client)}
-                        </div>
-                      </td>
-                      <td style={bodyCellStyle}>
-                        <div style={{ fontSize: '14px', fontWeight: 500, color: 'var(--color-text)' }}>
-                          {form.template?.name || 'Untitled Form'}
-                        </div>
-                        <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginTop: '4px' }}>
-                          {form.template?.category || 'Other'}
-                        </div>
-                      </td>
-                      <td style={bodyCellStyle}>
-                        <div style={{ fontSize: '13px', color: 'var(--color-text)' }}>
-                          {form.visit?.title || 'Visit'}
-                        </div>
-                        <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginTop: '4px' }}>
-                          {form.visit?.startTime ? new Date(form.visit.startTime).toLocaleString() : 'No linked visit'}
-                        </div>
-                      </td>
-                      <td style={bodyCellStyle}>
-                        <div style={{ fontSize: '13px', color: 'var(--color-text)' }}>
-                          {form.submittedAt ? new Date(form.submittedAt).toLocaleString() : '-'}
-                        </div>
-                      </td>
-                      <td style={bodyCellStyle}>
-                        <span
-                          style={{
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            padding: '4px 10px',
-                            borderRadius: '999px',
-                            fontSize: '12px',
-                            fontWeight: 600,
-                            ...(STATUS_STYLES[form.status] || {
-                              backgroundColor: 'var(--color-gray-100)',
-                              color: 'var(--color-text-secondary)',
-                            }),
-                          }}
-                        >
-                          {formatStatusLabel(form.status)}
-                        </span>
-                      </td>
-                      <td style={bodyCellStyle}>
-                        <button
-                          className="btn btn-secondary btn-sm"
-                          onClick={() => router.push(buildCareDeliveryFormPath(form.id, formReturnTo))}
-                        >
-                          <Eye size={14} />
-                          Open
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
+                  {forms.map((form, index) => {
+                    const canOpenFormDetail = shouldOpenFormDetailFromReviewQueue({
+                      status: form.status,
+                      formData: form.formData,
+                    });
+                    const fallbackClientPath = form.client?.id
+                      ? buildCareDeliveryClientPath(form.client.id, 'forms-review')
+                      : '/care-delivery';
+
+                    return (
+                      <tr
+                        key={form.id}
+                        style={{
+                          borderBottom: index < forms.length - 1 ? '1px solid var(--color-border)' : 'none',
+                        }}
+                      >
+                        <td style={bodyCellStyle}>
+                          <div style={{ fontSize: '14px', fontWeight: 500, color: 'var(--color-text)' }}>
+                            {formatClientName(form.client)}
+                          </div>
+                        </td>
+                        <td style={bodyCellStyle}>
+                          <div style={{ fontSize: '14px', fontWeight: 500, color: 'var(--color-text)' }}>
+                            {form.template?.name || 'Untitled Form'}
+                          </div>
+                          <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginTop: '4px' }}>
+                            {form.template?.category || 'Other'}
+                          </div>
+                        </td>
+                        <td style={bodyCellStyle}>
+                          <div style={{ fontSize: '13px', color: 'var(--color-text)' }}>
+                            {form.visit?.title || 'Visit'}
+                          </div>
+                          <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginTop: '4px' }}>
+                            {form.visit?.startTime ? new Date(form.visit.startTime).toLocaleString() : 'No linked visit'}
+                          </div>
+                        </td>
+                        <td style={bodyCellStyle}>
+                          <div style={{ fontSize: '13px', color: 'var(--color-text)' }}>
+                            {form.submittedAt ? new Date(form.submittedAt).toLocaleString() : '-'}
+                          </div>
+                        </td>
+                        <td style={bodyCellStyle}>
+                          <span
+                            style={{
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              padding: '4px 10px',
+                              borderRadius: '999px',
+                              fontSize: '12px',
+                              fontWeight: 600,
+                              ...(STATUS_STYLES[form.status] || {
+                                backgroundColor: 'var(--color-gray-100)',
+                                color: 'var(--color-text-secondary)',
+                              }),
+                            }}
+                          >
+                            {formatStatusLabel(form.status)}
+                          </span>
+                        </td>
+                        <td style={bodyCellStyle}>
+                          <button
+                            className="btn btn-secondary btn-sm"
+                            onClick={() => router.push(
+                              canOpenFormDetail
+                                ? buildCareDeliveryFormPath(form.id, formReturnTo)
+                                : fallbackClientPath
+                            )}
+                          >
+                            <Eye size={14} />
+                            {canOpenFormDetail ? 'Open' : 'Open Care Delivery'}
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
