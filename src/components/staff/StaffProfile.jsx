@@ -2,15 +2,17 @@
 
 import Image from 'next/image';
 import { useState, useEffect, useRef } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { ArrowLeft, Edit, MoreVertical, Trash2, Upload, X } from 'lucide-react';
 import StatusBadge from '@/components/ui/StatusBadge';
+import Modal from '@/components/ui/Modal';
 
 import StaffOverviewTab from './StaffOverviewTab';
 import SkillsCertsTab from './SkillsCertsTab';
 import AvailabilityGrid from './AvailabilityGrid';
 import StaffScheduleTab from './StaffScheduleTab';
 import StaffTimesheetsTab from './StaffTimesheetsTab';
+import StaffForm from './StaffForm';
 
 const ROLE_VARIANTS = {
   MANAGER: 'info',
@@ -28,6 +30,7 @@ const TABS = [
 
 export default function StaffProfile({ staffData }) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const menuRef = useRef(null);
   const fileInputRef = useRef(null);
   const [activeTab, setActiveTab] = useState('overview');
@@ -36,6 +39,8 @@ export default function StaffProfile({ staffData }) {
   const [avatarPreview, setAvatarPreview] = useState(null);
   const [avatarUploading, setAvatarUploading] = useState(false);
   const [avatarError, setAvatarError] = useState('');
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [branches, setBranches] = useState([]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -50,6 +55,30 @@ export default function StaffProfile({ staffData }) {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
+  useEffect(() => {
+    setShowEditModal(searchParams.get('edit') === 'true');
+  }, [searchParams]);
+
+  useEffect(() => {
+    if (!showEditModal || branches.length > 0) {
+      return;
+    }
+
+    const fetchBranches = async () => {
+      try {
+        const response = await fetch('/api/branches');
+        if (response.ok) {
+          const data = await response.json();
+          setBranches(data.branches || []);
+        }
+      } catch (error) {
+        console.error('Error fetching branches:', error);
+      }
+    };
+
+    fetchBranches();
+  }, [branches.length, showEditModal]);
 
   if (!staffData) {
     return (
@@ -171,6 +200,19 @@ export default function StaffProfile({ staffData }) {
     return `${staffData.firstName?.charAt(0) || ''}${staffData.lastName?.charAt(0) || ''}`.toUpperCase();
   };
 
+  const handleOpenEditModal = () => {
+    router.replace(`/staff/${staffData.id}?edit=true`);
+  };
+
+  const handleCloseEditModal = () => {
+    router.replace(`/staff/${staffData.id}`);
+  };
+
+  const handleEditSuccess = () => {
+    handleCloseEditModal();
+    router.refresh();
+  };
+
   return (
     <div>
       {/* Header */}
@@ -192,7 +234,7 @@ export default function StaffProfile({ staffData }) {
           </div>
 
           <div style={{ display: 'flex', gap: '8px', position: 'relative' }}>
-            <button onClick={() => router.push(`/staff/${staffData.id}/edit`)} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 16px', borderRadius: '8px', border: '1px solid var(--color-border)', backgroundColor: 'white', cursor: 'pointer', fontSize: '13px', fontWeight: 500 }}>
+            <button onClick={handleOpenEditModal} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 16px', borderRadius: '8px', border: '1px solid var(--color-border)', backgroundColor: 'white', cursor: 'pointer', fontSize: '13px', fontWeight: 500 }}>
               <Edit size={14} /> Edit Profile
             </button>
             <div ref={menuRef} style={{ position: 'relative' }}>
@@ -363,6 +405,30 @@ export default function StaffProfile({ staffData }) {
         {activeTab === 'schedule' && <StaffScheduleTab staffId={staffData.id} staffName={staffData.fullName} />}
         {activeTab === 'timesheets' && <StaffTimesheetsTab staffId={staffData.id} />}
       </div>
+
+      <Modal isOpen={showEditModal} onClose={handleCloseEditModal} title="Edit Staff Member" size="lg">
+        <StaffForm
+          onSuccess={handleEditSuccess}
+          onCancel={handleCloseEditModal}
+          branches={branches}
+          staffId={staffData.id}
+          initialData={{
+            firstName: staffData.firstName,
+            lastName: staffData.lastName,
+            email: staffData.email,
+            phone: staffData.phone,
+            branchId: staffData.branchId || '',
+            hireDate: staffData.hireDate ? new Date(staffData.hireDate).toISOString().split('T')[0] : '',
+            payRate: staffData.hourlyRate || '',
+            payType: staffData.payType,
+            status: staffData.status,
+            role: staffData.role,
+            licenseNumber: staffData.licenseNumber || '',
+            licenseExpiry: staffData.licenseExpiry ? new Date(staffData.licenseExpiry).toISOString().split('T')[0] : '',
+            user: staffData.user,
+          }}
+        />
+      </Modal>
     </div>
   );
 }

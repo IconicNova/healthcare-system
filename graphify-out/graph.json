@@ -9,7 +9,7 @@
       "source_file": "next-env.d.ts",
       "source_location": "L1",
       "id": "next_env_d_ts",
-      "community": 157
+      "community": 167
     },
     {
       "label": "postcss.config.js",
@@ -17,7 +17,7 @@
       "source_file": "postcss.config.js",
       "source_location": "L1",
       "id": "postcss_config_js",
-      "community": 158
+      "community": 168
     },
     {
       "label": "tailwind.config.js",
@@ -25,7 +25,23 @@
       "source_file": "tailwind.config.js",
       "source_location": "L1",
       "id": "tailwind_config_js",
-      "community": 159
+      "community": 169
+    },
+    {
+      "label": "test-db.js",
+      "file_type": "code",
+      "source_file": "test-db.js",
+      "source_location": "L1",
+      "id": "test_db_js",
+      "community": 28
+    },
+    {
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "test-db.js",
+      "source_location": "L4",
+      "id": "test_db_main",
+      "community": 28
     },
     {
       "label": "addDocuments.js",
@@ -33,7 +49,7 @@
       "source_file": "prisma\\addDocuments.js",
       "source_location": "L1",
       "id": "prisma_adddocuments_js",
-      "community": 23
+      "community": 29
     },
     {
       "label": "main()",
@@ -41,7 +57,7 @@
       "source_file": "prisma\\addDocuments.js",
       "source_location": "L5",
       "id": "adddocuments_main",
-      "community": 23
+      "community": 29
     },
     {
       "label": "seed-drug-interactions.js",
@@ -49,7 +65,7 @@
       "source_file": "prisma\\seed-drug-interactions.js",
       "source_location": "L1",
       "id": "prisma_seed_drug_interactions_js",
-      "community": 24
+      "community": 30
     },
     {
       "label": "main()",
@@ -57,7 +73,7 @@
       "source_file": "prisma\\seed-drug-interactions.js",
       "source_location": "L148",
       "id": "seed_drug_interactions_main",
-      "community": 24
+      "community": 30
     },
     {
       "label": "seed.js",
@@ -65,7 +81,7 @@
       "source_file": "prisma\\seed.js",
       "source_location": "L1",
       "id": "prisma_seed_js",
-      "community": 25
+      "community": 31
     },
     {
       "label": "main()",
@@ -73,7 +89,7 @@
       "source_file": "prisma\\seed.js",
       "source_location": "L7",
       "id": "seed_main",
-      "community": 25
+      "community": 31
     },
     {
       "label": "layout.js",
@@ -81,7 +97,7 @@
       "source_file": "src\\app\\layout.js",
       "source_location": "L1",
       "id": "src_app_layout_js",
-      "community": 26
+      "community": 32
     },
     {
       "label": "RootLayout()",
@@ -89,7 +105,7 @@
       "source_file": "src\\app\\layout.js",
       "source_location": "L18",
       "id": "layout_rootlayout",
-      "community": 26
+      "community": 32
     },
     {
       "label": "not-found.js",
@@ -97,7 +113,7 @@
       "source_file": "src\\app\\not-found.js",
       "source_location": "L1",
       "id": "src_app_not_found_js",
-      "community": 27
+      "community": 33
     },
     {
       "label": "NotFound()",
@@ -105,7 +121,7 @@
       "source_file": "src\\app\\not-found.js",
       "source_location": "L4",
       "id": "not_found_notfound",
-      "community": 27
+      "community": 33
     },
     {
       "label": "page.js",
@@ -113,7 +129,7 @@
       "source_file": "src\\app\\page.js",
       "source_location": "L1",
       "id": "src_app_page_js",
-      "community": 28
+      "community": 34
     },
     {
       "label": "Home()",
@@ -121,7 +137,7 @@
       "source_file": "src\\app\\page.js",
       "source_location": "L3",
       "id": "page_home",
-      "community": 28
+      "community": 34
     },
     {
       "label": "layout.js",
@@ -129,7 +145,7 @@
       "source_file": "src\\app\\(auth)\\layout.js",
       "source_location": "L1",
       "id": "src_app_auth_layout_js",
-      "community": 29
+      "community": 35
     },
     {
       "label": "AuthLayout()",
@@ -137,7 +153,7 @@
       "source_file": "src\\app\\(auth)\\layout.js",
       "source_location": "L1",
       "id": "layout_authlayout",
-      "community": 29
+      "community": 35
     },
     {
       "label": "page.js",
@@ -145,7 +161,7 @@
       "source_file": "src\\app\\(auth)\\login\\page.js",
       "source_location": "L1",
       "id": "src_app_auth_login_page_js",
-      "community": 30
+      "community": 36
     },
     {
       "label": "LoginPage()",
@@ -153,7 +169,7 @@
       "source_file": "src\\app\\(auth)\\login\\page.js",
       "source_location": "L8",
       "id": "page_loginpage",
-      "community": 30
+      "community": 36
     },
     {
       "label": "error.js",
@@ -161,7 +177,7 @@
       "source_file": "src\\app\\(dashboard)\\error.js",
       "source_location": "L1",
       "id": "src_app_dashboard_error_js",
-      "community": 31
+      "community": 37
     },
     {
       "label": "DashboardError()",
@@ -169,7 +185,7 @@
       "source_file": "src\\app\\(dashboard)\\error.js",
       "source_location": "L5",
       "id": "error_dashboarderror",
-      "community": 31
+      "community": 37
     },
     {
       "label": "layout.js",
@@ -177,7 +193,7 @@
       "source_file": "src\\app\\(dashboard)\\layout.js",
       "source_location": "L1",
       "id": "src_app_dashboard_layout_js",
-      "community": 32
+      "community": 38
     },
     {
       "label": "DashboardLayout()",
@@ -185,7 +201,7 @@
       "source_file": "src\\app\\(dashboard)\\layout.js",
       "source_location": "L11",
       "id": "layout_dashboardlayout",
-      "community": 32
+      "community": 38
     },
     {
       "label": "loading.js",
@@ -193,7 +209,7 @@
       "source_file": "src\\app\\(dashboard)\\loading.js",
       "source_location": "L1",
       "id": "src_app_dashboard_loading_js",
-      "community": 33
+      "community": 39
     },
     {
       "label": "Loading()",
@@ -201,7 +217,7 @@
       "source_file": "src\\app\\(dashboard)\\loading.js",
       "source_location": "L1",
       "id": "loading_loading",
-      "community": 33
+      "community": 39
     },
     {
       "label": "page.js",
@@ -209,7 +225,7 @@
       "source_file": "src\\app\\(dashboard)\\billing\\page.js",
       "source_location": "L1",
       "id": "src_app_dashboard_billing_page_js",
-      "community": 34
+      "community": 40
     },
     {
       "label": "BillingPage()",
@@ -217,7 +233,7 @@
       "source_file": "src\\app\\(dashboard)\\billing\\page.js",
       "source_location": "L24",
       "id": "page_billingpage",
-      "community": 34
+      "community": 40
     },
     {
       "label": "page.js",
@@ -225,7 +241,7 @@
       "source_file": "src\\app\\(dashboard)\\care-delivery\\page.js",
       "source_location": "L1",
       "id": "src_app_dashboard_care_delivery_page_js",
-      "community": 35
+      "community": 41
     },
     {
       "label": "CareDeliveryPage()",
@@ -233,7 +249,7 @@
       "source_file": "src\\app\\(dashboard)\\care-delivery\\page.js",
       "source_location": "L3",
       "id": "page_caredeliverypage",
-      "community": 35
+      "community": 41
     },
     {
       "label": "page.js",
@@ -241,7 +257,7 @@
       "source_file": "src\\app\\(dashboard)\\care-delivery\\forms\\review\\page.js",
       "source_location": "L1",
       "id": "src_app_dashboard_care_delivery_forms_review_page_js",
-      "community": 36
+      "community": 42
     },
     {
       "label": "FormsReviewPage()",
@@ -249,7 +265,7 @@
       "source_file": "src\\app\\(dashboard)\\care-delivery\\forms\\review\\page.js",
       "source_location": "L3",
       "id": "page_formsreviewpage",
-      "community": 36
+      "community": 42
     },
     {
       "label": "page.js",
@@ -257,7 +273,7 @@
       "source_file": "src\\app\\(dashboard)\\care-delivery\\forms\\[formId]\\page.js",
       "source_location": "L1",
       "id": "src_app_dashboard_care_delivery_forms_formid_page_js",
-      "community": 13
+      "community": 16
     },
     {
       "label": "formatReadOnlyValue()",
@@ -265,7 +281,7 @@
       "source_file": "src\\app\\(dashboard)\\care-delivery\\forms\\[formId]\\page.js",
       "source_location": "L14",
       "id": "page_formatreadonlyvalue",
-      "community": 13
+      "community": 16
     },
     {
       "label": "FormChartingPage()",
@@ -273,7 +289,7 @@
       "source_file": "src\\app\\(dashboard)\\care-delivery\\forms\\[formId]\\page.js",
       "source_location": "L21",
       "id": "page_formchartingpage",
-      "community": 13
+      "community": 16
     },
     {
       "label": "page.js",
@@ -281,7 +297,7 @@
       "source_file": "src\\app\\(dashboard)\\care-delivery\\medications\\page.js",
       "source_location": "L1",
       "id": "src_app_dashboard_care_delivery_medications_page_js",
-      "community": 37
+      "community": 43
     },
     {
       "label": "MedicationsPage()",
@@ -289,7 +305,7 @@
       "source_file": "src\\app\\(dashboard)\\care-delivery\\medications\\page.js",
       "source_location": "L18",
       "id": "page_medicationspage",
-      "community": 37
+      "community": 43
     },
     {
       "label": "page.js",
@@ -297,7 +313,7 @@
       "source_file": "src\\app\\(dashboard)\\care-delivery\\[clientId]\\page.js",
       "source_location": "L1",
       "id": "src_app_dashboard_care_delivery_clientid_page_js",
-      "community": 38
+      "community": 44
     },
     {
       "label": "CareDeliveryClientPage()",
@@ -305,7 +321,7 @@
       "source_file": "src\\app\\(dashboard)\\care-delivery\\[clientId]\\page.js",
       "source_location": "L3",
       "id": "page_caredeliveryclientpage",
-      "community": 38
+      "community": 44
     },
     {
       "label": "page.js",
@@ -313,7 +329,7 @@
       "source_file": "src\\app\\(dashboard)\\care-plans\\page.js",
       "source_location": "L1",
       "id": "src_app_dashboard_care_plans_page_js",
-      "community": 39
+      "community": 45
     },
     {
       "label": "CarePlansPage()",
@@ -321,7 +337,7 @@
       "source_file": "src\\app\\(dashboard)\\care-plans\\page.js",
       "source_location": "L32",
       "id": "page_careplanspage",
-      "community": 39
+      "community": 45
     },
     {
       "label": "page.js",
@@ -329,7 +345,7 @@
       "source_file": "src\\app\\(dashboard)\\care-plans\\[id]\\page.js",
       "source_location": "L1",
       "id": "src_app_dashboard_care_plans_id_page_js",
-      "community": 14
+      "community": 17
     },
     {
       "label": "CarePlanDetailPage()",
@@ -337,7 +353,7 @@
       "source_file": "src\\app\\(dashboard)\\care-plans\\[id]\\page.js",
       "source_location": "L10",
       "id": "page_careplandetailpage",
-      "community": 14
+      "community": 17
     },
     {
       "label": "getStatusColor()",
@@ -345,7 +361,7 @@
       "source_file": "src\\app\\(dashboard)\\care-plans\\[id]\\page.js",
       "source_location": "L358",
       "id": "page_getstatuscolor",
-      "community": 14
+      "community": 17
     },
     {
       "label": "page.js",
@@ -353,7 +369,7 @@
       "source_file": "src\\app\\(dashboard)\\care-plans\\[id]\\edit\\page.js",
       "source_location": "L1",
       "id": "src_app_dashboard_care_plans_id_edit_page_js",
-      "community": 40
+      "community": 46
     },
     {
       "label": "CarePlanEditPage()",
@@ -361,7 +377,7 @@
       "source_file": "src\\app\\(dashboard)\\care-plans\\[id]\\edit\\page.js",
       "source_location": "L3",
       "id": "page_careplaneditpage",
-      "community": 40
+      "community": 46
     },
     {
       "label": "page.js",
@@ -369,7 +385,7 @@
       "source_file": "src\\app\\(dashboard)\\clients\\page.js",
       "source_location": "L1",
       "id": "src_app_dashboard_clients_page_js",
-      "community": 41
+      "community": 47
     },
     {
       "label": "ClientsPage()",
@@ -377,7 +393,7 @@
       "source_file": "src\\app\\(dashboard)\\clients\\page.js",
       "source_location": "L3",
       "id": "page_clientspage",
-      "community": 41
+      "community": 47
     },
     {
       "label": "page.js",
@@ -385,7 +401,7 @@
       "source_file": "src\\app\\(dashboard)\\clients\\new\\page.js",
       "source_location": "L1",
       "id": "src_app_dashboard_clients_new_page_js",
-      "community": 42
+      "community": 48
     },
     {
       "label": "NewClientPage()",
@@ -393,7 +409,7 @@
       "source_file": "src\\app\\(dashboard)\\clients\\new\\page.js",
       "source_location": "L3",
       "id": "page_newclientpage",
-      "community": 42
+      "community": 48
     },
     {
       "label": "page.js",
@@ -401,7 +417,7 @@
       "source_file": "src\\app\\(dashboard)\\clients\\[id]\\page.js",
       "source_location": "L1",
       "id": "src_app_dashboard_clients_id_page_js",
-      "community": 43
+      "community": 49
     },
     {
       "label": "ClientProfilePage()",
@@ -409,7 +425,7 @@
       "source_file": "src\\app\\(dashboard)\\clients\\[id]\\page.js",
       "source_location": "L3",
       "id": "page_clientprofilepage",
-      "community": 43
+      "community": 49
     },
     {
       "label": "page.js",
@@ -417,15 +433,15 @@
       "source_file": "src\\app\\(dashboard)\\clients\\[id]\\edit\\page.js",
       "source_location": "L1",
       "id": "src_app_dashboard_clients_id_edit_page_js",
-      "community": 44
+      "community": 50
     },
     {
       "label": "EditClientPage()",
       "file_type": "code",
       "source_file": "src\\app\\(dashboard)\\clients\\[id]\\edit\\page.js",
-      "source_location": "L6",
+      "source_location": "L3",
       "id": "page_editclientpage",
-      "community": 44
+      "community": 50
     },
     {
       "label": "page.js",
@@ -433,7 +449,7 @@
       "source_file": "src\\app\\(dashboard)\\dashboard\\page.js",
       "source_location": "L1",
       "id": "src_app_dashboard_dashboard_page_js",
-      "community": 45
+      "community": 51
     },
     {
       "label": "DashboardPage()",
@@ -441,7 +457,7 @@
       "source_file": "src\\app\\(dashboard)\\dashboard\\page.js",
       "source_location": "L9",
       "id": "page_dashboardpage",
-      "community": 45
+      "community": 51
     },
     {
       "label": "page.js",
@@ -449,7 +465,7 @@
       "source_file": "src\\app\\(dashboard)\\notifications\\page.js",
       "source_location": "L1",
       "id": "src_app_dashboard_notifications_page_js",
-      "community": 46
+      "community": 52
     },
     {
       "label": "NotificationsPage()",
@@ -457,7 +473,7 @@
       "source_file": "src\\app\\(dashboard)\\notifications\\page.js",
       "source_location": "L6",
       "id": "page_notificationspage",
-      "community": 46
+      "community": 52
     },
     {
       "label": "page.js",
@@ -465,7 +481,7 @@
       "source_file": "src\\app\\(dashboard)\\payroll\\page.js",
       "source_location": "L1",
       "id": "src_app_dashboard_payroll_page_js",
-      "community": 47
+      "community": 53
     },
     {
       "label": "PayrollPage()",
@@ -473,7 +489,7 @@
       "source_file": "src\\app\\(dashboard)\\payroll\\page.js",
       "source_location": "L23",
       "id": "page_payrollpage",
-      "community": 47
+      "community": 53
     },
     {
       "label": "page.js",
@@ -481,7 +497,7 @@
       "source_file": "src\\app\\(dashboard)\\reports\\page.js",
       "source_location": "L1",
       "id": "src_app_dashboard_reports_page_js",
-      "community": 48
+      "community": 54
     },
     {
       "label": "ReportsPage()",
@@ -489,7 +505,7 @@
       "source_file": "src\\app\\(dashboard)\\reports\\page.js",
       "source_location": "L19",
       "id": "page_reportspage",
-      "community": 48
+      "community": 54
     },
     {
       "label": "page.js",
@@ -497,15 +513,31 @@
       "source_file": "src\\app\\(dashboard)\\scheduling\\page.js",
       "source_location": "L1",
       "id": "src_app_dashboard_scheduling_page_js",
-      "community": 49
+      "community": 55
     },
     {
       "label": "SchedulingPage()",
       "file_type": "code",
       "source_file": "src\\app\\(dashboard)\\scheduling\\page.js",
-      "source_location": "L32",
+      "source_location": "L33",
       "id": "page_schedulingpage",
-      "community": 49
+      "community": 55
+    },
+    {
+      "label": "page.js",
+      "file_type": "code",
+      "source_file": "src\\app\\(dashboard)\\scheduling\\[view]\\page.js",
+      "source_location": "L1",
+      "id": "src_app_dashboard_scheduling_view_page_js",
+      "community": 56
+    },
+    {
+      "label": "SchedulingViewPage()",
+      "file_type": "code",
+      "source_file": "src\\app\\(dashboard)\\scheduling\\[view]\\page.js",
+      "source_location": "L6",
+      "id": "page_schedulingviewpage",
+      "community": 56
     },
     {
       "label": "page.js",
@@ -513,7 +545,7 @@
       "source_file": "src\\app\\(dashboard)\\settings\\page.js",
       "source_location": "L1",
       "id": "src_app_dashboard_settings_page_js",
-      "community": 50
+      "community": 57
     },
     {
       "label": "SettingsPage()",
@@ -521,7 +553,7 @@
       "source_file": "src\\app\\(dashboard)\\settings\\page.js",
       "source_location": "L32",
       "id": "page_settingspage",
-      "community": 50
+      "community": 57
     },
     {
       "label": "page.js",
@@ -529,7 +561,7 @@
       "source_file": "src\\app\\(dashboard)\\staff\\page.js",
       "source_location": "L1",
       "id": "src_app_dashboard_staff_page_js",
-      "community": 51
+      "community": 58
     },
     {
       "label": "StaffPage()",
@@ -537,7 +569,7 @@
       "source_file": "src\\app\\(dashboard)\\staff\\page.js",
       "source_location": "L3",
       "id": "page_staffpage",
-      "community": 51
+      "community": 58
     },
     {
       "label": "page.js",
@@ -545,7 +577,7 @@
       "source_file": "src\\app\\(dashboard)\\staff\\[id]\\page.js",
       "source_location": "L1",
       "id": "src_app_dashboard_staff_id_page_js",
-      "community": 52
+      "community": 59
     },
     {
       "label": "StaffProfilePage()",
@@ -553,7 +585,7 @@
       "source_file": "src\\app\\(dashboard)\\staff\\[id]\\page.js",
       "source_location": "L6",
       "id": "page_staffprofilepage",
-      "community": 52
+      "community": 59
     },
     {
       "label": "page.js",
@@ -561,15 +593,15 @@
       "source_file": "src\\app\\(dashboard)\\staff\\[id]\\edit\\page.js",
       "source_location": "L1",
       "id": "src_app_dashboard_staff_id_edit_page_js",
-      "community": 53
+      "community": 60
     },
     {
       "label": "EditStaffPage()",
       "file_type": "code",
       "source_file": "src\\app\\(dashboard)\\staff\\[id]\\edit\\page.js",
-      "source_location": "L9",
+      "source_location": "L3",
       "id": "page_editstaffpage",
-      "community": 53
+      "community": 60
     },
     {
       "label": "route.js",
@@ -609,7 +641,7 @@
       "source_file": "src\\app\\api\\billing\\insurance-claims\\[id]\\route.js",
       "source_location": "L1",
       "id": "src_app_api_billing_insurance_claims_id_route_js",
-      "community": 1
+      "community": 0
     },
     {
       "label": "PATCH()",
@@ -617,7 +649,7 @@
       "source_file": "src\\app\\api\\vitals\\[id]\\route.js",
       "source_location": "L53",
       "id": "route_patch",
-      "community": 1
+      "community": 0
     },
     {
       "label": "route.js",
@@ -649,7 +681,7 @@
       "source_file": "src\\app\\api\\billing\\invoices\\[id]\\route.js",
       "source_location": "L1",
       "id": "src_app_api_billing_invoices_id_route_js",
-      "community": 1
+      "community": 0
     },
     {
       "label": "DELETE()",
@@ -657,7 +689,7 @@
       "source_file": "src\\app\\api\\vitals\\[id]\\route.js",
       "source_location": "L90",
       "id": "route_delete",
-      "community": 1
+      "community": 0
     },
     {
       "label": "route.js",
@@ -705,7 +737,7 @@
       "source_file": "src\\app\\api\\care-plans\\[id]\\route.js",
       "source_location": "L1",
       "id": "src_app_api_care_plans_id_route_js",
-      "community": 1
+      "community": 0
     },
     {
       "label": "route.js",
@@ -729,7 +761,7 @@
       "source_file": "src\\app\\api\\clients\\[id]\\route.js",
       "source_location": "L1",
       "id": "src_app_api_clients_id_route_js",
-      "community": 1
+      "community": 0
     },
     {
       "label": "route.js",
@@ -737,7 +769,7 @@
       "source_file": "src\\app\\api\\clients\\[id]\\avatar\\route.js",
       "source_location": "L1",
       "id": "src_app_api_clients_id_avatar_route_js",
-      "community": 1
+      "community": 0
     },
     {
       "label": "PUT()",
@@ -745,7 +777,7 @@
       "source_file": "src\\app\\api\\staff\\[id]\\avatar\\route.js",
       "source_location": "L7",
       "id": "route_put",
-      "community": 1
+      "community": 0
     },
     {
       "label": "route.js",
@@ -753,7 +785,7 @@
       "source_file": "src\\app\\api\\clients\\[id]\\documents\\route.js",
       "source_location": "L1",
       "id": "src_app_api_clients_id_documents_route_js",
-      "community": 1
+      "community": 0
     },
     {
       "label": "route.js",
@@ -769,7 +801,7 @@
       "source_file": "src\\app\\api\\clients\\[id]\\medical\\route.js",
       "source_location": "L1",
       "id": "src_app_api_clients_id_medical_route_js",
-      "community": 1
+      "community": 0
     },
     {
       "label": "route.js",
@@ -785,7 +817,7 @@
       "source_file": "src\\app\\api\\clients\\[id]\\medications\\reconcile\\route.js",
       "source_location": "L1",
       "id": "src_app_api_clients_id_medications_reconcile_route_js",
-      "community": 6
+      "community": 8
     },
     {
       "label": "compareMedicationLists()",
@@ -793,7 +825,7 @@
       "source_file": "src\\app\\api\\clients\\[id]\\medications\\reconcile\\route.js",
       "source_location": "L62",
       "id": "route_comparemedicationlists",
-      "community": 6
+      "community": 8
     },
     {
       "label": "mergeMedications()",
@@ -801,7 +833,7 @@
       "source_file": "src\\app\\api\\clients\\[id]\\medications\\reconcile\\route.js",
       "source_location": "L98",
       "id": "route_mergemedications",
-      "community": 6
+      "community": 8
     },
     {
       "label": "normalizeMedicationName()",
@@ -809,7 +841,7 @@
       "source_file": "src\\app\\api\\clients\\[id]\\medications\\reconcile\\route.js",
       "source_location": "L142",
       "id": "route_normalizemedicationname",
-      "community": 6
+      "community": 8
     },
     {
       "label": "getChanges()",
@@ -817,7 +849,7 @@
       "source_file": "src\\app\\api\\clients\\[id]\\medications\\reconcile\\route.js",
       "source_location": "L147",
       "id": "route_getchanges",
-      "community": 6
+      "community": 8
     },
     {
       "label": "route.js",
@@ -921,7 +953,7 @@
       "source_file": "src\\app\\api\\forms\\[id]\\route.js",
       "source_location": "L1",
       "id": "src_app_api_forms_id_route_js",
-      "community": 1
+      "community": 0
     },
     {
       "label": "route.js",
@@ -929,7 +961,7 @@
       "source_file": "src\\app\\api\\medications\\check-interactions\\route.js",
       "source_location": "L1",
       "id": "src_app_api_medications_check_interactions_route_js",
-      "community": 0
+      "community": 18
     },
     {
       "label": "checkInteractions()",
@@ -937,7 +969,7 @@
       "source_file": "src\\app\\api\\medications\\check-interactions\\route.js",
       "source_location": "L39",
       "id": "route_checkinteractions",
-      "community": 0
+      "community": 18
     },
     {
       "label": "normalizeName()",
@@ -945,7 +977,7 @@
       "source_file": "src\\app\\api\\medications\\check-interactions\\route.js",
       "source_location": "L62",
       "id": "route_normalizename",
-      "community": 0
+      "community": 18
     },
     {
       "label": "route.js",
@@ -977,7 +1009,7 @@
       "source_file": "src\\app\\api\\notifications\\mark-all-read\\route.js",
       "source_location": "L1",
       "id": "src_app_api_notifications_mark_all_read_route_js",
-      "community": 1
+      "community": 0
     },
     {
       "label": "route.js",
@@ -993,7 +1025,7 @@
       "source_file": "src\\app\\api\\notifications\\[id]\\route.js",
       "source_location": "L1",
       "id": "src_app_api_notifications_id_route_js",
-      "community": 1
+      "community": 0
     },
     {
       "label": "route.js",
@@ -1001,7 +1033,7 @@
       "source_file": "src\\app\\api\\notifications\\[id]\\read\\route.js",
       "source_location": "L1",
       "id": "src_app_api_notifications_id_read_route_js",
-      "community": 1
+      "community": 0
     },
     {
       "label": "route.js",
@@ -1041,7 +1073,7 @@
       "source_file": "src\\app\\api\\payroll\\timesheet-entries\\[id]\\route.js",
       "source_location": "L1",
       "id": "src_app_api_payroll_timesheet_entries_id_route_js",
-      "community": 1
+      "community": 0
     },
     {
       "label": "route.js",
@@ -1065,7 +1097,7 @@
       "source_file": "src\\app\\api\\payroll\\timesheets\\[id]\\route.js",
       "source_location": "L1",
       "id": "src_app_api_payroll_timesheets_id_route_js",
-      "community": 1
+      "community": 0
     },
     {
       "label": "route.js",
@@ -1081,7 +1113,7 @@
       "source_file": "src\\app\\api\\progress-notes\\[id]\\route.js",
       "source_location": "L1",
       "id": "src_app_api_progress_notes_id_route_js",
-      "community": 1
+      "community": 0
     },
     {
       "label": "route.js",
@@ -1129,7 +1161,7 @@
       "source_file": "src\\app\\api\\reports\\[id]\\route.js",
       "source_location": "L1",
       "id": "src_app_api_reports_id_route_js",
-      "community": 1
+      "community": 0
     },
     {
       "label": "route.js",
@@ -1161,7 +1193,7 @@
       "source_file": "src\\app\\api\\settings\\config\\route.js",
       "source_location": "L1",
       "id": "src_app_api_settings_config_route_js",
-      "community": 1
+      "community": 0
     },
     {
       "label": "route.js",
@@ -1169,7 +1201,7 @@
       "source_file": "src\\app\\api\\settings\\organization\\route.js",
       "source_location": "L1",
       "id": "src_app_api_settings_organization_route_js",
-      "community": 1
+      "community": 0
     },
     {
       "label": "route.js",
@@ -1185,7 +1217,7 @@
       "source_file": "src\\app\\api\\settings\\services\\[id]\\route.js",
       "source_location": "L1",
       "id": "src_app_api_settings_services_id_route_js",
-      "community": 1
+      "community": 0
     },
     {
       "label": "route.js",
@@ -1201,7 +1233,7 @@
       "source_file": "src\\app\\api\\settings\\users\\[id]\\route.js",
       "source_location": "L1",
       "id": "src_app_api_settings_users_id_route_js",
-      "community": 1
+      "community": 0
     },
     {
       "label": "route.js",
@@ -1225,7 +1257,7 @@
       "source_file": "src\\app\\api\\staff\\[id]\\route.js",
       "source_location": "L1",
       "id": "src_app_api_staff_id_route_js",
-      "community": 1
+      "community": 0
     },
     {
       "label": "route.js",
@@ -1233,7 +1265,7 @@
       "source_file": "src\\app\\api\\staff\\[id]\\availability\\route.js",
       "source_location": "L1",
       "id": "src_app_api_staff_id_availability_route_js",
-      "community": 1
+      "community": 0
     },
     {
       "label": "route.js",
@@ -1241,7 +1273,7 @@
       "source_file": "src\\app\\api\\staff\\[id]\\avatar\\route.js",
       "source_location": "L1",
       "id": "src_app_api_staff_id_avatar_route_js",
-      "community": 1
+      "community": 0
     },
     {
       "label": "route.js",
@@ -1257,7 +1289,7 @@
       "source_file": "src\\app\\api\\staff\\[id]\\certifications\\[certId]\\route.js",
       "source_location": "L1",
       "id": "src_app_api_staff_id_certifications_certid_route_js",
-      "community": 1
+      "community": 0
     },
     {
       "label": "route.js",
@@ -1273,7 +1305,7 @@
       "source_file": "src\\app\\api\\staff\\[id]\\skills\\[skillId]\\route.js",
       "source_location": "L1",
       "id": "src_app_api_staff_id_skills_skillid_route_js",
-      "community": 1
+      "community": 0
     },
     {
       "label": "route.js",
@@ -1297,7 +1329,7 @@
       "source_file": "src\\app\\api\\visit-tasks\\[id]\\route.js",
       "source_location": "L1",
       "id": "src_app_api_visit_tasks_id_route_js",
-      "community": 1
+      "community": 0
     },
     {
       "label": "route.js",
@@ -1329,7 +1361,7 @@
       "source_file": "src\\app\\api\\visits\\[id]\\route.js",
       "source_location": "L1",
       "id": "src_app_api_visits_id_route_js",
-      "community": 1
+      "community": 0
     },
     {
       "label": "route.js",
@@ -1369,7 +1401,7 @@
       "source_file": "src\\app\\api\\vitals\\[id]\\route.js",
       "source_location": "L1",
       "id": "src_app_api_vitals_id_route_js",
-      "community": 1
+      "community": 0
     },
     {
       "label": "route.js",
@@ -1385,7 +1417,7 @@
       "source_file": "src\\components\\ErrorBoundary.jsx",
       "source_location": "L1",
       "id": "src_components_errorboundary_jsx",
-      "community": 5
+      "community": 6
     },
     {
       "label": "ErrorBoundary",
@@ -1393,7 +1425,7 @@
       "source_file": "src\\components\\ErrorBoundary.jsx",
       "source_location": "L4",
       "id": "errorboundary_errorboundary",
-      "community": 5
+      "community": 6
     },
     {
       "label": ".constructor()",
@@ -1401,7 +1433,7 @@
       "source_file": "src\\components\\ErrorBoundary.jsx",
       "source_location": "L5",
       "id": "errorboundary_errorboundary_constructor",
-      "community": 5
+      "community": 6
     },
     {
       "label": ".getDerivedStateFromError()",
@@ -1409,7 +1441,7 @@
       "source_file": "src\\components\\ErrorBoundary.jsx",
       "source_location": "L10",
       "id": "errorboundary_errorboundary_getderivedstatefromerror",
-      "community": 5
+      "community": 6
     },
     {
       "label": ".componentDidCatch()",
@@ -1417,7 +1449,7 @@
       "source_file": "src\\components\\ErrorBoundary.jsx",
       "source_location": "L14",
       "id": "errorboundary_errorboundary_componentdidcatch",
-      "community": 5
+      "community": 6
     },
     {
       "label": ".render()",
@@ -1425,7 +1457,7 @@
       "source_file": "src\\components\\ErrorBoundary.jsx",
       "source_location": "L18",
       "id": "errorboundary_errorboundary_render",
-      "community": 5
+      "community": 6
     },
     {
       "label": "providers.js",
@@ -1433,7 +1465,7 @@
       "source_file": "src\\components\\providers.js",
       "source_location": "L1",
       "id": "src_components_providers_js",
-      "community": 54
+      "community": 61
     },
     {
       "label": "ClientProviders()",
@@ -1441,7 +1473,7 @@
       "source_file": "src\\components\\providers.js",
       "source_location": "L6",
       "id": "providers_clientproviders",
-      "community": 54
+      "community": 61
     },
     {
       "label": "BillingSummary.jsx",
@@ -1449,7 +1481,7 @@
       "source_file": "src\\components\\billing\\BillingSummary.jsx",
       "source_location": "L1",
       "id": "src_components_billing_billingsummary_jsx",
-      "community": 55
+      "community": 62
     },
     {
       "label": "BillingSummary()",
@@ -1457,7 +1489,7 @@
       "source_file": "src\\components\\billing\\BillingSummary.jsx",
       "source_location": "L8",
       "id": "billingsummary_billingsummary",
-      "community": 55
+      "community": 62
     },
     {
       "label": "GenerateBatchModal.jsx",
@@ -1465,7 +1497,7 @@
       "source_file": "src\\components\\billing\\GenerateBatchModal.jsx",
       "source_location": "L1",
       "id": "src_components_billing_generatebatchmodal_jsx",
-      "community": 56
+      "community": 63
     },
     {
       "label": "GenerateBatchModal()",
@@ -1473,7 +1505,7 @@
       "source_file": "src\\components\\billing\\GenerateBatchModal.jsx",
       "source_location": "L9",
       "id": "generatebatchmodal_generatebatchmodal",
-      "community": 56
+      "community": 63
     },
     {
       "label": "ImportVisitsModal.jsx",
@@ -1481,7 +1513,7 @@
       "source_file": "src\\components\\billing\\ImportVisitsModal.jsx",
       "source_location": "L1",
       "id": "src_components_billing_importvisitsmodal_jsx",
-      "community": 57
+      "community": 64
     },
     {
       "label": "ImportVisitsModal()",
@@ -1489,7 +1521,7 @@
       "source_file": "src\\components\\billing\\ImportVisitsModal.jsx",
       "source_location": "L8",
       "id": "importvisitsmodal_importvisitsmodal",
-      "community": 57
+      "community": 64
     },
     {
       "label": "InsuranceClaimDetail.jsx",
@@ -1497,7 +1529,7 @@
       "source_file": "src\\components\\billing\\InsuranceClaimDetail.jsx",
       "source_location": "L1",
       "id": "src_components_billing_insuranceclaimdetail_jsx",
-      "community": 58
+      "community": 65
     },
     {
       "label": "InsuranceClaimDetail()",
@@ -1505,7 +1537,7 @@
       "source_file": "src\\components\\billing\\InsuranceClaimDetail.jsx",
       "source_location": "L45",
       "id": "insuranceclaimdetail_insuranceclaimdetail",
-      "community": 58
+      "community": 65
     },
     {
       "label": "InsuranceClaimForm.jsx",
@@ -1513,7 +1545,7 @@
       "source_file": "src\\components\\billing\\InsuranceClaimForm.jsx",
       "source_location": "L1",
       "id": "src_components_billing_insuranceclaimform_jsx",
-      "community": 59
+      "community": 66
     },
     {
       "label": "InsuranceClaimForm()",
@@ -1521,7 +1553,7 @@
       "source_file": "src\\components\\billing\\InsuranceClaimForm.jsx",
       "source_location": "L12",
       "id": "insuranceclaimform_insuranceclaimform",
-      "community": 59
+      "community": 66
     },
     {
       "label": "InsuranceClaimList.jsx",
@@ -1529,7 +1561,7 @@
       "source_file": "src\\components\\billing\\InsuranceClaimList.jsx",
       "source_location": "L1",
       "id": "src_components_billing_insuranceclaimlist_jsx",
-      "community": 60
+      "community": 67
     },
     {
       "label": "InsuranceClaimList()",
@@ -1537,7 +1569,7 @@
       "source_file": "src\\components\\billing\\InsuranceClaimList.jsx",
       "source_location": "L48",
       "id": "insuranceclaimlist_insuranceclaimlist",
-      "community": 60
+      "community": 67
     },
     {
       "label": "InvoiceDetail.jsx",
@@ -1545,7 +1577,7 @@
       "source_file": "src\\components\\billing\\InvoiceDetail.jsx",
       "source_location": "L1",
       "id": "src_components_billing_invoicedetail_jsx",
-      "community": 61
+      "community": 68
     },
     {
       "label": "InvoiceDetail()",
@@ -1553,7 +1585,7 @@
       "source_file": "src\\components\\billing\\InvoiceDetail.jsx",
       "source_location": "L20",
       "id": "invoicedetail_invoicedetail",
-      "community": 61
+      "community": 68
     },
     {
       "label": "InvoiceForm.jsx",
@@ -1561,7 +1593,7 @@
       "source_file": "src\\components\\billing\\InvoiceForm.jsx",
       "source_location": "L1",
       "id": "src_components_billing_invoiceform_jsx",
-      "community": 62
+      "community": 69
     },
     {
       "label": "InvoiceForm()",
@@ -1569,7 +1601,7 @@
       "source_file": "src\\components\\billing\\InvoiceForm.jsx",
       "source_location": "L12",
       "id": "invoiceform_invoiceform",
-      "community": 62
+      "community": 69
     },
     {
       "label": "InvoiceLineItems.jsx",
@@ -1577,7 +1609,7 @@
       "source_file": "src\\components\\billing\\InvoiceLineItems.jsx",
       "source_location": "L1",
       "id": "src_components_billing_invoicelineitems_jsx",
-      "community": 15
+      "community": 19
     },
     {
       "label": "createDefaultItems()",
@@ -1585,7 +1617,7 @@
       "source_file": "src\\components\\billing\\InvoiceLineItems.jsx",
       "source_location": "L7",
       "id": "invoicelineitems_createdefaultitems",
-      "community": 15
+      "community": 19
     },
     {
       "label": "InvoiceLineItems()",
@@ -1593,7 +1625,7 @@
       "source_file": "src\\components\\billing\\InvoiceLineItems.jsx",
       "source_location": "L18",
       "id": "invoicelineitems_invoicelineitems",
-      "community": 15
+      "community": 19
     },
     {
       "label": "InvoiceList.jsx",
@@ -1601,7 +1633,7 @@
       "source_file": "src\\components\\billing\\InvoiceList.jsx",
       "source_location": "L1",
       "id": "src_components_billing_invoicelist_jsx",
-      "community": 63
+      "community": 70
     },
     {
       "label": "InvoiceList()",
@@ -1609,7 +1641,7 @@
       "source_file": "src\\components\\billing\\InvoiceList.jsx",
       "source_location": "L38",
       "id": "invoicelist_invoicelist",
-      "community": 63
+      "community": 70
     },
     {
       "label": "PaymentForm.jsx",
@@ -1617,7 +1649,7 @@
       "source_file": "src\\components\\billing\\PaymentForm.jsx",
       "source_location": "L1",
       "id": "src_components_billing_paymentform_jsx",
-      "community": 64
+      "community": 71
     },
     {
       "label": "PaymentForm()",
@@ -1625,7 +1657,7 @@
       "source_file": "src\\components\\billing\\PaymentForm.jsx",
       "source_location": "L17",
       "id": "paymentform_paymentform",
-      "community": 64
+      "community": 71
     },
     {
       "label": "PaymentList.jsx",
@@ -1633,7 +1665,7 @@
       "source_file": "src\\components\\billing\\PaymentList.jsx",
       "source_location": "L1",
       "id": "src_components_billing_paymentlist_jsx",
-      "community": 65
+      "community": 72
     },
     {
       "label": "PaymentList()",
@@ -1641,7 +1673,7 @@
       "source_file": "src\\components\\billing\\PaymentList.jsx",
       "source_location": "L20",
       "id": "paymentlist_paymentlist",
-      "community": 65
+      "community": 72
     },
     {
       "label": "AddProgressNoteModal.jsx",
@@ -1649,7 +1681,7 @@
       "source_file": "src\\components\\care-delivery\\AddProgressNoteModal.jsx",
       "source_location": "L1",
       "id": "src_components_care_delivery_addprogressnotemodal_jsx",
-      "community": 66
+      "community": 73
     },
     {
       "label": "AddProgressNoteModal()",
@@ -1657,7 +1689,7 @@
       "source_file": "src\\components\\care-delivery\\AddProgressNoteModal.jsx",
       "source_location": "L13",
       "id": "addprogressnotemodal_addprogressnotemodal",
-      "community": 66
+      "community": 73
     },
     {
       "label": "care-delivery.helpers.js",
@@ -1665,7 +1697,7 @@
       "source_file": "src\\components\\care-delivery\\care-delivery.helpers.js",
       "source_location": "L1",
       "id": "src_components_care_delivery_care_delivery_helpers_js",
-      "community": 7
+      "community": 9
     },
     {
       "label": "resolveCareDeliveryTab()",
@@ -1673,7 +1705,7 @@
       "source_file": "src\\components\\care-delivery\\care-delivery.helpers.js",
       "source_location": "L12",
       "id": "care_delivery_helpers_resolvecaredeliverytab",
-      "community": 7
+      "community": 9
     },
     {
       "label": "buildCareDeliveryClientPath()",
@@ -1681,7 +1713,7 @@
       "source_file": "src\\components\\care-delivery\\care-delivery.helpers.js",
       "source_location": "L16",
       "id": "care_delivery_helpers_buildcaredeliveryclientpath",
-      "community": 7
+      "community": 9
     },
     {
       "label": "buildCareDeliveryFormPath()",
@@ -1689,7 +1721,7 @@
       "source_file": "src\\components\\care-delivery\\care-delivery.helpers.js",
       "source_location": "L27",
       "id": "care_delivery_helpers_buildcaredeliveryformpath",
-      "community": 7
+      "community": 9
     },
     {
       "label": "resolveCareDeliveryReturnTo()",
@@ -1697,7 +1729,7 @@
       "source_file": "src\\components\\care-delivery\\care-delivery.helpers.js",
       "source_location": "L38",
       "id": "care_delivery_helpers_resolvecaredeliveryreturnto",
-      "community": 7
+      "community": 9
     },
     {
       "label": "CareDeliveryLayout.jsx",
@@ -1705,7 +1737,7 @@
       "source_file": "src\\components\\care-delivery\\CareDeliveryLayout.jsx",
       "source_location": "L1",
       "id": "src_components_care_delivery_caredeliverylayout_jsx",
-      "community": 67
+      "community": 74
     },
     {
       "label": "CareDeliveryLayout()",
@@ -1713,7 +1745,7 @@
       "source_file": "src\\components\\care-delivery\\CareDeliveryLayout.jsx",
       "source_location": "L6",
       "id": "caredeliverylayout_caredeliverylayout",
-      "community": 67
+      "community": 74
     },
     {
       "label": "CareDeliveryList.jsx",
@@ -1721,7 +1753,7 @@
       "source_file": "src\\components\\care-delivery\\CareDeliveryList.jsx",
       "source_location": "L1",
       "id": "src_components_care_delivery_caredeliverylist_jsx",
-      "community": 16
+      "community": 20
     },
     {
       "label": "formatInitials()",
@@ -1729,7 +1761,7 @@
       "source_file": "src\\components\\care-delivery\\CareDeliveryList.jsx",
       "source_location": "L35",
       "id": "caredeliverylist_formatinitials",
-      "community": 16
+      "community": 20
     },
     {
       "label": "CareDeliveryList()",
@@ -1737,7 +1769,7 @@
       "source_file": "src\\components\\care-delivery\\CareDeliveryList.jsx",
       "source_location": "L39",
       "id": "caredeliverylist_caredeliverylist",
-      "community": 16
+      "community": 20
     },
     {
       "label": "CareDeliveryWorkspace.jsx",
@@ -1745,7 +1777,7 @@
       "source_file": "src\\components\\care-delivery\\CareDeliveryWorkspace.jsx",
       "source_location": "L1",
       "id": "src_components_care_delivery_caredeliveryworkspace_jsx",
-      "community": 17
+      "community": 21
     },
     {
       "label": "formatInitials()",
@@ -1753,7 +1785,7 @@
       "source_file": "src\\components\\care-delivery\\CareDeliveryWorkspace.jsx",
       "source_location": "L20",
       "id": "caredeliveryworkspace_formatinitials",
-      "community": 17
+      "community": 21
     },
     {
       "label": "CareDeliveryWorkspace()",
@@ -1761,7 +1793,7 @@
       "source_file": "src\\components\\care-delivery\\CareDeliveryWorkspace.jsx",
       "source_location": "L24",
       "id": "caredeliveryworkspace_caredeliveryworkspace",
-      "community": 17
+      "community": 21
     },
     {
       "label": "DrugInteractionAlert.jsx",
@@ -1769,7 +1801,7 @@
       "source_file": "src\\components\\care-delivery\\DrugInteractionAlert.jsx",
       "source_location": "L1",
       "id": "src_components_care_delivery_druginteractionalert_jsx",
-      "community": 68
+      "community": 75
     },
     {
       "label": "DrugInteractionAlert()",
@@ -1777,7 +1809,7 @@
       "source_file": "src\\components\\care-delivery\\DrugInteractionAlert.jsx",
       "source_location": "L12",
       "id": "druginteractionalert_druginteractionalert",
-      "community": 68
+      "community": 75
     },
     {
       "label": "edit-visit-forms.helpers.js",
@@ -1785,7 +1817,7 @@
       "source_file": "src\\components\\care-delivery\\edit-visit-forms.helpers.js",
       "source_location": "L1",
       "id": "src_components_care_delivery_edit_visit_forms_helpers_js",
-      "community": 18
+      "community": 22
     },
     {
       "label": "buildVisitFormSections()",
@@ -1793,7 +1825,7 @@
       "source_file": "src\\components\\care-delivery\\edit-visit-forms.helpers.js",
       "source_location": "L1",
       "id": "edit_visit_forms_helpers_buildvisitformsections",
-      "community": 18
+      "community": 22
     },
     {
       "label": "getVisitFormAction()",
@@ -1801,7 +1833,7 @@
       "source_file": "src\\components\\care-delivery\\edit-visit-forms.helpers.js",
       "source_location": "L17",
       "id": "edit_visit_forms_helpers_getvisitformaction",
-      "community": 18
+      "community": 22
     },
     {
       "label": "EditVisitDialog.jsx",
@@ -1809,7 +1841,7 @@
       "source_file": "src\\components\\care-delivery\\EditVisitDialog.jsx",
       "source_location": "L1",
       "id": "src_components_care_delivery_editvisitdialog_jsx",
-      "community": 69
+      "community": 76
     },
     {
       "label": "EditVisitDialog()",
@@ -1817,7 +1849,7 @@
       "source_file": "src\\components\\care-delivery\\EditVisitDialog.jsx",
       "source_location": "L26",
       "id": "editvisitdialog_editvisitdialog",
-      "community": 69
+      "community": 76
     },
     {
       "label": "EditVisitFormsTab.jsx",
@@ -1825,7 +1857,7 @@
       "source_file": "src\\components\\care-delivery\\EditVisitFormsTab.jsx",
       "source_location": "L1",
       "id": "src_components_care_delivery_editvisitformstab_jsx",
-      "community": 19
+      "community": 23
     },
     {
       "label": "FormSection()",
@@ -1833,7 +1865,7 @@
       "source_file": "src\\components\\care-delivery\\EditVisitFormsTab.jsx",
       "source_location": "L13",
       "id": "editvisitformstab_formsection",
-      "community": 19
+      "community": 23
     },
     {
       "label": "EditVisitFormsTab()",
@@ -1841,7 +1873,7 @@
       "source_file": "src\\components\\care-delivery\\EditVisitFormsTab.jsx",
       "source_location": "L135",
       "id": "editvisitformstab_editvisitformstab",
-      "community": 19
+      "community": 23
     },
     {
       "label": "EditVisitNotesTab.jsx",
@@ -1849,7 +1881,7 @@
       "source_file": "src\\components\\care-delivery\\EditVisitNotesTab.jsx",
       "source_location": "L1",
       "id": "src_components_care_delivery_editvisitnotestab_jsx",
-      "community": 70
+      "community": 77
     },
     {
       "label": "EditVisitNotesTab()",
@@ -1857,7 +1889,7 @@
       "source_file": "src\\components\\care-delivery\\EditVisitNotesTab.jsx",
       "source_location": "L5",
       "id": "editvisitnotestab_editvisitnotestab",
-      "community": 70
+      "community": 77
     },
     {
       "label": "EditVisitTasksTab.jsx",
@@ -1865,7 +1897,7 @@
       "source_file": "src\\components\\care-delivery\\EditVisitTasksTab.jsx",
       "source_location": "L1",
       "id": "src_components_care_delivery_editvisittaskstab_jsx",
-      "community": 71
+      "community": 78
     },
     {
       "label": "VisitTasksTab()",
@@ -1873,7 +1905,7 @@
       "source_file": "src\\components\\care-delivery\\EditVisitTasksTab.jsx",
       "source_location": "L7",
       "id": "editvisittaskstab_visittaskstab",
-      "community": 71
+      "community": 78
     },
     {
       "label": "FormFieldRenderer.jsx",
@@ -1881,7 +1913,7 @@
       "source_file": "src\\components\\care-delivery\\FormFieldRenderer.jsx",
       "source_location": "L1",
       "id": "src_components_care_delivery_formfieldrenderer_jsx",
-      "community": 72
+      "community": 79
     },
     {
       "label": "FormFieldRenderer()",
@@ -1889,7 +1921,7 @@
       "source_file": "src\\components\\care-delivery\\FormFieldRenderer.jsx",
       "source_location": "L5",
       "id": "formfieldrenderer_formfieldrenderer",
-      "community": 72
+      "community": 79
     },
     {
       "label": "forms-review-layout.helpers.js",
@@ -1897,7 +1929,7 @@
       "source_file": "src\\components\\care-delivery\\forms-review-layout.helpers.js",
       "source_location": "L1",
       "id": "src_components_care_delivery_forms_review_layout_helpers_js",
-      "community": 73
+      "community": 80
     },
     {
       "label": "buildFormsReviewFilterRows()",
@@ -1905,7 +1937,7 @@
       "source_file": "src\\components\\care-delivery\\forms-review-layout.helpers.js",
       "source_location": "L1",
       "id": "forms_review_layout_helpers_buildformsreviewfilterrows",
-      "community": 73
+      "community": 80
     },
     {
       "label": "forms-review.helpers.js",
@@ -1913,7 +1945,7 @@
       "source_file": "src\\components\\care-delivery\\forms-review.helpers.js",
       "source_location": "L1",
       "id": "src_components_care_delivery_forms_review_helpers_js",
-      "community": 74
+      "community": 81
     },
     {
       "label": "buildReviewQueueFilters()",
@@ -1921,7 +1953,7 @@
       "source_file": "src\\components\\care-delivery\\forms-review.helpers.js",
       "source_location": "L1",
       "id": "forms_review_helpers_buildreviewqueuefilters",
-      "community": 74
+      "community": 81
     },
     {
       "label": "FormsReviewQueue.jsx",
@@ -1929,7 +1961,7 @@
       "source_file": "src\\components\\care-delivery\\FormsReviewQueue.jsx",
       "source_location": "L1",
       "id": "src_components_care_delivery_formsreviewqueue_jsx",
-      "community": 9
+      "community": 10
     },
     {
       "label": "formatClientName()",
@@ -1937,7 +1969,7 @@
       "source_file": "src\\components\\care-delivery\\FormsReviewQueue.jsx",
       "source_location": "L40",
       "id": "formsreviewqueue_formatclientname",
-      "community": 9
+      "community": 10
     },
     {
       "label": "formatStatusLabel()",
@@ -1945,7 +1977,7 @@
       "source_file": "src\\components\\care-delivery\\FormsReviewQueue.jsx",
       "source_location": "L48",
       "id": "formsreviewqueue_formatstatuslabel",
-      "community": 9
+      "community": 10
     },
     {
       "label": "FormsReviewQueue()",
@@ -1953,7 +1985,7 @@
       "source_file": "src\\components\\care-delivery\\FormsReviewQueue.jsx",
       "source_location": "L52",
       "id": "formsreviewqueue_formsreviewqueue",
-      "community": 9
+      "community": 10
     },
     {
       "label": "medication-administration.helpers.js",
@@ -1961,7 +1993,7 @@
       "source_file": "src\\components\\care-delivery\\medication-administration.helpers.js",
       "source_location": "L1",
       "id": "src_components_care_delivery_medication_administration_helpers_js",
-      "community": 10
+      "community": 11
     },
     {
       "label": "trimText()",
@@ -1969,7 +2001,7 @@
       "source_file": "src\\components\\care-delivery\\medication-administration.helpers.js",
       "source_location": "L1",
       "id": "medication_administration_helpers_trimtext",
-      "community": 10
+      "community": 11
     },
     {
       "label": "formatAdministrationVisitLabel()",
@@ -1977,7 +2009,7 @@
       "source_file": "src\\components\\care-delivery\\medication-administration.helpers.js",
       "source_location": "L5",
       "id": "medication_administration_helpers_formatadministrationvisitlabel",
-      "community": 10
+      "community": 11
     },
     {
       "label": "buildMedicationAdministrationPayload()",
@@ -1985,7 +2017,7 @@
       "source_file": "src\\components\\care-delivery\\medication-administration.helpers.js",
       "source_location": "L24",
       "id": "medication_administration_helpers_buildmedicationadministrationpayload",
-      "community": 10
+      "community": 11
     },
     {
       "label": "MedicationReconciliation.jsx",
@@ -1993,7 +2025,7 @@
       "source_file": "src\\components\\care-delivery\\MedicationReconciliation.jsx",
       "source_location": "L1",
       "id": "src_components_care_delivery_medicationreconciliation_jsx",
-      "community": 75
+      "community": 82
     },
     {
       "label": "MedicationReconciliation()",
@@ -2001,7 +2033,7 @@
       "source_file": "src\\components\\care-delivery\\MedicationReconciliation.jsx",
       "source_location": "L6",
       "id": "medicationreconciliation_medicationreconciliation",
-      "community": 75
+      "community": 82
     },
     {
       "label": "ProgressNotesTab.jsx",
@@ -2009,7 +2041,7 @@
       "source_file": "src\\components\\care-delivery\\ProgressNotesTab.jsx",
       "source_location": "L1",
       "id": "src_components_care_delivery_progressnotestab_jsx",
-      "community": 76
+      "community": 83
     },
     {
       "label": "ProgressNotesTab()",
@@ -2017,7 +2049,7 @@
       "source_file": "src\\components\\care-delivery\\ProgressNotesTab.jsx",
       "source_location": "L14",
       "id": "progressnotestab_progressnotestab",
-      "community": 76
+      "community": 83
     },
     {
       "label": "TasksView.jsx",
@@ -2025,7 +2057,7 @@
       "source_file": "src\\components\\care-delivery\\TasksView.jsx",
       "source_location": "L1",
       "id": "src_components_care_delivery_tasksview_jsx",
-      "community": 77
+      "community": 84
     },
     {
       "label": "TasksView()",
@@ -2033,7 +2065,7 @@
       "source_file": "src\\components\\care-delivery\\TasksView.jsx",
       "source_location": "L21",
       "id": "tasksview_tasksview",
-      "community": 77
+      "community": 84
     },
     {
       "label": "VisitNotesTab.jsx",
@@ -2041,7 +2073,7 @@
       "source_file": "src\\components\\care-delivery\\VisitNotesTab.jsx",
       "source_location": "L1",
       "id": "src_components_care_delivery_visitnotestab_jsx",
-      "community": 78
+      "community": 85
     },
     {
       "label": "VisitNotesTab()",
@@ -2049,7 +2081,7 @@
       "source_file": "src\\components\\care-delivery\\VisitNotesTab.jsx",
       "source_location": "L6",
       "id": "visitnotestab_visitnotestab",
-      "community": 78
+      "community": 85
     },
     {
       "label": "VisitReportBuilder.jsx",
@@ -2057,7 +2089,7 @@
       "source_file": "src\\components\\care-delivery\\VisitReportBuilder.jsx",
       "source_location": "L1",
       "id": "src_components_care_delivery_visitreportbuilder_jsx",
-      "community": 79
+      "community": 86
     },
     {
       "label": "VisitReportBuilder()",
@@ -2065,7 +2097,7 @@
       "source_file": "src\\components\\care-delivery\\VisitReportBuilder.jsx",
       "source_location": "L12",
       "id": "visitreportbuilder_visitreportbuilder",
-      "community": 79
+      "community": 86
     },
     {
       "label": "VisitReportsTab.jsx",
@@ -2073,7 +2105,7 @@
       "source_file": "src\\components\\care-delivery\\VisitReportsTab.jsx",
       "source_location": "L1",
       "id": "src_components_care_delivery_visitreportstab_jsx",
-      "community": 80
+      "community": 87
     },
     {
       "label": "VisitReportsTab()",
@@ -2081,7 +2113,7 @@
       "source_file": "src\\components\\care-delivery\\VisitReportsTab.jsx",
       "source_location": "L12",
       "id": "visitreportstab_visitreportstab",
-      "community": 80
+      "community": 87
     },
     {
       "label": "VitalsChart.jsx",
@@ -2089,7 +2121,7 @@
       "source_file": "src\\components\\care-delivery\\VitalsChart.jsx",
       "source_location": "L1",
       "id": "src_components_care_delivery_vitalschart_jsx",
-      "community": 81
+      "community": 88
     },
     {
       "label": "VitalsChart()",
@@ -2097,7 +2129,7 @@
       "source_file": "src\\components\\care-delivery\\VitalsChart.jsx",
       "source_location": "L7",
       "id": "vitalschart_vitalschart",
-      "community": 81
+      "community": 88
     },
     {
       "label": "VitalsEntryForm.jsx",
@@ -2105,7 +2137,7 @@
       "source_file": "src\\components\\care-delivery\\VitalsEntryForm.jsx",
       "source_location": "L1",
       "id": "src_components_care_delivery_vitalsentryform_jsx",
-      "community": 82
+      "community": 89
     },
     {
       "label": "VitalsEntryForm()",
@@ -2113,7 +2145,7 @@
       "source_file": "src\\components\\care-delivery\\VitalsEntryForm.jsx",
       "source_location": "L6",
       "id": "vitalsentryform_vitalsentryform",
-      "community": 82
+      "community": 89
     },
     {
       "label": "VitalsTab.jsx",
@@ -2121,7 +2153,7 @@
       "source_file": "src\\components\\care-delivery\\VitalsTab.jsx",
       "source_location": "L1",
       "id": "src_components_care_delivery_vitalstab_jsx",
-      "community": 83
+      "community": 90
     },
     {
       "label": "VitalsTab()",
@@ -2129,7 +2161,7 @@
       "source_file": "src\\components\\care-delivery\\VitalsTab.jsx",
       "source_location": "L20",
       "id": "vitalstab_vitalstab",
-      "community": 83
+      "community": 90
     },
     {
       "label": "CarePlanForm.jsx",
@@ -2137,7 +2169,7 @@
       "source_file": "src\\components\\care-plans\\CarePlanForm.jsx",
       "source_location": "L1",
       "id": "src_components_care_plans_careplanform_jsx",
-      "community": 84
+      "community": 91
     },
     {
       "label": "CarePlanForm()",
@@ -2145,7 +2177,7 @@
       "source_file": "src\\components\\care-plans\\CarePlanForm.jsx",
       "source_location": "L8",
       "id": "careplanform_careplanform",
-      "community": 84
+      "community": 91
     },
     {
       "label": "ClientCarePlansTab.jsx",
@@ -2153,7 +2185,7 @@
       "source_file": "src\\components\\clients\\ClientCarePlansTab.jsx",
       "source_location": "L1",
       "id": "src_components_clients_clientcareplanstab_jsx",
-      "community": 85
+      "community": 92
     },
     {
       "label": "ClientCarePlansTab()",
@@ -2161,7 +2193,7 @@
       "source_file": "src\\components\\clients\\ClientCarePlansTab.jsx",
       "source_location": "L10",
       "id": "clientcareplanstab_clientcareplanstab",
-      "community": 85
+      "community": 92
     },
     {
       "label": "ClientDocumentsTab.jsx",
@@ -2169,7 +2201,7 @@
       "source_file": "src\\components\\clients\\ClientDocumentsTab.jsx",
       "source_location": "L1",
       "id": "src_components_clients_clientdocumentstab_jsx",
-      "community": 86
+      "community": 93
     },
     {
       "label": "ClientDocumentsTab()",
@@ -2177,7 +2209,7 @@
       "source_file": "src\\components\\clients\\ClientDocumentsTab.jsx",
       "source_location": "L8",
       "id": "clientdocumentstab_clientdocumentstab",
-      "community": 86
+      "community": 93
     },
     {
       "label": "ClientForm.jsx",
@@ -2185,15 +2217,15 @@
       "source_file": "src\\components\\clients\\ClientForm.jsx",
       "source_location": "L1",
       "id": "src_components_clients_clientform_jsx",
-      "community": 87
+      "community": 94
     },
     {
       "label": "ClientForm()",
       "file_type": "code",
       "source_file": "src\\components\\clients\\ClientForm.jsx",
-      "source_location": "L47",
+      "source_location": "L48",
       "id": "clientform_clientform",
-      "community": 87
+      "community": 94
     },
     {
       "label": "ClientFormsTab.jsx",
@@ -2201,7 +2233,7 @@
       "source_file": "src\\components\\clients\\ClientFormsTab.jsx",
       "source_location": "L1",
       "id": "src_components_clients_clientformstab_jsx",
-      "community": 88
+      "community": 95
     },
     {
       "label": "ClientFormsTab()",
@@ -2209,7 +2241,7 @@
       "source_file": "src\\components\\clients\\ClientFormsTab.jsx",
       "source_location": "L29",
       "id": "clientformstab_clientformstab",
-      "community": 88
+      "community": 95
     },
     {
       "label": "ClientList.jsx",
@@ -2217,7 +2249,7 @@
       "source_file": "src\\components\\clients\\ClientList.jsx",
       "source_location": "L1",
       "id": "src_components_clients_clientlist_jsx",
-      "community": 89
+      "community": 96
     },
     {
       "label": "ClientList()",
@@ -2225,7 +2257,7 @@
       "source_file": "src\\components\\clients\\ClientList.jsx",
       "source_location": "L45",
       "id": "clientlist_clientlist",
-      "community": 89
+      "community": 96
     },
     {
       "label": "ClientMedicalTab.jsx",
@@ -2233,7 +2265,7 @@
       "source_file": "src\\components\\clients\\ClientMedicalTab.jsx",
       "source_location": "L1",
       "id": "src_components_clients_clientmedicaltab_jsx",
-      "community": 90
+      "community": 97
     },
     {
       "label": "ClientMedicalTab()",
@@ -2241,7 +2273,7 @@
       "source_file": "src\\components\\clients\\ClientMedicalTab.jsx",
       "source_location": "L9",
       "id": "clientmedicaltab_clientmedicaltab",
-      "community": 90
+      "community": 97
     },
     {
       "label": "ClientOverviewTab.jsx",
@@ -2249,7 +2281,7 @@
       "source_file": "src\\components\\clients\\ClientOverviewTab.jsx",
       "source_location": "L1",
       "id": "src_components_clients_clientoverviewtab_jsx",
-      "community": 91
+      "community": 98
     },
     {
       "label": "ClientOverviewTab()",
@@ -2257,7 +2289,7 @@
       "source_file": "src\\components\\clients\\ClientOverviewTab.jsx",
       "source_location": "L4",
       "id": "clientoverviewtab_clientoverviewtab",
-      "community": 91
+      "community": 98
     },
     {
       "label": "ClientProfile.jsx",
@@ -2265,15 +2297,15 @@
       "source_file": "src\\components\\clients\\ClientProfile.jsx",
       "source_location": "L1",
       "id": "src_components_clients_clientprofile_jsx",
-      "community": 92
+      "community": 99
     },
     {
       "label": "ClientProfilePage()",
       "file_type": "code",
       "source_file": "src\\components\\clients\\ClientProfile.jsx",
-      "source_location": "L34",
+      "source_location": "L36",
       "id": "clientprofile_clientprofilepage",
-      "community": 92
+      "community": 99
     },
     {
       "label": "ClientVisitsTab.jsx",
@@ -2281,7 +2313,7 @@
       "source_file": "src\\components\\clients\\ClientVisitsTab.jsx",
       "source_location": "L1",
       "id": "src_components_clients_clientvisitstab_jsx",
-      "community": 93
+      "community": 100
     },
     {
       "label": "ClientVisitsTab()",
@@ -2289,7 +2321,7 @@
       "source_file": "src\\components\\clients\\ClientVisitsTab.jsx",
       "source_location": "L18",
       "id": "clientvisitstab_clientvisitstab",
-      "community": 93
+      "community": 100
     },
     {
       "label": "AlertsPanel.jsx",
@@ -2297,7 +2329,7 @@
       "source_file": "src\\components\\dashboard\\AlertsPanel.jsx",
       "source_location": "L1",
       "id": "src_components_dashboard_alertspanel_jsx",
-      "community": 94
+      "community": 101
     },
     {
       "label": "AlertsPanel()",
@@ -2305,7 +2337,7 @@
       "source_file": "src\\components\\dashboard\\AlertsPanel.jsx",
       "source_location": "L6",
       "id": "alertspanel_alertspanel",
-      "community": 94
+      "community": 101
     },
     {
       "label": "EVVWidget.jsx",
@@ -2313,7 +2345,7 @@
       "source_file": "src\\components\\dashboard\\EVVWidget.jsx",
       "source_location": "L1",
       "id": "src_components_dashboard_evvwidget_jsx",
-      "community": 95
+      "community": 102
     },
     {
       "label": "EVVWidget()",
@@ -2321,7 +2353,7 @@
       "source_file": "src\\components\\dashboard\\EVVWidget.jsx",
       "source_location": "L7",
       "id": "evvwidget_evvwidget",
-      "community": 95
+      "community": 102
     },
     {
       "label": "MetricsGrid.jsx",
@@ -2329,7 +2361,7 @@
       "source_file": "src\\components\\dashboard\\MetricsGrid.jsx",
       "source_location": "L1",
       "id": "src_components_dashboard_metricsgrid_jsx",
-      "community": 96
+      "community": 103
     },
     {
       "label": "MetricsGrid()",
@@ -2337,7 +2369,7 @@
       "source_file": "src\\components\\dashboard\\MetricsGrid.jsx",
       "source_location": "L7",
       "id": "metricsgrid_metricsgrid",
-      "community": 96
+      "community": 103
     },
     {
       "label": "RecentInvoices.jsx",
@@ -2345,7 +2377,7 @@
       "source_file": "src\\components\\dashboard\\RecentInvoices.jsx",
       "source_location": "L1",
       "id": "src_components_dashboard_recentinvoices_jsx",
-      "community": 97
+      "community": 104
     },
     {
       "label": "RecentInvoices()",
@@ -2353,7 +2385,7 @@
       "source_file": "src\\components\\dashboard\\RecentInvoices.jsx",
       "source_location": "L7",
       "id": "recentinvoices_recentinvoices",
-      "community": 97
+      "community": 104
     },
     {
       "label": "RevenueChart.jsx",
@@ -2361,7 +2393,7 @@
       "source_file": "src\\components\\dashboard\\RevenueChart.jsx",
       "source_location": "L1",
       "id": "src_components_dashboard_revenuechart_jsx",
-      "community": 98
+      "community": 105
     },
     {
       "label": "RevenueChart()",
@@ -2369,7 +2401,7 @@
       "source_file": "src\\components\\dashboard\\RevenueChart.jsx",
       "source_location": "L15",
       "id": "revenuechart_revenuechart",
-      "community": 98
+      "community": 105
     },
     {
       "label": "UpcomingShifts.jsx",
@@ -2377,7 +2409,7 @@
       "source_file": "src\\components\\dashboard\\UpcomingShifts.jsx",
       "source_location": "L1",
       "id": "src_components_dashboard_upcomingshifts_jsx",
-      "community": 99
+      "community": 106
     },
     {
       "label": "UpcomingShifts()",
@@ -2385,7 +2417,7 @@
       "source_file": "src\\components\\dashboard\\UpcomingShifts.jsx",
       "source_location": "L7",
       "id": "upcomingshifts_upcomingshifts",
-      "community": 99
+      "community": 106
     },
     {
       "label": "VisitChart.jsx",
@@ -2393,7 +2425,7 @@
       "source_file": "src\\components\\dashboard\\VisitChart.jsx",
       "source_location": "L1",
       "id": "src_components_dashboard_visitchart_jsx",
-      "community": 100
+      "community": 107
     },
     {
       "label": "VisitChart()",
@@ -2401,7 +2433,7 @@
       "source_file": "src\\components\\dashboard\\VisitChart.jsx",
       "source_location": "L15",
       "id": "visitchart_visitchart",
-      "community": 100
+      "community": 107
     },
     {
       "label": "Breadcrumb.jsx",
@@ -2409,7 +2441,7 @@
       "source_file": "src\\components\\layout\\Breadcrumb.jsx",
       "source_location": "L1",
       "id": "src_components_layout_breadcrumb_jsx",
-      "community": 101
+      "community": 108
     },
     {
       "label": "Breadcrumb()",
@@ -2417,7 +2449,7 @@
       "source_file": "src\\components\\layout\\Breadcrumb.jsx",
       "source_location": "L24",
       "id": "breadcrumb_breadcrumb",
-      "community": 101
+      "community": 108
     },
     {
       "label": "LoadingSpinner.jsx",
@@ -2425,7 +2457,7 @@
       "source_file": "src\\components\\layout\\LoadingSpinner.jsx",
       "source_location": "L1",
       "id": "src_components_layout_loadingspinner_jsx",
-      "community": 102
+      "community": 109
     },
     {
       "label": "LoadingSpinner()",
@@ -2433,7 +2465,7 @@
       "source_file": "src\\components\\layout\\LoadingSpinner.jsx",
       "source_location": "L1",
       "id": "loadingspinner_loadingspinner",
-      "community": 102
+      "community": 109
     },
     {
       "label": "Sidebar.jsx",
@@ -2441,7 +2473,7 @@
       "source_file": "src\\components\\layout\\Sidebar.jsx",
       "source_location": "L1",
       "id": "src_components_layout_sidebar_jsx",
-      "community": 103
+      "community": 110
     },
     {
       "label": "Sidebar()",
@@ -2449,7 +2481,7 @@
       "source_file": "src\\components\\layout\\Sidebar.jsx",
       "source_location": "L42",
       "id": "sidebar_sidebar",
-      "community": 103
+      "community": 110
     },
     {
       "label": "TopBar.jsx",
@@ -2457,7 +2489,7 @@
       "source_file": "src\\components\\layout\\TopBar.jsx",
       "source_location": "L1",
       "id": "src_components_layout_topbar_jsx",
-      "community": 104
+      "community": 111
     },
     {
       "label": "TopBar()",
@@ -2465,7 +2497,7 @@
       "source_file": "src\\components\\layout\\TopBar.jsx",
       "source_location": "L10",
       "id": "topbar_topbar",
-      "community": 104
+      "community": 111
     },
     {
       "label": "NotificationDropdown.jsx",
@@ -2473,7 +2505,7 @@
       "source_file": "src\\components\\notifications\\NotificationDropdown.jsx",
       "source_location": "L1",
       "id": "src_components_notifications_notificationdropdown_jsx",
-      "community": 105
+      "community": 112
     },
     {
       "label": "NotificationDropdown()",
@@ -2481,7 +2513,7 @@
       "source_file": "src\\components\\notifications\\NotificationDropdown.jsx",
       "source_location": "L15",
       "id": "notificationdropdown_notificationdropdown",
-      "community": 105
+      "community": 112
     },
     {
       "label": "NotificationItem.jsx",
@@ -2489,7 +2521,7 @@
       "source_file": "src\\components\\notifications\\NotificationItem.jsx",
       "source_location": "L1",
       "id": "src_components_notifications_notificationitem_jsx",
-      "community": 106
+      "community": 113
     },
     {
       "label": "NotificationItem()",
@@ -2497,7 +2529,7 @@
       "source_file": "src\\components\\notifications\\NotificationItem.jsx",
       "source_location": "L25",
       "id": "notificationitem_notificationitem",
-      "community": 106
+      "community": 113
     },
     {
       "label": "NotificationList.jsx",
@@ -2505,7 +2537,7 @@
       "source_file": "src\\components\\notifications\\NotificationList.jsx",
       "source_location": "L1",
       "id": "src_components_notifications_notificationlist_jsx",
-      "community": 107
+      "community": 114
     },
     {
       "label": "NotificationList()",
@@ -2513,7 +2545,7 @@
       "source_file": "src\\components\\notifications\\NotificationList.jsx",
       "source_location": "L17",
       "id": "notificationlist_notificationlist",
-      "community": 107
+      "community": 114
     },
     {
       "label": "ExportAccountingModal.jsx",
@@ -2521,7 +2553,7 @@
       "source_file": "src\\components\\payroll\\ExportAccountingModal.jsx",
       "source_location": "L1",
       "id": "src_components_payroll_exportaccountingmodal_jsx",
-      "community": 108
+      "community": 115
     },
     {
       "label": "ExportAccountingModal()",
@@ -2529,7 +2561,7 @@
       "source_file": "src\\components\\payroll\\ExportAccountingModal.jsx",
       "source_location": "L34",
       "id": "exportaccountingmodal_exportaccountingmodal",
-      "community": 108
+      "community": 115
     },
     {
       "label": "GenerateTimesheetModal.jsx",
@@ -2537,7 +2569,7 @@
       "source_file": "src\\components\\payroll\\GenerateTimesheetModal.jsx",
       "source_location": "L1",
       "id": "src_components_payroll_generatetimesheetmodal_jsx",
-      "community": 109
+      "community": 116
     },
     {
       "label": "GenerateTimesheetModal()",
@@ -2545,7 +2577,7 @@
       "source_file": "src\\components\\payroll\\GenerateTimesheetModal.jsx",
       "source_location": "L9",
       "id": "generatetimesheetmodal_generatetimesheetmodal",
-      "community": 109
+      "community": 116
     },
     {
       "label": "PayrollSummary.jsx",
@@ -2553,7 +2585,7 @@
       "source_file": "src\\components\\payroll\\PayrollSummary.jsx",
       "source_location": "L1",
       "id": "src_components_payroll_payrollsummary_jsx",
-      "community": 110
+      "community": 117
     },
     {
       "label": "PayrollSummary()",
@@ -2561,7 +2593,7 @@
       "source_file": "src\\components\\payroll\\PayrollSummary.jsx",
       "source_location": "L7",
       "id": "payrollsummary_payrollsummary",
-      "community": 110
+      "community": 117
     },
     {
       "label": "PayslipDetail.jsx",
@@ -2569,7 +2601,7 @@
       "source_file": "src\\components\\payroll\\PayslipDetail.jsx",
       "source_location": "L1",
       "id": "src_components_payroll_payslipdetail_jsx",
-      "community": 111
+      "community": 118
     },
     {
       "label": "PayslipDetail()",
@@ -2577,7 +2609,7 @@
       "source_file": "src\\components\\payroll\\PayslipDetail.jsx",
       "source_location": "L8",
       "id": "payslipdetail_payslipdetail",
-      "community": 111
+      "community": 118
     },
     {
       "label": "PayslipList.jsx",
@@ -2585,7 +2617,7 @@
       "source_file": "src\\components\\payroll\\PayslipList.jsx",
       "source_location": "L1",
       "id": "src_components_payroll_paysliplist_jsx",
-      "community": 112
+      "community": 119
     },
     {
       "label": "PayslipList()",
@@ -2593,7 +2625,7 @@
       "source_file": "src\\components\\payroll\\PayslipList.jsx",
       "source_location": "L9",
       "id": "paysliplist_paysliplist",
-      "community": 112
+      "community": 119
     },
     {
       "label": "PaySummaryTable.jsx",
@@ -2601,7 +2633,7 @@
       "source_file": "src\\components\\payroll\\PaySummaryTable.jsx",
       "source_location": "L1",
       "id": "src_components_payroll_paysummarytable_jsx",
-      "community": 113
+      "community": 120
     },
     {
       "label": "PaySummaryTable()",
@@ -2609,7 +2641,7 @@
       "source_file": "src\\components\\payroll\\PaySummaryTable.jsx",
       "source_location": "L9",
       "id": "paysummarytable_paysummarytable",
-      "community": 113
+      "community": 120
     },
     {
       "label": "TimesheetDetail.jsx",
@@ -2617,7 +2649,7 @@
       "source_file": "src\\components\\payroll\\TimesheetDetail.jsx",
       "source_location": "L1",
       "id": "src_components_payroll_timesheetdetail_jsx",
-      "community": 114
+      "community": 121
     },
     {
       "label": "TimesheetDetail()",
@@ -2625,7 +2657,7 @@
       "source_file": "src\\components\\payroll\\TimesheetDetail.jsx",
       "source_location": "L21",
       "id": "timesheetdetail_timesheetdetail",
-      "community": 114
+      "community": 121
     },
     {
       "label": "TimesheetEntryForm.jsx",
@@ -2633,7 +2665,7 @@
       "source_file": "src\\components\\payroll\\TimesheetEntryForm.jsx",
       "source_location": "L1",
       "id": "src_components_payroll_timesheetentryform_jsx",
-      "community": 115
+      "community": 122
     },
     {
       "label": "TimesheetEntryForm()",
@@ -2641,7 +2673,7 @@
       "source_file": "src\\components\\payroll\\TimesheetEntryForm.jsx",
       "source_location": "L5",
       "id": "timesheetentryform_timesheetentryform",
-      "community": 115
+      "community": 122
     },
     {
       "label": "TimesheetList.jsx",
@@ -2649,7 +2681,7 @@
       "source_file": "src\\components\\payroll\\TimesheetList.jsx",
       "source_location": "L1",
       "id": "src_components_payroll_timesheetlist_jsx",
-      "community": 116
+      "community": 123
     },
     {
       "label": "TimesheetList()",
@@ -2657,7 +2689,7 @@
       "source_file": "src\\components\\payroll\\TimesheetList.jsx",
       "source_location": "L38",
       "id": "timesheetlist_timesheetlist",
-      "community": 116
+      "community": 123
     },
     {
       "label": "ClientHistory.jsx",
@@ -2665,7 +2697,7 @@
       "source_file": "src\\components\\reports\\ClientHistory.jsx",
       "source_location": "L1",
       "id": "src_components_reports_clienthistory_jsx",
-      "community": 117
+      "community": 124
     },
     {
       "label": "ClientHistory()",
@@ -2673,7 +2705,7 @@
       "source_file": "src\\components\\reports\\ClientHistory.jsx",
       "source_location": "L7",
       "id": "clienthistory_clienthistory",
-      "community": 117
+      "community": 124
     },
     {
       "label": "ComplianceDashboard.jsx",
@@ -2681,7 +2713,7 @@
       "source_file": "src\\components\\reports\\ComplianceDashboard.jsx",
       "source_location": "L1",
       "id": "src_components_reports_compliancedashboard_jsx",
-      "community": 118
+      "community": 125
     },
     {
       "label": "ComplianceDashboard()",
@@ -2689,7 +2721,7 @@
       "source_file": "src\\components\\reports\\ComplianceDashboard.jsx",
       "source_location": "L6",
       "id": "compliancedashboard_compliancedashboard",
-      "community": 118
+      "community": 125
     },
     {
       "label": "ExportButton.jsx",
@@ -2697,7 +2729,7 @@
       "source_file": "src\\components\\reports\\ExportButton.jsx",
       "source_location": "L1",
       "id": "src_components_reports_exportbutton_jsx",
-      "community": 20
+      "community": 24
     },
     {
       "label": "ExportButton()",
@@ -2705,7 +2737,7 @@
       "source_file": "src\\components\\reports\\ExportButton.jsx",
       "source_location": "L5",
       "id": "exportbutton_exportbutton",
-      "community": 20
+      "community": 24
     },
     {
       "label": "exportToCSV()",
@@ -2713,7 +2745,7 @@
       "source_file": "src\\components\\reports\\ExportButton.jsx",
       "source_location": "L42",
       "id": "exportbutton_exporttocsv",
-      "community": 20
+      "community": 24
     },
     {
       "label": "FinancialReport.jsx",
@@ -2721,7 +2753,7 @@
       "source_file": "src\\components\\reports\\FinancialReport.jsx",
       "source_location": "L1",
       "id": "src_components_reports_financialreport_jsx",
-      "community": 11
+      "community": 12
     },
     {
       "label": "FinancialReport()",
@@ -2729,7 +2761,7 @@
       "source_file": "src\\components\\reports\\FinancialReport.jsx",
       "source_location": "L10",
       "id": "financialreport_financialreport",
-      "community": 11
+      "community": 12
     },
     {
       "label": "RevenueChartWithData()",
@@ -2737,7 +2769,7 @@
       "source_file": "src\\components\\reports\\FinancialReport.jsx",
       "source_location": "L201",
       "id": "financialreport_revenuechartwithdata",
-      "community": 11
+      "community": 12
     },
     {
       "label": "AgingChartWithData()",
@@ -2745,7 +2777,7 @@
       "source_file": "src\\components\\reports\\FinancialReport.jsx",
       "source_location": "L244",
       "id": "financialreport_agingchartwithdata",
-      "community": 11
+      "community": 12
     },
     {
       "label": "StaffPerformance.jsx",
@@ -2753,7 +2785,7 @@
       "source_file": "src\\components\\reports\\StaffPerformance.jsx",
       "source_location": "L1",
       "id": "src_components_reports_staffperformance_jsx",
-      "community": 21
+      "community": 25
     },
     {
       "label": "StaffPerformance()",
@@ -2761,7 +2793,7 @@
       "source_file": "src\\components\\reports\\StaffPerformance.jsx",
       "source_location": "L7",
       "id": "staffperformance_staffperformance",
-      "community": 21
+      "community": 25
     },
     {
       "label": "PerformanceChart()",
@@ -2769,7 +2801,7 @@
       "source_file": "src\\components\\reports\\StaffPerformance.jsx",
       "source_location": "L189",
       "id": "staffperformance_performancechart",
-      "community": 21
+      "community": 25
     },
     {
       "label": "VisitLogs.jsx",
@@ -2777,7 +2809,7 @@
       "source_file": "src\\components\\reports\\VisitLogs.jsx",
       "source_location": "L1",
       "id": "src_components_reports_visitlogs_jsx",
-      "community": 119
+      "community": 126
     },
     {
       "label": "VisitLogs()",
@@ -2785,7 +2817,7 @@
       "source_file": "src\\components\\reports\\VisitLogs.jsx",
       "source_location": "L7",
       "id": "visitlogs_visitlogs",
-      "community": 119
+      "community": 126
     },
     {
       "label": "SchedulingCalendar.jsx",
@@ -2793,15 +2825,95 @@
       "source_file": "src\\components\\scheduling\\SchedulingCalendar.jsx",
       "source_location": "L1",
       "id": "src_components_scheduling_schedulingcalendar_jsx",
-      "community": 120
+      "community": 127
     },
     {
       "label": "SchedulingCalendar()",
       "file_type": "code",
       "source_file": "src\\components\\scheduling\\SchedulingCalendar.jsx",
-      "source_location": "L23",
+      "source_location": "L10",
       "id": "schedulingcalendar_schedulingcalendar",
-      "community": 120
+      "community": 127
+    },
+    {
+      "label": "SchedulingPageClient.jsx",
+      "file_type": "code",
+      "source_file": "src\\components\\scheduling\\SchedulingPageClient.jsx",
+      "source_location": "L1",
+      "id": "src_components_scheduling_schedulingpageclient_jsx",
+      "community": 5
+    },
+    {
+      "label": "getDisplayName()",
+      "file_type": "code",
+      "source_file": "src\\components\\scheduling\\SchedulingPageClient.jsx",
+      "source_location": "L34",
+      "id": "schedulingpageclient_getdisplayname",
+      "community": 5
+    },
+    {
+      "label": "buildSchedulingUrl()",
+      "file_type": "code",
+      "source_file": "src\\components\\scheduling\\SchedulingPageClient.jsx",
+      "source_location": "L42",
+      "id": "schedulingpageclient_buildschedulingurl",
+      "community": 5
+    },
+    {
+      "label": "extractFirstDetailMessage()",
+      "file_type": "code",
+      "source_file": "src\\components\\scheduling\\SchedulingPageClient.jsx",
+      "source_location": "L47",
+      "id": "schedulingpageclient_extractfirstdetailmessage",
+      "community": 5
+    },
+    {
+      "label": "parseApiPayload()",
+      "file_type": "code",
+      "source_file": "src\\components\\scheduling\\SchedulingPageClient.jsx",
+      "source_location": "L68",
+      "id": "schedulingpageclient_parseapipayload",
+      "community": 5
+    },
+    {
+      "label": "getApiErrorMessage()",
+      "file_type": "code",
+      "source_file": "src\\components\\scheduling\\SchedulingPageClient.jsx",
+      "source_location": "L76",
+      "id": "schedulingpageclient_getapierrormessage",
+      "community": 5
+    },
+    {
+      "label": "SchedulingPageClient()",
+      "file_type": "code",
+      "source_file": "src\\components\\scheduling\\SchedulingPageClient.jsx",
+      "source_location": "L94",
+      "id": "schedulingpageclient_schedulingpageclient",
+      "community": 5
+    },
+    {
+      "label": "VisitCreateForm.jsx",
+      "file_type": "code",
+      "source_file": "src\\components\\scheduling\\VisitCreateForm.jsx",
+      "source_location": "L1",
+      "id": "src_components_scheduling_visitcreateform_jsx",
+      "community": 26
+    },
+    {
+      "label": "mapFrequencyToRecurrence()",
+      "file_type": "code",
+      "source_file": "src\\components\\scheduling\\VisitCreateForm.jsx",
+      "source_location": "L18",
+      "id": "visitcreateform_mapfrequencytorecurrence",
+      "community": 26
+    },
+    {
+      "label": "VisitCreateForm()",
+      "file_type": "code",
+      "source_file": "src\\components\\scheduling\\VisitCreateForm.jsx",
+      "source_location": "L29",
+      "id": "visitcreateform_visitcreateform",
+      "community": 26
     },
     {
       "label": "VisitDetailPopup.jsx",
@@ -2809,7 +2921,7 @@
       "source_file": "src\\components\\scheduling\\VisitDetailPopup.jsx",
       "source_location": "L1",
       "id": "src_components_scheduling_visitdetailpopup_jsx",
-      "community": 121
+      "community": 128
     },
     {
       "label": "VisitDetailPopup()",
@@ -2817,7 +2929,39 @@
       "source_file": "src\\components\\scheduling\\VisitDetailPopup.jsx",
       "source_location": "L20",
       "id": "visitdetailpopup_visitdetailpopup",
-      "community": 121
+      "community": 128
+    },
+    {
+      "label": "VisitDetailsDialog.jsx",
+      "file_type": "code",
+      "source_file": "src\\components\\scheduling\\VisitDetailsDialog.jsx",
+      "source_location": "L1",
+      "id": "src_components_scheduling_visitdetailsdialog_jsx",
+      "community": 129
+    },
+    {
+      "label": "VisitDetailsDialog()",
+      "file_type": "code",
+      "source_file": "src\\components\\scheduling\\VisitDetailsDialog.jsx",
+      "source_location": "L7",
+      "id": "visitdetailsdialog_visitdetailsdialog",
+      "community": 129
+    },
+    {
+      "label": "VisitEditDialog.jsx",
+      "file_type": "code",
+      "source_file": "src\\components\\scheduling\\VisitEditDialog.jsx",
+      "source_location": "L1",
+      "id": "src_components_scheduling_visiteditdialog_jsx",
+      "community": 130
+    },
+    {
+      "label": "VisitEditDialog()",
+      "file_type": "code",
+      "source_file": "src\\components\\scheduling\\VisitEditDialog.jsx",
+      "source_location": "L15",
+      "id": "visiteditdialog_visiteditdialog",
+      "community": 130
     },
     {
       "label": "VisitEditForm.jsx",
@@ -2825,7 +2969,7 @@
       "source_file": "src\\components\\scheduling\\VisitEditForm.jsx",
       "source_location": "L1",
       "id": "src_components_scheduling_visiteditform_jsx",
-      "community": 122
+      "community": 131
     },
     {
       "label": "VisitEditForm()",
@@ -2833,7 +2977,7 @@
       "source_file": "src\\components\\scheduling\\VisitEditForm.jsx",
       "source_location": "L9",
       "id": "visiteditform_visiteditform",
-      "community": 122
+      "community": 131
     },
     {
       "label": "VisitForm.jsx",
@@ -2841,7 +2985,7 @@
       "source_file": "src\\components\\scheduling\\VisitForm.jsx",
       "source_location": "L1",
       "id": "src_components_scheduling_visitform_jsx",
-      "community": 123
+      "community": 132
     },
     {
       "label": "VisitForm()",
@@ -2849,7 +2993,7 @@
       "source_file": "src\\components\\scheduling\\VisitForm.jsx",
       "source_location": "L9",
       "id": "visitform_visitform",
-      "community": 123
+      "community": 132
     },
     {
       "label": "BillingSettings.jsx",
@@ -2857,7 +3001,7 @@
       "source_file": "src\\components\\settings\\BillingSettings.jsx",
       "source_location": "L1",
       "id": "src_components_settings_billingsettings_jsx",
-      "community": 124
+      "community": 133
     },
     {
       "label": "BillingSettings()",
@@ -2865,7 +3009,7 @@
       "source_file": "src\\components\\settings\\BillingSettings.jsx",
       "source_location": "L6",
       "id": "billingsettings_billingsettings",
-      "community": 124
+      "community": 133
     },
     {
       "label": "NotificationSettings.jsx",
@@ -2873,7 +3017,7 @@
       "source_file": "src\\components\\settings\\NotificationSettings.jsx",
       "source_location": "L1",
       "id": "src_components_settings_notificationsettings_jsx",
-      "community": 125
+      "community": 134
     },
     {
       "label": "NotificationSettings()",
@@ -2881,7 +3025,7 @@
       "source_file": "src\\components\\settings\\NotificationSettings.jsx",
       "source_location": "L6",
       "id": "notificationsettings_notificationsettings",
-      "community": 125
+      "community": 134
     },
     {
       "label": "OrganizationSettings.jsx",
@@ -2889,7 +3033,7 @@
       "source_file": "src\\components\\settings\\OrganizationSettings.jsx",
       "source_location": "L1",
       "id": "src_components_settings_organizationsettings_jsx",
-      "community": 126
+      "community": 135
     },
     {
       "label": "OrganizationSettings()",
@@ -2897,7 +3041,7 @@
       "source_file": "src\\components\\settings\\OrganizationSettings.jsx",
       "source_location": "L16",
       "id": "organizationsettings_organizationsettings",
-      "community": 126
+      "community": 135
     },
     {
       "label": "PayrollSettings.jsx",
@@ -2905,7 +3049,7 @@
       "source_file": "src\\components\\settings\\PayrollSettings.jsx",
       "source_location": "L1",
       "id": "src_components_settings_payrollsettings_jsx",
-      "community": 127
+      "community": 136
     },
     {
       "label": "PayrollSettings()",
@@ -2913,7 +3057,7 @@
       "source_file": "src\\components\\settings\\PayrollSettings.jsx",
       "source_location": "L6",
       "id": "payrollsettings_payrollsettings",
-      "community": 127
+      "community": 136
     },
     {
       "label": "SchedulingRules.jsx",
@@ -2921,7 +3065,7 @@
       "source_file": "src\\components\\settings\\SchedulingRules.jsx",
       "source_location": "L1",
       "id": "src_components_settings_schedulingrules_jsx",
-      "community": 128
+      "community": 137
     },
     {
       "label": "SchedulingRules()",
@@ -2929,7 +3073,7 @@
       "source_file": "src\\components\\settings\\SchedulingRules.jsx",
       "source_location": "L6",
       "id": "schedulingrules_schedulingrules",
-      "community": 128
+      "community": 137
     },
     {
       "label": "ServicesConfiguration.jsx",
@@ -2937,7 +3081,7 @@
       "source_file": "src\\components\\settings\\ServicesConfiguration.jsx",
       "source_location": "L1",
       "id": "src_components_settings_servicesconfiguration_jsx",
-      "community": 129
+      "community": 138
     },
     {
       "label": "ServicesConfiguration()",
@@ -2945,7 +3089,7 @@
       "source_file": "src\\components\\settings\\ServicesConfiguration.jsx",
       "source_location": "L8",
       "id": "servicesconfiguration_servicesconfiguration",
-      "community": 129
+      "community": 138
     },
     {
       "label": "UsersAndRoles.jsx",
@@ -2953,7 +3097,7 @@
       "source_file": "src\\components\\settings\\UsersAndRoles.jsx",
       "source_location": "L1",
       "id": "src_components_settings_usersandroles_jsx",
-      "community": 130
+      "community": 139
     },
     {
       "label": "UsersAndRoles()",
@@ -2961,7 +3105,7 @@
       "source_file": "src\\components\\settings\\UsersAndRoles.jsx",
       "source_location": "L22",
       "id": "usersandroles_usersandroles",
-      "community": 130
+      "community": 139
     },
     {
       "label": "AvailabilityGrid.jsx",
@@ -2969,7 +3113,7 @@
       "source_file": "src\\components\\staff\\AvailabilityGrid.jsx",
       "source_location": "L1",
       "id": "src_components_staff_availabilitygrid_jsx",
-      "community": 131
+      "community": 140
     },
     {
       "label": "AvailabilityGrid()",
@@ -2977,7 +3121,7 @@
       "source_file": "src\\components\\staff\\AvailabilityGrid.jsx",
       "source_location": "L9",
       "id": "availabilitygrid_availabilitygrid",
-      "community": 131
+      "community": 140
     },
     {
       "label": "SkillsCertsTab.jsx",
@@ -2985,7 +3129,7 @@
       "source_file": "src\\components\\staff\\SkillsCertsTab.jsx",
       "source_location": "L1",
       "id": "src_components_staff_skillscertstab_jsx",
-      "community": 132
+      "community": 141
     },
     {
       "label": "SkillsCertsTab()",
@@ -2993,7 +3137,7 @@
       "source_file": "src\\components\\staff\\SkillsCertsTab.jsx",
       "source_location": "L24",
       "id": "skillscertstab_skillscertstab",
-      "community": 132
+      "community": 141
     },
     {
       "label": "StaffForm.jsx",
@@ -3001,7 +3145,7 @@
       "source_file": "src\\components\\staff\\StaffForm.jsx",
       "source_location": "L1",
       "id": "src_components_staff_staffform_jsx",
-      "community": 133
+      "community": 142
     },
     {
       "label": "StaffForm()",
@@ -3009,7 +3153,7 @@
       "source_file": "src\\components\\staff\\StaffForm.jsx",
       "source_location": "L12",
       "id": "staffform_staffform",
-      "community": 133
+      "community": 142
     },
     {
       "label": "StaffList.jsx",
@@ -3017,7 +3161,7 @@
       "source_file": "src\\components\\staff\\StaffList.jsx",
       "source_location": "L1",
       "id": "src_components_staff_stafflist_jsx",
-      "community": 134
+      "community": 143
     },
     {
       "label": "StaffList()",
@@ -3025,7 +3169,7 @@
       "source_file": "src\\components\\staff\\StaffList.jsx",
       "source_location": "L57",
       "id": "stafflist_stafflist",
-      "community": 134
+      "community": 143
     },
     {
       "label": "StaffOverviewTab.jsx",
@@ -3033,7 +3177,7 @@
       "source_file": "src\\components\\staff\\StaffOverviewTab.jsx",
       "source_location": "L1",
       "id": "src_components_staff_staffoverviewtab_jsx",
-      "community": 135
+      "community": 144
     },
     {
       "label": "StaffOverviewTab()",
@@ -3041,7 +3185,7 @@
       "source_file": "src\\components\\staff\\StaffOverviewTab.jsx",
       "source_location": "L7",
       "id": "staffoverviewtab_staffoverviewtab",
-      "community": 135
+      "community": 144
     },
     {
       "label": "StaffProfile.jsx",
@@ -3049,15 +3193,15 @@
       "source_file": "src\\components\\staff\\StaffProfile.jsx",
       "source_location": "L1",
       "id": "src_components_staff_staffprofile_jsx",
-      "community": 136
+      "community": 145
     },
     {
       "label": "StaffProfile()",
       "file_type": "code",
       "source_file": "src\\components\\staff\\StaffProfile.jsx",
-      "source_location": "L29",
+      "source_location": "L31",
       "id": "staffprofile_staffprofile",
-      "community": 136
+      "community": 145
     },
     {
       "label": "StaffScheduleTab.jsx",
@@ -3065,7 +3209,7 @@
       "source_file": "src\\components\\staff\\StaffScheduleTab.jsx",
       "source_location": "L1",
       "id": "src_components_staff_staffscheduletab_jsx",
-      "community": 137
+      "community": 146
     },
     {
       "label": "StaffScheduleTab()",
@@ -3073,7 +3217,7 @@
       "source_file": "src\\components\\staff\\StaffScheduleTab.jsx",
       "source_location": "L7",
       "id": "staffscheduletab_staffscheduletab",
-      "community": 137
+      "community": 146
     },
     {
       "label": "StaffTimesheetsTab.jsx",
@@ -3081,7 +3225,7 @@
       "source_file": "src\\components\\staff\\StaffTimesheetsTab.jsx",
       "source_location": "L1",
       "id": "src_components_staff_stafftimesheetstab_jsx",
-      "community": 138
+      "community": 147
     },
     {
       "label": "StaffTimesheetsTab()",
@@ -3089,7 +3233,7 @@
       "source_file": "src\\components\\staff\\StaffTimesheetsTab.jsx",
       "source_location": "L7",
       "id": "stafftimesheetstab_stafftimesheetstab",
-      "community": 138
+      "community": 147
     },
     {
       "label": "Button.jsx",
@@ -3097,7 +3241,7 @@
       "source_file": "src\\components\\ui\\Button.jsx",
       "source_location": "L1",
       "id": "src_components_ui_button_jsx",
-      "community": 139
+      "community": 148
     },
     {
       "label": "Button()",
@@ -3105,7 +3249,7 @@
       "source_file": "src\\components\\ui\\Button.jsx",
       "source_location": "L1",
       "id": "button_button",
-      "community": 139
+      "community": 148
     },
     {
       "label": "Card.jsx",
@@ -3113,7 +3257,7 @@
       "source_file": "src\\components\\ui\\Card.jsx",
       "source_location": "L1",
       "id": "src_components_ui_card_jsx",
-      "community": 140
+      "community": 149
     },
     {
       "label": "Card()",
@@ -3121,7 +3265,7 @@
       "source_file": "src\\components\\ui\\Card.jsx",
       "source_location": "L1",
       "id": "card_card",
-      "community": 140
+      "community": 149
     },
     {
       "label": "DataTable.jsx",
@@ -3129,7 +3273,7 @@
       "source_file": "src\\components\\ui\\DataTable.jsx",
       "source_location": "L1",
       "id": "src_components_ui_datatable_jsx",
-      "community": 141
+      "community": 150
     },
     {
       "label": "DataTable()",
@@ -3137,7 +3281,7 @@
       "source_file": "src\\components\\ui\\DataTable.jsx",
       "source_location": "L5",
       "id": "datatable_datatable",
-      "community": 141
+      "community": 150
     },
     {
       "label": "EmptyState.jsx",
@@ -3145,7 +3289,7 @@
       "source_file": "src\\components\\ui\\EmptyState.jsx",
       "source_location": "L1",
       "id": "src_components_ui_emptystate_jsx",
-      "community": 142
+      "community": 151
     },
     {
       "label": "EmptyState()",
@@ -3153,7 +3297,7 @@
       "source_file": "src\\components\\ui\\EmptyState.jsx",
       "source_location": "L1",
       "id": "emptystate_emptystate",
-      "community": 142
+      "community": 151
     },
     {
       "label": "ImageEditorModal.jsx",
@@ -3161,7 +3305,7 @@
       "source_file": "src\\components\\ui\\ImageEditorModal.jsx",
       "source_location": "L1",
       "id": "src_components_ui_imageeditormodal_jsx",
-      "community": 143
+      "community": 152
     },
     {
       "label": "ImageEditorModal()",
@@ -3169,7 +3313,7 @@
       "source_file": "src\\components\\ui\\ImageEditorModal.jsx",
       "source_location": "L13",
       "id": "imageeditormodal_imageeditormodal",
-      "community": 143
+      "community": 152
     },
     {
       "label": "Input.jsx",
@@ -3177,7 +3321,7 @@
       "source_file": "src\\components\\ui\\Input.jsx",
       "source_location": "L1",
       "id": "src_components_ui_input_jsx",
-      "community": 144
+      "community": 153
     },
     {
       "label": "Input()",
@@ -3185,7 +3329,7 @@
       "source_file": "src\\components\\ui\\Input.jsx",
       "source_location": "L1",
       "id": "input_input",
-      "community": 144
+      "community": 153
     },
     {
       "label": "KPICard.jsx",
@@ -3193,7 +3337,7 @@
       "source_file": "src\\components\\ui\\KPICard.jsx",
       "source_location": "L1",
       "id": "src_components_ui_kpicard_jsx",
-      "community": 145
+      "community": 154
     },
     {
       "label": "KPICard()",
@@ -3201,7 +3345,7 @@
       "source_file": "src\\components\\ui\\KPICard.jsx",
       "source_location": "L1",
       "id": "kpicard_kpicard",
-      "community": 145
+      "community": 154
     },
     {
       "label": "Modal.jsx",
@@ -3209,7 +3353,7 @@
       "source_file": "src\\components\\ui\\Modal.jsx",
       "source_location": "L1",
       "id": "src_components_ui_modal_jsx",
-      "community": 146
+      "community": 155
     },
     {
       "label": "Modal()",
@@ -3217,7 +3361,7 @@
       "source_file": "src\\components\\ui\\Modal.jsx",
       "source_location": "L5",
       "id": "modal_modal",
-      "community": 146
+      "community": 155
     },
     {
       "label": "Pagination.jsx",
@@ -3225,7 +3369,7 @@
       "source_file": "src\\components\\ui\\Pagination.jsx",
       "source_location": "L1",
       "id": "src_components_ui_pagination_jsx",
-      "community": 147
+      "community": 156
     },
     {
       "label": "Pagination()",
@@ -3233,7 +3377,7 @@
       "source_file": "src\\components\\ui\\Pagination.jsx",
       "source_location": "L5",
       "id": "pagination_pagination",
-      "community": 147
+      "community": 156
     },
     {
       "label": "SearchInput.jsx",
@@ -3241,7 +3385,7 @@
       "source_file": "src\\components\\ui\\SearchInput.jsx",
       "source_location": "L1",
       "id": "src_components_ui_searchinput_jsx",
-      "community": 148
+      "community": 157
     },
     {
       "label": "SearchInput()",
@@ -3249,7 +3393,7 @@
       "source_file": "src\\components\\ui\\SearchInput.jsx",
       "source_location": "L3",
       "id": "searchinput_searchinput",
-      "community": 148
+      "community": 157
     },
     {
       "label": "Select.jsx",
@@ -3257,7 +3401,7 @@
       "source_file": "src\\components\\ui\\Select.jsx",
       "source_location": "L1",
       "id": "src_components_ui_select_jsx",
-      "community": 149
+      "community": 158
     },
     {
       "label": "Select()",
@@ -3265,7 +3409,7 @@
       "source_file": "src\\components\\ui\\Select.jsx",
       "source_location": "L1",
       "id": "select_select",
-      "community": 149
+      "community": 158
     },
     {
       "label": "StatusBadge.jsx",
@@ -3273,7 +3417,7 @@
       "source_file": "src\\components\\ui\\StatusBadge.jsx",
       "source_location": "L1",
       "id": "src_components_ui_statusbadge_jsx",
-      "community": 150
+      "community": 159
     },
     {
       "label": "StatusBadge()",
@@ -3281,7 +3425,7 @@
       "source_file": "src\\components\\ui\\StatusBadge.jsx",
       "source_location": "L3",
       "id": "statusbadge_statusbadge",
-      "community": 150
+      "community": 159
     },
     {
       "label": "Tabs.jsx",
@@ -3289,7 +3433,7 @@
       "source_file": "src\\components\\ui\\Tabs.jsx",
       "source_location": "L1",
       "id": "src_components_ui_tabs_jsx",
-      "community": 151
+      "community": 160
     },
     {
       "label": "Tabs()",
@@ -3297,7 +3441,7 @@
       "source_file": "src\\components\\ui\\Tabs.jsx",
       "source_location": "L5",
       "id": "tabs_tabs",
-      "community": 151
+      "community": 160
     },
     {
       "label": "Toast.jsx",
@@ -3305,7 +3449,7 @@
       "source_file": "src\\components\\ui\\Toast.jsx",
       "source_location": "L1",
       "id": "src_components_ui_toast_jsx",
-      "community": 152
+      "community": 161
     },
     {
       "label": "Toast()",
@@ -3313,7 +3457,7 @@
       "source_file": "src\\components\\ui\\Toast.jsx",
       "source_location": "L12",
       "id": "toast_toast",
-      "community": 152
+      "community": 161
     },
     {
       "label": "useToast.js",
@@ -3321,7 +3465,7 @@
       "source_file": "src\\components\\ui\\useToast.js",
       "source_location": "L1",
       "id": "src_components_ui_usetoast_js",
-      "community": 22
+      "community": 27
     },
     {
       "label": "ToastProvider()",
@@ -3329,7 +3473,7 @@
       "source_file": "src\\components\\ui\\useToast.js",
       "source_location": "L8",
       "id": "usetoast_toastprovider",
-      "community": 22
+      "community": 27
     },
     {
       "label": "useToast()",
@@ -3337,7 +3481,7 @@
       "source_file": "src\\components\\ui\\useToast.js",
       "source_location": "L48",
       "id": "usetoast_usetoast",
-      "community": 22
+      "community": 27
     },
     {
       "label": "api-response.js",
@@ -3345,7 +3489,7 @@
       "source_file": "src\\lib\\api-response.js",
       "source_location": "L1",
       "id": "src_lib_api_response_js",
-      "community": 160
+      "community": 170
     },
     {
       "label": "auth.js",
@@ -3353,7 +3497,7 @@
       "source_file": "src\\lib\\auth.js",
       "source_location": "L1",
       "id": "src_lib_auth_js",
-      "community": 161
+      "community": 171
     },
     {
       "label": "charting-templates.js",
@@ -3361,7 +3505,7 @@
       "source_file": "src\\lib\\charting-templates.js",
       "source_location": "L1",
       "id": "src_lib_charting_templates_js",
-      "community": 153
+      "community": 162
     },
     {
       "label": "ensureOrganizationChartingTemplates()",
@@ -3369,7 +3513,39 @@
       "source_file": "src\\lib\\charting-templates.js",
       "source_location": "L126",
       "id": "charting_templates_ensureorganizationchartingtemplates",
-      "community": 153
+      "community": 162
+    },
+    {
+      "label": "client-ssn.js",
+      "file_type": "code",
+      "source_file": "src\\lib\\client-ssn.js",
+      "source_location": "L1",
+      "id": "src_lib_client_ssn_js",
+      "community": 13
+    },
+    {
+      "label": "isMaskedSsn()",
+      "file_type": "code",
+      "source_file": "src\\lib\\client-ssn.js",
+      "source_location": "L3",
+      "id": "client_ssn_ismaskedssn",
+      "community": 13
+    },
+    {
+      "label": "shouldValidateSsn()",
+      "file_type": "code",
+      "source_file": "src\\lib\\client-ssn.js",
+      "source_location": "L7",
+      "id": "client_ssn_shouldvalidatessn",
+      "community": 13
+    },
+    {
+      "label": "normalizeSsnForSubmission()",
+      "file_type": "code",
+      "source_file": "src\\lib\\client-ssn.js",
+      "source_location": "L12",
+      "id": "client_ssn_normalizessnforsubmission",
+      "community": 13
     },
     {
       "label": "encryption.js",
@@ -3377,39 +3553,47 @@
       "source_file": "src\\lib\\encryption.js",
       "source_location": "L1",
       "id": "src_lib_encryption_js",
-      "community": 8
+      "community": 7
+    },
+    {
+      "label": "getEncryptionConfigurationError()",
+      "file_type": "code",
+      "source_file": "src\\lib\\encryption.js",
+      "source_location": "L9",
+      "id": "encryption_getencryptionconfigurationerror",
+      "community": 7
     },
     {
       "label": "getKey()",
       "file_type": "code",
       "source_file": "src\\lib\\encryption.js",
-      "source_location": "L10",
+      "source_location": "L26",
       "id": "encryption_getkey",
-      "community": 8
+      "community": 7
     },
     {
       "label": "encrypt()",
       "file_type": "code",
       "source_file": "src\\lib\\encryption.js",
-      "source_location": "L24",
+      "source_location": "L41",
       "id": "encryption_encrypt",
-      "community": 8
+      "community": 7
     },
     {
       "label": "decrypt()",
       "file_type": "code",
       "source_file": "src\\lib\\encryption.js",
-      "source_location": "L43",
+      "source_location": "L60",
       "id": "encryption_decrypt",
-      "community": 8
+      "community": 7
     },
     {
       "label": "maskSSN()",
       "file_type": "code",
       "source_file": "src\\lib\\encryption.js",
-      "source_location": "L75",
+      "source_location": "L92",
       "id": "encryption_maskssn",
-      "community": 8
+      "community": 7
     },
     {
       "label": "form-review.js",
@@ -3521,7 +3705,7 @@
       "source_file": "src\\lib\\prisma.js",
       "source_location": "L1",
       "id": "src_lib_prisma_js",
-      "community": 162
+      "community": 172
     },
     {
       "label": "rate-limit.js",
@@ -3529,7 +3713,7 @@
       "source_file": "src\\lib\\rate-limit.js",
       "source_location": "L1",
       "id": "src_lib_rate_limit_js",
-      "community": 154
+      "community": 163
     },
     {
       "label": "rateLimit()",
@@ -3537,7 +3721,215 @@
       "source_file": "src\\lib\\rate-limit.js",
       "source_location": "L27",
       "id": "rate_limit_ratelimit",
-      "community": 154
+      "community": 163
+    },
+    {
+      "label": "scheduling.js",
+      "file_type": "code",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L1",
+      "id": "src_lib_scheduling_js",
+      "community": 1
+    },
+    {
+      "label": "normalizeSchedulingViewSlug()",
+      "file_type": "code",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L70",
+      "id": "scheduling_normalizeschedulingviewslug",
+      "community": 1
+    },
+    {
+      "label": "getCalendarViewForSlug()",
+      "file_type": "code",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L74",
+      "id": "scheduling_getcalendarviewforslug",
+      "community": 1
+    },
+    {
+      "label": "getSlugForCalendarView()",
+      "file_type": "code",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L86",
+      "id": "scheduling_getslugforcalendarview",
+      "community": 1
+    },
+    {
+      "label": "getAllowedVisitStatuses()",
+      "file_type": "code",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L98",
+      "id": "scheduling_getallowedvisitstatuses",
+      "community": 1
+    },
+    {
+      "label": "getVisitStatusLabel()",
+      "file_type": "code",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L103",
+      "id": "scheduling_getvisitstatuslabel",
+      "community": 1
+    },
+    {
+      "label": "isSecondarySchedulingStatus()",
+      "file_type": "code",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L107",
+      "id": "scheduling_issecondaryschedulingstatus",
+      "community": 1
+    },
+    {
+      "label": "buildSchedulingStatusPillSections()",
+      "file_type": "code",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L111",
+      "id": "scheduling_buildschedulingstatuspillsections",
+      "community": 1
+    },
+    {
+      "label": "parseSchedulingDateParam()",
+      "file_type": "code",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L136",
+      "id": "scheduling_parseschedulingdateparam",
+      "community": 1
+    },
+    {
+      "label": "formatSchedulingDateParam()",
+      "file_type": "code",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L157",
+      "id": "scheduling_formatschedulingdateparam",
+      "community": 1
+    },
+    {
+      "label": "startOfDay()",
+      "file_type": "code",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L165",
+      "id": "scheduling_startofday",
+      "community": 1
+    },
+    {
+      "label": "endOfDay()",
+      "file_type": "code",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L169",
+      "id": "scheduling_endofday",
+      "community": 1
+    },
+    {
+      "label": "addDays()",
+      "file_type": "code",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L173",
+      "id": "scheduling_adddays",
+      "community": 1
+    },
+    {
+      "label": "addMonths()",
+      "file_type": "code",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L177",
+      "id": "scheduling_addmonths",
+      "community": 1
+    },
+    {
+      "label": "buildSchedulingRange()",
+      "file_type": "code",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L183",
+      "id": "scheduling_buildschedulingrange",
+      "community": 1
+    },
+    {
+      "label": "buildSchedulingSearchParams()",
+      "file_type": "code",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L214",
+      "id": "scheduling_buildschedulingsearchparams",
+      "community": 1
+    },
+    {
+      "label": "normalizeVisitPayload()",
+      "file_type": "code",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L227",
+      "id": "scheduling_normalizevisitpayload",
+      "community": 1
+    },
+    {
+      "label": "normalizeVisitFormDate()",
+      "file_type": "code",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L243",
+      "id": "scheduling_normalizevisitformdate",
+      "community": 1
+    },
+    {
+      "label": "buildVisitCreateFormState()",
+      "file_type": "code",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L258",
+      "id": "scheduling_buildvisitcreateformstate",
+      "community": 1
+    },
+    {
+      "label": "getEventTimestamp()",
+      "file_type": "code",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L274",
+      "id": "scheduling_geteventtimestamp",
+      "community": 1
+    },
+    {
+      "label": "hasEventTimingChanged()",
+      "file_type": "code",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L283",
+      "id": "scheduling_haseventtimingchanged",
+      "community": 1
+    },
+    {
+      "label": "validateRecurrence()",
+      "file_type": "code",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L298",
+      "id": "scheduling_validaterecurrence",
+      "community": 1
+    },
+    {
+      "label": "getRecurrenceTotalVisits()",
+      "file_type": "code",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L319",
+      "id": "scheduling_getrecurrencetotalvisits",
+      "community": 1
+    },
+    {
+      "label": "formatLongDate()",
+      "file_type": "code",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L336",
+      "id": "scheduling_formatlongdate",
+      "community": 1
+    },
+    {
+      "label": "formatRecurrenceSummary()",
+      "file_type": "code",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L344",
+      "id": "scheduling_formatrecurrencesummary",
+      "community": 1
+    },
+    {
+      "label": "getCarePlanStaffWarning()",
+      "file_type": "code",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L387",
+      "id": "scheduling_getcareplanstaffwarning",
+      "community": 1
     },
     {
       "label": "utils.js",
@@ -3655,7 +4047,7 @@
       "label": "collapseWhitespace()",
       "file_type": "code",
       "source_file": "src\\lib\\validations.js",
-      "source_location": "L15",
+      "source_location": "L17",
       "id": "validations_collapsewhitespace",
       "community": 4
     },
@@ -3663,7 +4055,7 @@
       "label": "hasRepeatedChunk()",
       "file_type": "code",
       "source_file": "src\\lib\\validations.js",
-      "source_location": "L19",
+      "source_location": "L21",
       "id": "validations_hasrepeatedchunk",
       "community": 4
     },
@@ -3671,7 +4063,7 @@
       "label": "looksSuspiciouslyGarbledName()",
       "file_type": "code",
       "source_file": "src\\lib\\validations.js",
-      "source_location": "L30",
+      "source_location": "L32",
       "id": "validations_lookssuspiciouslygarbledname",
       "community": 4
     },
@@ -3679,7 +4071,7 @@
       "label": "buildHumanNameSchema()",
       "file_type": "code",
       "source_file": "src\\lib\\validations.js",
-      "source_location": "L48",
+      "source_location": "L50",
       "id": "validations_buildhumannameschema",
       "community": 4
     },
@@ -3687,7 +4079,7 @@
       "label": "extractFirstError()",
       "file_type": "code",
       "source_file": "src\\lib\\validations.js",
-      "source_location": "L114",
+      "source_location": "L116",
       "id": "validations_extractfirsterror",
       "community": 4
     },
@@ -3695,7 +4087,7 @@
       "label": "normalizeStaffFormData()",
       "file_type": "code",
       "source_file": "src\\lib\\validations.js",
-      "source_location": "L124",
+      "source_location": "L126",
       "id": "validations_normalizestaffformdata",
       "community": 4
     },
@@ -3703,9 +4095,41 @@
       "label": "validateStaffFormData()",
       "file_type": "code",
       "source_file": "src\\lib\\validations.js",
-      "source_location": "L148",
+      "source_location": "L150",
       "id": "validations_validatestaffformdata",
       "community": 4
+    },
+    {
+      "label": "visit-business-rules.js",
+      "file_type": "code",
+      "source_file": "src\\lib\\visit-business-rules.js",
+      "source_location": "L1",
+      "id": "src_lib_visit_business_rules_js",
+      "community": 14
+    },
+    {
+      "label": "validateVisitBusinessRules()",
+      "file_type": "code",
+      "source_file": "src\\lib\\visit-business-rules.js",
+      "source_location": "L8",
+      "id": "visit_business_rules_validatevisitbusinessrules",
+      "community": 14
+    },
+    {
+      "label": "collectVisitConflicts()",
+      "file_type": "code",
+      "source_file": "src\\lib\\visit-business-rules.js",
+      "source_location": "L144",
+      "id": "visit_business_rules_collectvisitconflicts",
+      "community": 14
+    },
+    {
+      "label": "buildRecurringVisitPayloads()",
+      "file_type": "code",
+      "source_file": "src\\lib\\visit-business-rules.js",
+      "source_location": "L212",
+      "id": "visit_business_rules_buildrecurringvisitpayloads",
+      "community": 14
     },
     {
       "label": "create-care-plan.spec.js",
@@ -3713,7 +4137,7 @@
       "source_file": "tests\\create-care-plan.spec.js",
       "source_location": "L1",
       "id": "tests_create_care_plan_spec_js",
-      "community": 155
+      "community": 164
     },
     {
       "label": "loginAsAdmin()",
@@ -3721,59 +4145,87 @@
       "source_file": "tests\\create-care-plan.spec.js",
       "source_location": "L4",
       "id": "create_care_plan_spec_loginasadmin",
-      "community": 155
+      "community": 164
+    },
+    {
+      "label": "edit-profile-entrypoints.spec.js",
+      "file_type": "code",
+      "source_file": "tests\\edit-profile-entrypoints.spec.js",
+      "source_location": "L1",
+      "id": "tests_edit_profile_entrypoints_spec_js",
+      "community": 165
+    },
+    {
+      "label": "loginAsAdmin()",
+      "file_type": "code",
+      "source_file": "tests\\edit-profile-entrypoints.spec.js",
+      "source_location": "L4",
+      "id": "edit_profile_entrypoints_spec_loginasadmin",
+      "community": 165
     },
     {
       "label": "homecare-pro Project",
       "file_type": "document",
       "source_file": "README.md",
-      "community": 12,
+      "community": 15,
       "id": "README_homecare-pro"
     },
     {
       "label": "Next.js Framework",
       "file_type": "document",
       "source_file": "README.md",
-      "community": 12,
+      "community": 15,
       "id": "README_nextjs"
     },
     {
       "label": "Prisma ORM",
       "file_type": "document",
       "source_file": "README.md",
-      "community": 12,
+      "community": 15,
       "id": "README_prisma"
     },
     {
       "label": "Tailwind CSS",
       "file_type": "document",
       "source_file": "README.md",
-      "community": 12,
+      "community": 15,
       "id": "README_tailwind"
     },
     {
       "label": "Care Plans Feature",
       "file_type": "document",
       "source_file": "USER_GUIDE.md",
-      "community": 156,
+      "community": 166,
       "id": "USER_GUIDE_care_plans"
     },
     {
       "label": "Billing System",
       "file_type": "document",
       "source_file": "USER_GUIDE.md",
-      "community": 163,
+      "community": 173,
       "id": "USER_GUIDE_billing"
     },
     {
       "label": "Scheduling System",
       "file_type": "document",
       "source_file": "USER_GUIDE.md",
-      "community": 156,
+      "community": 166,
       "id": "USER_GUIDE_scheduling"
     }
   ],
   "links": [
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "test-db.js",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_src": "test_db_js",
+      "_tgt": "test_db_main",
+      "source": "test_db_js",
+      "target": "test_db_main",
+      "confidence_score": 1.0
+    },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
@@ -4078,7 +4530,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\app\\(dashboard)\\clients\\[id]\\edit\\page.js",
-      "source_location": "L6",
+      "source_location": "L3",
       "weight": 1.0,
       "_src": "src_app_dashboard_clients_id_edit_page_js",
       "_tgt": "page_editclientpage",
@@ -4138,12 +4590,24 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\app\\(dashboard)\\scheduling\\page.js",
-      "source_location": "L32",
+      "source_location": "L33",
       "weight": 1.0,
       "_src": "src_app_dashboard_scheduling_page_js",
       "_tgt": "page_schedulingpage",
       "source": "src_app_dashboard_scheduling_page_js",
       "target": "page_schedulingpage",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\app\\(dashboard)\\scheduling\\[view]\\page.js",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_src": "src_app_dashboard_scheduling_view_page_js",
+      "_tgt": "page_schedulingviewpage",
+      "source": "src_app_dashboard_scheduling_view_page_js",
+      "target": "page_schedulingviewpage",
       "confidence_score": 1.0
     },
     {
@@ -4186,7 +4650,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\app\\(dashboard)\\staff\\[id]\\edit\\page.js",
-      "source_location": "L9",
+      "source_location": "L3",
       "weight": 1.0,
       "_src": "src_app_dashboard_staff_id_edit_page_js",
       "_tgt": "page_editstaffpage",
@@ -4570,7 +5034,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\app\\api\\visits\\route.js",
-      "source_location": "L95",
+      "source_location": "L118",
       "weight": 1.0,
       "_src": "src_app_api_visits_route_js",
       "_tgt": "route_post",
@@ -5302,7 +5766,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\app\\api\\visits\\route.js",
-      "source_location": "L8",
+      "source_location": "L14",
       "weight": 1.0,
       "_src": "src_app_api_visits_route_js",
       "_tgt": "route_get",
@@ -5326,7 +5790,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\app\\api\\visits\\status-counts\\route.js",
-      "source_location": "L8",
+      "source_location": "L9",
       "weight": 1.0,
       "_src": "src_app_api_visits_status_counts_route_js",
       "_tgt": "route_get",
@@ -5338,7 +5802,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\app\\api\\visits\\[id]\\route.js",
-      "source_location": "L6",
+      "source_location": "L9",
       "weight": 1.0,
       "_src": "src_app_api_visits_id_route_js",
       "_tgt": "route_get",
@@ -5650,7 +6114,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\app\\api\\visits\\[id]\\route.js",
-      "source_location": "L112",
+      "source_location": "L130",
       "weight": 1.0,
       "_src": "src_app_api_visits_id_route_js",
       "_tgt": "route_patch",
@@ -5698,7 +6162,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\app\\api\\clients\\[id]\\route.js",
-      "source_location": "L302",
+      "source_location": "L315",
       "weight": 1.0,
       "_src": "src_app_api_clients_id_route_js",
       "_tgt": "route_delete",
@@ -5854,7 +6318,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\app\\api\\visits\\[id]\\route.js",
-      "source_location": "L260",
+      "source_location": "L299",
       "weight": 1.0,
       "_src": "src_app_api_visits_id_route_js",
       "_tgt": "route_delete",
@@ -6826,7 +7290,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\components\\clients\\ClientForm.jsx",
-      "source_location": "L47",
+      "source_location": "L48",
       "weight": 1.0,
       "_src": "src_components_clients_clientform_jsx",
       "_tgt": "clientform_clientform",
@@ -6886,7 +7350,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\components\\clients\\ClientProfile.jsx",
-      "source_location": "L34",
+      "source_location": "L36",
       "weight": 1.0,
       "_src": "src_components_clients_clientprofile_jsx",
       "_tgt": "clientprofile_clientprofilepage",
@@ -7306,12 +7770,120 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\components\\scheduling\\SchedulingCalendar.jsx",
-      "source_location": "L23",
+      "source_location": "L10",
       "weight": 1.0,
       "_src": "src_components_scheduling_schedulingcalendar_jsx",
       "_tgt": "schedulingcalendar_schedulingcalendar",
       "source": "src_components_scheduling_schedulingcalendar_jsx",
       "target": "schedulingcalendar_schedulingcalendar",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\scheduling\\SchedulingPageClient.jsx",
+      "source_location": "L34",
+      "weight": 1.0,
+      "_src": "src_components_scheduling_schedulingpageclient_jsx",
+      "_tgt": "schedulingpageclient_getdisplayname",
+      "source": "src_components_scheduling_schedulingpageclient_jsx",
+      "target": "schedulingpageclient_getdisplayname",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\scheduling\\SchedulingPageClient.jsx",
+      "source_location": "L42",
+      "weight": 1.0,
+      "_src": "src_components_scheduling_schedulingpageclient_jsx",
+      "_tgt": "schedulingpageclient_buildschedulingurl",
+      "source": "src_components_scheduling_schedulingpageclient_jsx",
+      "target": "schedulingpageclient_buildschedulingurl",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\scheduling\\SchedulingPageClient.jsx",
+      "source_location": "L47",
+      "weight": 1.0,
+      "_src": "src_components_scheduling_schedulingpageclient_jsx",
+      "_tgt": "schedulingpageclient_extractfirstdetailmessage",
+      "source": "src_components_scheduling_schedulingpageclient_jsx",
+      "target": "schedulingpageclient_extractfirstdetailmessage",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\scheduling\\SchedulingPageClient.jsx",
+      "source_location": "L68",
+      "weight": 1.0,
+      "_src": "src_components_scheduling_schedulingpageclient_jsx",
+      "_tgt": "schedulingpageclient_parseapipayload",
+      "source": "src_components_scheduling_schedulingpageclient_jsx",
+      "target": "schedulingpageclient_parseapipayload",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\scheduling\\SchedulingPageClient.jsx",
+      "source_location": "L76",
+      "weight": 1.0,
+      "_src": "src_components_scheduling_schedulingpageclient_jsx",
+      "_tgt": "schedulingpageclient_getapierrormessage",
+      "source": "src_components_scheduling_schedulingpageclient_jsx",
+      "target": "schedulingpageclient_getapierrormessage",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\scheduling\\SchedulingPageClient.jsx",
+      "source_location": "L94",
+      "weight": 1.0,
+      "_src": "src_components_scheduling_schedulingpageclient_jsx",
+      "_tgt": "schedulingpageclient_schedulingpageclient",
+      "source": "src_components_scheduling_schedulingpageclient_jsx",
+      "target": "schedulingpageclient_schedulingpageclient",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\scheduling\\SchedulingPageClient.jsx",
+      "source_location": "L81",
+      "weight": 1.0,
+      "_src": "schedulingpageclient_getapierrormessage",
+      "_tgt": "schedulingpageclient_extractfirstdetailmessage",
+      "source": "schedulingpageclient_extractfirstdetailmessage",
+      "target": "schedulingpageclient_getapierrormessage",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\scheduling\\VisitCreateForm.jsx",
+      "source_location": "L18",
+      "weight": 1.0,
+      "_src": "src_components_scheduling_visitcreateform_jsx",
+      "_tgt": "visitcreateform_mapfrequencytorecurrence",
+      "source": "src_components_scheduling_visitcreateform_jsx",
+      "target": "visitcreateform_mapfrequencytorecurrence",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\scheduling\\VisitCreateForm.jsx",
+      "source_location": "L29",
+      "weight": 1.0,
+      "_src": "src_components_scheduling_visitcreateform_jsx",
+      "_tgt": "visitcreateform_visitcreateform",
+      "source": "src_components_scheduling_visitcreateform_jsx",
+      "target": "visitcreateform_visitcreateform",
       "confidence_score": 1.0
     },
     {
@@ -7324,6 +7896,30 @@
       "_tgt": "visitdetailpopup_visitdetailpopup",
       "source": "src_components_scheduling_visitdetailpopup_jsx",
       "target": "visitdetailpopup_visitdetailpopup",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\scheduling\\VisitDetailsDialog.jsx",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_src": "src_components_scheduling_visitdetailsdialog_jsx",
+      "_tgt": "visitdetailsdialog_visitdetailsdialog",
+      "source": "src_components_scheduling_visitdetailsdialog_jsx",
+      "target": "visitdetailsdialog_visitdetailsdialog",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\scheduling\\VisitEditDialog.jsx",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_src": "src_components_scheduling_visiteditdialog_jsx",
+      "_tgt": "visiteditdialog_visiteditdialog",
+      "source": "src_components_scheduling_visiteditdialog_jsx",
+      "target": "visiteditdialog_visiteditdialog",
       "confidence_score": 1.0
     },
     {
@@ -7498,7 +8094,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\components\\staff\\StaffProfile.jsx",
-      "source_location": "L29",
+      "source_location": "L31",
       "weight": 1.0,
       "_src": "src_components_staff_staffprofile_jsx",
       "_tgt": "staffprofile_staffprofile",
@@ -7737,8 +8333,80 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\client-ssn.js",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_src": "src_lib_client_ssn_js",
+      "_tgt": "client_ssn_ismaskedssn",
+      "source": "src_lib_client_ssn_js",
+      "target": "client_ssn_ismaskedssn",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\client-ssn.js",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_src": "src_lib_client_ssn_js",
+      "_tgt": "client_ssn_shouldvalidatessn",
+      "source": "src_lib_client_ssn_js",
+      "target": "client_ssn_shouldvalidatessn",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\client-ssn.js",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_src": "src_lib_client_ssn_js",
+      "_tgt": "client_ssn_normalizessnforsubmission",
+      "source": "src_lib_client_ssn_js",
+      "target": "client_ssn_normalizessnforsubmission",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\client-ssn.js",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_src": "client_ssn_shouldvalidatessn",
+      "_tgt": "client_ssn_ismaskedssn",
+      "source": "client_ssn_ismaskedssn",
+      "target": "client_ssn_shouldvalidatessn",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\client-ssn.js",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_src": "client_ssn_normalizessnforsubmission",
+      "_tgt": "client_ssn_ismaskedssn",
+      "source": "client_ssn_ismaskedssn",
+      "target": "client_ssn_normalizessnforsubmission",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "src\\lib\\encryption.js",
-      "source_location": "L10",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_src": "src_lib_encryption_js",
+      "_tgt": "encryption_getencryptionconfigurationerror",
+      "source": "src_lib_encryption_js",
+      "target": "encryption_getencryptionconfigurationerror",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\encryption.js",
+      "source_location": "L26",
       "weight": 1.0,
       "_src": "src_lib_encryption_js",
       "_tgt": "encryption_getkey",
@@ -7750,7 +8418,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\lib\\encryption.js",
-      "source_location": "L24",
+      "source_location": "L41",
       "weight": 1.0,
       "_src": "src_lib_encryption_js",
       "_tgt": "encryption_encrypt",
@@ -7762,7 +8430,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\lib\\encryption.js",
-      "source_location": "L43",
+      "source_location": "L60",
       "weight": 1.0,
       "_src": "src_lib_encryption_js",
       "_tgt": "encryption_decrypt",
@@ -7774,7 +8442,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\lib\\encryption.js",
-      "source_location": "L75",
+      "source_location": "L92",
       "weight": 1.0,
       "_src": "src_lib_encryption_js",
       "_tgt": "encryption_maskssn",
@@ -7788,6 +8456,18 @@
       "source_file": "src\\lib\\encryption.js",
       "source_location": "L27",
       "weight": 1.0,
+      "_src": "encryption_getkey",
+      "_tgt": "encryption_getencryptionconfigurationerror",
+      "source": "encryption_getencryptionconfigurationerror",
+      "target": "encryption_getkey",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\encryption.js",
+      "source_location": "L44",
+      "weight": 1.0,
       "_src": "encryption_encrypt",
       "_tgt": "encryption_getkey",
       "source": "encryption_getkey",
@@ -7798,7 +8478,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "src\\lib\\encryption.js",
-      "source_location": "L51",
+      "source_location": "L68",
       "weight": 1.0,
       "_src": "encryption_decrypt",
       "_tgt": "encryption_getkey",
@@ -7810,7 +8490,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "src\\lib\\encryption.js",
-      "source_location": "L78",
+      "source_location": "L95",
       "weight": 1.0,
       "_src": "encryption_maskssn",
       "_tgt": "encryption_decrypt",
@@ -8097,6 +8777,546 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L70",
+      "weight": 1.0,
+      "_src": "src_lib_scheduling_js",
+      "_tgt": "scheduling_normalizeschedulingviewslug",
+      "source": "src_lib_scheduling_js",
+      "target": "scheduling_normalizeschedulingviewslug",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L74",
+      "weight": 1.0,
+      "_src": "src_lib_scheduling_js",
+      "_tgt": "scheduling_getcalendarviewforslug",
+      "source": "src_lib_scheduling_js",
+      "target": "scheduling_getcalendarviewforslug",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L86",
+      "weight": 1.0,
+      "_src": "src_lib_scheduling_js",
+      "_tgt": "scheduling_getslugforcalendarview",
+      "source": "src_lib_scheduling_js",
+      "target": "scheduling_getslugforcalendarview",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L98",
+      "weight": 1.0,
+      "_src": "src_lib_scheduling_js",
+      "_tgt": "scheduling_getallowedvisitstatuses",
+      "source": "src_lib_scheduling_js",
+      "target": "scheduling_getallowedvisitstatuses",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L103",
+      "weight": 1.0,
+      "_src": "src_lib_scheduling_js",
+      "_tgt": "scheduling_getvisitstatuslabel",
+      "source": "src_lib_scheduling_js",
+      "target": "scheduling_getvisitstatuslabel",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L107",
+      "weight": 1.0,
+      "_src": "src_lib_scheduling_js",
+      "_tgt": "scheduling_issecondaryschedulingstatus",
+      "source": "src_lib_scheduling_js",
+      "target": "scheduling_issecondaryschedulingstatus",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L111",
+      "weight": 1.0,
+      "_src": "src_lib_scheduling_js",
+      "_tgt": "scheduling_buildschedulingstatuspillsections",
+      "source": "src_lib_scheduling_js",
+      "target": "scheduling_buildschedulingstatuspillsections",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L136",
+      "weight": 1.0,
+      "_src": "src_lib_scheduling_js",
+      "_tgt": "scheduling_parseschedulingdateparam",
+      "source": "src_lib_scheduling_js",
+      "target": "scheduling_parseschedulingdateparam",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L157",
+      "weight": 1.0,
+      "_src": "src_lib_scheduling_js",
+      "_tgt": "scheduling_formatschedulingdateparam",
+      "source": "src_lib_scheduling_js",
+      "target": "scheduling_formatschedulingdateparam",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L165",
+      "weight": 1.0,
+      "_src": "src_lib_scheduling_js",
+      "_tgt": "scheduling_startofday",
+      "source": "src_lib_scheduling_js",
+      "target": "scheduling_startofday",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L169",
+      "weight": 1.0,
+      "_src": "src_lib_scheduling_js",
+      "_tgt": "scheduling_endofday",
+      "source": "src_lib_scheduling_js",
+      "target": "scheduling_endofday",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L173",
+      "weight": 1.0,
+      "_src": "src_lib_scheduling_js",
+      "_tgt": "scheduling_adddays",
+      "source": "src_lib_scheduling_js",
+      "target": "scheduling_adddays",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L177",
+      "weight": 1.0,
+      "_src": "src_lib_scheduling_js",
+      "_tgt": "scheduling_addmonths",
+      "source": "src_lib_scheduling_js",
+      "target": "scheduling_addmonths",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L183",
+      "weight": 1.0,
+      "_src": "src_lib_scheduling_js",
+      "_tgt": "scheduling_buildschedulingrange",
+      "source": "src_lib_scheduling_js",
+      "target": "scheduling_buildschedulingrange",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L214",
+      "weight": 1.0,
+      "_src": "src_lib_scheduling_js",
+      "_tgt": "scheduling_buildschedulingsearchparams",
+      "source": "src_lib_scheduling_js",
+      "target": "scheduling_buildschedulingsearchparams",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L227",
+      "weight": 1.0,
+      "_src": "src_lib_scheduling_js",
+      "_tgt": "scheduling_normalizevisitpayload",
+      "source": "src_lib_scheduling_js",
+      "target": "scheduling_normalizevisitpayload",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L243",
+      "weight": 1.0,
+      "_src": "src_lib_scheduling_js",
+      "_tgt": "scheduling_normalizevisitformdate",
+      "source": "src_lib_scheduling_js",
+      "target": "scheduling_normalizevisitformdate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L258",
+      "weight": 1.0,
+      "_src": "src_lib_scheduling_js",
+      "_tgt": "scheduling_buildvisitcreateformstate",
+      "source": "src_lib_scheduling_js",
+      "target": "scheduling_buildvisitcreateformstate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L274",
+      "weight": 1.0,
+      "_src": "src_lib_scheduling_js",
+      "_tgt": "scheduling_geteventtimestamp",
+      "source": "src_lib_scheduling_js",
+      "target": "scheduling_geteventtimestamp",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L283",
+      "weight": 1.0,
+      "_src": "src_lib_scheduling_js",
+      "_tgt": "scheduling_haseventtimingchanged",
+      "source": "src_lib_scheduling_js",
+      "target": "scheduling_haseventtimingchanged",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L298",
+      "weight": 1.0,
+      "_src": "src_lib_scheduling_js",
+      "_tgt": "scheduling_validaterecurrence",
+      "source": "src_lib_scheduling_js",
+      "target": "scheduling_validaterecurrence",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L319",
+      "weight": 1.0,
+      "_src": "src_lib_scheduling_js",
+      "_tgt": "scheduling_getrecurrencetotalvisits",
+      "source": "src_lib_scheduling_js",
+      "target": "scheduling_getrecurrencetotalvisits",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L336",
+      "weight": 1.0,
+      "_src": "src_lib_scheduling_js",
+      "_tgt": "scheduling_formatlongdate",
+      "source": "src_lib_scheduling_js",
+      "target": "scheduling_formatlongdate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L344",
+      "weight": 1.0,
+      "_src": "src_lib_scheduling_js",
+      "_tgt": "scheduling_formatrecurrencesummary",
+      "source": "src_lib_scheduling_js",
+      "target": "scheduling_formatrecurrencesummary",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L387",
+      "weight": 1.0,
+      "_src": "src_lib_scheduling_js",
+      "_tgt": "scheduling_getcareplanstaffwarning",
+      "source": "src_lib_scheduling_js",
+      "target": "scheduling_getcareplanstaffwarning",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L75",
+      "weight": 1.0,
+      "_src": "scheduling_getcalendarviewforslug",
+      "_tgt": "scheduling_normalizeschedulingviewslug",
+      "source": "scheduling_normalizeschedulingviewslug",
+      "target": "scheduling_getcalendarviewforslug",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L184",
+      "weight": 1.0,
+      "_src": "scheduling_buildschedulingrange",
+      "_tgt": "scheduling_normalizeschedulingviewslug",
+      "source": "scheduling_normalizeschedulingviewslug",
+      "target": "scheduling_buildschedulingrange",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L126",
+      "weight": 1.0,
+      "_src": "scheduling_buildschedulingstatuspillsections",
+      "_tgt": "scheduling_issecondaryschedulingstatus",
+      "source": "scheduling_issecondaryschedulingstatus",
+      "target": "scheduling_buildschedulingstatuspillsections",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L185",
+      "weight": 1.0,
+      "_src": "scheduling_buildschedulingrange",
+      "_tgt": "scheduling_parseschedulingdateparam",
+      "source": "scheduling_parseschedulingdateparam",
+      "target": "scheduling_buildschedulingrange",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L216",
+      "weight": 1.0,
+      "_src": "scheduling_buildschedulingsearchparams",
+      "_tgt": "scheduling_parseschedulingdateparam",
+      "source": "scheduling_parseschedulingdateparam",
+      "target": "scheduling_buildschedulingsearchparams",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L255",
+      "weight": 1.0,
+      "_src": "scheduling_normalizevisitformdate",
+      "_tgt": "scheduling_parseschedulingdateparam",
+      "source": "scheduling_parseschedulingdateparam",
+      "target": "scheduling_normalizevisitformdate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L349",
+      "weight": 1.0,
+      "_src": "scheduling_formatrecurrencesummary",
+      "_tgt": "scheduling_parseschedulingdateparam",
+      "source": "scheduling_parseschedulingdateparam",
+      "target": "scheduling_formatrecurrencesummary",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L186",
+      "weight": 1.0,
+      "_src": "scheduling_buildschedulingrange",
+      "_tgt": "scheduling_formatschedulingdateparam",
+      "source": "scheduling_formatschedulingdateparam",
+      "target": "scheduling_buildschedulingrange",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L216",
+      "weight": 1.0,
+      "_src": "scheduling_buildschedulingsearchparams",
+      "_tgt": "scheduling_formatschedulingdateparam",
+      "source": "scheduling_formatschedulingdateparam",
+      "target": "scheduling_buildschedulingsearchparams",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L251",
+      "weight": 1.0,
+      "_src": "scheduling_normalizevisitformdate",
+      "_tgt": "scheduling_formatschedulingdateparam",
+      "source": "scheduling_formatschedulingdateparam",
+      "target": "scheduling_normalizevisitformdate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L191",
+      "weight": 1.0,
+      "_src": "scheduling_buildschedulingrange",
+      "_tgt": "scheduling_startofday",
+      "source": "scheduling_startofday",
+      "target": "scheduling_buildschedulingrange",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L192",
+      "weight": 1.0,
+      "_src": "scheduling_buildschedulingrange",
+      "_tgt": "scheduling_endofday",
+      "source": "scheduling_endofday",
+      "target": "scheduling_buildschedulingrange",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L197",
+      "weight": 1.0,
+      "_src": "scheduling_buildschedulingrange",
+      "_tgt": "scheduling_adddays",
+      "source": "scheduling_adddays",
+      "target": "scheduling_buildschedulingrange",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L362",
+      "weight": 1.0,
+      "_src": "scheduling_formatrecurrencesummary",
+      "_tgt": "scheduling_adddays",
+      "source": "scheduling_adddays",
+      "target": "scheduling_formatrecurrencesummary",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L377",
+      "weight": 1.0,
+      "_src": "scheduling_formatrecurrencesummary",
+      "_tgt": "scheduling_addmonths",
+      "source": "scheduling_addmonths",
+      "target": "scheduling_formatrecurrencesummary",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L265",
+      "weight": 1.0,
+      "_src": "scheduling_buildvisitcreateformstate",
+      "_tgt": "scheduling_normalizevisitformdate",
+      "source": "scheduling_normalizevisitformdate",
+      "target": "scheduling_buildvisitcreateformstate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L292",
+      "weight": 1.0,
+      "_src": "scheduling_haseventtimingchanged",
+      "_tgt": "scheduling_geteventtimestamp",
+      "source": "scheduling_geteventtimestamp",
+      "target": "scheduling_haseventtimingchanged",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L350",
+      "weight": 1.0,
+      "_src": "scheduling_formatrecurrencesummary",
+      "_tgt": "scheduling_validaterecurrence",
+      "source": "scheduling_validaterecurrence",
+      "target": "scheduling_formatrecurrencesummary",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L361",
+      "weight": 1.0,
+      "_src": "scheduling_formatrecurrencesummary",
+      "_tgt": "scheduling_getrecurrencetotalvisits",
+      "source": "scheduling_getrecurrencetotalvisits",
+      "target": "scheduling_formatrecurrencesummary",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\scheduling.js",
+      "source_location": "L384",
+      "weight": 1.0,
+      "_src": "scheduling_formatrecurrencesummary",
+      "_tgt": "scheduling_formatlongdate",
+      "source": "scheduling_formatlongdate",
+      "target": "scheduling_formatrecurrencesummary",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "src\\lib\\utils.js",
       "source_location": "L4",
       "weight": 1.0,
@@ -8242,7 +9462,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\lib\\validations.js",
-      "source_location": "L15",
+      "source_location": "L17",
       "weight": 1.0,
       "_src": "src_lib_validations_js",
       "_tgt": "validations_collapsewhitespace",
@@ -8254,7 +9474,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\lib\\validations.js",
-      "source_location": "L19",
+      "source_location": "L21",
       "weight": 1.0,
       "_src": "src_lib_validations_js",
       "_tgt": "validations_hasrepeatedchunk",
@@ -8266,7 +9486,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\lib\\validations.js",
-      "source_location": "L30",
+      "source_location": "L32",
       "weight": 1.0,
       "_src": "src_lib_validations_js",
       "_tgt": "validations_lookssuspiciouslygarbledname",
@@ -8278,7 +9498,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\lib\\validations.js",
-      "source_location": "L48",
+      "source_location": "L50",
       "weight": 1.0,
       "_src": "src_lib_validations_js",
       "_tgt": "validations_buildhumannameschema",
@@ -8290,7 +9510,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\lib\\validations.js",
-      "source_location": "L114",
+      "source_location": "L116",
       "weight": 1.0,
       "_src": "src_lib_validations_js",
       "_tgt": "validations_extractfirsterror",
@@ -8302,7 +9522,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\lib\\validations.js",
-      "source_location": "L124",
+      "source_location": "L126",
       "weight": 1.0,
       "_src": "src_lib_validations_js",
       "_tgt": "validations_normalizestaffformdata",
@@ -8314,7 +9534,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\lib\\validations.js",
-      "source_location": "L148",
+      "source_location": "L150",
       "weight": 1.0,
       "_src": "src_lib_validations_js",
       "_tgt": "validations_validatestaffformdata",
@@ -8326,7 +9546,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "src\\lib\\validations.js",
-      "source_location": "L41",
+      "source_location": "L43",
       "weight": 1.0,
       "_src": "validations_lookssuspiciouslygarbledname",
       "_tgt": "validations_hasrepeatedchunk",
@@ -8338,7 +9558,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "src\\lib\\validations.js",
-      "source_location": "L158",
+      "source_location": "L160",
       "weight": 1.0,
       "_src": "validations_validatestaffformdata",
       "_tgt": "validations_extractfirsterror",
@@ -8350,12 +9570,48 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "src\\lib\\validations.js",
-      "source_location": "L149",
+      "source_location": "L151",
       "weight": 1.0,
       "_src": "validations_validatestaffformdata",
       "_tgt": "validations_normalizestaffformdata",
       "source": "validations_normalizestaffformdata",
       "target": "validations_validatestaffformdata",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\visit-business-rules.js",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_src": "src_lib_visit_business_rules_js",
+      "_tgt": "visit_business_rules_validatevisitbusinessrules",
+      "source": "src_lib_visit_business_rules_js",
+      "target": "visit_business_rules_validatevisitbusinessrules",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\visit-business-rules.js",
+      "source_location": "L144",
+      "weight": 1.0,
+      "_src": "src_lib_visit_business_rules_js",
+      "_tgt": "visit_business_rules_collectvisitconflicts",
+      "source": "src_lib_visit_business_rules_js",
+      "target": "visit_business_rules_collectvisitconflicts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\lib\\visit-business-rules.js",
+      "source_location": "L212",
+      "weight": 1.0,
+      "_src": "src_lib_visit_business_rules_js",
+      "_tgt": "visit_business_rules_buildrecurringvisitpayloads",
+      "source": "src_lib_visit_business_rules_js",
+      "target": "visit_business_rules_buildrecurringvisitpayloads",
       "confidence_score": 1.0
     },
     {
@@ -8368,6 +9624,18 @@
       "_tgt": "create_care_plan_spec_loginasadmin",
       "source": "tests_create_care_plan_spec_js",
       "target": "create_care_plan_spec_loginasadmin",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\edit-profile-entrypoints.spec.js",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_src": "tests_edit_profile_entrypoints_spec_js",
+      "_tgt": "edit_profile_entrypoints_spec_loginasadmin",
+      "source": "tests_edit_profile_entrypoints_spec_js",
+      "target": "edit_profile_entrypoints_spec_loginasadmin",
       "confidence_score": 1.0
     },
     {

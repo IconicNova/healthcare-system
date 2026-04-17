@@ -183,7 +183,7 @@ export default function ClientList() {
       return (
         <div style={{ display: 'flex', gap: '8px' }}>
           <button
-            onClick={() => router.push(`/clients/${client.id}/edit`)}
+            onClick={() => router.push(`/clients/${client.id}?edit=true`)}
             style={{
               padding: '6px 10px',
               borderRadius: '6px',

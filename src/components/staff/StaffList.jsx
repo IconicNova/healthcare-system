@@ -264,7 +264,7 @@ export default function StaffList() {
       return (
         <div style={{ display: 'flex', gap: '8px' }}>
           <button
-            onClick={() => router.push(`/staff/${member.id}/edit`)}
+            onClick={() => router.push(`/staff/${member.id}?edit=true`)}
             style={{
               padding: '6px 10px',
               borderRadius: '6px',

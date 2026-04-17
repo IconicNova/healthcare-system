@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { useState, useEffect, useRef } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Tabs from '@/components/ui/Tabs';
 import ClientOverviewTab from './ClientOverviewTab';
 import ClientMedicalTab from './ClientMedicalTab';
@@ -13,6 +13,8 @@ import ClientFormsTab from './ClientFormsTab';
 import StatusBadge from '@/components/ui/StatusBadge';
 import { ArrowLeft, Edit, Upload, X } from 'lucide-react';
 import Button from '@/components/ui/Button';
+import Modal from '@/components/ui/Modal';
+import ClientForm from './ClientForm';
 
 const TABS = [
   { id: 'overview', label: 'Overview' },
@@ -33,6 +35,7 @@ const STATUS_VARIANTS = {
 
 export default function ClientProfilePage({ params }) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const fileInputRef = useRef(null);
   const { id } = params;
   const [loading, setLoading] = useState(true);
@@ -41,27 +44,32 @@ export default function ClientProfilePage({ params }) {
   const [avatarPreview, setAvatarPreview] = useState(null);
   const [avatarUploading, setAvatarUploading] = useState(false);
   const [avatarError, setAvatarError] = useState('');
+  const [showEditModal, setShowEditModal] = useState(false);
+
+  const fetchClient = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(`/api/clients/${id}`);
+      if (response.ok) {
+        const data = await response.json();
+        setClient(data);
+        setAvatarPreview(data.avatar || null);
+      }
+    } catch (error) {
+      console.error('Error fetching client:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    async function fetchClient() {
-      try {
-        const response = await fetch(`/api/clients/${id}`);
-        if (response.ok) {
-          const data = await response.json();
-          setClient(data);
-          if (data.avatar) {
-            setAvatarPreview(data.avatar);
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching client:', error);
-      } finally {
-        setLoading(false);
-      }
-    }
-
     fetchClient();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
+
+  useEffect(() => {
+    setShowEditModal(searchParams.get('edit') === 'true');
+  }, [searchParams]);
 
   const getInitials = (firstName, lastName) => {
     return `${firstName?.charAt(0) || ''}${lastName?.charAt(0) || ''}`.toUpperCase();
@@ -133,6 +141,19 @@ export default function ClientProfilePage({ params }) {
   };
 
   const displayAvatar = avatarPreview || client?.avatar;
+
+  const handleOpenEditModal = () => {
+    router.replace(`/clients/${id}?edit=true`);
+  };
+
+  const handleCloseEditModal = () => {
+    router.replace(`/clients/${id}`);
+  };
+
+  const handleEditSuccess = async () => {
+    await fetchClient();
+    handleCloseEditModal();
+  };
 
   if (loading) {
     return (
@@ -288,7 +309,7 @@ export default function ClientProfilePage({ params }) {
               )}
             </div>
           </div>
-          <Button variant="secondary" onClick={() => router.push(`/clients/${id}/edit`)}>
+          <Button variant="secondary" onClick={handleOpenEditModal}>
             <Edit size={16} />
             Edit Client
           </Button>
@@ -307,6 +328,10 @@ export default function ClientProfilePage({ params }) {
         {activeTab === 'documents' && <ClientDocumentsTab clientId={id} />}
         {activeTab === 'forms' && <ClientFormsTab clientId={id} />}
       </div>
+
+      <Modal isOpen={showEditModal} onClose={handleCloseEditModal} title="Edit Client" size="xl">
+        <ClientForm client={client} onSuccess={handleEditSuccess} onCancel={handleCloseEditModal} />
+      </Modal>
     </div>
   );
 }
