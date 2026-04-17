@@ -1,45 +1,13 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import Modal from '@/components/ui/Modal';
-import { useToast } from '@/components/ui/useToast';
+import { useState, useEffect } from 'react';
 
-class ErrorBoundary extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { hasError: false, error: null };
-  }
+export default function TimesheetEntryForm({ isOpen, onClose, timesheetId, onSuccess }) {
+  console.log('Rendering TimesheetEntryForm', { isOpen, timesheetId });
 
-  static getDerivedStateFromError(error) {
-    return { hasError: true, error };
-  }
-
-  componentDidCatch(error, errorInfo) {
-    console.error('TimesheetEntryForm error:', error, errorInfo);
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return (
-        <Modal isOpen={this.props.isOpen} onClose={this.props.onClose} title="Add Manual Entry" size="md">
-          <div className="modal-body">
-            <p style={{ color: 'red' }}>Something went wrong: {this.state.error?.message}</p>
-            <button onClick={() => this.setState({ hasError: false })} className="btn btn-secondary">
-              Try Again
-            </button>
-          </div>
-        </Modal>
-      );
-    }
-
-    return this.props.children;
-  }
-}
-
-function TimesheetEntryFormContent({ isOpen, onClose, timesheetId, onSuccess, showToast }) {
   const [loading, setLoading] = useState(false);
   const [timesheet, setTimesheet] = useState(null);
-
+  const [error, setError] = useState(null);
   const [formData, setFormData] = useState({
     date: '',
     hours: '',
@@ -48,50 +16,60 @@ function TimesheetEntryFormContent({ isOpen, onClose, timesheetId, onSuccess, sh
     visitId: null,
   });
 
+  console.log('TimesheetEntryForm state', { loading, timesheet, error, formData });
+
   useEffect(() => {
+    console.log('useEffect running', { isOpen, timesheetId });
     if (isOpen && timesheetId) {
+      console.log('Fetching timesheet...');
       fetchTimesheet();
     }
   }, [isOpen, timesheetId]);
 
   const formatDateString = (dateValue) => {
+    console.log('formatDateString input:', dateValue);
     if (!dateValue) return '';
     try {
       const d = new Date(dateValue);
+      console.log('Parsed date:', d);
       if (isNaN(d.getTime())) return '';
       return d.toISOString().split('T')[0];
-    } catch {
+    } catch (e) {
+      console.error('formatDateString error:', e);
       return '';
     }
   };
 
   const fetchTimesheet = async () => {
     try {
+      console.log('fetchTimesheet called with timesheetId:', timesheetId);
       const response = await fetch(`/api/payroll/timesheets/${timesheetId}`);
+      console.log('Response status:', response.status);
       if (!response.ok) {
         throw new Error(`API error: ${response.status}`);
       }
       const data = await response.json();
+      console.log('Response data:', data);
       setTimesheet(data);
       if (data.startDate) {
         const formattedDate = formatDateString(data.startDate);
+        console.log('Setting form date to:', formattedDate);
         setFormData(prev => ({
           ...prev,
-          date: formattedDate || prev.date,
+          date: formattedDate,
         }));
       }
     } catch (err) {
       console.error('Error fetching timesheet:', err);
-      showToast('Failed to load timesheet data', 'error');
+      setError(err.message);
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const hours = parseFloat(formData.hours);
     if (isNaN(hours) || hours <= 0) {
-      showToast('Please enter valid hours', 'warning');
+      alert('Please enter valid hours');
       return;
     }
 
@@ -110,52 +88,72 @@ function TimesheetEntryFormContent({ isOpen, onClose, timesheetId, onSuccess, sh
       });
 
       if (response.ok) {
-        showToast('Entry added successfully', 'success');
+        alert('Entry added successfully');
         onSuccess();
       } else {
         const error = await response.json();
-        showToast(error.error || 'Failed to add entry', 'error');
+        alert(error.error || 'Failed to add entry');
       }
     } catch (error) {
       console.error('Error adding entry:', error);
-      showToast('Failed to add entry', 'error');
+      alert('Failed to add entry');
     } finally {
       setLoading(false);
     }
   };
 
-  const startDateStr = formatDateString(timesheet?.startDate);
-  const endDateStr = formatDateString(timesheet?.endDate);
+  if (!isOpen) {
+    console.log('Not rendering - isOpen is false');
+    return null;
+  }
+
+  console.log('Rendering modal with form');
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Add Manual Entry" size="md">
-      <form onSubmit={handleSubmit}>
-        <div className="modal-body">
-          <div className="form-group" style={{ marginBottom: '16px' }}>
-            <label className="form-label">Date *</label>
+    <div style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: 'rgba(0,0,0,0.5)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: 9999
+    }} onClick={onClose}>
+      <div style={{
+        backgroundColor: 'white',
+        padding: '24px',
+        borderRadius: '8px',
+        maxWidth: '500px',
+        width: '100%'
+      }} onClick={e => e.stopPropagation()}>
+        <h3 style={{ marginTop: 0 }}>Add Manual Entry</h3>
+        
+        {error && (
+          <div style={{ color: 'red', marginBottom: '16px' }}>Error: {error}</div>
+        )}
+
+        <form onSubmit={handleSubmit}>
+          <div style={{ marginBottom: '16px' }}>
+            <label style={{ display: 'block', marginBottom: '4px' }}>Date *</label>
             <input
               type="date"
-              className="input"
+              style={{ width: '100%', padding: '8px' }}
               value={formData.date}
               onChange={(e) => setFormData(prev => ({ ...prev, date: e.target.value }))}
-              min={startDateStr || undefined}
-              max={endDateStr || undefined}
               required
             />
-            {timesheet && startDateStr && endDateStr && (
-              <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginTop: '4px' }}>
-                Must be within: {startDateStr} to {endDateStr}
-              </p>
-            )}
           </div>
 
-          <div className="form-group" style={{ marginBottom: '16px' }}>
-            <label className="form-label">Hours *</label>
+          <div style={{ marginBottom: '16px' }}>
+            <label style={{ display: 'block', marginBottom: '4px' }}>Hours *</label>
             <input
               type="number"
-              className="input"
               step="0.25"
               min="0"
+              style={{ width: '100%', padding: '8px' }}
               value={formData.hours}
               onChange={(e) => setFormData(prev => ({ ...prev, hours: e.target.value }))}
               placeholder="0.00"
@@ -163,48 +161,38 @@ function TimesheetEntryFormContent({ isOpen, onClose, timesheetId, onSuccess, sh
             />
           </div>
 
-          <div className="form-group" style={{ marginBottom: '16px' }}>
-            <label className="form-label">Description</label>
+          <div style={{ marginBottom: '16px' }}>
+            <label style={{ display: 'block', marginBottom: '4px' }}>Description</label>
             <input
               type="text"
-              className="input"
+              style={{ width: '100%', padding: '8px' }}
               value={formData.notes}
               onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
               placeholder="e.g., Admin time, Training, Travel"
             />
           </div>
 
-          <div className="form-group" style={{ marginBottom: '20px' }}>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+          <div style={{ marginBottom: '20px' }}>
+            <label>
               <input
                 type="checkbox"
                 checked={formData.billable}
                 onChange={(e) => setFormData(prev => ({ ...prev, billable: e.target.checked }))}
               />
-              <span style={{ fontSize: '14px', color: 'var(--color-text)' }}>Billable</span>
+              {' '}Billable
             </label>
           </div>
 
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
-            <button type="button" onClick={onClose} className="btn btn-secondary btn-md">
+            <button type="button" onClick={onClose} style={{ padding: '8px 16px' }}>
               Cancel
             </button>
-            <button type="submit" disabled={loading} className="btn btn-primary btn-md">
+            <button type="submit" disabled={loading} style={{ padding: '8px 16px', backgroundColor: '#3b82f6', color: 'white', border: 'none', borderRadius: '4px' }}>
               {loading ? 'Adding...' : 'Add Entry'}
             </button>
           </div>
-        </div>
-      </form>
-    </Modal>
-  );
-}
-
-export default function TimesheetEntryForm(props) {
-  const { showToast } = useToast();
-
-  return (
-    <ErrorBoundary>
-      <TimesheetEntryFormContent {...props} showToast={showToast} />
-    </ErrorBoundary>
+        </form>
+      </div>
+    </div>
   );
 }
