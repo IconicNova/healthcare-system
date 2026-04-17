@@ -1,9 +1,10 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { ArrowLeft, Save, Check, Clock, AlertCircle, Eye } from 'lucide-react';
 import FormFieldRenderer from '@/components/care-delivery/FormFieldRenderer';
+import { resolveCareDeliveryReturnTo } from '@/components/care-delivery/care-delivery.helpers';
 import { normalizeFormStatus, shouldAutosaveDraft } from '@/lib/form-review';
 
 function formatReadOnlyValue(value) {
@@ -15,6 +16,7 @@ function formatReadOnlyValue(value) {
 
 export default function FormChartingPage({ params }) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { formId } = params;
 
   const [form, setForm] = useState(null);
@@ -25,6 +27,7 @@ export default function FormChartingPage({ params }) {
   const [showPreview, setShowPreview] = useState(false);
   const [validationErrors, setValidationErrors] = useState({});
   const [reviewActionLoading, setReviewActionLoading] = useState(false);
+  const returnTo = resolveCareDeliveryReturnTo(searchParams.get('returnTo'));
   const currentStatus = normalizeFormStatus(form?.status);
   const isEditable = currentStatus === 'DRAFT';
   const statusStyles = {
@@ -53,19 +56,19 @@ export default function FormChartingPage({ params }) {
           setFormData(initialData);
         } else {
           alert('Failed to load form');
-          router.push('/care-delivery');
+          router.push(returnTo);
         }
       } catch (error) {
         console.error('Error fetching form:', error);
         alert('Failed to load form');
-        router.push('/care-delivery');
+        router.push(returnTo);
       } finally {
         setLoading(false);
       }
     };
 
     fetchForm();
-  }, [formId, router]);
+  }, [formId, returnTo, router]);
 
   // Debounced auto-save
   const saveForm = useCallback(async () => {
@@ -187,7 +190,7 @@ export default function FormChartingPage({ params }) {
 
       if (response.ok) {
         alert('Form submitted successfully!');
-        router.push('/care-delivery');
+        router.push(returnTo);
       } else {
         alert('Failed to submit form');
       }
@@ -265,7 +268,7 @@ export default function FormChartingPage({ params }) {
       <div style={{ marginBottom: '24px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
           <button
-            onClick={() => router.push('/care-delivery')}
+            onClick={() => router.push(returnTo)}
             style={{
               padding: '8px',
               borderRadius: '6px',

@@ -23,7 +23,7 @@ const STATUS_OPTIONS = [
   { value: 'LATE', label: 'Late', color: '#EA580C' },
 ];
 
-export default function EditVisitDialog({ isOpen, onClose, visit, onSave }) {
+export default function EditVisitDialog({ isOpen, onClose, visit, onSave, formReturnTo = '' }) {
     const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -418,7 +418,7 @@ export default function EditVisitDialog({ isOpen, onClose, visit, onSave }) {
           <div>
             {activeTab === 'info' && renderInfoTab()}
             {activeTab === 'tasks' && <VisitTasksTab visitId={visit?.id} />}
-            {activeTab === 'forms' && <EditVisitFormsTab visitId={visit?.id} />}
+            {activeTab === 'forms' && <EditVisitFormsTab visitId={visit?.id} returnTo={formReturnTo} />}
             {activeTab === 'notes' && <VisitNotesTab visitId={visit?.id} />}
             {activeTab === 'goals' && (
               <div style={{ padding: '24px', textAlign: 'center', color: 'var(--color-text-secondary)' }}>

@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { FileText, AlertCircle } from 'lucide-react';
+import { buildCareDeliveryFormPath } from '@/components/care-delivery/care-delivery.helpers';
 import StatusBadge from '@/components/ui/StatusBadge';
 import {
   buildVisitFormSections,
@@ -131,7 +132,7 @@ function FormSection({ title, entries, loadingTemplateId, onAction }) {
   );
 }
 
-export default function EditVisitFormsTab({ visitId }) {
+export default function EditVisitFormsTab({ visitId, returnTo = '' }) {
   const router = useRouter();
   const [templates, setTemplates] = useState([]);
   const [forms, setForms] = useState([]);
@@ -181,7 +182,7 @@ export default function EditVisitFormsTab({ visitId }) {
     const existingFormId = entry.form?.id;
 
     if (existingFormId) {
-      router.push(`/care-delivery/forms/${existingFormId}`);
+      router.push(returnTo ? buildCareDeliveryFormPath(existingFormId, returnTo) : `/care-delivery/forms/${existingFormId}`);
       return;
     }
 
@@ -209,7 +210,7 @@ export default function EditVisitFormsTab({ visitId }) {
         return [nextForm, ...withoutSameTemplate];
       });
 
-      router.push(`/care-delivery/forms/${nextForm.id}`);
+      router.push(returnTo ? buildCareDeliveryFormPath(nextForm.id, returnTo) : `/care-delivery/forms/${nextForm.id}`);
     } catch (actionError) {
       console.error('Error opening visit form:', actionError);
       setError('Unable to open this form right now.');

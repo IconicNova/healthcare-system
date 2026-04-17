@@ -118,7 +118,9 @@ export default function Sidebar({ mobileOpen, onMobileClose }) {
               {!collapsed && 'Main Menu'}
             </div>
             {navigation.map((item) => {
-              const isActive = pathname === item.href;
+              const isActive = item.href === '/dashboard'
+                ? pathname === item.href
+                : pathname === item.href || pathname.startsWith(`${item.href}/`);
               return (
                 <Link key={item.name} href={item.href} passHref>
                   <button

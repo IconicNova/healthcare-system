@@ -2028,6 +2028,8 @@ a:hover {
   position: relative;
   width: 280px;
   transition: width var(--transition-base) var(--ease-default);
+  display: flex;
+  align-items: center;
 }
 
 .topbar-search:focus-within {
@@ -2060,12 +2062,11 @@ a:hover {
 .topbar-search-icon {
   position: absolute;
   left: var(--spacing-3);
-  top: 50%;
-  transform: translateY(-50%);
   color: var(--color-text-muted);
   width: 16px;
   height: 16px;
   pointer-events: none;
+  z-index: 1;
 }
 
 /* ─── Topbar Actions ─── */

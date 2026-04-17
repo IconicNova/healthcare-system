@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Eye, Filter, FileText } from 'lucide-react';
+import { buildCareDeliveryFormPath } from '@/components/care-delivery/care-delivery.helpers';
 import { buildFormsReviewFilterRows } from '@/components/care-delivery/forms-review-layout.helpers';
 
 const STATUS_OPTIONS = [
@@ -44,7 +45,7 @@ function formatStatusLabel(status) {
   return status.replaceAll('_', ' ').toLowerCase().replace(/\b\w/g, (letter) => letter.toUpperCase());
 }
 
-export default function FormsReviewQueue({ clientId = '', embedded = false }) {
+export default function FormsReviewQueue({ clientId = '', embedded = false, returnToBase = '' }) {
   const router = useRouter();
   const [forms, setForms] = useState([]);
   const [templates, setTemplates] = useState([]);
@@ -123,6 +124,7 @@ export default function FormsReviewQueue({ clientId = '', embedded = false }) {
     () => buildFormsReviewFilterRows({ embedded }),
     [embedded]
   );
+  const formReturnTo = returnToBase || '/care-delivery/forms/review';
 
   const handleFilterChange = (field, value) => {
     setFilters((current) => ({
@@ -334,7 +336,7 @@ export default function FormsReviewQueue({ clientId = '', embedded = false }) {
                       <td style={bodyCellStyle}>
                         <button
                           className="btn btn-secondary btn-sm"
-                          onClick={() => router.push(`/care-delivery/forms/${form.id}`)}
+                          onClick={() => router.push(buildCareDeliveryFormPath(form.id, formReturnTo))}
                         >
                           <Eye size={14} />
                           Open

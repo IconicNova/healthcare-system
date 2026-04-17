@@ -18,16 +18,19 @@ export default function Input({
       )}
       <div style={{ position: 'relative' }}>
         {Icon && (
-          <Icon
-            size={18}
-            style={{
-              position: 'absolute',
-              left: '12px',
-              top: '50%',
-              transform: 'translateY(-50%)',
-              color: 'var(--color-text-muted)',
-            }}
-          />
+          <div style={{
+            position: 'absolute',
+            left: '12px',
+            top: 0,
+            bottom: 0,
+            display: 'flex',
+            alignItems: 'center',
+            pointerEvents: 'none',
+            color: 'var(--color-text-muted)',
+            zIndex: 1,
+          }}>
+            <Icon size={18} />
+          </div>
         )}
         <input
           className={inputClasses}
