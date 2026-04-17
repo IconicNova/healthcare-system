@@ -4876,6 +4876,14 @@ a:hover {
   margin: 0 !important;
 }
 
+.scheduling-calendar .fc-direction-ltr .fc-timegrid-col-events {
+  margin-right: 0 !important;
+}
+
+.scheduling-calendar .fc-direction-rtl .fc-timegrid-col-events {
+  margin-left: 0 !important;
+}
+
 .scheduling-calendar .fc-scrollgrid {
   border-radius: var(--radius-lg) !important;
   overflow: hidden !important;
