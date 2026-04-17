@@ -75,6 +75,14 @@ export function shouldAutosaveDraft({ status, hasValidationErrors } = {}) {
   return normalizeFormStatus(status) === 'DRAFT';
 }
 
+export function shouldScheduleFormAutosave({
+  status,
+  saving = false,
+  saveStatus = 'idle',
+} = {}) {
+  return shouldAutosaveDraft({ status }) && !saving && saveStatus !== 'saved';
+}
+
 export function buildReviewMetadataPatch({
   previousStatus,
   nextStatus,

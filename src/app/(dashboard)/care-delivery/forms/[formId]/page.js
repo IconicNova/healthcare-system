@@ -5,7 +5,11 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { ArrowLeft, Save, Check, Clock, AlertCircle, Eye } from 'lucide-react';
 import FormFieldRenderer from '@/components/care-delivery/FormFieldRenderer';
 import { resolveCareDeliveryReturnTo } from '@/components/care-delivery/care-delivery.helpers';
-import { normalizeFormStatus, shouldAutosaveDraft } from '@/lib/form-review';
+import {
+  normalizeFormStatus,
+  shouldAutosaveDraft,
+  shouldScheduleFormAutosave,
+} from '@/lib/form-review';
 
 function formatReadOnlyValue(value) {
   if (value === true) return 'Yes';
@@ -72,7 +76,9 @@ export default function FormChartingPage({ params }) {
 
   // Debounced auto-save
   const saveForm = useCallback(async () => {
-    if (!form || saving || saveStatus === 'saved') return;
+    if (!form || !shouldScheduleFormAutosave({ status: currentStatus, saving, saveStatus })) {
+      return;
+    }
 
     setSaving(true);
     setSaveStatus('saving');
@@ -124,12 +130,16 @@ export default function FormChartingPage({ params }) {
 
   // Auto-save with debounce (2 seconds)
   useEffect(() => {
+    if (!shouldScheduleFormAutosave({ status: currentStatus, saving, saveStatus })) {
+      return undefined;
+    }
+
     const timeout = setTimeout(() => {
       saveForm();
     }, 2000);
 
     return () => clearTimeout(timeout);
-  }, [formData, saveForm]);
+  }, [currentStatus, formData, saveForm, saveStatus, saving]);
 
   const handleFieldChange = (fieldName, value) => {
     if (!isEditable) {

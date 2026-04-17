@@ -4,6 +4,7 @@ import {
   normalizeFormStatus,
   buildReviewMetadataPatch,
   shouldAutosaveDraft,
+  shouldScheduleFormAutosave,
   countSubmittedLikeStatuses,
   canTransitionFormStatus,
   normalizeRejectionReason,
@@ -97,6 +98,18 @@ function run() {
   );
   assert.equal(
     shouldAutosaveDraft({ status: 'SUBMITTED', hasValidationErrors: false }),
+    false
+  );
+  assert.equal(
+    shouldScheduleFormAutosave({ status: 'DRAFT', saving: false, saveStatus: 'idle' }),
+    true
+  );
+  assert.equal(
+    shouldScheduleFormAutosave({ status: 'APPROVED', saving: false, saveStatus: 'idle' }),
+    false
+  );
+  assert.equal(
+    shouldScheduleFormAutosave({ status: 'DRAFT', saving: true, saveStatus: 'idle' }),
     false
   );
 

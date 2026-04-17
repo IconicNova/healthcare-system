@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ClipboardCheck, Eye } from 'lucide-react';
+import { ClipboardCheck } from 'lucide-react';
 import DataTable from '@/components/ui/DataTable';
 import SearchInput from '@/components/ui/SearchInput';
 import Select from '@/components/ui/Select';
@@ -18,7 +18,7 @@ const COLUMNS = [
   { key: 'upcomingVisits', label: 'Upcoming Visits', sortable: false, width: '130px' },
   { key: 'totalVisits', label: 'Visits', sortable: false, width: '100px' },
   { key: 'reviewQueue', label: 'Forms Review', sortable: false, width: '120px' },
-  { key: 'actions', label: '', sortable: false, width: '180px' },
+  { key: 'actions', label: '', sortable: false, width: '220px' },
 ];
 
 const STATUS_OPTIONS = [
@@ -217,25 +217,7 @@ export default function CareDeliveryList() {
             }}
           >
             <ClipboardCheck size={12} />
-            Open
-          </button>
-          <button
-            onClick={() => router.push(`/clients/${client.id}`)}
-            style={{
-              padding: '6px 10px',
-              borderRadius: '6px',
-              border: 'none',
-              backgroundColor: 'var(--color-primary-lighter)',
-              color: 'white',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '4px',
-              fontSize: '12px',
-            }}
-          >
-            <Eye size={12} />
-            View Profile
+            Open Care Delivery
           </button>
         </div>
       );
