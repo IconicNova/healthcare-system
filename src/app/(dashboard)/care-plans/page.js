@@ -14,11 +14,11 @@ import CarePlanForm from '@/components/care-plans/CarePlanForm';
 
 const COLUMNS = [
   { key: 'name', label: 'Care Plan Name', sortable: true, width: '250px', headerContentWidth: '190px' },
-  { key: 'client', label: 'Client', sortable: true, width: '200px', headerContentWidth: '125px' },
-  { key: 'staff', label: 'Primary Staff', sortable: true, width: '180px', headerContentWidth: '120px' },
+  { key: 'client', label: 'Client', sortable: true, width: '200px', headerContentWidth: '104px' },
+  { key: 'staff', label: 'Primary Staff', sortable: true, width: '180px', headerContentWidth: '104px' },
   { key: 'services', label: 'Services', sortable: false, width: '200px', headerContentWidth: '110px' },
-  { key: 'startDate', label: 'Start Date', sortable: true, width: '120px', headerContentWidth: '82px' },
-  { key: 'endDate', label: 'End Date', sortable: true, width: '120px', headerContentWidth: '82px' },
+  { key: 'startDate', label: 'Start Date', sortable: true, width: '120px', headerContentWidth: '72px' },
+  { key: 'endDate', label: 'End Date', sortable: true, width: '120px', headerContentWidth: '72px' },
   { key: 'status', label: 'Status', sortable: true, width: '100px', headerContentWidth: '64px' },
   { key: 'actions', label: '', sortable: false, width: '150px' },
 ];
