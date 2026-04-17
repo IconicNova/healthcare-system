@@ -108,8 +108,10 @@ export default function SchedulingCalendar({
           selectable={true}
           selectMirror={true}
           dayMaxEvents={true}
-          slotMinTime="06:00:00"
-          slotMaxTime="22:00:00"
+          slotMinTime="08:00:00"
+          slotMaxTime="20:00:00"
+          slotDuration="00:30:00"
+          slotLabelInterval="01:00:00"
           height="auto"
           contentHeight="auto"
           eventDisplay="block"
@@ -152,7 +154,6 @@ export default function SchedulingCalendar({
               </div>
             );
           }}
-          scrollTime="08:00:00"
           allDaySlot={false}
         />
       )}
