@@ -59,6 +59,7 @@ export default function StaffList() {
   const toast = useToast();
   const [loading, setLoading] = useState(false);
   const [staff, setStaff] = useState([]);
+  const [searchInput, setSearchInput] = useState('');
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [roleFilter, setRoleFilter] = useState('');
@@ -74,6 +75,7 @@ export default function StaffList() {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [staffToDelete, setStaffToDelete] = useState(null);
   const [deleting, setDeleting] = useState(false);
+  const [deactivating, setDeactivating] = useState(false);
 
   const fetchData = async () => {
     setLoading(true);
@@ -119,10 +121,17 @@ export default function StaffList() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pagination.page, pagination.limit, search, statusFilter, roleFilter, branchFilter]);
 
-  // Fetch when filters change
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setSearch(searchInput);
+      setPagination(prev => ({ ...prev, page: 1 }));
+    }, 300);
+
+    return () => clearTimeout(timeoutId);
+  }, [searchInput]);
+
   const handleSearchChange = (value) => {
-    setSearch(value);
-    setPagination(prev => ({ ...prev, page: 1 }));
+    setSearchInput(value);
   };
 
   const handleStatusChange = (e) => {
@@ -375,6 +384,33 @@ export default function StaffList() {
     setStaffToDelete(null);
   };
 
+  const handleDeactivateInstead = async () => {
+    if (!staffToDelete) return;
+
+    setDeactivating(true);
+    try {
+      const response = await fetch(`/api/staff/${staffToDelete.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'INACTIVE' }),
+      });
+
+      if (response.ok) {
+        toast('success', 'Staff deactivated', 'The staff member was deactivated instead of being removed.');
+        handleDeleteCancel();
+        fetchData();
+      } else {
+        const data = await response.json();
+        toast('error', 'Error', data.error || 'Failed to deactivate staff member');
+      }
+    } catch (error) {
+      console.error('Error deactivating staff:', error);
+      toast('error', 'Error', 'Failed to deactivate staff member');
+    } finally {
+      setDeactivating(false);
+    }
+  };
+
   const branchOptions = [
     { value: '', label: 'All Branches' },
     ...branches.map(b => ({ value: b.id, label: b.name })),
@@ -405,7 +441,7 @@ export default function StaffList() {
         <div style={{ display: 'flex', gap: '12px', flex: 1, maxWidth: '700px' }}>
           <SearchInput
             placeholder="Search by name, email, phone..."
-            value={search}
+            value={searchInput}
             onChange={handleSearchChange}
             style={{ flex: 1 }}
           />
@@ -477,12 +513,17 @@ export default function StaffList() {
             Are you sure you want to remove <strong>{staffToDelete?.firstName} {staffToDelete?.lastName}</strong>?
           </p>
           <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginBottom: '20px' }}>
-            This action can be undone by creating a new staff member. Any assigned visits will be unassigned.
+            This permanently removes the staff record, linked login, skills, certifications, availability, medication administration history, and timesheets. Active visits will be unassigned.
           </p>
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
             <Button variant="secondary" onClick={handleDeleteCancel}>
               Cancel
             </Button>
+            {!['INACTIVE', 'TERMINATED'].includes(staffToDelete?.status) && (
+              <Button variant="secondary" onClick={handleDeactivateInstead} loading={deactivating}>
+                Deactivate Instead
+              </Button>
+            )}
             <Button variant="error" onClick={handleDeleteConfirm} loading={deleting}>
               <Trash2 size={14} />
               Remove Staff

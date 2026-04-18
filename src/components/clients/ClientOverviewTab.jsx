@@ -1,5 +1,6 @@
 import { format } from 'date-fns';
 import { Phone, Mail, MapPin, Calendar, FileText, Clock } from 'lucide-react';
+import { getClientTotalVisits } from '@/lib/clients-staff-review.mjs';
 
 export default function ClientOverviewTab({ client }) {
   const stats = [
@@ -11,7 +12,7 @@ export default function ClientOverviewTab({ client }) {
     },
     {
       label: 'Total Visits',
-      value: client.visits?.length || 0,
+      value: getClientTotalVisits(client),
       icon: Calendar,
       color: 'var(--color-success)',
     },

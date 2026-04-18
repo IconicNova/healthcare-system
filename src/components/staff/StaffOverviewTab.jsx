@@ -3,13 +3,14 @@
 import { useState, useEffect } from 'react';
 import KPICard from '@/components/ui/KPICard';
 import { Calendar, Clock, CheckCircle, TrendingUp } from 'lucide-react';
+import { calculateStaffOverviewMetrics } from '@/lib/clients-staff-review.mjs';
 
 export default function StaffOverviewTab({ staffData }) {
   const [metrics, setMetrics] = useState({
     totalVisits: 0,
     visitsThisMonth: 0,
     avgDuration: 0,
-    punctualityRate: 0,
+    punctualityRate: null,
   });
   const [upcomingVisits, setUpcomingVisits] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -23,39 +24,11 @@ export default function StaffOverviewTab({ staffData }) {
         const visitsResponse = await fetch(`/api/staff/${staffData.id}/visits`);
         if (visitsResponse.ok) {
           const visits = await visitsResponse.json();
-
-          // Calculate metrics
-          const totalVisits = visits.length;
-          const completedVisits = visits.filter(v => v.status === 'COMPLETED');
-          const now = new Date();
-          const thisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-          const visitsThisMonth = visits.filter(v => new Date(v.startTime) >= thisMonth).length;
-
-          // Calculate average duration
-          let totalDuration = 0;
-          completedVisits.forEach(v => {
-            const start = new Date(v.startTime);
-            const end = new Date(v.endTime);
-            totalDuration += (end - start) / (1000 * 60); // minutes
-          });
-          const avgDuration = completedVisits.length > 0 ? Math.round(totalDuration / completedVisits.length) : 0;
-
-          // Calculate punctuality (on-time visits)
-          const onTimeVisits = completedVisits.filter(v => {
-            const scheduled = new Date(v.startTime);
-            const actual = new Date(v.actualStart || v.startTime);
-            return actual <= scheduled || (actual - scheduled) < 30 * 60 * 1000; // within 30 mins
-          });
-          const punctualityRate = completedVisits.length > 0 ? Math.round((onTimeVisits.length / completedVisits.length) * 100) : 100;
-
-          setMetrics({
-            totalVisits,
-            visitsThisMonth,
-            avgDuration,
-            punctualityRate,
-          });
+          const nextMetrics = calculateStaffOverviewMetrics(visits, new Date());
+          setMetrics(nextMetrics);
 
           // Get upcoming visits
+          const now = new Date();
           const upcoming = visits
             .filter(v => new Date(v.startTime) > now && v.status !== 'CANCELLED')
             .sort((a, b) => new Date(a.startTime) - new Date(b.startTime))
@@ -96,7 +69,7 @@ export default function StaffOverviewTab({ staffData }) {
     },
     {
       title: 'Punctuality Rate',
-      value: `${metrics.punctualityRate}%`,
+      value: metrics.punctualityRate === null ? 'N/A' : `${metrics.punctualityRate}%`,
       icon: CheckCircle,
       color: '#8B5CF6',
       description: 'On-time arrivals',
@@ -176,7 +149,7 @@ export default function StaffOverviewTab({ staffData }) {
           </div>
           <div className="card-body">
             <div style={{ padding: '24px', textAlign: 'center', color: 'var(--color-text-secondary)', fontSize: '14px' }}>
-              Activity feed coming soon
+              Recent activity will appear here after this staff member completes visits, updates availability, or renews certifications.
             </div>
           </div>
         </div>

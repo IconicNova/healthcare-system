@@ -5,6 +5,7 @@ import prisma from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
 import { CreateStaffSchema } from '@/lib/validations';
 import { ApiResponse } from '@/lib/api-response';
+import { getUserStatusFromStaffStatus } from '@/lib/clients-staff-review.mjs';
 
 export async function GET(request) {
   try {
@@ -150,6 +151,7 @@ export async function POST(request) {
       licenseExpiry,
       hireDate,
     } = validationResult.data;
+    const nextStaffStatus = status || 'INACTIVE';
 
     // Validate role - never allow ADMIN creation through API
     if (role === 'ADMIN' || role === 'SUPER_ADMIN') {
@@ -204,7 +206,7 @@ export async function POST(request) {
           firstName,
           lastName,
           role: role,
-          status: true,
+          status: getUserStatusFromStaffStatus(nextStaffStatus),
           organizationId: session.user.organizationId,
           branchId: branchId || null,
         },
@@ -228,7 +230,7 @@ export async function POST(request) {
           role,
           payType: payType || 'HOURLY',
           hourlyRate: payRate || null,
-          status: status || 'INACTIVE',
+          status: nextStaffStatus,
           licenseNumber: licenseNumber || null,
           licenseExpiry: licenseExpiry ? new Date(licenseExpiry) : null,
           hireDate: hireDate ? new Date(hireDate) : null,

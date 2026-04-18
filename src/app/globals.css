@@ -7291,6 +7291,20 @@ a:hover {
   gap: var(--spacing-4);
 }
 
+.dashboard-chart-grid > * {
+  min-width: 0;
+}
+
+.dashboard-chart-card {
+  min-width: 0;
+}
+
+.dashboard-chart-frame {
+  width: 100%;
+  min-width: 0;
+  min-height: 250px;
+}
+
 /* ============================================
    BREAKPOINT: Extra Large (≤1440px)
    ============================================ */

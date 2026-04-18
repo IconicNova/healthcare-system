@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { buildSchedulingSearchParams } from '@/lib/scheduling';
 
 export default function StaffScheduleTab({ staffId }) {
   const router = useRouter();
@@ -15,7 +16,7 @@ export default function StaffScheduleTab({ staffId }) {
     try {
       // Get visits for current month
       const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-      const endOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+      const endOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0, 23, 59, 59, 999);
 
       const response = await fetch(
         `/api/staff/${staffId}/visits?startDate=${startOfMonth.toISOString()}&endDate=${endOfMonth.toISOString()}`
@@ -112,7 +113,13 @@ export default function StaffScheduleTab({ staffId }) {
   const handleDayClick = (dayDate) => {
     const dayVisits = getVisitsForDay(dayDate);
     if (dayVisits.length > 0) {
-      router.push(`/visits?id=${dayVisits[0].id}&date=${dayDate.toISOString()}`);
+      const params = buildSchedulingSearchParams({
+        date: dayDate,
+        filters: {
+          staffId,
+        },
+      });
+      router.push(`/scheduling/day?${params.toString()}`);
     }
   };
 

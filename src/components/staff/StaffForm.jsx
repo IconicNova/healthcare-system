@@ -13,6 +13,7 @@ export default function StaffForm({ onSuccess, onCancel, branches = [], staffId,
   const fileInputRef = useRef(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState({});
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -55,6 +56,7 @@ export default function StaffForm({ onSuccess, onCancel, branches = [], staffId,
     { value: 'ACTIVE', label: 'Active' },
     { value: 'INACTIVE', label: 'Inactive' },
     { value: 'ON_LEAVE', label: 'On Leave' },
+    { value: 'TERMINATED', label: 'Terminated' },
   ];
 
   const payTypeOptions = [
@@ -71,6 +73,14 @@ export default function StaffForm({ onSuccess, onCancel, branches = [], staffId,
   const handleInputChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     if (error) setError('');
+    if (fieldErrors[field]) {
+      setFieldErrors(prev => ({ ...prev, [field]: undefined }));
+    }
+  };
+
+  const getFieldError = (field) => {
+    const messages = fieldErrors[field];
+    return Array.isArray(messages) && messages.length > 0 ? messages[0] : '';
   };
 
   const handleAvatarSelect = (e) => {
@@ -168,10 +178,11 @@ export default function StaffForm({ onSuccess, onCancel, branches = [], staffId,
       return;
     }
     setError('');
+    setFieldErrors({});
 
     const validation = validateStaffFormData(formData, { isEdit: Boolean(staffId) });
     if (!validation.success) {
-      setError(validation.firstError);
+      setFieldErrors(validation.fieldErrors || {});
       return;
     }
 
@@ -358,15 +369,19 @@ export default function StaffForm({ onSuccess, onCancel, branches = [], staffId,
             label="First Name"
             value={formData.firstName}
             onChange={(e) => handleInputChange('firstName', e.target.value)}
+            error={getFieldError('firstName')}
             required
             maxLength={50}
+            autoComplete="given-name"
           />
           <Input
             label="Last Name"
             value={formData.lastName}
             onChange={(e) => handleInputChange('lastName', e.target.value)}
+            error={getFieldError('lastName')}
             required
             maxLength={50}
+            autoComplete="family-name"
           />
         </div>
 
@@ -376,8 +391,10 @@ export default function StaffForm({ onSuccess, onCancel, branches = [], staffId,
             type="email"
             value={formData.email}
             onChange={(e) => handleInputChange('email', e.target.value)}
+            error={getFieldError('email')}
             required
             maxLength={255}
+            autoComplete="email"
           />
         </div>
 
@@ -387,17 +404,21 @@ export default function StaffForm({ onSuccess, onCancel, branches = [], staffId,
             type="password"
             value={formData.password}
             onChange={(e) => handleInputChange('password', e.target.value)}
+            error={getFieldError('password')}
             required={!staffId}
             helperText={staffId ? 'Leave blank to keep current password' : 'Minimum 8 characters'}
             maxLength={100}
+            autoComplete="new-password"
           />
           <Input
             label={staffId ? "Confirm Password (optional)" : "Confirm Password"}
             type="password"
             value={formData.confirmPassword}
             onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
+            error={getFieldError('confirmPassword')}
             required={!staffId}
             maxLength={100}
+            autoComplete="new-password"
           />
         </div>
 
@@ -407,6 +428,7 @@ export default function StaffForm({ onSuccess, onCancel, branches = [], staffId,
             value={formData.role}
             onChange={(e) => handleInputChange('role', e.target.value)}
             options={roleOptions}
+            error={getFieldError('role')}
             required
           />
         </div>
@@ -429,17 +451,20 @@ export default function StaffForm({ onSuccess, onCancel, branches = [], staffId,
             label="Phone"
             value={formData.phone}
             onChange={(e) => handleInputChange('phone', e.target.value)}
+            error={getFieldError('phone')}
             required
             maxLength={20}
             pattern={staffPhonePattern}
             placeholder="(416) 555-0198"
             title="Must be a valid 10-digit North American phone number"
+            autoComplete="tel"
           />
           <Select
             label="Branch"
             value={formData.branchId}
             onChange={(e) => handleInputChange('branchId', e.target.value)}
             options={branchOptions}
+            error={getFieldError('branchId')}
             required
           />
         </div>
@@ -458,6 +483,7 @@ export default function StaffForm({ onSuccess, onCancel, branches = [], staffId,
             step="0.01"
             value={formData.payRate}
             onChange={(e) => handleInputChange('payRate', e.target.value)}
+            error={getFieldError('payRate')}
             placeholder="0.00"
             min="0"
           />
@@ -466,6 +492,7 @@ export default function StaffForm({ onSuccess, onCancel, branches = [], staffId,
             value={formData.payType}
             onChange={(e) => handleInputChange('payType', e.target.value)}
             options={payTypeOptions}
+            error={getFieldError('payType')}
           />
         </div>
 
@@ -475,11 +502,13 @@ export default function StaffForm({ onSuccess, onCancel, branches = [], staffId,
             value={formData.status}
             onChange={(e) => handleInputChange('status', e.target.value)}
             options={statusOptions}
+            error={getFieldError('status')}
           />
           <Input
             label="License Number"
             value={formData.licenseNumber}
             onChange={(e) => handleInputChange('licenseNumber', e.target.value)}
+            error={getFieldError('licenseNumber')}
             maxLength={50}
           />
         </div>
@@ -490,6 +519,7 @@ export default function StaffForm({ onSuccess, onCancel, branches = [], staffId,
             type="date"
             value={formData.licenseExpiry}
             onChange={(e) => handleInputChange('licenseExpiry', e.target.value)}
+            error={getFieldError('licenseExpiry')}
             min="1900-01-01"
           />
         </div>

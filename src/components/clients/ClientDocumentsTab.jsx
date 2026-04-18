@@ -171,7 +171,7 @@ export default function ClientDocumentsTab({ clientId }) {
                 No Documents
               </h3>
               <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)' }}>
-                {search ? 'No documents match your search' : 'Upload documents to get started'}
+                {search ? 'No documents match your search' : 'Upload care instructions, signed forms, or insurance paperwork so the care team can find them quickly.'}
               </p>
             </div>
           </div>

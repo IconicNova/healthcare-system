@@ -16,6 +16,7 @@ const STATUS_OPTIONS = [
   { value: 'ACTIVE', label: 'Active' },
   { value: 'INACTIVE', label: 'Inactive' },
   { value: 'ON_HOLD', label: 'On Hold' },
+  { value: 'DISCHARGED', label: 'Discharged' },
 ];
 
 const GENDER_OPTIONS = [

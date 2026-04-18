@@ -135,11 +135,33 @@ export async function PATCH(request, { params }) {
       }
     }
 
+    const nextClientEmail = typeof body.email === 'string'
+      ? body.email.trim()
+      : body.email;
+
+    if (body.dateOfBirth) {
+      const dob = new Date(body.dateOfBirth);
+      const year = dob.getFullYear();
+      if (isNaN(dob.getTime()) || year < 1900 || year > new Date().getFullYear()) {
+        return NextResponse.json(
+          { error: 'Invalid date of birth. Please enter a valid date.' },
+          { status: 400 }
+        );
+      }
+    }
+
+    if (existing.userId && body.email !== undefined && !nextClientEmail) {
+      return NextResponse.json(
+        { error: 'Email is required while this client has a portal account.' },
+        { status: 400 }
+      );
+    }
+
     // Check for duplicate email if provided and changed
-    if (body.email && body.email !== existing.email) {
+    if (nextClientEmail && nextClientEmail !== existing.email) {
       const duplicate = await prisma.client.findFirst({
         where: {
-          email: body.email,
+          email: nextClientEmail,
           organizationId: session.user.organizationId,
           id: { not: id },
         },
@@ -167,7 +189,7 @@ export async function PATCH(request, { params }) {
         user = await tx.user.update({
           where: { id: existing.userId },
           data: {
-            ...(body.email && { email: body.email }),
+            ...(body.email !== undefined && { email: nextClientEmail }),
             ...(body.firstName && { firstName: body.firstName }),
             ...(body.lastName && { lastName: body.lastName }),
             ...userData,
@@ -182,7 +204,7 @@ export async function PATCH(request, { params }) {
       } else if (body.password) {
         // Only create user if password is provided (data inconsistency fix)
         const userDataToCreate = {
-          email: body.email || existing.email || '',
+          email: nextClientEmail || existing.email || '',
           firstName: body.firstName || existing.firstName,
           lastName: body.lastName || existing.lastName,
           role: 'CLIENT',
@@ -207,21 +229,9 @@ export async function PATCH(request, { params }) {
         });
       }
 
-      // Validate date of birth if provided
-      if (body.dateOfBirth) {
-        const dob = new Date(body.dateOfBirth);
-        const year = dob.getFullYear();
-        if (isNaN(dob.getTime()) || year < 1900 || year > new Date().getFullYear()) {
-          return NextResponse.json(
-            { error: 'Invalid date of birth. Please enter a valid date.' },
-            { status: 400 }
-          );
-        }
-      }
-
       // Update emergency contacts
       let emergencyContactsData = undefined;
-      if (body.emergencyContacts) {
+      if (Array.isArray(body.emergencyContacts)) {
         // Delete existing emergency contacts
         await tx.emergencyContact.deleteMany({
           where: { clientId: id },
@@ -246,18 +256,18 @@ export async function PATCH(request, { params }) {
         data: {
           ...(body.firstName && { firstName: body.firstName }),
           ...(body.lastName && { lastName: body.lastName }),
-          ...(body.email && { email: body.email }),
-          ...(body.phone && { phone: body.phone }),
-          ...(body.dateOfBirth && { dateOfBirth: new Date(body.dateOfBirth) }),
+          ...(body.email !== undefined && { email: nextClientEmail || null }),
+          ...(body.phone !== undefined && { phone: body.phone || null }),
+          ...(body.dateOfBirth !== undefined && { dateOfBirth: body.dateOfBirth ? new Date(body.dateOfBirth) : null }),
           ...(body.gender !== undefined && { gender: body.gender }),
           ...(body.ssn !== undefined && { ssn: body.ssn ? encrypt(body.ssn) : null }),
-          ...(body.address && { address: body.address }),
-          ...(body.city && { city: body.city }),
-          ...(body.state && { state: body.state }),
-          ...(body.zipCode && { zipCode: body.zipCode }),
+          ...(body.address !== undefined && { address: body.address || null }),
+          ...(body.city !== undefined && { city: body.city || null }),
+          ...(body.state !== undefined && { state: body.state || null }),
+          ...(body.zipCode !== undefined && { zipCode: body.zipCode || null }),
           ...(body.status && { status: body.status }),
-          ...(body.insuranceType !== undefined && { insuranceType: body.insuranceType }),
-          ...(body.insuranceId !== undefined && { insuranceId: body.insuranceId }),
+          ...(body.insuranceType !== undefined && { insuranceType: body.insuranceType || null }),
+          ...(body.insuranceId !== undefined && { insuranceId: body.insuranceId || null }),
           ...(body.branchId !== undefined && { branchId: body.branchId }),
           ...(emergencyContactsData && { emergencyContacts: emergencyContactsData }),
         },

@@ -62,7 +62,7 @@ export default function StaffTimesheetsTab({ staffId }) {
         ) : timesheets.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '40px', color: 'var(--color-text-secondary)' }}>
             <FileText size={48} style={{ marginBottom: '16px', opacity: 0.5 }} />
-            <p>No timesheets found for this staff member</p>
+            <p>Timesheets will appear here after payroll periods are generated or this staff member submits hours.</p>
           </div>
         ) : (
           <table className="table">

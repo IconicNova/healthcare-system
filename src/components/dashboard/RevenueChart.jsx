@@ -36,7 +36,7 @@ export default function RevenueChart() {
 
   if (loading) {
     return (
-      <div className="card">
+      <div className="card dashboard-chart-card">
         <div className="card-body">
           <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--color-text)', marginBottom: '16px' }}>
             Monthly Revenue
@@ -48,13 +48,13 @@ export default function RevenueChart() {
   }
 
   return (
-    <div className="card">
+    <div className="card dashboard-chart-card">
       <div className="card-body">
         <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--color-text)', marginBottom: '16px' }}>
           Monthly Revenue
         </h3>
-        <div style={{ height: '250px' }}>
-          <ResponsiveContainer width="100%" height="100%">
+        <div className="dashboard-chart-frame" style={{ height: '250px' }}>
+          <ResponsiveContainer width="100%" height="100%" minWidth={280} minHeight={250}>
             <BarChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
               <XAxis

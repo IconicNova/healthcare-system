@@ -15,6 +15,10 @@ export async function GET(request, { params }) {
     const { searchParams } = new URL(request.url);
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '20');
+    const requestedStatus = searchParams.get('status') || '';
+    const status = ['SCHEDULED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED', 'NO_SHOW', 'MISSED'].includes(requestedStatus)
+      ? requestedStatus
+      : '';
     const skip = (page - 1) * limit;
 
     // Check if client exists
@@ -29,11 +33,16 @@ export async function GET(request, { params }) {
       return NextResponse.json({ error: 'Client not found' }, { status: 404 });
     }
 
+    const where = {
+      clientId: id,
+      ...(status && {
+        status,
+      }),
+    };
+
     const [visits, total] = await Promise.all([
       prisma.visit.findMany({
-        where: {
-          clientId: id,
-        },
+        where,
         skip,
         take: limit,
         orderBy: { startTime: 'desc' },
@@ -76,7 +85,7 @@ export async function GET(request, { params }) {
         },
       }),
       prisma.visit.count({
-        where: { clientId: id },
+        where,
       }),
     ]);
 

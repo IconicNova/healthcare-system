@@ -207,7 +207,7 @@ export default function SkillsCertsTab({ staffId }) {
             <div style={{ textAlign: 'center', padding: '24px' }}>Loading...</div>
           ) : skills.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '24px', color: 'var(--color-text-secondary)' }}>
-              No skills added yet
+              Add care skills here so schedulers can match this person to the right visits faster.
             </div>
           ) : (
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
@@ -255,7 +255,7 @@ export default function SkillsCertsTab({ staffId }) {
             <div style={{ textAlign: 'center', padding: '24px' }}>Loading...</div>
           ) : certifications.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '24px', color: 'var(--color-text-secondary)' }}>
-              No certifications added yet
+              Add licenses and certifications here to track renewals and staffing eligibility.
             </div>
           ) : (
             <table className="table">

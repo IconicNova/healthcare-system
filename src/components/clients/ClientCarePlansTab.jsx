@@ -214,7 +214,7 @@ export default function ClientCarePlansTab({ clientId }) {
                     {/* Placeholder - in full implementation, this would show scheduled visits */}
                     <div style={{ padding: '12px', backgroundColor: 'white', borderRadius: '6px', border: '1px dashed var(--color-border)' }}>
                       <div style={{ fontSize: '13px', color: 'var(--color-text-secondary)', textAlign: 'center' }}>
-                        No visits scheduled for this care plan
+                        Schedule the first visit for this care plan to start building the care timeline here.
                       </div>
                     </div>
                     <Button variant="secondary" size="small" style={{ width: 'fit-content' }}>

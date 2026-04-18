@@ -125,7 +125,7 @@ export default function ClientFormsTab({ clientId }) {
                 No Forms Found
               </h3>
               <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)' }}>
-                {search ? 'Try adjusting your search' : 'No forms are available for this client yet'}
+                {search ? 'Try adjusting your search' : 'Forms will appear here after staff submit assessments, vitals, or documentation for this client.'}
               </p>
             </div>
           </div>

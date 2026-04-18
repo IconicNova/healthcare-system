@@ -45,6 +45,28 @@ export default function ClientProfilePage({ params }) {
   const [avatarUploading, setAvatarUploading] = useState(false);
   const [avatarError, setAvatarError] = useState('');
   const [showEditModal, setShowEditModal] = useState(false);
+  const validTabIds = new Set(TABS.map(tab => tab.id));
+
+  const getResolvedTab = (tabValue) => (tabValue && validTabIds.has(tabValue) ? tabValue : 'overview');
+
+  const buildProfileUrl = ({ tab = activeTab, edit = showEditModal } = {}) => {
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (tab && tab !== 'overview') {
+      params.set('tab', tab);
+    } else {
+      params.delete('tab');
+    }
+
+    if (edit) {
+      params.set('edit', 'true');
+    } else {
+      params.delete('edit');
+    }
+
+    const query = params.toString();
+    return query ? `/clients/${id}?${query}` : `/clients/${id}`;
+  };
 
   const fetchClient = async () => {
     setLoading(true);
@@ -53,7 +75,7 @@ export default function ClientProfilePage({ params }) {
       if (response.ok) {
         const data = await response.json();
         setClient(data);
-        setAvatarPreview(data.avatar || null);
+        setAvatarPreview(null);
       }
     } catch (error) {
       console.error('Error fetching client:', error);
@@ -69,6 +91,11 @@ export default function ClientProfilePage({ params }) {
 
   useEffect(() => {
     setShowEditModal(searchParams.get('edit') === 'true');
+  }, [searchParams]);
+
+  useEffect(() => {
+    setActiveTab(getResolvedTab(searchParams.get('tab')));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
   const getInitials = (firstName, lastName) => {
@@ -89,22 +116,21 @@ export default function ClientProfilePage({ params }) {
       setAvatarError('');
       const reader = new FileReader();
       reader.onloadend = () => {
-        setAvatarPreview(reader.result);
-        // Auto-upload after preview is set
-        handleAvatarUpload();
+        const nextAvatar = reader.result;
+        setAvatarPreview(nextAvatar);
       };
       reader.readAsDataURL(file);
     }
   };
 
-  const handleAvatarUpload = async () => {
-    if (!avatarPreview || !client?.id) return;
+  const handleAvatarUpload = async (avatarUrl = avatarPreview) => {
+    if (!avatarUrl || !client?.id) return;
     setAvatarUploading(true);
     try {
       const response = await fetch(`/api/clients/${client.id}/avatar`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ avatarUrl: avatarPreview }),
+        body: JSON.stringify({ avatarUrl }),
       });
       if (!response.ok) {
         const error = await response.json();
@@ -112,6 +138,11 @@ export default function ClientProfilePage({ params }) {
       }
       const result = await response.json();
       setClient(prev => ({ ...prev, avatar: result.avatar }));
+      setAvatarPreview(null);
+      setAvatarError('');
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     } catch (error) {
       console.error('Error uploading avatar:', error);
       setAvatarError(error.message);
@@ -133,6 +164,9 @@ export default function ClientProfilePage({ params }) {
       }
       setAvatarPreview(null);
       setClient(prev => ({ ...prev, avatar: null }));
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     } catch (error) {
       console.error('Error removing avatar:', error);
     } finally {
@@ -141,18 +175,33 @@ export default function ClientProfilePage({ params }) {
   };
 
   const displayAvatar = avatarPreview || client?.avatar;
+  const hasPendingAvatarChange = Boolean(avatarPreview);
 
   const handleOpenEditModal = () => {
-    router.replace(`/clients/${id}?edit=true`);
+    router.replace(buildProfileUrl({ edit: true }));
   };
 
   const handleCloseEditModal = () => {
-    router.replace(`/clients/${id}`);
+    router.replace(buildProfileUrl({ edit: false }));
   };
 
   const handleEditSuccess = async () => {
     await fetchClient();
     handleCloseEditModal();
+  };
+
+  const handleTabChange = (nextTab) => {
+    const resolvedTab = getResolvedTab(nextTab);
+    setActiveTab(resolvedTab);
+    router.replace(buildProfileUrl({ tab: resolvedTab }), { scroll: false });
+  };
+
+  const handleDiscardPendingAvatar = () => {
+    setAvatarPreview(null);
+    setAvatarError('');
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
   };
 
   if (loading) {
@@ -267,7 +316,7 @@ export default function ClientProfilePage({ params }) {
               </button>
 
               {/* Remove button */}
-              {displayAvatar && (
+              {client?.avatar && !hasPendingAvatarChange && (
                 <button
                   type="button"
                   onClick={handleRemoveAvatar}
@@ -307,6 +356,19 @@ export default function ClientProfilePage({ params }) {
               {avatarError && (
                 <p style={{ fontSize: '12px', color: '#dc2626', margin: '4px 0 0 0' }}>{avatarError}</p>
               )}
+              {hasPendingAvatarChange && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '10px', flexWrap: 'wrap' }}>
+                  <span style={{ fontSize: '12px', color: 'var(--color-text-secondary)' }}>
+                    {avatarUploading ? 'Uploading photo...' : 'Photo ready to save'}
+                  </span>
+                  <Button size="small" onClick={() => handleAvatarUpload()} loading={avatarUploading}>
+                    Save Photo
+                  </Button>
+                  <Button size="small" variant="secondary" onClick={handleDiscardPendingAvatar} disabled={avatarUploading}>
+                    Cancel
+                  </Button>
+                </div>
+              )}
             </div>
           </div>
           <Button variant="secondary" onClick={handleOpenEditModal}>
@@ -317,7 +379,7 @@ export default function ClientProfilePage({ params }) {
       </div>
 
       {/* Tabs */}
-      <Tabs tabs={TABS} activeTab={activeTab} onTabChange={setActiveTab} />
+      <Tabs tabs={TABS} activeTab={activeTab} onTabChange={handleTabChange} />
 
       {/* Tab Content */}
       <div style={{ marginTop: '24px' }}>

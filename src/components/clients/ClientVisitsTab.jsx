@@ -92,7 +92,7 @@ export default function ClientVisitsTab({ clientId }) {
           ))}
         </select>
         <div style={{ fontSize: '14px', color: 'var(--color-text-secondary)' }}>
-          {visits.length} visit{visits.length !== 1 ? 's' : ''} found
+          {pagination.total} visit{pagination.total !== 1 ? 's' : ''} found
         </div>
       </div>
 

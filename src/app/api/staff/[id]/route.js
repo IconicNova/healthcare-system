@@ -4,6 +4,7 @@ import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
 import { UpdateStaffSchema } from '@/lib/validations';
+import { getUserStatusFromStaffStatus } from '@/lib/clients-staff-review.mjs';
 
 export async function GET(request, { params }) {
   try {
@@ -135,8 +136,6 @@ export async function PATCH(request, { params }) {
       );
     }
 
-    const data = validationResult.data;
-
     // Check if staff exists
     const existing = await prisma.staff.findFirst({
       where: {
@@ -149,6 +148,11 @@ export async function PATCH(request, { params }) {
     if (!existing) {
       return NextResponse.json({ error: 'Staff member not found' }, { status: 404 });
     }
+
+    const data = validationResult.data;
+    const nextRole = data.role || existing.role;
+    const nextStatus = data.status || existing.status;
+    const nextBranchId = data.branchId !== undefined ? data.branchId : existing.branchId;
 
     // Handle password update if provided
     let userData = {};
@@ -203,6 +207,9 @@ export async function PATCH(request, { params }) {
             ...(data.email && { email: data.email }),
             ...(data.firstName && { firstName: data.firstName }),
             ...(data.lastName && { lastName: data.lastName }),
+            role: nextRole,
+            status: getUserStatusFromStaffStatus(nextStatus),
+            branchId: nextBranchId || null,
             ...userData,
           },
           select: {
@@ -212,6 +219,7 @@ export async function PATCH(request, { params }) {
             lastName: true,
             role: true,
             avatar: true,
+            branchId: true,
           },
         });
       } else if (data.password) {
@@ -220,9 +228,11 @@ export async function PATCH(request, { params }) {
           email: data.email || existing.email,
           firstName: data.firstName || existing.firstName,
           lastName: data.lastName || existing.lastName,
-          role: data.role || existing.role,
+          role: nextRole,
           password: await bcrypt.hash(data.password, 10),
+          status: getUserStatusFromStaffStatus(nextStatus),
           organizationId: session.user.organizationId,
+          branchId: nextBranchId || null,
         };
 
         user = await tx.user.create({

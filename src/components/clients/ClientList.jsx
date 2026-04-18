@@ -47,6 +47,7 @@ export default function ClientList() {
   const toast = useToast();
   const [loading, setLoading] = useState(false);
   const [clients, setClients] = useState([]);
+  const [searchInput, setSearchInput] = useState('');
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [pagination, setPagination] = useState({
@@ -59,6 +60,7 @@ export default function ClientList() {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [clientToDelete, setClientToDelete] = useState(null);
   const [deleting, setDeleting] = useState(false);
+  const [discharging, setDischarging] = useState(false);
 
   const fetchData = async () => {
     setLoading(true);
@@ -89,10 +91,17 @@ export default function ClientList() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pagination.page, pagination.limit, search, statusFilter]);
 
-  // Fetch when filters change (with debounce)
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setSearch(searchInput);
+      setPagination(prev => ({ ...prev, page: 1 }));
+    }, 300);
+
+    return () => clearTimeout(timeoutId);
+  }, [searchInput]);
+
   const handleSearchChange = (value) => {
-    setSearch(value);
-    setPagination(prev => ({ ...prev, page: 1 }));
+    setSearchInput(value);
   };
 
   const handleStatusChange = (e) => {
@@ -300,6 +309,33 @@ export default function ClientList() {
     setClientToDelete(null);
   };
 
+  const handleDischargeInstead = async () => {
+    if (!clientToDelete) return;
+
+    setDischarging(true);
+    try {
+      const response = await fetch(`/api/clients/${clientToDelete.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'DISCHARGED' }),
+      });
+
+      if (response.ok) {
+        toast('success', 'Client discharged', 'The client was discharged instead of being deleted.');
+        handleDeleteCancel();
+        fetchData();
+      } else {
+        const data = await response.json();
+        toast('error', 'Error', data.error || 'Failed to discharge client');
+      }
+    } catch (error) {
+      console.error('Error discharging client:', error);
+      toast('error', 'Error', 'Failed to discharge client');
+    } finally {
+      setDischarging(false);
+    }
+  };
+
   return (
     <div>
       <div style={{ marginBottom: '24px' }}>
@@ -325,7 +361,7 @@ export default function ClientList() {
         <div style={{ display: 'flex', gap: '12px', flex: 1, maxWidth: '600px' }}>
           <SearchInput
             placeholder="Search by name, email, phone, city..."
-            value={search}
+            value={searchInput}
             onChange={handleSearchChange}
             style={{ flex: 1 }}
           />
@@ -383,12 +419,17 @@ export default function ClientList() {
             Are you sure you want to remove <strong>{clientToDelete?.firstName} {clientToDelete?.lastName}</strong>?
           </p>
           <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginBottom: '20px' }}>
-            This action cannot be undone. All associated visits, medications, and forms will be permanently deleted.
+            This action cannot be undone. Visits, medications, forms, documents, emergency contacts, invoices, insurance claims, and medical history linked to this client will be permanently deleted.
           </p>
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
             <Button variant="secondary" onClick={handleDeleteCancel}>
               Cancel
             </Button>
+            {clientToDelete?.status !== 'DISCHARGED' && (
+              <Button variant="secondary" onClick={handleDischargeInstead} loading={discharging}>
+                Discharge Instead
+              </Button>
+            )}
             <Button variant="error" onClick={handleDeleteConfirm} loading={deleting}>
               <Trash2 size={14} />
               Remove Client

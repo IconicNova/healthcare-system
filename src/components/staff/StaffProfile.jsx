@@ -13,6 +13,7 @@ import AvailabilityGrid from './AvailabilityGrid';
 import StaffScheduleTab from './StaffScheduleTab';
 import StaffTimesheetsTab from './StaffTimesheetsTab';
 import StaffForm from './StaffForm';
+import { getStaffPayRateUnit } from '@/lib/clients-staff-review.mjs';
 
 const ROLE_VARIANTS = {
   MANAGER: 'info',
@@ -41,6 +42,32 @@ export default function StaffProfile({ staffData }) {
   const [avatarError, setAvatarError] = useState('');
   const [showEditModal, setShowEditModal] = useState(false);
   const [branches, setBranches] = useState([]);
+  const [savedAvatar, setSavedAvatar] = useState(staffData?.user?.avatar || null);
+  const canSetInactive = !['INACTIVE', 'TERMINATED'].includes(staffData?.status);
+  const canTerminate = staffData?.status !== 'TERMINATED';
+  const hasQuickActions = canSetInactive || canTerminate;
+  const validTabIds = new Set(TABS.map(tab => tab.id));
+
+  const getResolvedTab = (tabValue) => (tabValue && validTabIds.has(tabValue) ? tabValue : 'overview');
+
+  const buildProfileUrl = ({ tab = activeTab, edit = showEditModal } = {}) => {
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (tab && tab !== 'overview') {
+      params.set('tab', tab);
+    } else {
+      params.delete('tab');
+    }
+
+    if (edit) {
+      params.set('edit', 'true');
+    } else {
+      params.delete('edit');
+    }
+
+    const query = params.toString();
+    return query ? `/staff/${staffData.id}?${query}` : `/staff/${staffData.id}`;
+  };
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -59,6 +86,15 @@ export default function StaffProfile({ staffData }) {
   useEffect(() => {
     setShowEditModal(searchParams.get('edit') === 'true');
   }, [searchParams]);
+
+  useEffect(() => {
+    setActiveTab(getResolvedTab(searchParams.get('tab')));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
+
+  useEffect(() => {
+    setSavedAvatar(staffData?.user?.avatar || null);
+  }, [staffData?.user?.avatar]);
 
   useEffect(() => {
     if (!showEditModal || branches.length > 0) {
@@ -144,29 +180,33 @@ export default function StaffProfile({ staffData }) {
       setAvatarError('');
       const reader = new FileReader();
       reader.onloadend = () => {
-        setAvatarPreview(reader.result);
-        // Auto-upload after preview is set
-        handleAvatarUpload();
+        const nextAvatar = reader.result;
+        setAvatarPreview(nextAvatar);
       };
       reader.readAsDataURL(file);
     }
   };
 
-  const handleAvatarUpload = async () => {
-    if (!avatarPreview || !staffData?.id) return;
+  const handleAvatarUpload = async (avatarUrl = avatarPreview) => {
+    if (!avatarUrl || !staffData?.id) return;
     setAvatarUploading(true);
     try {
       const response = await fetch(`/api/staff/${staffData.id}/avatar`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ avatarUrl: avatarPreview }),
+        body: JSON.stringify({ avatarUrl }),
       });
       if (!response.ok) {
         const error = await response.json();
         throw new Error(error.error || 'Failed to upload avatar');
       }
-      // Refresh to get updated data
-      router.refresh();
+      const result = await response.json();
+      setSavedAvatar(result.avatar || avatarUrl);
+      setAvatarPreview(null);
+      setAvatarError('');
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     } catch (error) {
       console.error('Error uploading avatar:', error);
       setAvatarError(error.message);
@@ -187,7 +227,10 @@ export default function StaffProfile({ staffData }) {
         throw new Error(error.error || 'Failed to remove avatar');
       }
       setAvatarPreview(null);
-      router.refresh();
+      setSavedAvatar(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     } catch (error) {
       console.error('Error removing avatar:', error);
     } finally {
@@ -195,22 +238,37 @@ export default function StaffProfile({ staffData }) {
     }
   };
 
-  const displayAvatar = avatarPreview || staffData?.user?.avatar;
+  const displayAvatar = avatarPreview || savedAvatar || staffData?.user?.avatar;
+  const hasPendingAvatarChange = Boolean(avatarPreview);
   const getInitials = () => {
     return `${staffData.firstName?.charAt(0) || ''}${staffData.lastName?.charAt(0) || ''}`.toUpperCase();
   };
 
   const handleOpenEditModal = () => {
-    router.replace(`/staff/${staffData.id}?edit=true`);
+    router.replace(buildProfileUrl({ edit: true }));
   };
 
   const handleCloseEditModal = () => {
-    router.replace(`/staff/${staffData.id}`);
+    router.replace(buildProfileUrl({ edit: false }));
   };
 
   const handleEditSuccess = () => {
     handleCloseEditModal();
     router.refresh();
+  };
+
+  const handleTabChange = (nextTab) => {
+    const resolvedTab = getResolvedTab(nextTab);
+    setActiveTab(resolvedTab);
+    router.replace(buildProfileUrl({ tab: resolvedTab }), { scroll: false });
+  };
+
+  const handleDiscardPendingAvatar = () => {
+    setAvatarPreview(null);
+    setAvatarError('');
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
   };
 
   return (
@@ -237,22 +295,28 @@ export default function StaffProfile({ staffData }) {
             <button onClick={handleOpenEditModal} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 16px', borderRadius: '8px', border: '1px solid var(--color-border)', backgroundColor: 'white', cursor: 'pointer', fontSize: '13px', fontWeight: 500 }}>
               <Edit size={14} /> Edit Profile
             </button>
-            <div ref={menuRef} style={{ position: 'relative' }}>
-              <button onClick={() => setShowMoreActions(!showMoreActions)} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 16px', borderRadius: '8px', border: '1px solid var(--color-border)', backgroundColor: 'white', cursor: 'pointer', fontSize: '13px', fontWeight: 500 }}>
-                <MoreVertical size={14} /> More
-              </button>
-              {showMoreActions && (
-                <div style={{ position: 'absolute', top: '100%', right: 0, marginTop: '8px', minWidth: '200px', backgroundColor: 'white', border: '1px solid var(--color-border)', borderRadius: '8px', boxShadow: 'var(--shadow-lg)', zIndex: 1000 }}>
-                  <button onClick={handleDeactivate} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 16px', width: '100%', background: 'none', border: 'none', borderBottom: '1px solid var(--color-border)', cursor: 'pointer', textAlign: 'left', fontSize: '14px', color: 'var(--color-text)', transition: 'background-color 0.15s' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-gray-50)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
-                    <span style={{ fontSize: '13px', color: 'var(--color-text-secondary)', lineHeight: 1 }}>Set status to INACTIVE</span>
-                  </button>
-                  <button onClick={handleTerminate} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 16px', width: '100%', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', fontSize: '14px', color: 'var(--color-error)', transition: 'background-color 0.15s' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(239, 68, 68, 0.1)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
-                    <Trash2 size={14} />
-                    <span style={{ fontSize: '13px', color: 'var(--color-error)', lineHeight: 1 }}>Set status to TERMINATED</span>
-                  </button>
-                </div>
-              )}
-            </div>
+            {hasQuickActions && (
+              <div ref={menuRef} style={{ position: 'relative' }}>
+                <button onClick={() => setShowMoreActions(!showMoreActions)} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 16px', borderRadius: '8px', border: '1px solid var(--color-border)', backgroundColor: 'white', cursor: 'pointer', fontSize: '13px', fontWeight: 500 }}>
+                  <MoreVertical size={14} /> More
+                </button>
+                {showMoreActions && (
+                  <div style={{ position: 'absolute', top: '100%', right: 0, marginTop: '8px', minWidth: '200px', backgroundColor: 'white', border: '1px solid var(--color-border)', borderRadius: '8px', boxShadow: 'var(--shadow-lg)', zIndex: 1000 }}>
+                    {canSetInactive && (
+                      <button onClick={handleDeactivate} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 16px', width: '100%', background: 'none', border: 'none', borderBottom: canTerminate ? '1px solid var(--color-border)' : 'none', cursor: 'pointer', textAlign: 'left', fontSize: '14px', color: 'var(--color-text)', transition: 'background-color 0.15s' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-gray-50)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
+                        <span style={{ fontSize: '13px', color: 'var(--color-text-secondary)', lineHeight: 1 }}>Set status to INACTIVE</span>
+                      </button>
+                    )}
+                    {canTerminate && (
+                      <button onClick={handleTerminate} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 16px', width: '100%', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', fontSize: '14px', color: 'var(--color-error)', transition: 'background-color 0.15s' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(239, 68, 68, 0.1)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
+                        <Trash2 size={14} />
+                        <span style={{ fontSize: '13px', color: 'var(--color-error)', lineHeight: 1 }}>Set status to TERMINATED</span>
+                      </button>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -328,7 +392,7 @@ export default function StaffProfile({ staffData }) {
             </button>
 
             {/* Remove button */}
-            {displayAvatar && (
+            {savedAvatar && !hasPendingAvatarChange && (
               <button
                 type="button"
                 onClick={handleRemoveAvatar}
@@ -371,6 +435,29 @@ export default function StaffProfile({ staffData }) {
             {avatarError && (
               <p style={{ fontSize: '12px', color: '#dc2626', margin: '8px 0 0 0' }}>{avatarError}</p>
             )}
+            {hasPendingAvatarChange && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '10px', flexWrap: 'wrap' }}>
+                <span style={{ fontSize: '12px', color: 'var(--color-text-secondary)' }}>
+                  {avatarUploading ? 'Uploading photo...' : 'Photo ready to save'}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => handleAvatarUpload()}
+                  disabled={avatarUploading}
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '6px 12px', borderRadius: '6px', border: '1px solid var(--color-border)', backgroundColor: 'var(--color-primary)', color: 'white', cursor: avatarUploading ? 'not-allowed' : 'pointer', opacity: avatarUploading ? 0.7 : 1, fontSize: '12px', fontWeight: 600 }}
+                >
+                  Save Photo
+                </button>
+                <button
+                  type="button"
+                  onClick={handleDiscardPendingAvatar}
+                  disabled={avatarUploading}
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '6px 12px', borderRadius: '6px', border: '1px solid var(--color-border)', backgroundColor: 'white', color: 'var(--color-text)', cursor: avatarUploading ? 'not-allowed' : 'pointer', opacity: avatarUploading ? 0.7 : 1, fontSize: '12px', fontWeight: 600 }}
+                >
+                  Cancel
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Employment Information */}
@@ -384,7 +471,7 @@ export default function StaffProfile({ staffData }) {
               <span style={{ color: 'var(--color-text-secondary)' }}>Hire Date:</span>
               <span style={{ color: 'var(--color-text)' }}>{staffData.hireDate ? new Date(staffData.hireDate).toLocaleDateString() : 'N/A'}</span>
               <span style={{ color: 'var(--color-text-secondary)' }}>Pay Rate:</span>
-              <span style={{ color: 'var(--color-text)' }}>${staffData.hourlyRate?.toFixed(2) || '0.00'} / {staffData.payType === 'HOURLY' ? 'hr' : 'yr'}</span>
+              <span style={{ color: 'var(--color-text)' }}>${staffData.hourlyRate?.toFixed(2) || '0.00'} / {getStaffPayRateUnit(staffData.payType)}</span>
             </div>
           </div>
         </div>
@@ -393,7 +480,7 @@ export default function StaffProfile({ staffData }) {
       {/* Tabs */}
       <div className="tabs">
         {TABS.map(tab => (
-          <button key={tab.id} className={`tab ${activeTab === tab.id ? 'active' : ''}`} onClick={() => setActiveTab(tab.id)}>{tab.label}</button>
+          <button key={tab.id} className={`tab ${activeTab === tab.id ? 'active' : ''}`} onClick={() => handleTabChange(tab.id)}>{tab.label}</button>
         ))}
       </div>
 
