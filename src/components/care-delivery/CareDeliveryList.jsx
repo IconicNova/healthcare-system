@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { ClipboardCheck } from 'lucide-react';
 import DataTable from '@/components/ui/DataTable';
 import SearchInput from '@/components/ui/SearchInput';
@@ -9,7 +10,7 @@ import Select from '@/components/ui/Select';
 import Pagination from '@/components/ui/Pagination';
 import StatusBadge from '@/components/ui/StatusBadge';
 import Button from '@/components/ui/Button';
-import { buildCareDeliveryClientPath } from '@/components/care-delivery/care-delivery.helpers';
+import { buildCareDeliveryClientPath, formatInitials } from '@/components/care-delivery/care-delivery.helpers';
 
 const COLUMNS = [
   { key: 'fullName', label: 'Client', sortable: true, headerInsetStart: '52px' },
@@ -32,9 +33,7 @@ const STATUS_OPTIONS = [
 
 const ACTIVE_VISIT_STATUSES = new Set(['OFFERED', 'SCHEDULED', 'IN_PROGRESS', 'CLOCKED_IN']);
 
-function formatInitials(client) {
-  return `${client.firstName?.charAt(0) || ''}${client.lastName?.charAt(0) || ''}`.toUpperCase();
-}
+
 
 export default function CareDeliveryList() {
   const router = useRouter();
@@ -142,22 +141,37 @@ export default function CareDeliveryList() {
     if (key === 'fullName') {
       return (
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <div
-            style={{
-              width: '40px',
-              height: '40px',
-              borderRadius: '50%',
-              backgroundColor: 'var(--color-primary-light)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '14px',
-              fontWeight: 600,
-              color: 'white',
-            }}
-          >
-            {formatInitials(client)}
-          </div>
+          {/* BUG-17 FIX: Show avatar if available, otherwise initials */}
+          {client.avatar ? (
+            <Image
+              src={client.avatar}
+              alt={client.fullName || 'Client'}
+              width={40}
+              height={40}
+              style={{
+                borderRadius: '50%',
+                objectFit: 'cover',
+              }}
+            />
+          ) : (
+            <div
+              style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '50%',
+                backgroundColor: 'var(--color-primary-light)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '14px',
+                fontWeight: 600,
+                color: 'white',
+                flexShrink: 0,
+              }}
+            >
+              {formatInitials(client)}
+            </div>
+          )}
           <div>
             <div style={{ fontSize: '14px', fontWeight: 500, color: 'var(--color-text)' }}>
               {client.fullName}

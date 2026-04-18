@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Pill, Plus, History } from 'lucide-react';
+import { Pill, Plus, History, Calendar } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import Modal from '@/components/ui/Modal';
 import {
   buildMedicationAdministrationPayload,
@@ -16,6 +17,7 @@ const STATUS_CONFIG = {
 };
 
 export default function MedicationsPage() {
+  const router = useRouter();
   const [selectedClient, setSelectedClient] = useState(null);
   const [clients, setClients] = useState([]);
   const [medications, setMedications] = useState([]);
@@ -33,11 +35,13 @@ export default function MedicationsPage() {
     visitId: '',
   });
   const [loading, setLoading] = useState(true);
+  const [medSearch, setMedSearch] = useState('');
+  const [clientSearch, setClientSearch] = useState('');
 
   useEffect(() => {
     const fetchClients = async () => {
       try {
-        const response = await fetch('/api/clients?limit=100');
+        const response = await fetch('/api/clients?limit=500');
         if (response.ok) {
           const data = await response.json();
           setClients(data.clients || []);
@@ -97,7 +101,11 @@ export default function MedicationsPage() {
       const response = await fetch(`/api/medications/${medication.id}/history`);
       if (response.ok) {
         const data = await response.json();
-        medication.history = data.history || [];
+        // Fix: Clone instead of mutating the prop object
+        setSelectedMedication(prev => ({
+          ...prev,
+          history: data.history || [],
+        }));
       }
     } catch (error) {
       console.error('Error fetching medication history:', error);
@@ -120,6 +128,17 @@ export default function MedicationsPage() {
   const handleAdministerSubmit = async () => {
     if (!selectedMedication) return;
 
+    // BUG-15 FIX: Validate visitId is actually selected
+    if (!administrationData.visitId) {
+      setAdministrationError('Please select a visit before recording administration');
+      return;
+    }
+
+    // Confirmation before clinical action
+    if (!window.confirm('Are you sure you want to record this medication administration? This action cannot be undone.')) {
+      return;
+    }
+
     try {
       const payload = buildMedicationAdministrationPayload(administrationData);
 
@@ -131,15 +150,16 @@ export default function MedicationsPage() {
 
       if (response.ok) {
         const result = await response.json();
-        alert('Medication administration recorded successfully');
         setAdministrationError('');
 
-        // Refresh medication data
-        const updatedMedication = { ...selectedMedication };
-        if (updatedMedication.history) {
-          updatedMedication.history.unshift(result.administration);
-        }
-        setSelectedMedication(updatedMedication);
+        // Fix: Clone instead of mutating
+        const updatedHistory = selectedMedication.history
+          ? [result.administration, ...selectedMedication.history]
+          : [result.administration];
+        setSelectedMedication(prev => ({
+          ...prev,
+          history: updatedHistory,
+        }));
 
         setShowAdministerModal(false);
       } else {
@@ -151,6 +171,22 @@ export default function MedicationsPage() {
       setAdministrationError(error.message || 'Failed to record medication administration');
     }
   };
+
+  const filteredMedications = medications.filter(med => {
+    if (!medSearch.trim()) return true;
+    const q = medSearch.toLowerCase();
+    return (
+      (med.name || '').toLowerCase().includes(q) ||
+      (med.dosage || '').toLowerCase().includes(q) ||
+      (med.frequency || '').toLowerCase().includes(q)
+    );
+  });
+
+  const filteredClients = clients.filter(c => {
+    if (!clientSearch.trim()) return true;
+    const q = clientSearch.toLowerCase();
+    return `${c.firstName} ${c.lastName}`.toLowerCase().includes(q);
+  });
 
   const formatDateTime = (date) => {
     const d = new Date(date);
@@ -171,13 +207,68 @@ export default function MedicationsPage() {
   return (
     <div>
       {/* Page Header */}
-      <div style={{ marginBottom: '24px' }}>
-        <h1 style={{ fontSize: '28px', fontWeight: 700, color: 'var(--color-text)', margin: 0 }}>
-          Medications
-        </h1>
-        <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)', marginTop: '4px' }}>
-          View and administer medications for clients
-        </p>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '24px' }}>
+        <div>
+          <h1 style={{ fontSize: '28px', fontWeight: 700, color: 'var(--color-text)', margin: 0 }}>
+            Medications
+          </h1>
+          <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)', marginTop: '4px' }}>
+            View and administer medications for clients
+          </p>
+        </div>
+        <button
+          onClick={() => router.push('/care-delivery/medications/schedule')}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            padding: '10px 20px',
+            borderRadius: '10px',
+            border: '1px solid var(--color-border)',
+            backgroundColor: 'white',
+            color: 'var(--color-text)',
+            fontSize: '13px',
+            fontWeight: 500,
+            cursor: 'pointer',
+          }}
+        >
+          <Calendar size={16} />
+          Schedule View
+        </button>
+        <button
+          onClick={() => router.push('/care-delivery/medications/schedule')}
+          title="Medication Reconciliation"
+          style={{
+            display: 'flex', alignItems: 'center', gap: '8px',
+            padding: '10px 20px', borderRadius: '10px',
+            border: '1px solid var(--color-border)',
+            backgroundColor: 'white', color: 'var(--color-text)',
+            fontSize: '13px', fontWeight: 500, cursor: 'pointer',
+          }}
+        >
+          <Pill size={16} />
+          Reconciliation
+        </button>
+      </div>
+
+      {/* Search & Filter */}
+      <div style={{ display: 'flex', gap: '12px', marginBottom: '16px' }}>
+        <input
+          type="text"
+          placeholder="Search clients..."
+          value={clientSearch}
+          onChange={(e) => setClientSearch(e.target.value)}
+          style={{ flex: 1, padding: '10px 14px', borderRadius: '10px', border: '1px solid var(--color-border)', fontSize: '13px' }}
+        />
+        {selectedClient && (
+          <input
+            type="text"
+            placeholder="Filter medications..."
+            value={medSearch}
+            onChange={(e) => setMedSearch(e.target.value)}
+            style={{ flex: 1, padding: '10px 14px', borderRadius: '10px', border: '1px solid var(--color-border)', fontSize: '13px' }}
+          />
+        )}
       </div>
 
       {/* Client Selector */}
@@ -199,7 +290,7 @@ export default function MedicationsPage() {
           }}
         >
           <option value="">-- Select a client --</option>
-          {clients.map(client => (
+          {filteredClients.map(client => (
             <option key={client.id} value={client.id}>
               {client.firstName} {client.lastName}
             </option>
@@ -209,7 +300,7 @@ export default function MedicationsPage() {
 
       {/* Medications Table */}
       {selectedClient ? (
-        medications.length === 0 ? (
+        filteredMedications.length === 0 ? (
           <div className="card" style={{ padding: '48px', textAlign: 'center' }}>
             <Pill size={48} style={{ opacity: 0.3, marginBottom: '16px' }} />
             <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)' }}>
@@ -231,7 +322,7 @@ export default function MedicationsPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {medications.map(med => (
+                  {filteredMedications.map(med => (
                     <tr key={med.id}>
                       <td>
                         <div style={{ fontWeight: 500 }}>{med.name}</div>

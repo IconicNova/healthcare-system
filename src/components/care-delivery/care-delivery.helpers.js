@@ -51,3 +51,40 @@ export function resolveCareDeliveryReturnTo(returnTo, fallback = DEFAULT_CARE_DE
 
   return trimmedValue;
 }
+
+/**
+ * Shared helper to generate initials from a client or record with firstName/lastName.
+ * Replaces duplicated formatInitials functions across CareDeliveryList and CareDeliveryWorkspace.
+ */
+export function formatInitials(record) {
+  if (!record) return '??';
+  const first = record.firstName?.charAt(0) || '';
+  const last = record.lastName?.charAt(0) || '';
+  return `${first}${last}`.toUpperCase() || '??';
+}
+
+/**
+ * Formats a date to a human-readable time string.
+ */
+export function formatVisitTime(dateString) {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  return date.toLocaleTimeString('en-US', {
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true,
+  });
+}
+
+/**
+ * Formats a date for display (short format).
+ */
+export function formatVisitDate(dateString) {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
+}

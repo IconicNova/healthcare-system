@@ -1,13 +1,20 @@
 'use client';
 
-import { useState } from 'react';
-import { X } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { X, Calendar, MapPin, Users, AlertTriangle } from 'lucide-react';
 
 const NOTE_TYPES = [
   { value: 'SOAP', label: 'SOAP Note', description: 'Subjective, Objective, Assessment, Plan - Standard clinical documentation' },
   { value: 'DAP', label: 'DAP Note', description: 'Data, Assessment, Plan - Concise clinical format' },
   { value: 'NARRATIVE', label: 'Narrative', description: 'Free-form chronological documentation' },
   { value: 'INCIDENT', label: 'Incident Report', description: 'Document unexpected events or incidents' },
+];
+
+const INCIDENT_SEVERITIES = [
+  { value: 'LOW', label: 'Low', color: '#3B82F6' },
+  { value: 'MODERATE', label: 'Moderate', color: '#F59E0B' },
+  { value: 'HIGH', label: 'High', color: '#EF4444' },
+  { value: 'CRITICAL', label: 'Critical', color: '#DC2626' },
 ];
 
 export default function AddProgressNoteModal({ clientId, existingNote, onClose, onSuccess }) {
@@ -21,10 +28,32 @@ export default function AddProgressNoteModal({ clientId, existingNote, onClose, 
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
 
+  // BUG-10 FIX: Fetch client visits for dropdown instead of requiring raw UUID
+  const [clientVisits, setClientVisits] = useState([]);
+  const [visitsLoading, setVisitsLoading] = useState(false);
+
+  // BUG-16 FIX: Incident-specific fields
+  const [incidentDate, setIncidentDate] = useState('');
+  const [incidentLocation, setIncidentLocation] = useState('');
+  const [incidentPeopleInvolved, setIncidentPeopleInvolved] = useState('');
+  const [incidentSeverity, setIncidentSeverity] = useState('LOW');
+  const [incidentActionsTaken, setIncidentActionsTaken] = useState('');
+
+  useEffect(() => {
+    if (clientId) {
+      setVisitsLoading(true);
+      fetch(`/api/clients/${clientId}/visits`)
+        .then(res => res.ok ? res.json() : { visits: [] })
+        .then(data => setClientVisits(data.visits || []))
+        .catch(() => setClientVisits([]))
+        .finally(() => setVisitsLoading(false));
+    }
+  }, [clientId]);
+
   const handleSubmit = async () => {
     setError('');
 
-    // Validate based on note type
+    // BUG-14 FIX: Validate based on note type including INCIDENT
     if (noteType === 'SOAP') {
       if (!subjective && !objective && !assessment && !plan) {
         setError('Please fill in at least one SOAP section');
@@ -33,6 +62,15 @@ export default function AddProgressNoteModal({ clientId, existingNote, onClose, 
     } else if (noteType === 'DAP' || noteType === 'NARRATIVE') {
       if (!narrative || !narrative.trim()) {
         setError('Please enter narrative content');
+        return;
+      }
+    } else if (noteType === 'INCIDENT') {
+      if (!narrative || !narrative.trim()) {
+        setError('Please describe the incident');
+        return;
+      }
+      if (!incidentDate) {
+        setError('Please enter the incident date and time');
         return;
       }
     }
@@ -50,6 +88,17 @@ export default function AddProgressNoteModal({ clientId, existingNote, onClose, 
         data.objective = objective || null;
         data.assessment = assessment || null;
         data.plan = plan || null;
+      } else if (noteType === 'INCIDENT') {
+        // Pack incident details into narrative for storage
+        const incidentNarrative = [
+          `INCIDENT DATE: ${incidentDate}`,
+          incidentLocation ? `LOCATION: ${incidentLocation}` : '',
+          `SEVERITY: ${incidentSeverity}`,
+          incidentPeopleInvolved ? `PEOPLE INVOLVED: ${incidentPeopleInvolved}` : '',
+          `\nDESCRIPTION:\n${narrative}`,
+          incidentActionsTaken ? `\nACTIONS TAKEN:\n${incidentActionsTaken}` : '',
+        ].filter(Boolean).join('\n');
+        data.narrative = incidentNarrative;
       } else {
         data.narrative = narrative || null;
       }
@@ -68,11 +117,11 @@ export default function AddProgressNoteModal({ clientId, existingNote, onClose, 
       if (response.ok) {
         onSuccess();
       } else {
-        const errorData = await response.json();
+        const errorData = await response.json().catch(() => ({}));
         setError(errorData.error || 'Failed to save note');
       }
-    } catch (error) {
-      console.error('Error saving note:', error);
+    } catch (err) {
+      console.error('Error saving note:', err);
       setError('Failed to save note');
     } finally {
       setSubmitting(false);
@@ -80,6 +129,34 @@ export default function AddProgressNoteModal({ clientId, existingNote, onClose, 
   };
 
   const currentNoteType = NOTE_TYPES.find(nt => nt.value === noteType);
+
+  const formatVisitOption = (visit) => {
+    const date = new Date(visit.startTime).toLocaleDateString('en-US', {
+      month: 'short', day: 'numeric', year: 'numeric',
+    });
+    const time = new Date(visit.startTime).toLocaleTimeString('en-US', {
+      hour: 'numeric', minute: '2-digit', hour12: true,
+    });
+    return `${visit.title || 'Visit'} — ${date} at ${time}`;
+  };
+
+  const textareaStyle = {
+    width: '100%',
+    padding: '10px 12px',
+    borderRadius: '8px',
+    border: '1px solid var(--color-border)',
+    fontSize: '14px',
+    resize: 'vertical',
+    fontFamily: 'inherit',
+  };
+
+  const labelStyle = {
+    fontSize: '13px',
+    fontWeight: 500,
+    color: 'var(--color-text)',
+    display: 'block',
+    marginBottom: '8px',
+  };
 
   return (
     <div
@@ -134,7 +211,7 @@ export default function AddProgressNoteModal({ clientId, existingNote, onClose, 
 
         {/* Note Type Selection */}
         <div style={{ marginBottom: '20px' }}>
-          <label style={{ fontSize: '13px', fontWeight: 500, color: 'var(--color-text)', display: 'block', marginBottom: '8px' }}>
+          <label style={labelStyle}>
             Note Type *
           </label>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '8px' }}>
@@ -174,31 +251,41 @@ export default function AddProgressNoteModal({ clientId, existingNote, onClose, 
           </div>
         </div>
 
-        {/* Visit Link (optional) */}
+        {/* BUG-10 FIX: Visit Link as searchable dropdown instead of raw UUID input */}
         <div style={{ marginBottom: '20px' }}>
-          <label style={{ fontSize: '13px', fontWeight: 500, color: 'var(--color-text)', display: 'block', marginBottom: '8px' }}>
+          <label style={labelStyle}>
             Link to Visit (optional)
           </label>
-          <input
-            type="text"
+          <select
             value={visitId}
             onChange={(e) => setVisitId(e.target.value)}
-            placeholder="Enter visit ID or leave empty"
             style={{
               width: '100%',
               padding: '10px 12px',
               borderRadius: '8px',
               border: '1px solid var(--color-border)',
               fontSize: '14px',
+              backgroundColor: 'white',
             }}
-          />
+          >
+            <option value="">— No visit linked —</option>
+            {visitsLoading ? (
+              <option disabled>Loading visits...</option>
+            ) : (
+              clientVisits.map(visit => (
+                <option key={visit.id} value={visit.id}>
+                  {formatVisitOption(visit)}
+                </option>
+              ))
+            )}
+          </select>
         </div>
 
         {/* SOAP Sections */}
         {noteType === 'SOAP' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '20px' }}>
             <div>
-              <label style={{ fontSize: '13px', fontWeight: 500, color: 'var(--color-text)', display: 'block', marginBottom: '8px' }}>
+              <label style={labelStyle}>
                 Subjective (Patient&apos;s own words)
               </label>
               <textarea
@@ -206,20 +293,12 @@ export default function AddProgressNoteModal({ clientId, existingNote, onClose, 
                 onChange={(e) => setSubjective(e.target.value)}
                 placeholder="What does the patient report? Symptoms, complaints, feelings..."
                 rows={3}
-                style={{
-                  width: '100%',
-                  padding: '10px 12px',
-                  borderRadius: '8px',
-                  border: '1px solid var(--color-border)',
-                  fontSize: '14px',
-                  resize: 'vertical',
-                  fontFamily: 'inherit',
-                }}
+                style={textareaStyle}
               />
             </div>
 
             <div>
-              <label style={{ fontSize: '13px', fontWeight: 500, color: 'var(--color-text)', display: 'block', marginBottom: '8px' }}>
+              <label style={labelStyle}>
                 Objective (Observable findings)
               </label>
               <textarea
@@ -227,20 +306,12 @@ export default function AddProgressNoteModal({ clientId, existingNote, onClose, 
                 onChange={(e) => setObjective(e.target.value)}
                 placeholder="Vital signs, physical exam findings, observations..."
                 rows={3}
-                style={{
-                  width: '100%',
-                  padding: '10px 12px',
-                  borderRadius: '8px',
-                  border: '1px solid var(--color-border)',
-                  fontSize: '14px',
-                  resize: 'vertical',
-                  fontFamily: 'inherit',
-                }}
+                style={textareaStyle}
               />
             </div>
 
             <div>
-              <label style={{ fontSize: '13px', fontWeight: 500, color: 'var(--color-text)', display: 'block', marginBottom: '8px' }}>
+              <label style={labelStyle}>
                 Assessment (Clinical judgment)
               </label>
               <textarea
@@ -248,20 +319,12 @@ export default function AddProgressNoteModal({ clientId, existingNote, onClose, 
                 onChange={(e) => setAssessment(e.target.value)}
                 placeholder="Your clinical assessment and diagnosis..."
                 rows={3}
-                style={{
-                  width: '100%',
-                  padding: '10px 12px',
-                  borderRadius: '8px',
-                  border: '1px solid var(--color-border)',
-                  fontSize: '14px',
-                  resize: 'vertical',
-                  fontFamily: 'inherit',
-                }}
+                style={textareaStyle}
               />
             </div>
 
             <div>
-              <label style={{ fontSize: '13px', fontWeight: 500, color: 'var(--color-text)', display: 'block', marginBottom: '8px' }}>
+              <label style={labelStyle}>
                 Plan (Next steps)
               </label>
               <textarea
@@ -269,15 +332,7 @@ export default function AddProgressNoteModal({ clientId, existingNote, onClose, 
                 onChange={(e) => setPlan(e.target.value)}
                 placeholder="Treatment plan, follow-up, patient education..."
                 rows={3}
-                style={{
-                  width: '100%',
-                  padding: '10px 12px',
-                  borderRadius: '8px',
-                  border: '1px solid var(--color-border)',
-                  fontSize: '14px',
-                  resize: 'vertical',
-                  fontFamily: 'inherit',
-                }}
+                style={textareaStyle}
               />
             </div>
           </div>
@@ -286,7 +341,7 @@ export default function AddProgressNoteModal({ clientId, existingNote, onClose, 
         {/* Narrative for DAP and Narrative types */}
         {(noteType === 'DAP' || noteType === 'NARRATIVE') && (
           <div style={{ marginBottom: '20px' }}>
-            <label style={{ fontSize: '13px', fontWeight: 500, color: 'var(--color-text)', display: 'block', marginBottom: '8px' }}>
+            <label style={labelStyle}>
               {noteType === 'DAP' ? 'DAP/Narrative Content' : 'Narrative Note'}
             </label>
             <textarea
@@ -294,16 +349,147 @@ export default function AddProgressNoteModal({ clientId, existingNote, onClose, 
               onChange={(e) => setNarrative(e.target.value)}
               placeholder="Document your observations, assessments, and plan..."
               rows={8}
-              style={{
-                width: '100%',
-                padding: '10px 12px',
-                borderRadius: '8px',
-                border: '1px solid var(--color-border)',
-                fontSize: '14px',
-                resize: 'vertical',
-                fontFamily: 'inherit',
-              }}
+              style={textareaStyle}
             />
+          </div>
+        )}
+
+        {/* BUG-16 FIX: Incident Report specific fields */}
+        {noteType === 'INCIDENT' && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '20px' }}>
+            {/* Incident Alert Header */}
+            <div style={{
+              padding: '12px 16px',
+              backgroundColor: '#FEF2F2',
+              border: '1px solid #FECACA',
+              borderRadius: '8px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              color: '#DC2626',
+              fontSize: '13px',
+            }}>
+              <AlertTriangle size={16} />
+              Complete all required fields to document this incident properly.
+            </div>
+
+            {/* Incident Date/Time */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+              <div>
+                <label style={labelStyle}>
+                  <Calendar size={14} style={{ display: 'inline', marginRight: '4px', verticalAlign: 'middle' }} />
+                  Incident Date & Time *
+                </label>
+                <input
+                  type="datetime-local"
+                  value={incidentDate}
+                  onChange={(e) => setIncidentDate(e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '10px 12px',
+                    borderRadius: '8px',
+                    border: '1px solid var(--color-border)',
+                    fontSize: '14px',
+                  }}
+                />
+              </div>
+              <div>
+                <label style={labelStyle}>
+                  Severity *
+                </label>
+                <div style={{ display: 'flex', gap: '6px' }}>
+                  {INCIDENT_SEVERITIES.map(sev => (
+                    <button
+                      key={sev.value}
+                      onClick={() => setIncidentSeverity(sev.value)}
+                      style={{
+                        flex: 1,
+                        padding: '8px 4px',
+                        borderRadius: '6px',
+                        border: incidentSeverity === sev.value ? `2px solid ${sev.color}` : '2px solid var(--color-border)',
+                        backgroundColor: incidentSeverity === sev.value ? `${sev.color}15` : 'white',
+                        color: incidentSeverity === sev.value ? sev.color : 'var(--color-text-secondary)',
+                        fontSize: '11px',
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                      }}
+                    >
+                      {sev.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Location */}
+            <div>
+              <label style={labelStyle}>
+                <MapPin size={14} style={{ display: 'inline', marginRight: '4px', verticalAlign: 'middle' }} />
+                Location
+              </label>
+              <input
+                type="text"
+                value={incidentLocation}
+                onChange={(e) => setIncidentLocation(e.target.value)}
+                placeholder="Where did the incident occur? (e.g., Client's bedroom, kitchen)"
+                style={{
+                  width: '100%',
+                  padding: '10px 12px',
+                  borderRadius: '8px',
+                  border: '1px solid var(--color-border)',
+                  fontSize: '14px',
+                }}
+              />
+            </div>
+
+            {/* People Involved */}
+            <div>
+              <label style={labelStyle}>
+                <Users size={14} style={{ display: 'inline', marginRight: '4px', verticalAlign: 'middle' }} />
+                People Involved
+              </label>
+              <input
+                type="text"
+                value={incidentPeopleInvolved}
+                onChange={(e) => setIncidentPeopleInvolved(e.target.value)}
+                placeholder="Names and roles of people involved"
+                style={{
+                  width: '100%',
+                  padding: '10px 12px',
+                  borderRadius: '8px',
+                  border: '1px solid var(--color-border)',
+                  fontSize: '14px',
+                }}
+              />
+            </div>
+
+            {/* Incident Description */}
+            <div>
+              <label style={labelStyle}>
+                Incident Description *
+              </label>
+              <textarea
+                value={narrative}
+                onChange={(e) => setNarrative(e.target.value)}
+                placeholder="Describe what happened in detail: what was observed, circumstances, contributing factors..."
+                rows={5}
+                style={textareaStyle}
+              />
+            </div>
+
+            {/* Actions Taken */}
+            <div>
+              <label style={labelStyle}>
+                Actions Taken
+              </label>
+              <textarea
+                value={incidentActionsTaken}
+                onChange={(e) => setIncidentActionsTaken(e.target.value)}
+                placeholder="What immediate actions were taken? Who was notified?"
+                rows={3}
+                style={textareaStyle}
+              />
+            </div>
           </div>
         )}
 

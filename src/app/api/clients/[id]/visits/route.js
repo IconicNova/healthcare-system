@@ -47,6 +47,17 @@ export async function GET(request, { params }) {
         take: limit,
         orderBy: { startTime: 'desc' },
         include: {
+          client: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+              address: true,
+              city: true,
+              state: true,
+              avatar: true,
+            },
+          },
           staff: {
             select: {
               id: true,

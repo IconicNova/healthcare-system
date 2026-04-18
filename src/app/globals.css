@@ -8355,3 +8355,24 @@ a:hover {
     );
   }
 }
+
+
+/* Loading Skeleton Animation */
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+.skeleton-pulse {
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+/* Responsive Care Delivery */
+@media (max-width: 768px) {
+  .care-delivery-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .care-delivery-header {
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+}

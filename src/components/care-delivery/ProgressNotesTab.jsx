@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Plus, Calendar, Clock, FileText, Edit2, Trash2 } from 'lucide-react';
 import AddProgressNoteModal from './AddProgressNoteModal';
+import LoadingSkeleton from '@/components/ui/LoadingSkeleton';
 
 const NOTE_TYPE_CONFIG = {
   SOAP: { label: 'SOAP Note', color: '#3B82F6' },
@@ -16,6 +17,7 @@ export default function ProgressNotesTab({ clientId }) {
   const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingNote, setEditingNote] = useState(null);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     if (!clientId) return;
@@ -48,17 +50,19 @@ export default function ProgressNotesTab({ clientId }) {
 
       if (response.ok) {
         setNotes(prev => prev.filter(n => n.id !== noteId));
+        setError('');
       } else {
-        alert('Failed to delete note');
+        setError('Failed to delete note');
       }
-    } catch (error) {
-      console.error('Error deleting note:', error);
-      alert('Failed to delete note');
+    } catch (err) {
+      console.error('Error deleting note:', err);
+      setError('Failed to delete note');
     }
   };
 
   const handleEdit = (note) => {
     setEditingNote(note);
+    setShowAddModal(true);
   };
 
   const formatDateTime = (dateString) => {
@@ -80,13 +84,20 @@ export default function ProgressNotesTab({ clientId }) {
   if (loading) {
     return (
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '48px' }}>
-        <div className="loading-spinner" />
+        <LoadingSkeleton rows={3} type="card" />
       </div>
     );
   }
 
   return (
     <div style={{ padding: '24px' }}>
+      {/* Error Banner */}
+      {error && (
+        <div style={{ padding: '12px 16px', marginBottom: '16px', backgroundColor: '#FEF2F2', border: '1px solid #FECACA', borderRadius: '8px', color: '#DC2626', fontSize: '13px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          {error}
+          <button onClick={() => setError('')} style={{ border: 'none', background: 'none', color: '#DC2626', cursor: 'pointer', fontSize: '16px' }}>&times;</button>
+        </div>
+      )}
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
         <div>

@@ -252,7 +252,7 @@ export const ProgressNoteSchema = z.object({
   objective: z.string().max(2000).optional().nullable(),
   assessment: z.string().max(2000).optional().nullable(),
   plan: z.string().max(2000).optional().nullable(),
-  narrative: z.string().max(5000).optional().nullable()
+  narrative: z.string().max(10000).optional().nullable()
 }).refine(data => {
   if (data.type === 'SOAP') {
     return data.subjective || data.objective || data.assessment || data.plan;
@@ -260,26 +260,30 @@ export const ProgressNoteSchema = z.object({
   if (data.type === 'DAP' || data.type === 'NARRATIVE') {
     return data.narrative && data.narrative.trim().length > 0;
   }
+  // INCIDENT type: narrative is required (incident details are packed into narrative)
+  if (data.type === 'INCIDENT') {
+    return data.narrative && data.narrative.trim().length > 0;
+  }
   return true;
-}, { message: 'At least one content field is required' });
+}, { message: 'At least one content field is required for this note type' });
 
 export const VitalSignSchema = z.object({
   clientId: z.string().uuid(),
   visitId: z.string().uuid().optional().nullable(),
-  temperature: z.number().min(-50).max(150).optional().nullable(),
+  temperature: z.number().min(70).max(115).optional().nullable(),
   temperatureUnit: z.string().optional().nullable(),
-  bloodPressureSystolic: z.number().min(30).max(300).optional().nullable(),
-  bloodPressureDiastolic: z.number().min(20).max(200).optional().nullable(),
-  heartRate: z.number().min(20).max(300).optional().nullable(),
-  respiratoryRate: z.number().min(4).max(80).optional().nullable(),
-  oxygenSaturation: z.number().min(50).max(100).optional().nullable(),
+  bloodPressureSystolic: z.number().min(50).max(260).optional().nullable(),
+  bloodPressureDiastolic: z.number().min(30).max(160).optional().nullable(),
+  heartRate: z.number().min(20).max(250).optional().nullable(),
+  respiratoryRate: z.number().min(4).max(60).optional().nullable(),
+  oxygenSaturation: z.number().min(60).max(100).optional().nullable(),
   painLevel: z.number().min(0).max(10).optional().nullable(),
-  weight: z.number().min(0).max(1000).optional().nullable(),
+  weight: z.number().min(1).max(1000).optional().nullable(),
   weightUnit: z.string().optional().nullable(),
-  height: z.number().min(0).max(120).optional().nullable(),
+  height: z.number().min(10).max(120).optional().nullable(),
   heightUnit: z.string().optional().nullable(),
   bmi: z.number().min(0).max(100).optional().nullable(),
-  glucose: z.number().min(20).max(1000).optional().nullable(),
+  glucose: z.number().min(20).max(600).optional().nullable(),
   glucoseUnit: z.string().optional().nullable(),
   recordedAt: z.string().datetime().or(z.date()).optional()
 });

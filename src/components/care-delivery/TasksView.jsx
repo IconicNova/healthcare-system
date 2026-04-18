@@ -1,26 +1,17 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { CheckCircle, Clock, Calendar, User, ChevronRight, Users } from 'lucide-react';
-
-const STATUS_CONFIG = {
-  VACANT: { label: 'Vacant', color: '#8B5CF6', bg: '#8B5CF615' },
-  OFFERED: { label: 'Offered', color: '#6366F1', bg: '#6366F115' },
-  SCHEDULED: { label: 'Scheduled', color: '#3B82F6', bg: '#3B82F615' },
-  IN_PROGRESS: { label: 'In Progress', color: '#F59E0B', bg: '#F59E0B15' },
-  CLOCKED_IN: { label: 'Clocked In', color: '#0EA5E9', bg: '#0EA5E915' },
-  COMPLETED: { label: 'Completed', color: '#16A34A', bg: '#16A34A15' },
-  APPROVED: { label: 'Approved', color: '#059669', bg: '#05966915' },
-  CANCELLED: { label: 'Cancelled', color: '#9CA3AF', bg: '#9CA3AF15' },
-  ON_HOLD: { label: 'On Hold', color: '#F97316', bg: '#F9731615' },
-  NO_SHOW: { label: 'No Show', color: '#EF4444', bg: '#EF444415' },
-  MISSED: { label: 'Missed', color: '#EF4444', bg: '#EF444415' },
-  LATE: { label: 'Late', color: '#F97316', bg: '#F9731615' },
-};
+import { Clock, Calendar, User, ChevronRight, Users, History, AlertTriangle } from 'lucide-react';
+import { STATUS_CONFIG as SHARED_STATUS_CONFIG } from '@/lib/visit-status-machine';
+import VisitCalendar from './VisitCalendar';
+import LoadingSkeleton from '@/components/ui/LoadingSkeleton';
 
 export default function TasksView({ clientId, onEditVisit }) {
   const [visits, setVisits] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [pastCollapsed, setPastCollapsed] = useState(true);
+  const [showCalendar, setShowCalendar] = useState(false);
+  const INITIAL_PAST_COUNT = 5;
 
   useEffect(() => {
     if (!clientId) return;
@@ -43,7 +34,16 @@ export default function TasksView({ clientId, onEditVisit }) {
     fetchVisits();
   }, [clientId]);
 
-  const getVisitsByDate = (visits) => {
+  const getPastVisits = (allVisits) => {
+    if (pastCollapsed && allVisits.length > INITIAL_PAST_COUNT) {
+      return allVisits.slice(0, INITIAL_PAST_COUNT);
+    }
+    return allVisits;
+  };
+
+  const togglePast = () => setPastCollapsed(prev => !prev);
+
+  const getVisitsByDate = () => {
     const grouped = {};
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -73,7 +73,7 @@ export default function TasksView({ clientId, onEditVisit }) {
     return grouped;
   };
 
-  const groupedVisits = getVisitsByDate(visits);
+  const groupedVisits = getVisitsByDate();
 
   const formatTime = (date) => {
     return new Date(date).toLocaleTimeString('en-US', {
@@ -84,21 +84,31 @@ export default function TasksView({ clientId, onEditVisit }) {
   };
 
   const renderVisitCard = (visit) => {
-    const status = STATUS_CONFIG[visit.status] || STATUS_CONFIG.SCHEDULED;
+    const statusConf = SHARED_STATUS_CONFIG[visit.status] || SHARED_STATUS_CONFIG.SCHEDULED;
+    const statusColor = statusConf?.color || '#3B82F6';
+    const statusBg = statusConf?.bgColor || '#DBEAFE';
+    const statusLabel = statusConf?.label || visit.status;
+
+    // Check if visit is overdue (Feature #3: Overdue alerts)
+    const now = new Date();
+    const visitEnd = new Date(visit.endTime);
+    const isOverdue = visit.status === 'SCHEDULED' && visitEnd < now;
 
     return (
       <div
         key={visit.id}
         onClick={() => onEditVisit && onEditVisit(visit)}
         style={{
-          backgroundColor: 'var(--color-white)',
-          border: `1px solid ${visit.status === 'IN_PROGRESS' ? status.color : 'var(--color-border)'}`,
+          backgroundColor: isOverdue ? '#FFF7ED' : 'var(--color-white)',
+          border: `1px solid ${isOverdue ? '#F97316' : (visit.status === 'IN_PROGRESS' ? statusColor : 'var(--color-border)')}`,
           borderRadius: '12px',
           padding: '16px',
           marginBottom: '12px',
           cursor: 'pointer',
-          transition: 'all 0.2s',
+          transition: 'all 0.2s ease',
         }}
+        onMouseOver={(e) => { e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.08)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
+        onMouseOut={(e) => { e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'translateY(0)'; }}
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
           <div style={{ flex: 1 }}>
@@ -111,16 +121,23 @@ export default function TasksView({ clientId, onEditVisit }) {
               </div>
             )}
           </div>
-          <span style={{
-            fontSize: '11px',
-            fontWeight: 500,
-            padding: '4px 8px',
-            borderRadius: '12px',
-            backgroundColor: status.bg,
-            color: status.color,
-          }}>
-            {status.label}
-          </span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            {isOverdue && (
+              <span style={{ fontSize: '11px', fontWeight: 600, color: '#F97316', display: 'flex', alignItems: 'center', gap: '3px' }}>
+                <AlertTriangle size={12} /> Overdue
+              </span>
+            )}
+            <span style={{
+              fontSize: '11px',
+              fontWeight: 500,
+              padding: '4px 8px',
+              borderRadius: '12px',
+              backgroundColor: statusBg,
+              color: statusColor,
+            }}>
+              {statusLabel}
+            </span>
+          </div>
         </div>
 
         <div style={{ display: 'flex', gap: '16px', fontSize: '12px', color: 'var(--color-text-secondary)' }}>
@@ -157,7 +174,7 @@ export default function TasksView({ clientId, onEditVisit }) {
   if (loading) {
     return (
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
-        <div className="loading-spinner" />
+        <LoadingSkeleton rows={4} type="list" />
       </div>
     );
   }
@@ -178,10 +195,15 @@ export default function TasksView({ clientId, onEditVisit }) {
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
         <h2 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--color-text)', margin: 0 }}>Tasks</h2>
-        <span style={{ fontSize: '12px', color: 'var(--color-text-secondary)' }}>
-          {visits.length} visit{visits.length !== 1 ? 's' : ''}
-        </span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <button onClick={() => setShowCalendar(!showCalendar)} style={{ padding: '6px 12px', borderRadius: '6px', border: '1px solid var(--color-border)', backgroundColor: showCalendar ? 'var(--color-primary)' : 'white', color: showCalendar ? 'white' : 'var(--color-text-secondary)', fontSize: '11px', cursor: 'pointer' }}>📅 Calendar</button>
+          <span style={{ fontSize: '12px', color: 'var(--color-text-secondary)' }}>
+            {visits.length} visit{visits.length !== 1 ? 's' : ''}
+          </span>
+        </div>
       </div>
+
+      {showCalendar && <VisitCalendar visits={visits} onSelectVisit={onEditVisit} />}
 
       {/* Today's Visits */}
       {groupedVisits.today && groupedVisits.today.length > 0 && (
@@ -205,14 +227,27 @@ export default function TasksView({ clientId, onEditVisit }) {
         </div>
       )}
 
-      {/* Past Visits */}
+      {/* Past Visits — BUG-05 FIX: renamed from misleading "Completed" */}
       {groupedVisits.past && groupedVisits.past.length > 0 && (
         <div>
           <div style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-text-secondary)', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <CheckCircle size={14} />
-            Completed ({groupedVisits.past.length})
+            <History size={14} />
+            Past Visits ({groupedVisits.past.length})
           </div>
-          {groupedVisits.past.map(renderVisitCard)}
+          {getPastVisits(groupedVisits.past).map(renderVisitCard)}
+          {groupedVisits.past.length > INITIAL_PAST_COUNT && (
+            <button
+              onClick={togglePast}
+              style={{
+                width: '100%', padding: '10px', marginTop: '8px',
+                border: '1px solid var(--color-border)', borderRadius: '8px',
+                backgroundColor: 'white', cursor: 'pointer',
+                fontSize: '12px', fontWeight: 500, color: 'var(--color-text-secondary)',
+              }}
+            >
+              {pastCollapsed ? `Show ${groupedVisits.past.length - INITIAL_PAST_COUNT} more` : 'Show less'}
+            </button>
+          )}
         </div>
       )}
     </div>

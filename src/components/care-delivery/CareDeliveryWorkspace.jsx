@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import Image from 'next/image';
 import { ArrowLeft, ClipboardCheck } from 'lucide-react';
 import Button from '@/components/ui/Button';
+import BackToTop from '@/components/ui/BackToTop';
 import StatusBadge from '@/components/ui/StatusBadge';
 import CareDeliveryLayout from '@/components/care-delivery/CareDeliveryLayout';
 import EditVisitDialog from '@/components/care-delivery/EditVisitDialog';
@@ -15,11 +17,8 @@ import VitalsTab from '@/components/care-delivery/VitalsTab';
 import {
   buildCareDeliveryClientPath,
   resolveCareDeliveryTab,
+  formatInitials,
 } from '@/components/care-delivery/care-delivery.helpers';
-
-function formatInitials(client) {
-  return `${client.firstName?.charAt(0) || ''}${client.lastName?.charAt(0) || ''}`.toUpperCase();
-}
 
 export default function CareDeliveryWorkspace({ params }) {
   const router = useRouter();
@@ -111,23 +110,39 @@ export default function CareDeliveryWorkspace({ params }) {
 
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '16px', flexWrap: 'wrap' }}>
           <div style={{ display: 'flex', gap: '16px' }}>
-            <div
-              style={{
-                width: '64px',
-                height: '64px',
-                borderRadius: '50%',
-                backgroundColor: 'var(--color-primary-light)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '24px',
-                fontWeight: 600,
-                color: 'white',
-                border: '3px solid var(--color-border)',
-              }}
-            >
-              {formatInitials(client)}
-            </div>
+            {/* BUG-17 FIX: Show avatar if available */}
+            {client.avatar ? (
+              <Image
+                src={client.avatar}
+                alt={`${client.firstName} ${client.lastName}`}
+                width={64}
+                height={64}
+                style={{
+                  borderRadius: '50%',
+                  objectFit: 'cover',
+                  border: '3px solid var(--color-border)',
+                }}
+              />
+            ) : (
+              <div
+                style={{
+                  width: '64px',
+                  height: '64px',
+                  borderRadius: '50%',
+                  backgroundColor: 'var(--color-primary-light)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '24px',
+                  fontWeight: 600,
+                  color: 'white',
+                  border: '3px solid var(--color-border)',
+                  flexShrink: 0,
+                }}
+              >
+                {formatInitials(client)}
+              </div>
+            )}
             <div>
               <h1 style={{ fontSize: '28px', fontWeight: 700, color: 'var(--color-text)', margin: 0 }}>
                 {client.firstName} {client.lastName}
@@ -138,7 +153,7 @@ export default function CareDeliveryWorkspace({ params }) {
                 {client.email && <span style={{ fontSize: '14px', color: 'var(--color-text-secondary)' }}>{client.email}</span>}
               </div>
               <div style={{ fontSize: '14px', color: 'var(--color-text-secondary)', marginTop: '8px' }}>
-                {client.address}, {client.city}, {client.state} {client.zipCode}
+                {[client.address, client.city, client.state, client.zipCode].filter(Boolean).join(', ')}
               </div>
             </div>
           </div>
@@ -181,6 +196,8 @@ export default function CareDeliveryWorkspace({ params }) {
         onSave={handleVisitSave}
         formReturnTo={buildCareDeliveryClientPath(client.id)}
       />
+      <BackToTop />
+
     </div>
   );
 }

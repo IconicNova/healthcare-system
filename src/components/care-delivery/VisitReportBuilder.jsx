@@ -134,7 +134,7 @@ export default function VisitReportBuilder({ clientId, onClose, onSuccess }) {
 
   const steps = [
     { number: 1, label: 'Report Type' },
-    { number: 2, label: 'Date Range' },
+    { number: 2, label: reportType === 'VISIT_SUMMARY' ? 'Select Visit(s)' : 'Date Range' },
     { number: 3, label: 'Content' },
     { number: 4, label: 'Review' },
   ];
@@ -342,6 +342,12 @@ export default function VisitReportBuilder({ clientId, onClose, onSuccess }) {
                     />
                   </div>
                 </div>
+                {/* BUG-13 FIX: Date validation */}
+                {startDate && endDate && new Date(endDate) < new Date(startDate) && (
+                  <div style={{ marginTop: '12px', padding: '12px', backgroundColor: '#FEF2F2', borderRadius: '8px', fontSize: '13px', color: '#DC2626', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    ⚠️ End date must be on or after start date.
+                  </div>
+                )}
                 <div style={{ marginTop: '16px', padding: '12px', backgroundColor: 'var(--color-gray-50)', borderRadius: '8px', fontSize: '12px', color: 'var(--color-text-secondary)' }}>
                   The system will automatically include all visits within the selected date range.
                 </div>
@@ -532,6 +538,7 @@ export default function VisitReportBuilder({ clientId, onClose, onSuccess }) {
               disabled={
                 (reportType === 'VISIT_SUMMARY' && selectedVisits.length === 0 && step === 2) ||
                 (reportType === 'PERIOD_SUMMARY' && (!startDate || !endDate) && step === 2) ||
+                (reportType === 'PERIOD_SUMMARY' && startDate && endDate && new Date(endDate) < new Date(startDate) && step === 2) ||
                 (step === 3 && !summary)
               }
               style={{

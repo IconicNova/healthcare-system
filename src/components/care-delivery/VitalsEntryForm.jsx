@@ -1,11 +1,14 @@
 'use client';
 
 import { useState } from 'react';
-import { X } from 'lucide-react';
+import { X, AlertTriangle } from 'lucide-react';
+import { VITAL_RANGES, getVitalWarningMessage, isVitalWithinLimits } from '@/lib/vitals-config';
 
 export default function VitalsEntryForm({ clientId, onClose, onSuccess }) {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const [warnings, setWarnings] = useState([]);
+  const [showWarningConfirm, setShowWarningConfirm] = useState(false);
 
   const [formData, setFormData] = useState({
     temperature: '',
@@ -27,9 +30,11 @@ export default function VitalsEntryForm({ clientId, onClose, onSuccess }) {
 
   const handleChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+    setWarnings([]);
+    setShowWarningConfirm(false);
   };
 
-  const handleSubmit = async () => {
+  const validateAndSubmit = async (bypassWarnings = false) => {
     setError('');
 
     // Convert empty strings to null and parse numbers
@@ -51,27 +56,48 @@ export default function VitalsEntryForm({ clientId, onClose, onSuccess }) {
       return;
     }
 
-    // Validate vital ranges
-    const validations = [
-      { field: 'temperature', min: -50, max: 150, label: 'Temperature' },
-      { field: 'bloodPressureSystolic', min: 30, max: 300, label: 'Systolic BP' },
-      { field: 'bloodPressureDiastolic', min: 20, max: 200, label: 'Diastolic BP' },
-      { field: 'heartRate', min: 20, max: 300, label: 'Heart Rate' },
-      { field: 'respiratoryRate', min: 4, max: 80, label: 'Respiratory Rate' },
-      { field: 'oxygenSaturation', min: 50, max: 100, label: 'Oxygen Saturation' },
-      { field: 'weight', min: 0, max: 1000, label: 'Weight' },
-      { field: 'glucose', min: 20, max: 1000, label: 'Glucose' },
+    // BUG-01 FIX: Use clinical ranges from vitals-config
+    const vitalFields = [
+      'temperature', 'bloodPressureSystolic', 'bloodPressureDiastolic',
+      'heartRate', 'respiratoryRate', 'oxygenSaturation', 'weight', 'glucose',
     ];
 
-    for (const v of validations) {
-      if (data[v.field] !== null && (data[v.field] < v.min || data[v.field] > v.max)) {
-        setError(`${v.label} is out of reasonable range (${v.min}-${v.max})`);
+    // First pass: reject values outside absolute limits
+    for (const field of vitalFields) {
+      if (data[field] !== null && !isVitalWithinLimits(field, data[field])) {
+        const config = VITAL_RANGES[field];
+        setError(`${config?.label || field} of ${data[field]} is outside acceptable limits (${config?.min}-${config?.max}). Please verify and correct.`);
         return;
       }
     }
 
-    setSubmitting(true);
+    // Second pass: warn about abnormal but possible values
+    if (!bypassWarnings) {
+      const newWarnings = [];
+      for (const field of vitalFields) {
+        if (data[field] !== null) {
+          const msg = getVitalWarningMessage(field, data[field]);
+          if (msg) {
+            newWarnings.push(msg);
+          }
+        }
+      }
+      if (newWarnings.length > 0) {
+        setWarnings(newWarnings);
+        setShowWarningConfirm(true);
+        return;
+      }
+    }
 
+    // All validations passed — submit
+    await doSubmit(data);
+  };
+
+  const handleSubmit = () => validateAndSubmit(false);
+  const handleConfirmSubmit = () => validateAndSubmit(true);
+
+  const doSubmit = async (data) => {
+    setSubmitting(true);
     try {
       const response = await fetch(`/api/clients/${clientId}/vitals`, {
         method: 'POST',
@@ -383,6 +409,61 @@ export default function VitalsEntryForm({ clientId, onClose, onSuccess }) {
             }}
           />
         </div>
+
+        {/* BUG-01 FIX: Warning confirmation for abnormal vitals */}
+        {showWarningConfirm && warnings.length > 0 && (
+          <div style={{
+            padding: '16px',
+            backgroundColor: '#FFFBEB',
+            border: '1px solid #FDE68A',
+            borderRadius: '12px',
+            marginBottom: '16px',
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
+              <AlertTriangle size={20} color="#F59E0B" />
+              <span style={{ fontSize: '14px', fontWeight: 600, color: '#B45309' }}>
+                Abnormal Values Detected
+              </span>
+            </div>
+            <ul style={{ margin: '0 0 16px 0', paddingLeft: '20px', fontSize: '13px', color: '#92400E', lineHeight: 1.8 }}>
+              {warnings.map((w, i) => (
+                <li key={i}>{w}</li>
+              ))}
+            </ul>
+            <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
+              <button
+                onClick={() => { setShowWarningConfirm(false); setWarnings([]); }}
+                style={{
+                  padding: '8px 16px',
+                  borderRadius: '8px',
+                  border: '1px solid var(--color-border)',
+                  backgroundColor: 'white',
+                  color: 'var(--color-text)',
+                  fontSize: '12px',
+                  fontWeight: 500,
+                  cursor: 'pointer',
+                }}
+              >
+                Go Back & Edit
+              </button>
+              <button
+                onClick={handleConfirmSubmit}
+                style={{
+                  padding: '8px 16px',
+                  borderRadius: '8px',
+                  border: 'none',
+                  backgroundColor: '#F59E0B',
+                  color: 'white',
+                  fontSize: '12px',
+                  fontWeight: 500,
+                  cursor: 'pointer',
+                }}
+              >
+                I Confirm — Save Anyway
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Actions */}
         <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>

@@ -4,17 +4,19 @@ import { useState, useEffect } from 'react';
 import { Plus, Thermometer, Heart, Activity, Droplet, TrendingUp, Calendar } from 'lucide-react';
 import VitalsEntryForm from './VitalsEntryForm';
 import VitalsChart from './VitalsChart';
+import { getVitalAlertLevel } from '@/lib/vitals-config';
+import LoadingSkeleton from '@/components/ui/LoadingSkeleton';
 
 const VITAL_TYPES = [
-  { key: 'temperature', label: 'Temperature', icon: Thermometer, unit: 'F', abnormal: { low: 95, high: 99.5 } },
-  { key: 'heartRate', label: 'Heart Rate', icon: Heart, unit: 'bpm', abnormal: { low: 60, high: 100 } },
-  { key: 'bloodPressureSystolic', label: 'BP Systolic', icon: Activity, unit: 'mmHg', abnormal: { low: 90, high: 140 } },
-  { key: 'bloodPressureDiastolic', label: 'BP Diastolic', icon: Activity, unit: 'mmHg', abnormal: { low: 60, high: 90 } },
-  { key: 'respiratoryRate', label: 'Resp. Rate', icon: Droplet, unit: 'rpm', abnormal: { low: 12, high: 20 } },
-  { key: 'oxygenSaturation', label: 'O2 Saturation', icon: Droplet, unit: '%', abnormal: { low: 95, high: 100 } },
-  { key: 'painLevel', label: 'Pain Level', icon: Activity, unit: '/10', abnormal: { low: 0, high: 3 } },
-  { key: 'weight', label: 'Weight', icon: TrendingUp, unit: 'lbs', abnormal: null },
-  { key: 'glucose', label: 'Glucose', icon: Droplet, unit: 'mg/dL', abnormal: { low: 70, high: 140 } },
+  { key: 'temperature', label: 'Temperature', icon: Thermometer, unit: '°F' },
+  { key: 'heartRate', label: 'Heart Rate', icon: Heart, unit: 'bpm' },
+  { key: 'bloodPressureSystolic', label: 'BP Systolic', icon: Activity, unit: 'mmHg' },
+  { key: 'bloodPressureDiastolic', label: 'BP Diastolic', icon: Activity, unit: 'mmHg' },
+  { key: 'respiratoryRate', label: 'Resp. Rate', icon: Droplet, unit: 'rpm' },
+  { key: 'oxygenSaturation', label: 'O2 Saturation', icon: Droplet, unit: '%' },
+  { key: 'painLevel', label: 'Pain Level', icon: Activity, unit: '/10' },
+  { key: 'weight', label: 'Weight', icon: TrendingUp, unit: 'lbs' },
+  { key: 'glucose', label: 'Glucose', icon: Droplet, unit: 'mg/dL' },
 ];
 
 export default function VitalsTab({ clientId }) {
@@ -51,10 +53,9 @@ export default function VitalsTab({ clientId }) {
   };
 
   const isAbnormal = (key, value) => {
-    const vitalConfig = VITAL_TYPES.find(v => v.key === key);
-    if (!vitalConfig?.abnormal) return null;
-    if (value < vitalConfig.abnormal.low) return 'low';
-    if (value > vitalConfig.abnormal.high) return 'high';
+    const level = getVitalAlertLevel(key, value);
+    if (level === 'warning') return 'high';
+    if (level === 'critical') return 'critical';
     return null;
   };
 
@@ -77,7 +78,7 @@ export default function VitalsTab({ clientId }) {
   if (loading) {
     return (
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '48px' }}>
-        <div className="loading-spinner" />
+        <LoadingSkeleton rows={3} type="card" />
       </div>
     );
   }
@@ -179,7 +180,7 @@ export default function VitalsTab({ clientId }) {
                 fontSize: '12px',
               }}
             >
-              {VITAL_TYPES.filter(v => v.abnormal).map(v => (
+              {VITAL_TYPES.filter(v => v.key !== 'painLevel').map(v => (
                 <option key={v.key} value={v.key}>{v.label}</option>
               ))}
             </select>

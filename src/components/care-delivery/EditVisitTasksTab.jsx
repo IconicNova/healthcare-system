@@ -9,6 +9,7 @@ export default function VisitTasksTab({ visitId }) {
   const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
   const [newTask, setNewTask] = useState({ title: '', category: 'General' });
+  const [error, setError] = useState('');
   
   const CATEGORIES = ['Assessment', 'Treatment', 'Documentation', 'Education', 'General'];
 
@@ -68,9 +69,9 @@ export default function VisitTasksTab({ visitId }) {
         setNewTask({ title: '', category: 'General' });
         setShowAddModal(false);
       }
-    } catch (error) {
-      console.error('Error adding task:', error);
-      alert('Failed to add task');
+    } catch (err) {
+      console.error('Error adding task:', err);
+      setError('Failed to add task');
     }
   };
 
@@ -85,9 +86,9 @@ export default function VisitTasksTab({ visitId }) {
       if (response.ok) {
         setTasks(prev => prev.filter(t => t.id !== taskId));
       }
-    } catch (error) {
-      console.error('Error deleting task:', error);
-      alert('Failed to delete task');
+    } catch (err) {
+      console.error('Error deleting task:', err);
+      setError('Failed to delete task');
     }
   };
 
@@ -120,6 +121,12 @@ export default function VisitTasksTab({ visitId }) {
 
   return (
     <div style={{ padding: '24px' }}>
+      {error && (
+        <div style={{ padding: '12px 16px', marginBottom: '16px', backgroundColor: '#FEF2F2', border: '1px solid #FECACA', borderRadius: '8px', color: '#DC2626', fontSize: '13px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          {error}
+          <button onClick={() => setError('')} style={{ border: 'none', background: 'none', color: '#DC2626', cursor: 'pointer', fontSize: '16px' }}>&times;</button>
+        </div>
+      )}
       {/* Progress Header */}
       <div style={{ marginBottom: '24px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>

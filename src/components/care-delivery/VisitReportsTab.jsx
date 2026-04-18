@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Plus, FileText, Calendar, Download, Eye, Edit2, Trash2 } from 'lucide-react';
+import { Plus, FileText, Calendar, Download, Eye, X, Trash2 } from 'lucide-react';
 import VisitReportBuilder from './VisitReportBuilder';
 
 const REPORT_TYPE_CONFIG = {
@@ -14,6 +14,7 @@ export default function VisitReportsTab({ clientId }) {
   const [loading, setLoading] = useState(true);
   const [showBuilder, setShowBuilder] = useState(false);
   const [viewingReport, setViewingReport] = useState(null);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     if (!clientId) return;
@@ -46,12 +47,13 @@ export default function VisitReportsTab({ clientId }) {
 
       if (response.ok) {
         setReports(prev => prev.filter(r => r.id !== reportId));
+        setError('');
       } else {
-        alert('Failed to delete report');
+        setError('Failed to delete report');
       }
-    } catch (error) {
-      console.error('Error deleting report:', error);
-      alert('Failed to delete report');
+    } catch (err) {
+      console.error('Error deleting report:', err);
+      setError('Failed to delete report');
     }
   };
 
@@ -79,6 +81,12 @@ export default function VisitReportsTab({ clientId }) {
 
   return (
     <div style={{ padding: '24px' }}>
+      {error && (
+        <div style={{ padding: '12px 16px', marginBottom: '16px', backgroundColor: '#FEF2F2', border: '1px solid #FECACA', borderRadius: '8px', color: '#DC2626', fontSize: '13px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          {error}
+          <button onClick={() => setError('')} style={{ border: 'none', background: 'none', color: '#DC2626', cursor: 'pointer', fontSize: '16px' }}>&times;</button>
+        </div>
+      )}
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
         <div>
@@ -163,6 +171,10 @@ export default function VisitReportsTab({ clientId }) {
                       <Eye size={14} />
                     </button>
                     <button
+                      onClick={() => {
+                        setViewingReport(report);
+                        setTimeout(() => window.print(), 300);
+                      }}
                       style={{
                         padding: '4px',
                         border: 'none',
@@ -171,7 +183,7 @@ export default function VisitReportsTab({ clientId }) {
                         cursor: 'pointer',
                         borderRadius: '4px',
                       }}
-                      title="Download report"
+                      title="Download report as PDF"
                     >
                       <Download size={14} />
                     </button>
@@ -273,7 +285,7 @@ export default function VisitReportsTab({ clientId }) {
                   cursor: 'pointer',
                 }}
               >
-                <Edit2 size={20} />
+                <X size={20} />
               </button>
             </div>
 

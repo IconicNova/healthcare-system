@@ -2,26 +2,21 @@
 
 import { useState, useEffect } from 'react';
 import Modal from '@/components/ui/Modal';
+import Image from 'next/image';
 import Tabs from '@/components/ui/Tabs';
-import { Info, ListTodo, FileText, Target, Check, Save, Clock } from 'lucide-react';
+import { Info, ListTodo, FileText, Target, Check, Save, Clock, AlertTriangle, Paperclip } from 'lucide-react';
 import VisitTasksTab from './EditVisitTasksTab';
-import VisitNotesTab from './EditVisitNotesTab';
+import VisitNotesTab from './VisitNotesTab';
 import EditVisitFormsTab from './EditVisitFormsTab';
-
-const STATUS_OPTIONS = [
-  { value: 'VACANT', label: 'Vacant', color: '#8B5CF6' },
-  { value: 'SCHEDULED', label: 'Scheduled', color: '#3B82F6' },
-  { value: 'OFFERED', label: 'Offered', color: '#6366F1' },
-  { value: 'IN_PROGRESS', label: 'In Progress', color: '#F59E0B' },
-  { value: 'CLOCKED_IN', label: 'Clocked In', color: '#0EA5E9' },
-  { value: 'COMPLETED', label: 'Completed', color: '#16A34A' },
-  { value: 'APPROVED', label: 'Approved', color: '#059669' },
-  { value: 'CANCELLED', label: 'Cancelled', color: '#9CA3AF' },
-  { value: 'ON_HOLD', label: 'On Hold', color: '#D97706' },
-  { value: 'NO_SHOW', label: 'No Show', color: '#EF4444' },
-  { value: 'MISSED', label: 'Missed', color: '#DC2626' },
-  { value: 'LATE', label: 'Late', color: '#EA580C' },
-];
+import FileAttachments from './FileAttachments';
+// StaffAssignment available for use in staff column
+import {
+  getValidNextStatuses,
+  getStatusColor,
+  getStatusLabel,
+  canTransition,
+  isTerminalStatus,
+} from '@/lib/visit-status-machine';
 
 export default function EditVisitDialog({ isOpen, onClose, visit, onSave, formReturnTo = '' }) {
     const [formData, setFormData] = useState({
@@ -34,6 +29,27 @@ export default function EditVisitDialog({ isOpen, onClose, visit, onSave, formRe
   });
   const [isSaving, setIsSaving] = useState(false);
   const [activeTab, setActiveTab] = useState('info');
+  const [validationError, setValidationError] = useState('');
+  const [carePlanGoals, setCarePlanGoals] = useState([]);
+  const [goalsLoading, setGoalsLoading] = useState(false);
+
+  // Keyboard shortcuts
+  /* eslint-disable react-hooks/exhaustive-deps */
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        e.preventDefault();
+        handleSubmit();
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen]);
+  /* eslint-enable react-hooks/exhaustive-deps */
 
   useEffect(() => {
     if (visit) {
@@ -45,6 +61,7 @@ export default function EditVisitDialog({ isOpen, onClose, visit, onSave, formRe
         actualStart: visit.actualStart ? new Date(visit.actualStart) : null,
         actualEnd: visit.actualEnd ? new Date(visit.actualEnd) : null,
       });
+      setValidationError('');
     }
   }, [visit, isOpen]);
 
@@ -54,9 +71,54 @@ export default function EditVisitDialog({ isOpen, onClose, visit, onSave, formRe
     }
   }, [isOpen, visit?.id]);
 
+  // Load care plan goals when Goals tab is active
+  useEffect(() => {
+    if (activeTab === 'goals' && visit?.carePlanId) {
+      setGoalsLoading(true);
+      fetch(`/api/care-plans/${visit.carePlanId}`)
+        .then(res => res.ok ? res.json() : null)
+        .then(data => {
+          if (data) {
+            setCarePlanGoals(data.services || []);
+          }
+        })
+        .catch(() => {})
+        .finally(() => setGoalsLoading(false));
+    }
+  }, [activeTab, visit?.carePlanId]);
+
+  const handleStatusChange = (newStatus) => {
+    if (!canTransition(formData.status, newStatus)) {
+      setValidationError(`Cannot change status from "${getStatusLabel(formData.status)}" to "${getStatusLabel(newStatus)}"`);
+      return;
+    }
+    setValidationError('');
+    setFormData(prev => ({ ...prev, status: newStatus }));
+  };
+
   const handleSubmit = async () => {
     if (!visit) return;
 
+    // Validate actual times
+    if (formData.actualEnd && !formData.actualStart) {
+      setValidationError('Cannot set end time without a start time. Please set the start time first.');
+      return;
+    }
+
+    if (formData.actualStart && formData.actualEnd) {
+      if (new Date(formData.actualEnd) <= new Date(formData.actualStart)) {
+        setValidationError('End time must be after start time.');
+        return;
+      }
+    }
+
+    // Validate status transition
+    if (!canTransition(visit.status, formData.status)) {
+      setValidationError(`Cannot change status from "${getStatusLabel(visit.status)}" to "${getStatusLabel(formData.status)}"`);
+      return;
+    }
+
+    setValidationError('');
     setIsSaving(true);
     try {
       const updateData = {
@@ -66,17 +128,11 @@ export default function EditVisitDialog({ isOpen, onClose, visit, onSave, formRe
         notes: formData.notes,
       };
 
-      // Only include actual times if they're set
       if (formData.actualStart) {
         updateData.actualStart = formData.actualStart.toISOString();
       }
       if (formData.actualEnd) {
         updateData.actualEnd = formData.actualEnd.toISOString();
-      }
-
-      // Auto-complete visit if actual end time is set
-      if (formData.actualEnd && !formData.actualStart) {
-        updateData.actualStart = formData.actualEnd;
       }
 
       const response = await fetch(`/api/visits/${visit.id}`, {
@@ -87,10 +143,13 @@ export default function EditVisitDialog({ isOpen, onClose, visit, onSave, formRe
 
       if (response.ok) {
         if (onSave) onSave(await response.json());
+      } else {
+        const errData = await response.json().catch(() => ({}));
+        setValidationError(errData.error || 'Failed to save visit');
       }
     } catch (error) {
       console.error('Error saving visit:', error);
-      alert('Failed to save visit');
+      setValidationError('Failed to save visit. Please try again.');
     } finally {
       setIsSaving(false);
     }
@@ -119,6 +178,7 @@ export default function EditVisitDialog({ isOpen, onClose, visit, onSave, formRe
       }
     } catch (error) {
       console.error('Error starting visit:', error);
+      setValidationError('Failed to start visit');
     }
   };
 
@@ -146,6 +206,7 @@ export default function EditVisitDialog({ isOpen, onClose, visit, onSave, formRe
       }
     } catch (error) {
       console.error('Error ending visit:', error);
+      setValidationError('Failed to complete visit');
     }
   };
 
@@ -161,10 +222,8 @@ export default function EditVisitDialog({ isOpen, onClose, visit, onSave, formRe
     });
   };
 
-  const getStatusColor = (status) => {
-    const option = STATUS_OPTIONS.find(o => o.value === status);
-    return option ? option.color : '#3B82F6';
-  };
+  // BUG-02 FIX: Only show valid next statuses
+  const validStatuses = getValidNextStatuses(visit?.status || formData.status);
 
   const renderInfoTab = () => {
     if (!visit) {
@@ -177,13 +236,33 @@ export default function EditVisitDialog({ isOpen, onClose, visit, onSave, formRe
 
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        {/* Validation Error Banner */}
+        {validationError && (
+          <div style={{
+            padding: '12px 16px',
+            backgroundColor: '#FEF2F2',
+            border: '1px solid #FECACA',
+            borderRadius: '8px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            color: '#DC2626',
+            fontSize: '13px',
+          }}>
+            <AlertTriangle size={16} />
+            {validationError}
+          </div>
+        )}
+
         {/* Visit Header */}
         <div className="card" style={{ padding: '16px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
             <h4 style={{ fontSize: '16px', fontWeight: 600, margin: 0 }}>Visit Details</h4>
+            {/* BUG-02 FIX: Status dropdown only shows valid transitions */}
             <select
               value={formData.status}
-              onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value }))}
+              onChange={(e) => handleStatusChange(e.target.value)}
+              disabled={isTerminalStatus(visit.status)}
               style={{
                 padding: '8px 12px',
                 borderRadius: '8px',
@@ -192,21 +271,33 @@ export default function EditVisitDialog({ isOpen, onClose, visit, onSave, formRe
                 fontSize: '13px',
                 fontWeight: 500,
                 color: getStatusColor(formData.status),
-                cursor: 'pointer',
+                cursor: isTerminalStatus(visit.status) ? 'not-allowed' : 'pointer',
+                opacity: isTerminalStatus(visit.status) ? 0.6 : 1,
               }}
             >
-              {STATUS_OPTIONS.map(opt => (
-                <option key={opt.value} value={opt.value}>{opt.label}</option>
+              {validStatuses.map(status => (
+                <option key={status} value={status}>{getStatusLabel(status)}</option>
               ))}
             </select>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: '12px', marginBottom: '16px' }}>
             <span style={{ fontSize: '13px', color: 'var(--color-text-secondary)' }}>Client</span>
-            <span style={{ fontSize: '13px', fontWeight: 500 }}>{visit.client?.firstName} {visit.client?.lastName}</span>
+            <span style={{ fontSize: '13px', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '8px' }}>
+              {visit.client?.avatar ? (
+                <Image src={visit.client.avatar} alt="" width={24} height={24} style={{ borderRadius: '50%', objectFit: 'cover' }} />
+              ) : (
+                <span style={{ width: '24px', height: '24px', borderRadius: '50%', backgroundColor: 'var(--color-primary-light)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', fontWeight: 600, color: 'white' }}>
+                  {visit.client?.firstName?.charAt(0)}{visit.client?.lastName?.charAt(0)}
+                </span>
+              )}
+              {visit.client?.firstName} {visit.client?.lastName}
+            </span>
 
             <span style={{ fontSize: '13px', color: 'var(--color-text-secondary)' }}>Address</span>
-            <span style={{ fontSize: '13px' }}>{visit.client?.address}, {visit.client?.city} {visit.client?.state}</span>
+            <span style={{ fontSize: '13px' }}>
+              {[visit.client?.address, visit.client?.city, visit.client?.state].filter(Boolean).join(', ')}
+            </span>
 
             <span style={{ fontSize: '13px', color: 'var(--color-text-secondary)' }}>Staff</span>
             <span style={{ fontSize: '13px' }}>{visit.staff ? `${visit.staff.firstName} ${visit.staff.lastName}` : 'Unassigned'}</span>
@@ -240,7 +331,7 @@ export default function EditVisitDialog({ isOpen, onClose, visit, onSave, formRe
                       fontSize: '13px',
                     }}
                   />
-                  {!formData.actualStart && visit.status === 'SCHEDULED' && (
+                  {!formData.actualStart && (formData.status === 'SCHEDULED' || formData.status === 'CLOCKED_IN' || formData.status === 'LATE') && (
                     <button
                       onClick={handleStartVisit}
                       style={{
@@ -255,6 +346,7 @@ export default function EditVisitDialog({ isOpen, onClose, visit, onSave, formRe
                         display: 'flex',
                         alignItems: 'center',
                         gap: '4px',
+                        whiteSpace: 'nowrap',
                       }}
                     >
                       <Clock size={14} />
@@ -268,20 +360,23 @@ export default function EditVisitDialog({ isOpen, onClose, visit, onSave, formRe
                   End Time
                 </label>
                 <div style={{ display: 'flex', gap: '8px' }}>
+                  {/* BUG-04 FIX: disabled as HTML attribute, not CSS property */}
                   <input
                     type="datetime-local"
                     value={formData.actualEnd ? new Date(formData.actualEnd.getTime() - formData.actualEnd.getTimezoneOffset() * 60000).toISOString().slice(0, 16) : ''}
                     onChange={(e) => setFormData(prev => ({ ...prev, actualEnd: e.target.value ? new Date(e.target.value) : null }))}
+                    disabled={!formData.actualStart}
                     style={{
                       flex: 1,
                       padding: '8px 12px',
                       borderRadius: '6px',
                       border: '1px solid var(--color-border)',
                       fontSize: '13px',
-                      disabled: !formData.actualStart,
+                      opacity: !formData.actualStart ? 0.5 : 1,
+                      cursor: !formData.actualStart ? 'not-allowed' : 'text',
                     }}
                   />
-                  {formData.actualStart && !formData.actualEnd && visit.status === 'IN_PROGRESS' && (
+                  {formData.actualStart && !formData.actualEnd && (formData.status === 'IN_PROGRESS' || formData.status === 'CLOCKED_IN') && (
                     <button
                       onClick={handleEndVisit}
                       style={{
@@ -296,6 +391,7 @@ export default function EditVisitDialog({ isOpen, onClose, visit, onSave, formRe
                         display: 'flex',
                         alignItems: 'center',
                         gap: '4px',
+                        whiteSpace: 'nowrap',
                       }}
                     >
                       <Check size={14} />
@@ -376,12 +472,79 @@ export default function EditVisitDialog({ isOpen, onClose, visit, onSave, formRe
     );
   };
 
+  // BUG-08 FIX: Goals tab now shows real care plan goals
+  const renderGoalsTab = () => {
+    if (!visit?.carePlanId) {
+      return (
+        <div style={{ padding: '24px', textAlign: 'center', color: 'var(--color-text-secondary)' }}>
+          <Target size={48} style={{ opacity: 0.3, marginBottom: '16px' }} />
+          <p style={{ fontSize: '14px', fontWeight: 500 }}>No Care Plan Linked</p>
+          <p style={{ fontSize: '12px', marginTop: '8px' }}>Link a care plan to this visit to see goals and services.</p>
+        </div>
+      );
+    }
+
+    if (goalsLoading) {
+      return (
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '48px' }}>
+          <div className="loading-spinner" />
+        </div>
+      );
+    }
+
+    return (
+      <div style={{ padding: '24px' }}>
+        <h4 style={{ fontSize: '16px', fontWeight: 600, marginBottom: '16px' }}>Care Plan Goals & Services</h4>
+        {carePlanGoals.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '24px', backgroundColor: 'var(--color-gray-50)', borderRadius: '12px' }}>
+            <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)' }}>No services defined in this care plan yet.</p>
+          </div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            {carePlanGoals.map((goal, index) => (
+              <div
+                key={goal.id || index}
+                style={{
+                  padding: '16px',
+                  border: '1px solid var(--color-border)',
+                  borderRadius: '12px',
+                  backgroundColor: 'var(--color-white)',
+                }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ fontSize: '14px', fontWeight: 500 }}>
+                    {goal.service?.name || goal.instructions || `Service ${index + 1}`}
+                  </span>
+                  {goal.frequency && (
+                    <span style={{
+                      fontSize: '11px',
+                      padding: '4px 8px',
+                      borderRadius: '12px',
+                      backgroundColor: '#DBEAFE',
+                      color: '#1D4ED8',
+                    }}>
+                      {goal.frequencyText || goal.frequency}
+                    </span>
+                  )}
+                </div>
+                {goal.instructions && (
+                  <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginTop: '8px' }}>
+                    {goal.instructions}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  };
+
   const tabs = [
     {
       value: 'info',
       label: 'Information',
       icon: Info,
-      content: renderInfoTab(),
     },
     {
       value: 'tasks',
@@ -403,7 +566,8 @@ export default function EditVisitDialog({ isOpen, onClose, visit, onSave, formRe
       label: 'Goals',
       icon: Target,
     },
-  ];
+    { id: 'attachments', label: 'Attachments', icon: Paperclip, content: <FileAttachments visitId={visit?.id} /> },
+    ];
 
   return (
     <Modal
@@ -416,17 +580,14 @@ export default function EditVisitDialog({ isOpen, onClose, visit, onSave, formRe
         <div style={{ flex: 1, overflow: 'auto' }}>
           <Tabs tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
           <div>
+            {/* BUG-09 FIX: info tab rendered only once here, not also in tabs array */}
             {activeTab === 'info' && renderInfoTab()}
             {activeTab === 'tasks' && <VisitTasksTab visitId={visit?.id} />}
             {activeTab === 'forms' && <EditVisitFormsTab visitId={visit?.id} returnTo={formReturnTo} />}
+            {/* BUG-07 FIX: Using real VisitNotesTab instead of stub EditVisitNotesTab */}
             {activeTab === 'notes' && <VisitNotesTab visitId={visit?.id} />}
-            {activeTab === 'goals' && (
-              <div style={{ padding: '24px', textAlign: 'center', color: 'var(--color-text-secondary)' }}>
-                <Target size={48} style={{ opacity: 0.3, marginBottom: '16px' }} />
-                <p style={{ fontSize: '14px', fontWeight: 500 }}>Goals Management</p>
-                <p style={{ fontSize: '12px', marginTop: '8px' }}>Care goals for this visit will appear here</p>
-              </div>
-            )}
+            {/* BUG-08 FIX: Real goals content */}
+            {activeTab === 'goals' && renderGoalsTab()}
           </div>
         </div>
         <div style={{
