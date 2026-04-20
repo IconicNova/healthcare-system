@@ -5,10 +5,10 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { ArrowLeft, Save, Check, Clock, AlertCircle, Eye } from 'lucide-react';
 import FormFieldRenderer from '@/components/care-delivery/FormFieldRenderer';
 import { resolveCareDeliveryReturnTo } from '@/components/care-delivery/care-delivery.helpers';
+import { mergeFormDataWithPrefill } from '@/lib/form-prefill';
 import {
   normalizeFormSchema,
   normalizeFormStatus,
-  shouldAutosaveDraft,
   shouldScheduleFormAutosave,
 } from '@/lib/form-review';
 
@@ -17,6 +17,41 @@ function formatReadOnlyValue(value) {
   if (value === false) return 'No';
   if (value === null || value === undefined || value === '') return '-';
   return String(value);
+}
+
+function isMissingValue(value) {
+  if (value === null || value === undefined) {
+    return true;
+  }
+
+  if (typeof value === 'string') {
+    return value.trim().length === 0;
+  }
+
+  if (typeof value === 'boolean') {
+    return value === false;
+  }
+
+  if (Array.isArray(value)) {
+    return value.length === 0;
+  }
+
+  return false;
+}
+
+function getRequiredFieldErrors(schema, formData) {
+  const errors = {};
+  const sections = normalizeFormSchema(schema).sections || [];
+
+  sections.forEach((section) => {
+    (section.fields || []).forEach((field) => {
+      if (field.required && isMissingValue(formData?.[field.name])) {
+        errors[field.name] = `${field.label} is required`;
+      }
+    });
+  });
+
+  return errors;
 }
 
 export default function FormChartingPage({ params }) {
@@ -56,8 +91,11 @@ export default function FormChartingPage({ params }) {
             status: normalizeFormStatus(data.form.status),
           });
 
-          // Initialize form data with existing data or empty object
-          const initialData = data.form.formData || {};
+          const initialData = mergeFormDataWithPrefill({
+            template: data.form.template,
+            visit: data.form.visit,
+            formData: data.form.formData || {},
+          });
           setFormData(initialData);
         } else {
           alert('Failed to load form');
@@ -85,28 +123,6 @@ export default function FormChartingPage({ params }) {
     setSaveStatus('saving');
 
     try {
-      // Validate required fields
-      const errors = {};
-      const schema = form.template?.schema || {};
-      const sections = schema.sections || [];
-
-      sections.forEach(section => {
-        (section.fields || []).forEach(field => {
-          if (field.required && !formData[field.name]) {
-            errors[field.name] = `${field.label} is required`;
-          }
-        });
-      });
-
-      setValidationErrors(errors);
-
-      const hasValidationErrors = Object.keys(errors).length > 0;
-      if (hasValidationErrors && !shouldAutosaveDraft({ status: currentStatus, hasValidationErrors })) {
-        setSaveStatus('error');
-        setTimeout(() => setSaveStatus('idle'), 3000);
-        return;
-      }
-
       const response = await fetch(`/api/forms/${formId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
@@ -167,18 +183,7 @@ export default function FormChartingPage({ params }) {
       return;
     }
 
-    // Validate all required fields
-    const errors = {};
-    const schema = form.template?.schema || {};
-    const sections = schema.sections || [];
-
-    sections.forEach(section => {
-      (section.fields || []).forEach(field => {
-        if (field.required && !formData[field.name]) {
-          errors[field.name] = `${field.label} is required`;
-        }
-      });
-    });
+    const errors = getRequiredFieldErrors(form.template?.schema, formData);
 
     setValidationErrors(errors);
 
@@ -270,8 +275,7 @@ export default function FormChartingPage({ params }) {
     );
   }
 
-  const schema = form.template?.schema || {};
-  const sections = normalizeFormSchema(schema).sections || [];
+  const sections = normalizeFormSchema(form.template?.schema).sections || [];
 
   return (
     <div>
@@ -378,7 +382,7 @@ export default function FormChartingPage({ params }) {
           {saveStatus === 'error' && <AlertCircle size={16} />}
           {saveStatus === 'saving' && 'Saving...'}
           {saveStatus === 'saved' && 'Saved successfully!'}
-          {saveStatus === 'error' && 'Error saving form. Please check required fields.'}
+          {saveStatus === 'error' && 'Error saving form. Please try again.'}
         </div>
       )}
 
@@ -636,7 +640,7 @@ export default function FormChartingPage({ params }) {
                           {field.label} {field.required && <span style={{ color: 'var(--color-error)' }}>*</span>}
                         </div>
                         <div style={{ fontSize: '14px', color: 'var(--color-text)', padding: '10px', backgroundColor: 'var(--color-gray-50)', borderRadius: '6px' }}>
-                          {formData[field.name] || '-'}
+                          {formatReadOnlyValue(formData[field.name])}
                         </div>
                       </div>
                     ))}

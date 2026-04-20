@@ -826,11 +826,12 @@ export default function EditVisitDialog({
                 />
               )}
               {activeTab === 'forms' && (
-                <EditVisitFormsTab
-                  visitId={visit?.id}
-                  returnTo={visitReturnTo}
-                  onCountChange={handleFormsCountChange}
-                />
+              <EditVisitFormsTab
+                visitId={visit?.id}
+                visit={visit}
+                returnTo={visitReturnTo}
+                onCountChange={handleFormsCountChange}
+              />
               )}
               {activeTab === 'notes' && (
                 <VisitNotesTab

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { FileText, AlertCircle } from 'lucide-react';
 import { buildCareDeliveryFormPath } from '@/components/care-delivery/care-delivery.helpers';
 import StatusBadge from '@/components/ui/StatusBadge';
+import { buildFormPrefillData } from '@/lib/form-prefill';
 import {
   buildVisitFormSections,
   getVisitFormAction,
@@ -132,7 +133,7 @@ function FormSection({ title, entries, loadingTemplateId, onAction }) {
   );
 }
 
-export default function EditVisitFormsTab({ visitId, returnTo = '', onCountChange }) {
+export default function EditVisitFormsTab({ visitId, visit, returnTo = '', onCountChange }) {
   const router = useRouter();
   const [templates, setTemplates] = useState([]);
   const [forms, setForms] = useState([]);
@@ -212,10 +213,18 @@ export default function EditVisitFormsTab({ visitId, returnTo = '', onCountChang
     setError('');
 
     try {
+      const prefillData = buildFormPrefillData({
+        template: entry,
+        visit,
+      });
+
       const response = await fetch(`/api/visits/${visitId}/forms`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ templateId: entry.id }),
+        body: JSON.stringify({
+          templateId: entry.id,
+          prefillData,
+        }),
       });
 
       if (!response.ok) {

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { AlertCircle } from 'lucide-react';
 
 export default function FormFieldRenderer({ field, value, onChange, error }) {
   const [isFocused, setIsFocused] = useState(false);
@@ -256,7 +257,7 @@ export default function FormFieldRenderer({ field, value, onChange, error }) {
           alignItems: 'center',
           gap: '4px',
         }}>
-          <span style={{ fontSize: '10px' }}>\u26A0</span>
+          <AlertCircle size={12} aria-hidden="true" />
           {error}
         </div>
       )}

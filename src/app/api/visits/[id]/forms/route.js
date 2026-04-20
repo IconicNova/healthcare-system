@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { normalizeFormSchema, normalizeFormStatus } from '@/lib/form-review';
+import { buildFormPrefillData } from '@/lib/form-prefill';
 
 function isUniqueConstraintError(error) {
   return error?.code === 'P2002';
@@ -24,6 +25,54 @@ export async function GET(request, { params }) {
       where: {
         id,
         organizationId: session.user.organizationId,
+      },
+      include: {
+        client: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            dateOfBirth: true,
+            address: true,
+            city: true,
+            state: true,
+            zipCode: true,
+            phone: true,
+            email: true,
+          },
+        },
+        staff: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            phone: true,
+            email: true,
+            role: true,
+          },
+        },
+        service: {
+          select: {
+            id: true,
+            name: true,
+            duration: true,
+            baseRate: true,
+          },
+        },
+        carePlan: {
+          select: {
+            id: true,
+            name: true,
+            staffId: true,
+            staff: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+              },
+            },
+          },
+        },
       },
     });
 
@@ -144,6 +193,15 @@ export async function POST(request, { params }) {
       });
     }
 
+    const prefillData = buildFormPrefillData({
+      template,
+      visit,
+    });
+    const providedPrefillData =
+      body?.prefillData && typeof body.prefillData === 'object' && !Array.isArray(body.prefillData)
+        ? body.prefillData
+        : {};
+
     let form;
 
     try {
@@ -153,7 +211,9 @@ export async function POST(request, { params }) {
           visitId: id,
           clientId: visit.clientId,
           status: 'DRAFT',
-          formData: null,
+          formData: Object.keys({ ...prefillData, ...providedPrefillData }).length > 0
+            ? { ...prefillData, ...providedPrefillData }
+            : null,
           submittedBy: null,
         },
         include: {
