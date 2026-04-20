@@ -191,9 +191,12 @@ export default function EditVisitFormsTab({ visitId, visit, returnTo = '', onCou
 
   // UX-11: Compute form completion summary
   const formSummary = useMemo(() => {
-    const total = forms.length;
-    const completed = forms.filter(f => f.status === 'SUBMITTED' || f.status === 'APPROVED').length;
     const requiredForms = sections.required || [];
+    const total = requiredForms.length || forms.length;
+    const completed = requiredForms.filter((entry) => {
+      const status = entry.form?.status;
+      return status === 'SUBMITTED' || status === 'APPROVED';
+    }).length;
     const requiredPending = requiredForms.filter(e => {
       if (!e.form) return true;
       return e.form.status === 'DRAFT';

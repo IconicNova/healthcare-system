@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ArrowLeft, Save, Check, Clock, AlertCircle, Eye } from 'lucide-react';
 import FormFieldRenderer from '@/components/care-delivery/FormFieldRenderer';
@@ -61,6 +61,7 @@ export default function FormChartingPage({ params }) {
 
   const [form, setForm] = useState(null);
   const [formData, setFormData] = useState({});
+  const [initialFormData, setInitialFormData] = useState({});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saveStatus, setSaveStatus] = useState('idle'); // idle, saving, saved, error
@@ -97,6 +98,7 @@ export default function FormChartingPage({ params }) {
             formData: data.form.formData || {},
           });
           setFormData(initialData);
+          setInitialFormData(initialData);
         } else {
           alert('Failed to load form');
           router.push(returnTo);
@@ -113,9 +115,18 @@ export default function FormChartingPage({ params }) {
     fetchForm();
   }, [formId, returnTo, router]);
 
+  const isDirty = useMemo(
+    () => JSON.stringify(formData) !== JSON.stringify(initialFormData),
+    [formData, initialFormData]
+  );
+
   // Debounced auto-save
   const saveForm = useCallback(async () => {
-    if (!form || !shouldScheduleFormAutosave({ status: currentStatus, saving, saveStatus })) {
+    if (
+      !form ||
+      !isDirty ||
+      !shouldScheduleFormAutosave({ status: currentStatus, saving, saveStatus })
+    ) {
       return;
     }
 
@@ -130,6 +141,7 @@ export default function FormChartingPage({ params }) {
       });
 
       if (response.ok) {
+        setInitialFormData(formData);
         setSaveStatus('saved');
         setTimeout(() => setSaveStatus('idle'), 3000);
       } else {
@@ -143,11 +155,14 @@ export default function FormChartingPage({ params }) {
     } finally {
       setSaving(false);
     }
-  }, [form, formData, saving, saveStatus, formId, currentStatus]);
+  }, [form, formData, saving, saveStatus, formId, currentStatus, isDirty]);
 
   // Auto-save with debounce (2 seconds)
   useEffect(() => {
-    if (!shouldScheduleFormAutosave({ status: currentStatus, saving, saveStatus })) {
+    if (
+      !isDirty ||
+      !shouldScheduleFormAutosave({ status: currentStatus, saving, saveStatus })
+    ) {
       return undefined;
     }
 
@@ -156,7 +171,7 @@ export default function FormChartingPage({ params }) {
     }, 2000);
 
     return () => clearTimeout(timeout);
-  }, [currentStatus, formData, saveForm, saveStatus, saving]);
+  }, [currentStatus, formData, isDirty, saveForm, saveStatus, saving]);
 
   const handleFieldChange = (fieldName, value) => {
     if (!isEditable) {
