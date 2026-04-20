@@ -1,0 +1,233 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e5]:
+    - complementary [ref=e6]:
+      - generic [ref=e7]:
+        - generic [ref=e8] [cursor=pointer]:
+          - generic [ref=e10]: TCHS
+          - generic [ref=e11]: Together Care Health Services
+        - button "Collapse sidebar" [ref=e12] [cursor=pointer]:
+          - img [ref=e13]
+      - navigation [ref=e16]:
+        - generic [ref=e17]:
+          - generic [ref=e18]: Main Menu
+          - link "Dashboard" [ref=e19] [cursor=pointer]:
+            - /url: /dashboard
+            - button "Dashboard" [ref=e20]:
+              - img [ref=e21]
+              - generic [ref=e24]: Dashboard
+          - link "Clients" [ref=e25] [cursor=pointer]:
+            - /url: /clients
+            - button "Clients" [ref=e26]:
+              - img [ref=e27]
+              - generic [ref=e32]: Clients
+          - link "Staff" [ref=e33] [cursor=pointer]:
+            - /url: /staff
+            - button "Staff" [ref=e34]:
+              - img [ref=e35]
+              - generic [ref=e38]: Staff
+          - link "Care Delivery" [ref=e39] [cursor=pointer]:
+            - /url: /care-delivery
+            - button "Care Delivery" [ref=e40]:
+              - img [ref=e41]
+              - generic [ref=e45]: Care Delivery
+          - link "Scheduling" [ref=e46] [cursor=pointer]:
+            - /url: /scheduling
+            - button "Scheduling" [ref=e47]:
+              - img [ref=e48]
+              - generic [ref=e50]: Scheduling
+          - link "Care Plans" [ref=e51] [cursor=pointer]:
+            - /url: /care-plans
+            - button "Care Plans" [ref=e52]:
+              - img [ref=e53]
+              - generic [ref=e56]: Care Plans
+          - link "Billing" [ref=e57] [cursor=pointer]:
+            - /url: /billing
+            - button "Billing" [ref=e58]:
+              - img [ref=e59]
+              - generic [ref=e62]: Billing
+          - link "Payroll" [ref=e63] [cursor=pointer]:
+            - /url: /payroll
+            - button "Payroll" [ref=e64]:
+              - img [ref=e65]
+              - generic [ref=e68]: Payroll
+          - link "Reports" [ref=e69] [cursor=pointer]:
+            - /url: /reports
+            - button "Reports" [ref=e70]:
+              - img [ref=e71]
+              - generic [ref=e74]: Reports
+          - link "Notifications" [ref=e75] [cursor=pointer]:
+            - /url: /notifications
+            - button "Notifications" [ref=e76]:
+              - img [ref=e77]
+              - generic [ref=e80]: Notifications
+        - generic [ref=e81]:
+          - generic [ref=e82]: Other
+          - link "Settings" [ref=e83] [cursor=pointer]:
+            - /url: /settings
+            - button "Settings" [ref=e84]:
+              - img [ref=e85]
+              - generic [ref=e88]: Settings
+      - generic [ref=e89]:
+        - generic [ref=e90]:
+          - generic [ref=e91]: MT
+          - generic [ref=e92]:
+            - generic [ref=e93]: Michael Thompson
+            - generic [ref=e94]: Super Admin
+        - button "Logout" [ref=e95] [cursor=pointer]:
+          - img [ref=e96]
+          - generic [ref=e99]: Logout
+    - generic [ref=e100]:
+      - banner [ref=e101]:
+        - navigation "Breadcrumb" [ref=e103]:
+          - link [ref=e104] [cursor=pointer]:
+            - /url: /dashboard
+            - img [ref=e105]
+          - img [ref=e108]
+          - link "Care Delivery" [ref=e110] [cursor=pointer]:
+            - /url: /care-delivery
+          - generic [ref=e111]: Details
+        - generic [ref=e112]:
+          - generic [ref=e113]:
+            - img
+            - textbox "Search..." [ref=e114]
+          - generic [ref=e115]:
+            - button "Notifications" [ref=e117] [cursor=pointer]:
+              - img [ref=e118]
+            - button "User menu" [ref=e122] [cursor=pointer]:
+              - generic [ref=e123]: MT
+              - generic [ref=e124]: Michael
+      - main [ref=e125]:
+        - generic [ref=e126]:
+          - generic [ref=e127]:
+            - button "Back to Care Delivery" [ref=e128] [cursor=pointer]:
+              - img [ref=e129]
+              - text: Back to Care Delivery
+            - generic [ref=e131]:
+              - generic [ref=e132]:
+                - img "Rainbow Lorikeet" [ref=e133]
+                - generic [ref=e134]:
+                  - heading "Rainbow Lorikeet" [level=1] [ref=e135]
+                  - generic [ref=e136]:
+                    - generic [ref=e137]: ACTIVE
+                    - generic [ref=e138]: "1234567891"
+                    - generic [ref=e139]: siyamthebest123@gmail.com
+                  - generic [ref=e140]: dhanmondi, Dhaka, province, 12345
+              - generic [ref=e141]:
+                - button "Global Forms Review" [ref=e142] [cursor=pointer]:
+                  - img [ref=e143]
+                  - text: Global Forms Review
+                - button "View Client Profile" [ref=e147] [cursor=pointer]
+          - generic [ref=e148]:
+            - generic [ref=e149]:
+              - button "Tasks" [ref=e150] [cursor=pointer]
+              - button "Forms Review" [ref=e151] [cursor=pointer]
+              - button "Progress Notes" [ref=e152] [cursor=pointer]
+              - button "Visit Reports" [ref=e153] [cursor=pointer]
+              - button "Vitals" [ref=e154] [cursor=pointer]
+            - generic [ref=e156]:
+              - generic [ref=e157]:
+                - heading "Tasks" [level=2] [ref=e158]
+                - generic [ref=e159]:
+                  - button "📅 Calendar" [ref=e160] [cursor=pointer]
+                  - generic [ref=e161]: 1 visit
+              - generic [ref=e162]:
+                - generic [ref=e163]:
+                  - img [ref=e164]
+                  - text: Upcoming (1)
+                - generic [ref=e166] [cursor=pointer]:
+                  - generic [ref=e167]:
+                    - generic [ref=e168]:
+                      - generic [ref=e169]: Home Health Aide
+                      - generic [ref=e170]: Nothing
+                    - generic [ref=e172]: Completed
+                  - generic [ref=e173]:
+                    - generic [ref=e174]:
+                      - img [ref=e175]
+                      - text: Iconic Nova
+                    - generic [ref=e178]:
+                      - img [ref=e179]
+                      - text: 9:00 AM - 10:00 AM
+                  - generic [ref=e182]: "Actual: 10:02 AM - 2:59 PM"
+          - generic [ref=e184]:
+            - generic [ref=e185]:
+              - heading "Edit Visit - Rainbow Lorikeet" [level=3] [ref=e186]
+              - button [ref=e187] [cursor=pointer]:
+                - img [ref=e188]
+            - generic [ref=e191]:
+              - generic [ref=e192]:
+                - generic [ref=e193]:
+                  - button "Information" [ref=e194] [cursor=pointer]:
+                    - img [ref=e195]
+                    - text: Information
+                  - button "Service Tasks 0/3" [ref=e197] [cursor=pointer]:
+                    - img [ref=e198]
+                    - text: Service Tasks
+                    - generic [ref=e201]: 0/3
+                  - button "Forms 3" [ref=e202] [cursor=pointer]:
+                    - img [ref=e203]
+                    - text: Forms
+                    - generic [ref=e206]: "3"
+                  - button "Visit Notes 1" [ref=e207] [cursor=pointer]:
+                    - img [ref=e208]
+                    - text: Visit Notes
+                    - generic [ref=e211]: "1"
+                  - button "Goals" [ref=e212] [cursor=pointer]:
+                    - img [ref=e213]
+                    - text: Goals
+                  - button "Timeline" [ref=e217] [cursor=pointer]:
+                    - img [ref=e218]
+                    - text: Timeline
+                  - button "Attachments 0" [ref=e221] [cursor=pointer]:
+                    - img [ref=e222]
+                    - text: Attachments
+                    - generic [ref=e224]: "0"
+                - generic [ref=e226]:
+                  - generic [ref=e227]:
+                    - generic [ref=e228]:
+                      - heading "Visit Details" [level=3] [ref=e229]
+                      - combobox [ref=e230] [cursor=pointer]:
+                        - option "Completed" [selected]
+                        - option "Approved"
+                    - generic [ref=e231]:
+                      - generic [ref=e232]: Client
+                      - generic [ref=e235]: Rainbow Lorikeet
+                      - generic [ref=e236]: Address
+                      - generic [ref=e237]: dhanmondi, Dhaka, province
+                      - generic [ref=e238]: Staff
+                      - generic [ref=e239]: Iconic Nova
+                      - generic [ref=e240]: Service
+                      - generic [ref=e241]: Home Health Aide
+                      - generic [ref=e242]: Scheduled
+                      - generic [ref=e243]: Apr 21, 2026, 9:00 AM - Apr 21, 2026, 10:00 AM
+                  - generic [ref=e244]:
+                    - heading "Actual Visit Times" [level=4] [ref=e246]
+                    - generic [ref=e247]:
+                      - generic [ref=e248]:
+                        - generic [ref=e249]: Start Time
+                        - textbox [ref=e250]: 2026-04-20T10:02
+                      - generic [ref=e251]:
+                        - generic [ref=e252]: End Time
+                        - textbox [ref=e253]: 2026-04-20T14:59
+                    - generic [ref=e254]: "Duration: 4h 57m"
+                  - generic [ref=e255]:
+                    - generic [ref=e256]:
+                      - generic [ref=e257]: Title
+                      - generic [ref=e258]: 16/200
+                    - textbox "e.g., Wound Care & Medication Review" [ref=e259]: Home Health Aide
+                  - generic [ref=e260]:
+                    - generic [ref=e261]:
+                      - generic [ref=e262]: Description
+                      - generic [ref=e263]: 7/2000
+                    - textbox "Describe the purpose of this visit..." [ref=e264]: Nothing
+                  - generic [ref=e265]:
+                    - generic [ref=e266]:
+                      - generic [ref=e267]: Internal Notes
+                      - generic [ref=e268]: 19/5000
+                    - paragraph [ref=e269]: Private notes for scheduling/admin. For clinical visit notes, use the “Visit Notes” tab.
+                    - textbox "Internal scheduling notes..." [ref=e270]: Please bring coffee
+              - generic [ref=e271]:
+                - generic [ref=e272]: "Alt+1-7: switch tabs · Ctrl+S: save"
+                - generic [ref=e273]:
+                  - button "Cancel" [ref=e274] [cursor=pointer]
+                  - button "💾 Save Changes" [disabled] [ref=e275]
+  - alert [ref=e4]

@@ -1,0 +1,326 @@
+- generic [ref=e1]:
+  - generic [ref=e5]:
+    - complementary [ref=e6]:
+      - generic [ref=e7]:
+        - generic [ref=e8] [cursor=pointer]:
+          - generic [ref=e10]: TCHS
+          - generic [ref=e11]: Together Care Health Services
+        - button "Collapse sidebar" [ref=e12] [cursor=pointer]:
+          - img [ref=e13]
+      - navigation [ref=e16]:
+        - generic [ref=e17]:
+          - generic [ref=e18]: Main Menu
+          - link "Dashboard" [ref=e19] [cursor=pointer]:
+            - /url: /dashboard
+            - button "Dashboard" [ref=e20]:
+              - img [ref=e21]
+              - generic [ref=e24]: Dashboard
+          - link "Clients" [ref=e25] [cursor=pointer]:
+            - /url: /clients
+            - button "Clients" [ref=e26]:
+              - img [ref=e27]
+              - generic [ref=e32]: Clients
+          - link "Staff" [ref=e33] [cursor=pointer]:
+            - /url: /staff
+            - button "Staff" [ref=e34]:
+              - img [ref=e35]
+              - generic [ref=e38]: Staff
+          - link "Care Delivery" [ref=e39] [cursor=pointer]:
+            - /url: /care-delivery
+            - button "Care Delivery" [ref=e40]:
+              - img [ref=e41]
+              - generic [ref=e45]: Care Delivery
+          - link "Scheduling" [ref=e46] [cursor=pointer]:
+            - /url: /scheduling
+            - button "Scheduling" [ref=e47]:
+              - img [ref=e48]
+              - generic [ref=e50]: Scheduling
+          - link "Care Plans" [ref=e51] [cursor=pointer]:
+            - /url: /care-plans
+            - button "Care Plans" [ref=e52]:
+              - img [ref=e53]
+              - generic [ref=e56]: Care Plans
+          - link "Billing" [ref=e57] [cursor=pointer]:
+            - /url: /billing
+            - button "Billing" [ref=e58]:
+              - img [ref=e59]
+              - generic [ref=e62]: Billing
+          - link "Payroll" [ref=e63] [cursor=pointer]:
+            - /url: /payroll
+            - button "Payroll" [ref=e64]:
+              - img [ref=e65]
+              - generic [ref=e68]: Payroll
+          - link "Reports" [ref=e69] [cursor=pointer]:
+            - /url: /reports
+            - button "Reports" [ref=e70]:
+              - img [ref=e71]
+              - generic [ref=e74]: Reports
+          - link "Notifications" [ref=e75] [cursor=pointer]:
+            - /url: /notifications
+            - button "Notifications" [ref=e76]:
+              - img [ref=e77]
+              - generic [ref=e80]: Notifications
+        - generic [ref=e81]:
+          - generic [ref=e82]: Other
+          - link "Settings" [ref=e83] [cursor=pointer]:
+            - /url: /settings
+            - button "Settings" [ref=e84]:
+              - img [ref=e85]
+              - generic [ref=e88]: Settings
+      - generic [ref=e89]:
+        - generic [ref=e90]:
+          - generic [ref=e91]: SM
+          - generic [ref=e92]:
+            - generic [ref=e93]: Sarah Mitchell
+            - generic [ref=e94]: Admin
+        - button "Logout" [ref=e95] [cursor=pointer]:
+          - img [ref=e96]
+          - generic [ref=e99]: Logout
+    - generic [ref=e100]:
+      - banner [ref=e101]:
+        - navigation "Breadcrumb" [ref=e103]:
+          - link [ref=e104] [cursor=pointer]:
+            - /url: /dashboard
+            - img [ref=e105]
+          - generic [ref=e108]: Scheduling
+        - generic [ref=e109]:
+          - generic [ref=e110]:
+            - img
+            - textbox "Search..." [ref=e111]
+          - generic [ref=e112]:
+            - button "Notifications" [ref=e114] [cursor=pointer]:
+              - img [ref=e115]
+            - button "User menu" [ref=e119] [cursor=pointer]:
+              - generic [ref=e120]: SM
+              - generic [ref=e121]: Sarah
+      - main [ref=e122]:
+        - generic [ref=e123]:
+          - generic [ref=e124]:
+            - heading "Scheduling" [level=1] [ref=e125]
+            - paragraph [ref=e126]: Manage and schedule client visits
+          - generic [ref=e127]:
+            - generic [ref=e128]:
+              - button "Month" [ref=e129] [cursor=pointer]:
+                - img [ref=e130]
+                - text: Month
+              - button "Week" [active] [ref=e132] [cursor=pointer]:
+                - img [ref=e133]
+                - text: Week
+              - button "Day" [ref=e136] [cursor=pointer]:
+                - img [ref=e137]
+                - text: Day
+            - button "Create Visit" [ref=e138] [cursor=pointer]:
+              - img [ref=e139]
+              - text: Create Visit
+          - generic [ref=e140]:
+            - 'button "Scheduled: 6" [ref=e141] [cursor=pointer]': "Scheduled: 6"
+            - 'button "Vacant: 2" [ref=e143] [cursor=pointer]': "Vacant: 2"
+            - 'button "Offered: 0" [ref=e145] [cursor=pointer]': "Offered: 0"
+            - 'button "In Progress: 0" [ref=e147] [cursor=pointer]': "In Progress: 0"
+            - 'button "Clocked In: 0" [ref=e149] [cursor=pointer]': "Clocked In: 0"
+            - 'button "Completed: 0" [ref=e151] [cursor=pointer]': "Completed: 0"
+            - 'button "Approved: 0" [ref=e153] [cursor=pointer]': "Approved: 0"
+            - 'button "Cancelled: 0" [ref=e155] [cursor=pointer]': "Cancelled: 0"
+            - 'button "On Hold: 0" [ref=e157] [cursor=pointer]': "On Hold: 0"
+            - 'button "No Show: 0" [ref=e159] [cursor=pointer]': "No Show: 0"
+            - 'button "Missed: 0" [ref=e161] [cursor=pointer]': "Missed: 0"
+            - 'button "Late: 0" [ref=e163] [cursor=pointer]': "Late: 0"
+          - generic [ref=e165]:
+            - generic [ref=e166]: "Filters:"
+            - combobox [ref=e168] [cursor=pointer]:
+              - option "All Staff" [selected]
+              - option "asdfasdfasdf zzzzzzzzzz"
+              - option "sabbir hossain"
+              - option "Maria Garcia"
+              - option "James Williams"
+              - option "Lisa Johnson"
+              - option "David Chen"
+              - option "Emily Rodriguez"
+            - combobox [ref=e170] [cursor=pointer]:
+              - option "All Clients" [selected]
+              - option "Charles Brooks"
+              - option "Barbara Collins"
+              - option "William Turner"
+              - option "Helen Phillips"
+              - option "Richard Evans"
+              - option "Patricia Cooper"
+              - option "Joseph Morgan"
+              - option "Robert Harrison"
+            - combobox [ref=e172] [cursor=pointer]:
+              - option "All Branches" [selected]
+              - option "Atlanta Main Office"
+              - option "Marietta Branch"
+            - combobox [ref=e174] [cursor=pointer]:
+              - option "All Statuses" [selected]
+              - option "Scheduled"
+              - option "Vacant"
+              - option "Offered"
+              - option "In Progress"
+              - option "Clocked In"
+              - option "Completed"
+              - option "Approved"
+              - option "Cancelled"
+              - option "On Hold"
+              - option "No Show"
+              - option "Missed"
+              - option "Late"
+          - generic [ref=e475]:
+            - text:  
+            - generic "Apr 12 – 18, 2026" [ref=e476]:
+              - grid [ref=e478]:
+                - rowgroup [ref=e479]:
+                  - row "April 12, 2026 April 13, 2026 April 14, 2026 April 15, 2026 April 16, 2026 April 17, 2026 April 18, 2026" [ref=e484]:
+                    - columnheader "April 12, 2026" [ref=e485]:
+                      - generic "April 12, 2026" [ref=e487]: Sunday, Apr 12
+                    - columnheader "April 13, 2026" [ref=e488]:
+                      - generic "April 13, 2026" [ref=e490]: Monday, Apr 13
+                    - columnheader "April 14, 2026" [ref=e491]:
+                      - generic "April 14, 2026" [ref=e493]: Tuesday, Apr 14
+                    - columnheader "April 15, 2026" [ref=e494]:
+                      - generic "April 15, 2026" [ref=e496]: Wednesday, Apr 15
+                    - columnheader "April 16, 2026" [ref=e497]:
+                      - generic "April 16, 2026" [ref=e499]: Thursday, Apr 16
+                    - columnheader "April 17, 2026" [ref=e500]:
+                      - generic "April 17, 2026" [ref=e502]: Friday, Apr 17
+                    - columnheader "April 18, 2026" [ref=e503]:
+                      - generic "April 18, 2026" [ref=e505]: Saturday, Apr 18
+                - rowgroup [ref=e506]:
+                  - generic [ref=e509]:
+                    - table [ref=e511]:
+                      - rowgroup [ref=e514]:
+                        - row [ref=e515]:
+                          - cell [ref=e516]:
+                            - generic [ref=e518]: 6:00 AM
+                          - cell [ref=e519]
+                        - row [ref=e520]:
+                          - cell [ref=e521]
+                          - cell [ref=e522]
+                        - row [ref=e523]:
+                          - cell [ref=e524]:
+                            - generic [ref=e526]: 7:00 AM
+                          - cell [ref=e527]
+                        - row [ref=e528]:
+                          - cell [ref=e529]
+                          - cell [ref=e530]
+                        - row [ref=e531]:
+                          - cell [ref=e532]:
+                            - generic [ref=e534]: 8:00 AM
+                          - cell [ref=e535]
+                        - row [ref=e536]:
+                          - cell [ref=e537]
+                          - cell [ref=e538]
+                        - row [ref=e539]:
+                          - cell [ref=e540]:
+                            - generic [ref=e542]: 9:00 AM
+                          - cell [ref=e543]
+                        - row [ref=e544]:
+                          - cell [ref=e545]
+                          - cell [ref=e546]
+                        - row [ref=e547]:
+                          - cell [ref=e548]:
+                            - generic [ref=e550]: 10:00 AM
+                          - cell [ref=e551]
+                        - row [ref=e552]:
+                          - cell [ref=e553]
+                          - cell [ref=e554]
+                        - row [ref=e555]:
+                          - cell [ref=e556]:
+                            - generic [ref=e558]: 11:00 AM
+                          - cell [ref=e559]
+                        - row [ref=e560]:
+                          - cell [ref=e561]
+                          - cell [ref=e562]
+                        - row [ref=e563]:
+                          - cell [ref=e564]:
+                            - generic [ref=e566]: 12:00 PM
+                          - cell [ref=e567]
+                        - row [ref=e568]:
+                          - cell [ref=e569]
+                          - cell [ref=e570]
+                        - row [ref=e571]:
+                          - cell [ref=e572]:
+                            - generic [ref=e574]: 1:00 PM
+                          - cell [ref=e575]
+                        - row [ref=e576]:
+                          - cell [ref=e577]
+                          - cell [ref=e578]
+                        - row [ref=e579]:
+                          - cell [ref=e580]:
+                            - generic [ref=e582]: 2:00 PM
+                          - cell [ref=e583]
+                        - row [ref=e584]:
+                          - cell [ref=e585]
+                          - cell [ref=e586]
+                        - row [ref=e587]:
+                          - cell [ref=e588]:
+                            - generic [ref=e590]: 3:00 PM
+                          - cell [ref=e591]
+                        - row [ref=e592]:
+                          - cell [ref=e593]
+                          - cell [ref=e594]
+                        - row [ref=e595]:
+                          - cell [ref=e596]:
+                            - generic [ref=e598]: 4:00 PM
+                          - cell [ref=e599]
+                        - row [ref=e600]:
+                          - cell [ref=e601]
+                          - cell [ref=e602]
+                        - row [ref=e603]:
+                          - cell [ref=e604]:
+                            - generic [ref=e606]: 5:00 PM
+                          - cell [ref=e607]
+                        - row [ref=e608]:
+                          - cell [ref=e609]
+                          - cell [ref=e610]
+                        - row [ref=e611]:
+                          - cell [ref=e612]:
+                            - generic [ref=e614]: 6:00 PM
+                          - cell [ref=e615]
+                        - row [ref=e616]:
+                          - cell [ref=e617]
+                          - cell [ref=e618]
+                        - row [ref=e619]:
+                          - cell [ref=e620]:
+                            - generic [ref=e622]: 7:00 PM
+                          - cell [ref=e623]
+                        - row [ref=e624]:
+                          - cell [ref=e625]
+                          - cell [ref=e626]
+                        - row [ref=e627]:
+                          - cell [ref=e628]:
+                            - generic [ref=e630]: 8:00 PM
+                          - cell [ref=e631]
+                        - row [ref=e632]:
+                          - cell [ref=e633]
+                          - cell [ref=e634]
+                        - row [ref=e635]:
+                          - cell [ref=e636]:
+                            - generic [ref=e638]: 9:00 PM
+                          - cell [ref=e639]
+                        - row [ref=e640]:
+                          - cell [ref=e641]
+                          - cell [ref=e642]
+                    - row "9:00 AM - 10:00 AM Charles Brooks 9:00 AM - 10:00 AM Charles Brooks 9:00 AM - 10:00 AM Joseph Morgan 9:00 AM - 10:00 AM Charles Brooks 8:00 AM - 8:00 PM Joseph Morgan" [ref=e646]:
+                      - gridcell "9:00 AM - 10:00 AM Charles Brooks" [ref=e649]:
+                        - generic [ref=e654] [cursor=pointer]:
+                          - generic [ref=e655]: 9:00 AM - 10:00 AM
+                          - generic [ref=e656]: Charles Brooks
+                      - gridcell "9:00 AM - 10:00 AM Charles Brooks" [ref=e658]:
+                        - generic [ref=e663] [cursor=pointer]:
+                          - generic [ref=e664]: 9:00 AM - 10:00 AM
+                          - generic [ref=e665]: Charles Brooks
+                      - gridcell "9:00 AM - 10:00 AM Joseph Morgan" [ref=e667]:
+                        - generic [ref=e672] [cursor=pointer]:
+                          - generic [ref=e673]: 9:00 AM - 10:00 AM
+                          - generic [ref=e674]: Joseph Morgan
+                      - gridcell "9:00 AM - 10:00 AM Charles Brooks" [ref=e676]:
+                        - generic [ref=e681] [cursor=pointer]:
+                          - generic [ref=e682]: 9:00 AM - 10:00 AM
+                          - generic [ref=e683]: Charles Brooks
+                      - gridcell [ref=e685]
+                      - gridcell "8:00 AM - 8:00 PM Joseph Morgan" [ref=e688]:
+                        - generic [ref=e693] [cursor=pointer]:
+                          - generic [ref=e694]: 8:00 AM - 8:00 PM
+                          - generic [ref=e695]: Joseph Morgan
+                      - gridcell [ref=e697]
+  - alert [ref=e4]

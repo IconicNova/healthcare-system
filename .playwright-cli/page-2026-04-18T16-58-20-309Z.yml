@@ -1,0 +1,190 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e5]:
+    - complementary [ref=e6]:
+      - generic [ref=e7]:
+        - generic [ref=e8] [cursor=pointer]:
+          - generic [ref=e10]: TCHS
+          - generic [ref=e11]: Together Care Health Services
+        - button "Collapse sidebar" [ref=e12] [cursor=pointer]:
+          - img [ref=e13]
+      - navigation [ref=e16]:
+        - generic [ref=e17]:
+          - generic [ref=e18]: Main Menu
+          - link "Dashboard" [ref=e19] [cursor=pointer]:
+            - /url: /dashboard
+            - button "Dashboard" [ref=e20]:
+              - img [ref=e21]
+              - generic [ref=e24]: Dashboard
+          - link "Clients" [ref=e25] [cursor=pointer]:
+            - /url: /clients
+            - button "Clients" [ref=e26]:
+              - img [ref=e27]
+              - generic [ref=e32]: Clients
+          - link "Staff" [ref=e33] [cursor=pointer]:
+            - /url: /staff
+            - button "Staff" [ref=e34]:
+              - img [ref=e35]
+              - generic [ref=e38]: Staff
+          - link "Care Delivery" [ref=e39] [cursor=pointer]:
+            - /url: /care-delivery
+            - button "Care Delivery" [ref=e40]:
+              - img [ref=e41]
+              - generic [ref=e45]: Care Delivery
+          - link "Scheduling" [ref=e46] [cursor=pointer]:
+            - /url: /scheduling
+            - button "Scheduling" [ref=e47]:
+              - img [ref=e48]
+              - generic [ref=e50]: Scheduling
+          - link "Care Plans" [ref=e51] [cursor=pointer]:
+            - /url: /care-plans
+            - button "Care Plans" [ref=e52]:
+              - img [ref=e53]
+              - generic [ref=e56]: Care Plans
+          - link "Billing" [ref=e57] [cursor=pointer]:
+            - /url: /billing
+            - button "Billing" [ref=e58]:
+              - img [ref=e59]
+              - generic [ref=e62]: Billing
+          - link "Payroll" [ref=e63] [cursor=pointer]:
+            - /url: /payroll
+            - button "Payroll" [ref=e64]:
+              - img [ref=e65]
+              - generic [ref=e68]: Payroll
+          - link "Reports" [ref=e69] [cursor=pointer]:
+            - /url: /reports
+            - button "Reports" [ref=e70]:
+              - img [ref=e71]
+              - generic [ref=e74]: Reports
+          - link "Notifications" [ref=e75] [cursor=pointer]:
+            - /url: /notifications
+            - button "Notifications" [ref=e76]:
+              - img [ref=e77]
+              - generic [ref=e80]: Notifications
+        - generic [ref=e81]:
+          - generic [ref=e82]: Other
+          - link "Settings" [ref=e83] [cursor=pointer]:
+            - /url: /settings
+            - button "Settings" [ref=e84]:
+              - img [ref=e85]
+              - generic [ref=e88]: Settings
+      - generic [ref=e89]:
+        - generic [ref=e90]:
+          - generic [ref=e91]: MT
+          - generic [ref=e92]:
+            - generic [ref=e93]: Michael Thompson
+            - generic [ref=e94]: Super Admin
+        - button "Logout" [ref=e95] [cursor=pointer]:
+          - img [ref=e96]
+          - generic [ref=e99]: Logout
+    - generic [ref=e100]:
+      - banner [ref=e101]:
+        - navigation "Breadcrumb" [ref=e103]:
+          - link [ref=e104] [cursor=pointer]:
+            - /url: /dashboard
+            - img [ref=e105]
+          - generic [ref=e108]: Clients
+        - generic [ref=e109]:
+          - generic [ref=e110]:
+            - img
+            - textbox "Search..." [ref=e111]
+          - generic [ref=e112]:
+            - button "Notifications" [ref=e114] [cursor=pointer]:
+              - img [ref=e115]
+            - button "User menu" [ref=e119] [cursor=pointer]:
+              - generic [ref=e120]: MT
+              - generic [ref=e121]: Michael
+      - main [ref=e122]:
+        - generic [ref=e123]:
+          - generic [ref=e124]:
+            - heading "Clients" [level=1] [ref=e125]
+            - paragraph [ref=e126]: Manage your client information and care details
+          - generic [ref=e127]:
+            - generic [ref=e128]:
+              - generic [ref=e129]:
+                - img
+                - textbox "Search by name, email, phone, city..." [ref=e130]
+              - combobox [ref=e132] [cursor=pointer]:
+                - option "All Statuses" [selected]
+                - option "Active"
+                - option "Inactive"
+                - option "Pending"
+                - option "On Hold"
+                - option "Discharged"
+            - button "Add Client" [ref=e133] [cursor=pointer]:
+              - img [ref=e134]
+              - text: Add Client
+          - table [ref=e136]:
+            - rowgroup [ref=e137]:
+              - row "Name Phone Email Address Status Care Plans Visits" [ref=e138]:
+                - columnheader "Name" [ref=e139] [cursor=pointer]:
+                  - generic [ref=e141]: Name
+                - columnheader "Phone" [ref=e142] [cursor=pointer]:
+                  - generic [ref=e144]: Phone
+                - columnheader "Email" [ref=e145] [cursor=pointer]:
+                  - generic [ref=e147]: Email
+                - columnheader "Address" [ref=e148] [cursor=pointer]:
+                  - generic [ref=e150]: Address
+                - columnheader "Status" [ref=e151] [cursor=pointer]:
+                  - generic [ref=e153]: Status
+                - columnheader "Care Plans" [ref=e154]:
+                  - generic [ref=e156]: Care Plans
+                - columnheader "Visits" [ref=e157]:
+                  - generic [ref=e159]: Visits
+                - columnheader [ref=e160]
+            - rowgroup [ref=e161]:
+              - row "sabbir akash sabbir akash province 12007 0172236215 mitu73950@gmail.com mohammodpure dhaka ACTIVE 1 2 Edit View Profile Remove" [ref=e162]:
+                - cell "sabbir akash sabbir akash province 12007" [ref=e163]:
+                  - generic [ref=e164]:
+                    - img "sabbir akash" [ref=e165]
+                    - generic [ref=e166]:
+                      - generic [ref=e167]: sabbir akash
+                      - generic [ref=e168]: province 12007
+                - cell "0172236215" [ref=e169]
+                - cell "mitu73950@gmail.com" [ref=e170]
+                - cell "mohammodpure dhaka" [ref=e171]:
+                  - generic [ref=e172]:
+                    - generic [ref=e173]: mohammodpure
+                    - generic [ref=e174]: dhaka
+                - cell "ACTIVE" [ref=e175]:
+                  - generic [ref=e176]: ACTIVE
+                - cell "1" [ref=e177]:
+                  - generic [ref=e178]: "1"
+                - cell "2" [ref=e179]:
+                  - generic [ref=e180]: "2"
+                - cell "Edit View Profile Remove" [ref=e181]:
+                  - generic [ref=e182]:
+                    - button "Edit" [ref=e183] [cursor=pointer]: Edit
+                    - button "View Profile" [ref=e186] [cursor=pointer]: View Profile
+                    - button "Remove" [ref=e189] [cursor=pointer]: Remove
+              - row "Iconic Nova Iconic Nova Idk 12345 0183941235 novahunter321@gmail.com mirpur 11, sobhanbagh, dhaka Dhaka ACTIVE 0 0 Edit View Profile Remove" [ref=e192]:
+                - cell "Iconic Nova Iconic Nova Idk 12345" [ref=e193]:
+                  - generic [ref=e194]:
+                    - img "Iconic Nova" [ref=e195]
+                    - generic [ref=e196]:
+                      - generic [ref=e197]: Iconic Nova
+                      - generic [ref=e198]: Idk 12345
+                - cell "0183941235" [ref=e199]
+                - cell "novahunter321@gmail.com" [ref=e200]
+                - cell "mirpur 11, sobhanbagh, dhaka Dhaka" [ref=e201]:
+                  - generic [ref=e202]:
+                    - generic [ref=e203]: mirpur 11, sobhanbagh, dhaka
+                    - generic [ref=e204]: Dhaka
+                - cell "ACTIVE" [ref=e205]:
+                  - generic [ref=e206]: ACTIVE
+                - cell "0" [ref=e207]:
+                  - generic [ref=e208]: "0"
+                - cell "0" [ref=e209]:
+                  - generic [ref=e210]: "0"
+                - cell "Edit View Profile Remove" [ref=e211]:
+                  - generic [ref=e212]:
+                    - button "Edit" [ref=e213] [cursor=pointer]: Edit
+                    - button "View Profile" [ref=e216] [cursor=pointer]: View Profile
+                    - button "Remove" [ref=e219] [cursor=pointer]: Remove
+          - generic [ref=e222]:
+            - generic [ref=e223]:
+              - button [disabled] [ref=e224]:
+                - img [ref=e225]
+              - button [disabled] [ref=e227]:
+                - img [ref=e228]
+            - generic [ref=e230]: Showing 1-2 of 2 items
+  - alert [ref=e4]

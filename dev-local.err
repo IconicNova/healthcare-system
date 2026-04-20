@@ -1,0 +1,114 @@
+ ⨯ Failed to generate static paths for /api/auth/[...nextauth]:
+TypeError: Cannot read properties of undefined (reading 'call')
+    at __webpack_require__ (D:\Aleyacare Clone\homecare-pro\.next\server\webpack-runtime.js:33:43)
+    at eval (webpack-internal:///(rsc)/./node_modules/next/dist/build/webpack/loaders/next-app-loader.js?name=app%2Fapi%2Fauth%2F%5B...nextauth%5D%2Froute&page=%2Fapi%2Fauth%2F%5B...nextauth%5D%2Froute&appPaths=&pagePath=private-next-app-dir%2Fapi%2Fauth%2F%5B...nextauth%5D%2Froute.js&appDir=D%3A%5CAleyacare%20Clone%5Chomecare-pro%5Csrc%5Capp&pageExtensions=tsx&pageExtensions=ts&pageExtensions=jsx&pageExtensions=js&rootDir=D%3A%5CAleyacare%20Clone%5Chomecare-pro&isDev=true&tsconfigPath=tsconfig.json&basePath=&assetPrefix=&nextConfigOutput=&preferredRegion=&middlewareConfig=e30%3D!:10:121)
+    at (rsc)/./node_modules/next/dist/build/webpack/loaders/next-app-loader.js?name=app%2Fapi%2Fauth%2F%5B...nextauth%5D%2Froute&page=%2Fapi%2Fauth%2F%5B...nextauth%5D%2Froute&appPaths=&pagePath=private-next-app-dir%2Fapi%2Fauth%2F%5B...nextauth%5D%2Froute.js&appDir=D%3A%5CAleyacare%20Clone%5Chomecare-pro%5Csrc%5Capp&pageExtensions=tsx&pageExtensions=ts&pageExtensions=jsx&pageExtensions=js&rootDir=D%3A%5CAleyacare%20Clone%5Chomecare-pro&isDev=true&tsconfigPath=tsconfig.json&basePath=&assetPrefix=&nextConfigOutput=&preferredRegion=&middlewareConfig=e30%3D! (D:\Aleyacare Clone\homecare-pro\.next\server\app\api\auth\[...nextauth]\route.js:182:1)
+    at __webpack_require__ (D:\Aleyacare Clone\homecare-pro\.next\server\webpack-runtime.js:33:43)
+    at __webpack_exec__ (D:\Aleyacare Clone\homecare-pro\.next\server\app\api\auth\[...nextauth]\route.js:232:39)
+    at D:\Aleyacare Clone\homecare-pro\.next\server\app\api\auth\[...nextauth]\route.js:233:470
+    at __webpack_require__.X (D:\Aleyacare Clone\homecare-pro\.next\server\webpack-runtime.js:168:21)
+    at D:\Aleyacare Clone\homecare-pro\.next\server\app\api\auth\[...nextauth]\route.js:233:47
+    at Object.<anonymous> (D:\Aleyacare Clone\homecare-pro\.next\server\app\api\auth\[...nextauth]\route.js:236:3)
+    at Module._compile (node:internal/modules/cjs/loader:1761:14) {
+  type: 'TypeError'
+}
+ ⨯ Failed to generate static paths for /api/auth/[...nextauth]:
+TypeError: Cannot read properties of undefined (reading 'call')
+    at __webpack_require__ (D:\Aleyacare Clone\homecare-pro\.next\server\webpack-runtime.js:33:43)
+    at eval (webpack-internal:///(rsc)/./node_modules/next/dist/build/webpack/loaders/next-app-loader.js?name=app%2Fapi%2Fauth%2F%5B...nextauth%5D%2Froute&page=%2Fapi%2Fauth%2F%5B...nextauth%5D%2Froute&appPaths=&pagePath=private-next-app-dir%2Fapi%2Fauth%2F%5B...nextauth%5D%2Froute.js&appDir=D%3A%5CAleyacare%20Clone%5Chomecare-pro%5Csrc%5Capp&pageExtensions=tsx&pageExtensions=ts&pageExtensions=jsx&pageExtensions=js&rootDir=D%3A%5CAleyacare%20Clone%5Chomecare-pro&isDev=true&tsconfigPath=tsconfig.json&basePath=&assetPrefix=&nextConfigOutput=&preferredRegion=&middlewareConfig=e30%3D!:10:121)
+    at (rsc)/./node_modules/next/dist/build/webpack/loaders/next-app-loader.js?name=app%2Fapi%2Fauth%2F%5B...nextauth%5D%2Froute&page=%2Fapi%2Fauth%2F%5B...nextauth%5D%2Froute&appPaths=&pagePath=private-next-app-dir%2Fapi%2Fauth%2F%5B...nextauth%5D%2Froute.js&appDir=D%3A%5CAleyacare%20Clone%5Chomecare-pro%5Csrc%5Capp&pageExtensions=tsx&pageExtensions=ts&pageExtensions=jsx&pageExtensions=js&rootDir=D%3A%5CAleyacare%20Clone%5Chomecare-pro&isDev=true&tsconfigPath=tsconfig.json&basePath=&assetPrefix=&nextConfigOutput=&preferredRegion=&middlewareConfig=e30%3D! (D:\Aleyacare Clone\homecare-pro\.next\server\app\api\auth\[...nextauth]\route.js:182:1)
+    at __webpack_require__ (D:\Aleyacare Clone\homecare-pro\.next\server\webpack-runtime.js:33:43)
+    at __webpack_exec__ (D:\Aleyacare Clone\homecare-pro\.next\server\app\api\auth\[...nextauth]\route.js:232:39)
+    at D:\Aleyacare Clone\homecare-pro\.next\server\app\api\auth\[...nextauth]\route.js:233:470
+    at __webpack_require__.X (D:\Aleyacare Clone\homecare-pro\.next\server\webpack-runtime.js:168:21)
+    at D:\Aleyacare Clone\homecare-pro\.next\server\app\api\auth\[...nextauth]\route.js:233:47
+    at Object.<anonymous> (D:\Aleyacare Clone\homecare-pro\.next\server\app\api\auth\[...nextauth]\route.js:236:3)
+    at Module._compile (node:internal/modules/cjs/loader:1761:14) {
+  type: 'TypeError'
+}
+ ⨯ Failed to generate static paths for /api/clients/[id]:
+TypeError: Cannot read properties of undefined (reading 'call')
+    at __webpack_require__ (D:\Aleyacare Clone\homecare-pro\.next\server\webpack-runtime.js:33:43)
+    at eval (webpack-internal:///(rsc)/./node_modules/next/dist/build/webpack/loaders/next-app-loader.js?name=app%2Fapi%2Fclients%2F%5Bid%5D%2Froute&page=%2Fapi%2Fclients%2F%5Bid%5D%2Froute&appPaths=&pagePath=private-next-app-dir%2Fapi%2Fclients%2F%5Bid%5D%2Froute.js&appDir=D%3A%5CAleyacare%20Clone%5Chomecare-pro%5Csrc%5Capp&pageExtensions=tsx&pageExtensions=ts&pageExtensions=jsx&pageExtensions=js&rootDir=D%3A%5CAleyacare%20Clone%5Chomecare-pro&isDev=true&tsconfigPath=tsconfig.json&basePath=&assetPrefix=&nextConfigOutput=&preferredRegion=&middlewareConfig=e30%3D!:10:121)
+    at (rsc)/./node_modules/next/dist/build/webpack/loaders/next-app-loader.js?name=app%2Fapi%2Fclients%2F%5Bid%5D%2Froute&page=%2Fapi%2Fclients%2F%5Bid%5D%2Froute&appPaths=&pagePath=private-next-app-dir%2Fapi%2Fclients%2F%5Bid%5D%2Froute.js&appDir=D%3A%5CAleyacare%20Clone%5Chomecare-pro%5Csrc%5Capp&pageExtensions=tsx&pageExtensions=ts&pageExtensions=jsx&pageExtensions=js&rootDir=D%3A%5CAleyacare%20Clone%5Chomecare-pro&isDev=true&tsconfigPath=tsconfig.json&basePath=&assetPrefix=&nextConfigOutput=&preferredRegion=&middlewareConfig=e30%3D! (D:\Aleyacare Clone\homecare-pro\.next\server\app\api\clients\[id]\route.js:182:1)
+    at __webpack_require__ (D:\Aleyacare Clone\homecare-pro\.next\server\webpack-runtime.js:33:43)
+    at __webpack_exec__ (D:\Aleyacare Clone\homecare-pro\.next\server\app\api\clients\[id]\route.js:232:39)
+    at D:\Aleyacare Clone\homecare-pro\.next\server\app\api\clients\[id]\route.js:233:470
+    at __webpack_require__.X (D:\Aleyacare Clone\homecare-pro\.next\server\webpack-runtime.js:168:21)
+    at D:\Aleyacare Clone\homecare-pro\.next\server\app\api\clients\[id]\route.js:233:47
+    at Object.<anonymous> (D:\Aleyacare Clone\homecare-pro\.next\server\app\api\clients\[id]\route.js:236:3)
+    at Module._compile (node:internal/modules/cjs/loader:1761:14) {
+  type: 'TypeError'
+}
+ ⨯ Failed to generate static paths for /api/clients/[id]:
+TypeError: Cannot read properties of undefined (reading 'call')
+    at __webpack_require__ (D:\Aleyacare Clone\homecare-pro\.next\server\webpack-runtime.js:33:43)
+    at eval (webpack-internal:///(rsc)/./node_modules/next/dist/build/webpack/loaders/next-app-loader.js?name=app%2Fapi%2Fclients%2F%5Bid%5D%2Froute&page=%2Fapi%2Fclients%2F%5Bid%5D%2Froute&appPaths=&pagePath=private-next-app-dir%2Fapi%2Fclients%2F%5Bid%5D%2Froute.js&appDir=D%3A%5CAleyacare%20Clone%5Chomecare-pro%5Csrc%5Capp&pageExtensions=tsx&pageExtensions=ts&pageExtensions=jsx&pageExtensions=js&rootDir=D%3A%5CAleyacare%20Clone%5Chomecare-pro&isDev=true&tsconfigPath=tsconfig.json&basePath=&assetPrefix=&nextConfigOutput=&preferredRegion=&middlewareConfig=e30%3D!:10:121)
+    at (rsc)/./node_modules/next/dist/build/webpack/loaders/next-app-loader.js?name=app%2Fapi%2Fclients%2F%5Bid%5D%2Froute&page=%2Fapi%2Fclients%2F%5Bid%5D%2Froute&appPaths=&pagePath=private-next-app-dir%2Fapi%2Fclients%2F%5Bid%5D%2Froute.js&appDir=D%3A%5CAleyacare%20Clone%5Chomecare-pro%5Csrc%5Capp&pageExtensions=tsx&pageExtensions=ts&pageExtensions=jsx&pageExtensions=js&rootDir=D%3A%5CAleyacare%20Clone%5Chomecare-pro&isDev=true&tsconfigPath=tsconfig.json&basePath=&assetPrefix=&nextConfigOutput=&preferredRegion=&middlewareConfig=e30%3D! (D:\Aleyacare Clone\homecare-pro\.next\server\app\api\clients\[id]\route.js:182:1)
+    at __webpack_require__ (D:\Aleyacare Clone\homecare-pro\.next\server\webpack-runtime.js:33:43)
+    at __webpack_exec__ (D:\Aleyacare Clone\homecare-pro\.next\server\app\api\clients\[id]\route.js:232:39)
+    at D:\Aleyacare Clone\homecare-pro\.next\server\app\api\clients\[id]\route.js:233:470
+    at __webpack_require__.X (D:\Aleyacare Clone\homecare-pro\.next\server\webpack-runtime.js:168:21)
+    at D:\Aleyacare Clone\homecare-pro\.next\server\app\api\clients\[id]\route.js:233:47
+    at Object.<anonymous> (D:\Aleyacare Clone\homecare-pro\.next\server\app\api\clients\[id]\route.js:236:3)
+    at Module._compile (node:internal/modules/cjs/loader:1761:14) {
+  type: 'TypeError'
+}
+ ⨯ Failed to generate static paths for /api/visits/[id]:
+TypeError: Cannot read properties of undefined (reading 'call')
+    at __webpack_require__ (D:\Aleyacare Clone\homecare-pro\.next\server\webpack-runtime.js:33:43)
+    at eval (webpack-internal:///(rsc)/./node_modules/next/dist/build/webpack/loaders/next-app-loader.js?name=app%2Fapi%2Fvisits%2F%5Bid%5D%2Froute&page=%2Fapi%2Fvisits%2F%5Bid%5D%2Froute&appPaths=&pagePath=private-next-app-dir%2Fapi%2Fvisits%2F%5Bid%5D%2Froute.js&appDir=D%3A%5CAleyacare%20Clone%5Chomecare-pro%5Csrc%5Capp&pageExtensions=tsx&pageExtensions=ts&pageExtensions=jsx&pageExtensions=js&rootDir=D%3A%5CAleyacare%20Clone%5Chomecare-pro&isDev=true&tsconfigPath=tsconfig.json&basePath=&assetPrefix=&nextConfigOutput=&preferredRegion=&middlewareConfig=e30%3D!:10:121)
+    at (rsc)/./node_modules/next/dist/build/webpack/loaders/next-app-loader.js?name=app%2Fapi%2Fvisits%2F%5Bid%5D%2Froute&page=%2Fapi%2Fvisits%2F%5Bid%5D%2Froute&appPaths=&pagePath=private-next-app-dir%2Fapi%2Fvisits%2F%5Bid%5D%2Froute.js&appDir=D%3A%5CAleyacare%20Clone%5Chomecare-pro%5Csrc%5Capp&pageExtensions=tsx&pageExtensions=ts&pageExtensions=jsx&pageExtensions=js&rootDir=D%3A%5CAleyacare%20Clone%5Chomecare-pro&isDev=true&tsconfigPath=tsconfig.json&basePath=&assetPrefix=&nextConfigOutput=&preferredRegion=&middlewareConfig=e30%3D! (D:\Aleyacare Clone\homecare-pro\.next\server\app\api\visits\[id]\route.js:182:1)
+    at __webpack_require__ (D:\Aleyacare Clone\homecare-pro\.next\server\webpack-runtime.js:33:43)
+    at __webpack_exec__ (D:\Aleyacare Clone\homecare-pro\.next\server\app\api\visits\[id]\route.js:262:39)
+    at D:\Aleyacare Clone\homecare-pro\.next\server\app\api\visits\[id]\route.js:263:470
+    at __webpack_require__.X (D:\Aleyacare Clone\homecare-pro\.next\server\webpack-runtime.js:168:21)
+    at D:\Aleyacare Clone\homecare-pro\.next\server\app\api\visits\[id]\route.js:263:47
+    at Object.<anonymous> (D:\Aleyacare Clone\homecare-pro\.next\server\app\api\visits\[id]\route.js:266:3)
+    at Module._compile (node:internal/modules/cjs/loader:1761:14) {
+  type: 'TypeError'
+}
+ ⨯ Failed to generate static paths for /api/clients/[id]/visits:
+TypeError: Cannot read properties of undefined (reading 'call')
+    at __webpack_require__ (D:\Aleyacare Clone\homecare-pro\.next\server\webpack-runtime.js:33:43)
+    at eval (webpack-internal:///(rsc)/./node_modules/next/dist/build/webpack/loaders/next-app-loader.js?name=app%2Fapi%2Fclients%2F%5Bid%5D%2Fvisits%2Froute&page=%2Fapi%2Fclients%2F%5Bid%5D%2Fvisits%2Froute&appPaths=&pagePath=private-next-app-dir%2Fapi%2Fclients%2F%5Bid%5D%2Fvisits%2Froute.js&appDir=D%3A%5CAleyacare%20Clone%5Chomecare-pro%5Csrc%5Capp&pageExtensions=tsx&pageExtensions=ts&pageExtensions=jsx&pageExtensions=js&rootDir=D%3A%5CAleyacare%20Clone%5Chomecare-pro&isDev=true&tsconfigPath=tsconfig.json&basePath=&assetPrefix=&nextConfigOutput=&preferredRegion=&middlewareConfig=e30%3D!:10:121)
+    at (rsc)/./node_modules/next/dist/build/webpack/loaders/next-app-loader.js?name=app%2Fapi%2Fclients%2F%5Bid%5D%2Fvisits%2Froute&page=%2Fapi%2Fclients%2F%5Bid%5D%2Fvisits%2Froute&appPaths=&pagePath=private-next-app-dir%2Fapi%2Fclients%2F%5Bid%5D%2Fvisits%2Froute.js&appDir=D%3A%5CAleyacare%20Clone%5Chomecare-pro%5Csrc%5Capp&pageExtensions=tsx&pageExtensions=ts&pageExtensions=jsx&pageExtensions=js&rootDir=D%3A%5CAleyacare%20Clone%5Chomecare-pro&isDev=true&tsconfigPath=tsconfig.json&basePath=&assetPrefix=&nextConfigOutput=&preferredRegion=&middlewareConfig=e30%3D! (D:\Aleyacare Clone\homecare-pro\.next\server\app\api\clients\[id]\visits\route.js:182:1)
+    at __webpack_require__ (D:\Aleyacare Clone\homecare-pro\.next\server\webpack-runtime.js:33:43)
+    at __webpack_exec__ (D:\Aleyacare Clone\homecare-pro\.next\server\app\api\clients\[id]\visits\route.js:222:39)
+    at D:\Aleyacare Clone\homecare-pro\.next\server\app\api\clients\[id]\visits\route.js:223:470
+    at __webpack_require__.X (D:\Aleyacare Clone\homecare-pro\.next\server\webpack-runtime.js:168:21)
+    at D:\Aleyacare Clone\homecare-pro\.next\server\app\api\clients\[id]\visits\route.js:223:47
+    at Object.<anonymous> (D:\Aleyacare Clone\homecare-pro\.next\server\app\api\clients\[id]\visits\route.js:226:3)
+    at Module._compile (node:internal/modules/cjs/loader:1761:14) {
+  type: 'TypeError'
+}
+ ⨯ Failed to generate static paths for /api/clients/[id]/visits:
+TypeError: Cannot read properties of undefined (reading 'call')
+    at __webpack_require__ (D:\Aleyacare Clone\homecare-pro\.next\server\webpack-runtime.js:33:43)
+    at eval (webpack-internal:///(rsc)/./node_modules/next/dist/build/webpack/loaders/next-app-loader.js?name=app%2Fapi%2Fclients%2F%5Bid%5D%2Fvisits%2Froute&page=%2Fapi%2Fclients%2F%5Bid%5D%2Fvisits%2Froute&appPaths=&pagePath=private-next-app-dir%2Fapi%2Fclients%2F%5Bid%5D%2Fvisits%2Froute.js&appDir=D%3A%5CAleyacare%20Clone%5Chomecare-pro%5Csrc%5Capp&pageExtensions=tsx&pageExtensions=ts&pageExtensions=jsx&pageExtensions=js&rootDir=D%3A%5CAleyacare%20Clone%5Chomecare-pro&isDev=true&tsconfigPath=tsconfig.json&basePath=&assetPrefix=&nextConfigOutput=&preferredRegion=&middlewareConfig=e30%3D!:10:121)
+    at (rsc)/./node_modules/next/dist/build/webpack/loaders/next-app-loader.js?name=app%2Fapi%2Fclients%2F%5Bid%5D%2Fvisits%2Froute&page=%2Fapi%2Fclients%2F%5Bid%5D%2Fvisits%2Froute&appPaths=&pagePath=private-next-app-dir%2Fapi%2Fclients%2F%5Bid%5D%2Fvisits%2Froute.js&appDir=D%3A%5CAleyacare%20Clone%5Chomecare-pro%5Csrc%5Capp&pageExtensions=tsx&pageExtensions=ts&pageExtensions=jsx&pageExtensions=js&rootDir=D%3A%5CAleyacare%20Clone%5Chomecare-pro&isDev=true&tsconfigPath=tsconfig.json&basePath=&assetPrefix=&nextConfigOutput=&preferredRegion=&middlewareConfig=e30%3D! (D:\Aleyacare Clone\homecare-pro\.next\server\app\api\clients\[id]\visits\route.js:182:1)
+    at __webpack_require__ (D:\Aleyacare Clone\homecare-pro\.next\server\webpack-runtime.js:33:43)
+    at __webpack_exec__ (D:\Aleyacare Clone\homecare-pro\.next\server\app\api\clients\[id]\visits\route.js:222:39)
+    at D:\Aleyacare Clone\homecare-pro\.next\server\app\api\clients\[id]\visits\route.js:223:470
+    at __webpack_require__.X (D:\Aleyacare Clone\homecare-pro\.next\server\webpack-runtime.js:168:21)
+    at D:\Aleyacare Clone\homecare-pro\.next\server\app\api\clients\[id]\visits\route.js:223:47
+    at Object.<anonymous> (D:\Aleyacare Clone\homecare-pro\.next\server\app\api\clients\[id]\visits\route.js:226:3)
+    at Module._compile (node:internal/modules/cjs/loader:1761:14) {
+  type: 'TypeError'
+}
+ ⨯ TypeError: Cannot read properties of undefined (reading 'call')
+    at __webpack_require__ (D:\Aleyacare Clone\homecare-pro\.next\server\webpack-runtime.js:33:43)
+    at eval (webpack-internal:///(rsc)/./node_modules/next/dist/build/webpack/loaders/next-app-loader.js?name=app%2Fapi%2Fvisits%2F%5Bid%5D%2Froute&page=%2Fapi%2Fvisits%2F%5Bid%5D%2Froute&appPaths=&pagePath=private-next-app-dir%2Fapi%2Fvisits%2F%5Bid%5D%2Froute.js&appDir=D%3A%5CAleyacare%20Clone%5Chomecare-pro%5Csrc%5Capp&pageExtensions=tsx&pageExtensions=ts&pageExtensions=jsx&pageExtensions=js&rootDir=D%3A%5CAleyacare%20Clone%5Chomecare-pro&isDev=true&tsconfigPath=tsconfig.json&basePath=&assetPrefix=&nextConfigOutput=&preferredRegion=&middlewareConfig=e30%3D!:10:121)
+    at (rsc)/./node_modules/next/dist/build/webpack/loaders/next-app-loader.js?name=app%2Fapi%2Fvisits%2F%5Bid%5D%2Froute&page=%2Fapi%2Fvisits%2F%5Bid%5D%2Froute&appPaths=&pagePath=private-next-app-dir%2Fapi%2Fvisits%2F%5Bid%5D%2Froute.js&appDir=D%3A%5CAleyacare%20Clone%5Chomecare-pro%5Csrc%5Capp&pageExtensions=tsx&pageExtensions=ts&pageExtensions=jsx&pageExtensions=js&rootDir=D%3A%5CAleyacare%20Clone%5Chomecare-pro&isDev=true&tsconfigPath=tsconfig.json&basePath=&assetPrefix=&nextConfigOutput=&preferredRegion=&middlewareConfig=e30%3D! (D:\Aleyacare Clone\homecare-pro\.next\server\app\api\visits\[id]\route.js:182:1)
+    at __webpack_require__ (D:\Aleyacare Clone\homecare-pro\.next\server\webpack-runtime.js:33:43)
+    at __webpack_exec__ (D:\Aleyacare Clone\homecare-pro\.next\server\app\api\visits\[id]\route.js:262:39)
+    at D:\Aleyacare Clone\homecare-pro\.next\server\app\api\visits\[id]\route.js:263:470
+    at __webpack_require__.X (D:\Aleyacare Clone\homecare-pro\.next\server\webpack-runtime.js:168:21)
+    at D:\Aleyacare Clone\homecare-pro\.next\server\app\api\visits\[id]\route.js:263:47
+    at Object.<anonymous> (D:\Aleyacare Clone\homecare-pro\.next\server\app\api\visits\[id]\route.js:266:3)
+    at Module._compile (node:internal/modules/cjs/loader:1761:14) {
+  type: 'TypeError',
+  page: '/api/visits/1d949af8-486c-4660-88d5-3e5817663c95'
+}
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+^C^C

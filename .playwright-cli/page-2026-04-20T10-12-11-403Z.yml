@@ -1,0 +1,306 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e22]:
+    - complementary [ref=e23]:
+      - generic [ref=e24]:
+        - generic [ref=e25] [cursor=pointer]:
+          - generic [ref=e27]: TCHS
+          - generic [ref=e28]: Together Care Health Services
+        - button "Collapse sidebar" [ref=e29] [cursor=pointer]:
+          - img [ref=e30]
+      - navigation [ref=e33]:
+        - generic [ref=e34]:
+          - generic [ref=e35]: Main Menu
+          - link "Dashboard" [ref=e36] [cursor=pointer]:
+            - /url: /dashboard
+            - button "Dashboard" [ref=e37]:
+              - img [ref=e38]
+              - generic [ref=e41]: Dashboard
+          - link "Clients" [ref=e42] [cursor=pointer]:
+            - /url: /clients
+            - button "Clients" [ref=e43]:
+              - img [ref=e44]
+              - generic [ref=e49]: Clients
+          - link "Staff" [ref=e50] [cursor=pointer]:
+            - /url: /staff
+            - button "Staff" [ref=e51]:
+              - img [ref=e52]
+              - generic [ref=e55]: Staff
+          - link "Care Delivery" [ref=e56] [cursor=pointer]:
+            - /url: /care-delivery
+            - button "Care Delivery" [ref=e57]:
+              - img [ref=e58]
+              - generic [ref=e62]: Care Delivery
+          - link "Scheduling" [ref=e63] [cursor=pointer]:
+            - /url: /scheduling
+            - button "Scheduling" [ref=e64]:
+              - img [ref=e65]
+              - generic [ref=e67]: Scheduling
+          - link "Care Plans" [ref=e68] [cursor=pointer]:
+            - /url: /care-plans
+            - button "Care Plans" [ref=e69]:
+              - img [ref=e70]
+              - generic [ref=e73]: Care Plans
+          - link "Billing" [ref=e74] [cursor=pointer]:
+            - /url: /billing
+            - button "Billing" [ref=e75]:
+              - img [ref=e76]
+              - generic [ref=e79]: Billing
+          - link "Payroll" [ref=e80] [cursor=pointer]:
+            - /url: /payroll
+            - button "Payroll" [ref=e81]:
+              - img [ref=e82]
+              - generic [ref=e85]: Payroll
+          - link "Reports" [ref=e86] [cursor=pointer]:
+            - /url: /reports
+            - button "Reports" [ref=e87]:
+              - img [ref=e88]
+              - generic [ref=e91]: Reports
+          - link "Notifications" [ref=e92] [cursor=pointer]:
+            - /url: /notifications
+            - button "Notifications" [ref=e93]:
+              - img [ref=e94]
+              - generic [ref=e97]: Notifications
+        - generic [ref=e98]:
+          - generic [ref=e99]: Other
+          - link "Settings" [ref=e100] [cursor=pointer]:
+            - /url: /settings
+            - button "Settings" [ref=e101]:
+              - img [ref=e102]
+              - generic [ref=e105]: Settings
+      - generic [ref=e106]:
+        - generic [ref=e107]:
+          - generic [ref=e108]: MT
+          - generic [ref=e109]:
+            - generic [ref=e110]: Michael Thompson
+            - generic [ref=e111]: Super Admin
+        - button "Logout" [ref=e112] [cursor=pointer]:
+          - img [ref=e113]
+          - generic [ref=e116]: Logout
+    - generic [ref=e117]:
+      - banner [ref=e118]:
+        - navigation "Breadcrumb" [ref=e120]:
+          - link [ref=e121] [cursor=pointer]:
+            - /url: /dashboard
+            - img [ref=e122]
+          - generic [ref=e125]: Dashboard
+        - generic [ref=e126]:
+          - generic [ref=e127]:
+            - img
+            - textbox "Search..." [ref=e128]
+          - generic [ref=e129]:
+            - button "Notifications" [ref=e131] [cursor=pointer]:
+              - img [ref=e132]
+            - button "User menu" [ref=e136] [cursor=pointer]:
+              - generic [ref=e137]: MT
+              - generic [ref=e138]: Michael
+      - main [ref=e139]:
+        - generic [ref=e140]:
+          - generic [ref=e141]:
+            - heading "Dashboard" [level=1] [ref=e142]
+            - paragraph [ref=e143]: Welcome back! Here's what's happening with your clients today.
+          - generic [ref=e144]:
+            - generic [ref=e147]:
+              - generic [ref=e148]:
+                - img [ref=e150]
+                - generic [ref=e155]:
+                  - paragraph [ref=e156]: Total Clients
+                  - heading "10" [level=3] [ref=e157]
+              - generic [ref=e158]:
+                - paragraph [ref=e159]: ↑ 0%
+                - paragraph [ref=e160]: vs last month
+            - generic [ref=e163]:
+              - generic [ref=e164]:
+                - img [ref=e166]
+                - generic [ref=e169]:
+                  - paragraph [ref=e170]: Active Staff
+                  - heading "5" [level=3] [ref=e171]
+              - generic [ref=e172]:
+                - paragraph [ref=e173]: ↑ 0%
+                - paragraph [ref=e174]: vs last month
+            - generic [ref=e177]:
+              - generic [ref=e178]:
+                - img [ref=e180]
+                - generic [ref=e182]:
+                  - paragraph [ref=e183]: Scheduled Visits Today
+                  - heading "0" [level=3] [ref=e184]
+              - generic [ref=e185]:
+                - paragraph [ref=e186]: ↑ 0%
+                - paragraph [ref=e187]: vs last month
+            - generic [ref=e190]:
+              - generic [ref=e191]:
+                - img [ref=e193]
+                - generic [ref=e195]:
+                  - paragraph [ref=e196]: Revenue This Month
+                  - heading "$1,765.00" [level=3] [ref=e197]
+              - generic [ref=e198]:
+                - paragraph [ref=e199]: ↑ 0%
+                - paragraph [ref=e200]: vs last month
+          - generic [ref=e201]:
+            - generic [ref=e203]:
+              - heading "Weekly Visits" [level=3] [ref=e204]
+              - generic [ref=e207]:
+                - list [ref=e209]:
+                  - listitem [ref=e210]:
+                    - img "completed legend icon" [ref=e211]
+                    - text: completed
+                  - listitem [ref=e213]:
+                    - img "scheduled legend icon" [ref=e214]
+                    - text: scheduled
+                - application [ref=e216]:
+                  - generic [ref=e221]:
+                    - generic [ref=e222]:
+                      - generic [ref=e224]: Apr 14
+                      - generic [ref=e226]: Apr 15
+                      - generic [ref=e228]: Apr 16
+                      - generic [ref=e230]: Apr 17
+                      - generic [ref=e232]: Apr 18
+                      - generic [ref=e234]: Apr 19
+                      - generic [ref=e236]: Apr 20
+                    - generic [ref=e237]:
+                      - generic [ref=e239]: "0"
+                      - generic [ref=e241]: "1"
+                      - generic [ref=e243]: "2"
+                      - generic [ref=e245]: "3"
+                      - generic [ref=e247]: "4"
+            - generic [ref=e249]:
+              - heading "Monthly Revenue" [level=3] [ref=e250]
+              - generic [ref=e253]:
+                - list [ref=e255]:
+                  - listitem [ref=e256]:
+                    - img "paid legend icon" [ref=e257]
+                    - text: paid
+                  - listitem [ref=e259]:
+                    - img "pending legend icon" [ref=e260]
+                    - text: pending
+                - application [ref=e262]:
+                  - generic [ref=e280]:
+                    - generic [ref=e281]:
+                      - generic [ref=e283]: Nov 2025
+                      - generic [ref=e285]: Dec 2025
+                      - generic [ref=e287]: Jan 2026
+                      - generic [ref=e289]: Feb 2026
+                      - generic [ref=e291]: Mar 2026
+                      - generic [ref=e293]: Apr 2026
+                    - generic [ref=e294]:
+                      - generic [ref=e296]: $0
+                      - generic [ref=e298]: $350
+                      - generic [ref=e300]: $700
+                      - generic [ref=e302]: $1050
+                      - generic [ref=e304]: $1400
+          - generic [ref=e305]:
+            - generic [ref=e307]:
+              - generic [ref=e308]:
+                - heading "Upcoming Shifts" [level=3] [ref=e309]
+                - link "View All" [ref=e310] [cursor=pointer]:
+                  - /url: /scheduling
+              - paragraph [ref=e312]: No upcoming shifts scheduled
+            - generic [ref=e314]:
+              - generic [ref=e315]:
+                - heading "Recent Invoices" [level=3] [ref=e316]
+                - link "View All" [ref=e317] [cursor=pointer]:
+                  - /url: /billing
+              - table [ref=e319]:
+                - rowgroup [ref=e320]:
+                  - 'row "Invoice # Client Amount Due Date Status" [ref=e321]':
+                    - 'columnheader "Invoice #" [ref=e322]'
+                    - columnheader "Client" [ref=e323]
+                    - columnheader "Amount" [ref=e324]
+                    - columnheader "Due Date" [ref=e325]
+                    - columnheader "Status" [ref=e326]
+                - rowgroup [ref=e327]:
+                  - row "INV-2024-001 Barbara Collins Apr 15, 2026 $625.00 Feb 15, 2024 PAID" [ref=e328]:
+                    - cell "INV-2024-001" [ref=e329]:
+                      - generic [ref=e330]:
+                        - img [ref=e331]
+                        - generic [ref=e334]: INV-2024-001
+                    - cell "Barbara Collins Apr 15, 2026" [ref=e335]:
+                      - generic [ref=e336]: Barbara Collins
+                      - generic [ref=e337]: Apr 15, 2026
+                    - cell "$625.00" [ref=e338]:
+                      - generic [ref=e339]: $625.00
+                    - cell "Feb 15, 2024" [ref=e340]:
+                      - generic [ref=e341]: Feb 15, 2024
+                    - cell "PAID" [ref=e342]:
+                      - generic [ref=e343]: PAID
+                  - row "INV-2024-002 Charles Brooks Apr 15, 2026 $390.00 Feb 20, 2024 PAID" [ref=e344]:
+                    - cell "INV-2024-002" [ref=e345]:
+                      - generic [ref=e346]:
+                        - img [ref=e347]
+                        - generic [ref=e350]: INV-2024-002
+                    - cell "Charles Brooks Apr 15, 2026" [ref=e351]:
+                      - generic [ref=e352]: Charles Brooks
+                      - generic [ref=e353]: Apr 15, 2026
+                    - cell "$390.00" [ref=e354]:
+                      - generic [ref=e355]: $390.00
+                    - cell "Feb 20, 2024" [ref=e356]:
+                      - generic [ref=e357]: Feb 20, 2024
+                    - cell "PAID" [ref=e358]:
+                      - generic [ref=e359]: PAID
+                  - row "INV-2024-003 Dorothy Patterson Apr 15, 2026 $500.00 Mar 15, 2024 SENT" [ref=e360]:
+                    - cell "INV-2024-003" [ref=e361]:
+                      - generic [ref=e362]:
+                        - img [ref=e363]
+                        - generic [ref=e366]: INV-2024-003
+                    - cell "Dorothy Patterson Apr 15, 2026" [ref=e367]:
+                      - generic [ref=e368]: Dorothy Patterson
+                      - generic [ref=e369]: Apr 15, 2026
+                    - cell "$500.00" [ref=e370]:
+                      - generic [ref=e371]: $500.00
+                    - cell "Mar 15, 2024" [ref=e372]:
+                      - generic [ref=e373]: Mar 15, 2024
+                    - cell "SENT" [ref=e374]:
+                      - generic [ref=e375]: SENT
+                  - row "INV-2024-004 Helen Phillips Apr 15, 2026 $250.00 Mar 20, 2024 SENT" [ref=e376]:
+                    - cell "INV-2024-004" [ref=e377]:
+                      - generic [ref=e378]:
+                        - img [ref=e379]
+                        - generic [ref=e382]: INV-2024-004
+                    - cell "Helen Phillips Apr 15, 2026" [ref=e383]:
+                      - generic [ref=e384]: Helen Phillips
+                      - generic [ref=e385]: Apr 15, 2026
+                    - cell "$250.00" [ref=e386]:
+                      - generic [ref=e387]: $250.00
+                    - cell "Mar 20, 2024" [ref=e388]:
+                      - generic [ref=e389]: Mar 20, 2024
+                    - cell "SENT" [ref=e390]:
+                      - generic [ref=e391]: SENT
+                  - row "INV-2024-005 Joseph Morgan Apr 15, 2026 $625.00 Mar 25, 2024 DRAFT" [ref=e392]:
+                    - cell "INV-2024-005" [ref=e393]:
+                      - generic [ref=e394]:
+                        - img [ref=e395]
+                        - generic [ref=e398]: INV-2024-005
+                    - cell "Joseph Morgan Apr 15, 2026" [ref=e399]:
+                      - generic [ref=e400]: Joseph Morgan
+                      - generic [ref=e401]: Apr 15, 2026
+                    - cell "$625.00" [ref=e402]:
+                      - generic [ref=e403]: $625.00
+                    - cell "Mar 25, 2024" [ref=e404]:
+                      - generic [ref=e405]: Mar 25, 2024
+                    - cell "DRAFT" [ref=e406]:
+                      - generic [ref=e407]: DRAFT
+            - generic [ref=e408]:
+              - generic [ref=e409]:
+                - generic [ref=e410]:
+                  - img [ref=e412]
+                  - generic [ref=e415]:
+                    - heading "Visit Verification" [level=3] [ref=e416]
+                    - paragraph [ref=e417]: Today's EVV Stats
+                - generic [ref=e418]:
+                  - generic [ref=e419]:
+                    - generic [ref=e420]: "0"
+                    - generic [ref=e421]: Verified
+                  - generic [ref=e422]:
+                    - generic [ref=e423]: "0"
+                    - generic [ref=e424]: Unverified
+                  - generic [ref=e425]:
+                    - generic [ref=e426]: 0%
+                    - generic [ref=e427]: Rate
+              - generic [ref=e429]:
+                - generic [ref=e430]:
+                  - heading "Alerts" [level=3] [ref=e431]
+                  - generic [ref=e432]: 0 unread
+                - generic [ref=e433]:
+                  - img [ref=e434]
+                  - paragraph [ref=e437]: No alerts
+  - alert [ref=e4]
+  - generic [ref=e438]: "0"

@@ -1,0 +1,690 @@
+[    1370ms] [WARNING] Unknown option 'eventMargin' @ https://together-care.vercel.app/_next/static/chunks/4827-cdf9e41f340b8015.js:0
+[   31132ms] [WARNING] Unknown option 'eventMargin' @ https://together-care.vercel.app/_next/static/chunks/4827-cdf9e41f340b8015.js:0
+[   46689ms] [WARNING] Unknown option 'eventMargin' @ https://together-care.vercel.app/_next/static/chunks/4827-cdf9e41f340b8015.js:0
+[   56721ms] [WARNING] Unknown option 'eventMargin' @ https://together-care.vercel.app/_next/static/chunks/4827-cdf9e41f340b8015.js:0
+[   84315ms] [WARNING] Unknown option 'eventMargin' @ https://together-care.vercel.app/_next/static/chunks/4827-cdf9e41f340b8015.js:0
+[   94513ms] [WARNING] Unknown option 'eventMargin' @ https://together-care.vercel.app/_next/static/chunks/4827-cdf9e41f340b8015.js:0
+[  146448ms] [WARNING] Form submission canceled because the form is not connected @ https://together-care.vercel.app/scheduling:0
+[  252795ms] [ERROR] Failed to load resource: the server responded with a status of 409 () @ https://together-care.vercel.app/api/visits:0
+[13291054ms] [ERROR] Failed to load resource: the server responded with a status of 500 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[13321165ms] [ERROR] Failed to load resource: the server responded with a status of 500 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[13351022ms] [ERROR] Failed to load resource: the server responded with a status of 500 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[13381686ms] [ERROR] Failed to load resource: the server responded with a status of 500 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[13411664ms] [ERROR] Failed to load resource: the server responded with a status of 500 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[13441014ms] [ERROR] Failed to load resource: the server responded with a status of 500 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[13501149ms] [ERROR] Failed to load resource: the server responded with a status of 500 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[13531008ms] [ERROR] Failed to load resource: the server responded with a status of 500 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[13561521ms] [ERROR] Failed to load resource: the server responded with a status of 500 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[13591660ms] [ERROR] Failed to load resource: the server responded with a status of 500 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[15450560ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://together-care.vercel.app/api/notifications/unread-count:0
+[15450560ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:9607
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:10442 @ https://together-care.vercel.app/_next/static/chunks/2117-f1755bcc7d3f607d.js:0
+[16229853ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://together-care.vercel.app/api/notifications/unread-count:0
+[16229853ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:9607
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:10442 @ https://together-care.vercel.app/_next/static/chunks/2117-f1755bcc7d3f607d.js:0
+[18273563ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://together-care.vercel.app/api/notifications/unread-count:0
+[18273563ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:9607
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:10442 @ https://together-care.vercel.app/_next/static/chunks/2117-f1755bcc7d3f607d.js:0
+[18318753ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://together-care.vercel.app/api/notifications/unread-count:0
+[18318753ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:9607
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:10442 @ https://together-care.vercel.app/_next/static/chunks/2117-f1755bcc7d3f607d.js:0
+[18450559ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://together-care.vercel.app/api/notifications/unread-count:0
+[18450559ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:9607
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:10442 @ https://together-care.vercel.app/_next/static/chunks/2117-f1755bcc7d3f607d.js:0
+[18480565ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://together-care.vercel.app/api/notifications/unread-count:0
+[18480565ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:9607
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:10442 @ https://together-care.vercel.app/_next/static/chunks/2117-f1755bcc7d3f607d.js:0
+[18510562ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://together-care.vercel.app/api/notifications/unread-count:0
+[18510562ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:9607
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:10442 @ https://together-care.vercel.app/_next/static/chunks/2117-f1755bcc7d3f607d.js:0
+[18540559ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://together-care.vercel.app/api/notifications/unread-count:0
+[18540559ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:9607
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:10442 @ https://together-care.vercel.app/_next/static/chunks/2117-f1755bcc7d3f607d.js:0
+[18570555ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://together-care.vercel.app/api/notifications/unread-count:0
+[18570555ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:9607
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:10442 @ https://together-care.vercel.app/_next/static/chunks/2117-f1755bcc7d3f607d.js:0
+[18600554ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://together-care.vercel.app/api/notifications/unread-count:0
+[18600554ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:9607
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:10442 @ https://together-care.vercel.app/_next/static/chunks/2117-f1755bcc7d3f607d.js:0
+[18630556ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://together-care.vercel.app/api/notifications/unread-count:0
+[18630557ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:9607
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:10442 @ https://together-care.vercel.app/_next/static/chunks/2117-f1755bcc7d3f607d.js:0
+[18660557ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://together-care.vercel.app/api/notifications/unread-count:0
+[18660557ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:9607
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:10442 @ https://together-care.vercel.app/_next/static/chunks/2117-f1755bcc7d3f607d.js:0
+[18690556ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://together-care.vercel.app/api/notifications/unread-count:0
+[18690556ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:9607
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:10442 @ https://together-care.vercel.app/_next/static/chunks/2117-f1755bcc7d3f607d.js:0
+[18720559ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://together-care.vercel.app/api/notifications/unread-count:0
+[18720559ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:9607
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:10442 @ https://together-care.vercel.app/_next/static/chunks/2117-f1755bcc7d3f607d.js:0
+[18756540ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://together-care.vercel.app/api/notifications/unread-count:0
+[18756540ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:9607
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:10442 @ https://together-care.vercel.app/_next/static/chunks/2117-f1755bcc7d3f607d.js:0
+[18803800ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://together-care.vercel.app/api/notifications/unread-count:0
+[18803800ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:9607
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:10442 @ https://together-care.vercel.app/_next/static/chunks/2117-f1755bcc7d3f607d.js:0
+[20190562ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://together-care.vercel.app/api/notifications/unread-count:0
+[20190562ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:9607
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:10442 @ https://together-care.vercel.app/_next/static/chunks/2117-f1755bcc7d3f607d.js:0
+[20220553ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://together-care.vercel.app/api/notifications/unread-count:0
+[20220553ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:9607
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:10442 @ https://together-care.vercel.app/_next/static/chunks/2117-f1755bcc7d3f607d.js:0
+[20250559ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://together-care.vercel.app/api/notifications/unread-count:0
+[20250559ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:9607
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:10442 @ https://together-care.vercel.app/_next/static/chunks/2117-f1755bcc7d3f607d.js:0
+[20281566ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://together-care.vercel.app/api/notifications/unread-count:0
+[20281566ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:9607
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:10442 @ https://together-care.vercel.app/_next/static/chunks/2117-f1755bcc7d3f607d.js:0
+[20339793ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://together-care.vercel.app/api/notifications/unread-count:0
+[20339793ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:9607
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:10442 @ https://together-care.vercel.app/_next/static/chunks/2117-f1755bcc7d3f607d.js:0
+[22140552ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://together-care.vercel.app/api/notifications/unread-count:0
+[22140552ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:9607
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:10442 @ https://together-care.vercel.app/_next/static/chunks/2117-f1755bcc7d3f607d.js:0
+[22170553ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://together-care.vercel.app/api/notifications/unread-count:0
+[22170553ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:9607
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:10442 @ https://together-care.vercel.app/_next/static/chunks/2117-f1755bcc7d3f607d.js:0
+[22200552ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://together-care.vercel.app/api/notifications/unread-count:0
+[22200552ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:9607
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:10442 @ https://together-care.vercel.app/_next/static/chunks/2117-f1755bcc7d3f607d.js:0
+[22230562ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://together-care.vercel.app/api/notifications/unread-count:0
+[22230562ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:9607
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:10442 @ https://together-care.vercel.app/_next/static/chunks/2117-f1755bcc7d3f607d.js:0
+[22260557ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://together-care.vercel.app/api/notifications/unread-count:0
+[22260557ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:9607
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:10442 @ https://together-care.vercel.app/_next/static/chunks/2117-f1755bcc7d3f607d.js:0
+[22290559ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://together-care.vercel.app/api/notifications/unread-count:0
+[22290559ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:9607
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:10442 @ https://together-care.vercel.app/_next/static/chunks/2117-f1755bcc7d3f607d.js:0
+[22320550ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://together-care.vercel.app/api/notifications/unread-count:0
+[22320550ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:9607
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:10442 @ https://together-care.vercel.app/_next/static/chunks/2117-f1755bcc7d3f607d.js:0
+[22350556ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://together-care.vercel.app/api/notifications/unread-count:0
+[22350556ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:9607
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:10442 @ https://together-care.vercel.app/_next/static/chunks/2117-f1755bcc7d3f607d.js:0
+[22380554ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://together-care.vercel.app/api/notifications/unread-count:0
+[22380554ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:9607
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:10442 @ https://together-care.vercel.app/_next/static/chunks/2117-f1755bcc7d3f607d.js:0
+[22410553ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://together-care.vercel.app/api/notifications/unread-count:0
+[22410553ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:9607
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:10442 @ https://together-care.vercel.app/_next/static/chunks/2117-f1755bcc7d3f607d.js:0
+[22440559ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://together-care.vercel.app/api/notifications/unread-count:0
+[22440559ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:9607
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:10442 @ https://together-care.vercel.app/_next/static/chunks/2117-f1755bcc7d3f607d.js:0
+[22470555ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://together-care.vercel.app/api/notifications/unread-count:0
+[22470555ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:9607
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:10442 @ https://together-care.vercel.app/_next/static/chunks/2117-f1755bcc7d3f607d.js:0
+[22500552ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://together-care.vercel.app/api/notifications/unread-count:0
+[22500552ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:9607
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:10442 @ https://together-care.vercel.app/_next/static/chunks/2117-f1755bcc7d3f607d.js:0
+[22530563ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://together-care.vercel.app/api/notifications/unread-count:0
+[22530563ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:9607
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:10442 @ https://together-care.vercel.app/_next/static/chunks/2117-f1755bcc7d3f607d.js:0
+[22560562ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://together-care.vercel.app/api/notifications/unread-count:0
+[22560562ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:9607
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:10442 @ https://together-care.vercel.app/_next/static/chunks/2117-f1755bcc7d3f607d.js:0
+[22590560ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://together-care.vercel.app/api/notifications/unread-count:0
+[22590560ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:9607
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:10442 @ https://together-care.vercel.app/_next/static/chunks/2117-f1755bcc7d3f607d.js:0
+[22620561ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://together-care.vercel.app/api/notifications/unread-count:0
+[22620561ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:9607
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:10442 @ https://together-care.vercel.app/_next/static/chunks/2117-f1755bcc7d3f607d.js:0
+[22650558ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://together-care.vercel.app/api/notifications/unread-count:0
+[22650558ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:9607
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:10442 @ https://together-care.vercel.app/_next/static/chunks/2117-f1755bcc7d3f607d.js:0
+[22680554ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://together-care.vercel.app/api/notifications/unread-count:0
+[22680554ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:9607
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:10442 @ https://together-care.vercel.app/_next/static/chunks/2117-f1755bcc7d3f607d.js:0
+[22710555ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://together-care.vercel.app/api/notifications/unread-count:0
+[22710555ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:9607
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:10442 @ https://together-care.vercel.app/_next/static/chunks/2117-f1755bcc7d3f607d.js:0
+[22740559ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://together-care.vercel.app/api/notifications/unread-count:0
+[22740559ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:9607
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:10442 @ https://together-care.vercel.app/_next/static/chunks/2117-f1755bcc7d3f607d.js:0
+[22774217ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://together-care.vercel.app/api/notifications/unread-count:0
+[22774217ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:9607
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:10442 @ https://together-care.vercel.app/_next/static/chunks/2117-f1755bcc7d3f607d.js:0
+[22921543ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://together-care.vercel.app/api/notifications/unread-count:0
+[22921543ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:9607
+    at https://together-care.vercel.app/_next/static/chunks/app/(dashboard)/layout-08bc5782c25b5fc0.js:1:10442 @ https://together-care.vercel.app/_next/static/chunks/2117-f1755bcc7d3f607d.js:0
+[28800837ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[28830842ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[28860888ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[28890842ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[28920853ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[28950857ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[28980856ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[29010856ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[29040873ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[29070846ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[29100838ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[29130866ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[29160850ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[29190836ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[29220859ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[29250854ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[29280849ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[29310848ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[29340860ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[29370866ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[29400846ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[29430873ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[29460846ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[29490842ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[29520855ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[29550874ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[29580850ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[29610859ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[29640844ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[29670855ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[29700854ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[29730840ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[29760847ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[29790851ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[29820850ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[29850854ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[29880848ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[29910865ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[29940834ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[29970848ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[30000840ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[30030840ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[30060856ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[30090839ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[30120840ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[30150867ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[30180855ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[30210853ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[30240887ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[30270859ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[30300842ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[30330879ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[30360843ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[30390841ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[30420850ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[30450843ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[30480853ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[30510838ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[30540866ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[30570858ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[30601209ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[30631112ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[30660842ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[30690854ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[30720883ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[30750858ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[30780870ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[30810854ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[30840907ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[30870845ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[30900883ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[30930849ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[30960843ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[30990842ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[31020857ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[31051542ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[31080891ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[31110861ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[31140852ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[31170847ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[31200864ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[31230854ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[31260840ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[31290856ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[31320846ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[31350846ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[31380863ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[31410848ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[31440851ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[31470848ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[31500929ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[31530859ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[31560839ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[31590862ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[31620852ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[31650853ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[31680848ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[31710857ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[31740869ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[31770837ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[31800859ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[31830853ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[31860845ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[31890882ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[31920852ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[31950844ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[31980850ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[32011708ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[32041161ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[32070853ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[32100952ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[32130854ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[32160859ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[32190851ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[32220844ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[32250852ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[32280840ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[32310859ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[32340849ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[32370846ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[32400851ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[32430962ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[32460829ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[32490835ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[32520839ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[32550852ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[32580842ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[32610850ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[32640843ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[32670840ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[32700845ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[32730835ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[32760868ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[32790845ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[32820857ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[32850839ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[32880866ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[32910838ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[32940845ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[32970844ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[33000850ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[33030855ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[33060860ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[33090846ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[33120870ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[33150857ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[33181286ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[33210858ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[33240847ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[33270846ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[33300840ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[33330847ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[33360860ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[33390842ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[33420834ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[33450870ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[33480858ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[33510854ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[33540844ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[33570855ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[33600846ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[33630843ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[33660846ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[33690851ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[33720859ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[33750865ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[33780834ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[33810848ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[33840850ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[33870939ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[33900848ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[33930856ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[33960838ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[33990877ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[34020959ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[34050863ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[34080854ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[34110859ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[34140849ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[34170848ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[34200855ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[34230841ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[34260863ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[34290848ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[34320849ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[34350847ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[34381582ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[34411206ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[34441112ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[34471122ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[34500848ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[34530842ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[34560849ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[34590849ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[34620855ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[34650839ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[34680863ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[34710846ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[34740857ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[34770858ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[34800855ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[34830876ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[34860850ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[34890854ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[34920872ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[34950896ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[34980840ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[35011195ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[35040878ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[35070828ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[35100842ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[35130853ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[35160862ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[35190869ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[35220849ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[35250861ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[35280861ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[35310859ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[35340852ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[35370852ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[35401766ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[35430884ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[35460842ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[35490842ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[35520838ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[35550852ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[35580842ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[35610845ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[35640851ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[35670839ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[35700847ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[35730857ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[35760849ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[35790859ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[35820856ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[35850845ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[35880847ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[35910854ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[35940846ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[35970850ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[36000854ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[36030861ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[36060843ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[36090856ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[36120840ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[36150860ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[36180842ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[36210856ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[36240851ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[36270855ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[36300897ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[36330850ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[36360850ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[36390877ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[36420839ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[36450845ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[36480848ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[36510848ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[36540837ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[36570842ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[36600837ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[36630848ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[36660837ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[36691650ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[36721235ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[36750898ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[36780845ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[36811162ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[36840881ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[36870860ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[36900850ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[36930868ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[36960855ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[36990854ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[37020863ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[37050839ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[37080851ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[37110855ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[37140852ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[37170846ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[37200859ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[37230855ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[37260852ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[37290857ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[37320873ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[37350866ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[37380851ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[37410859ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[37440852ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[37470937ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[37500881ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[37530885ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[37560857ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[37590872ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[37620868ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[37650857ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[37680863ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[37710857ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[37740868ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[37770870ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[37800852ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[37830869ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[37860840ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[37890878ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[37920859ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[37950871ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[37980851ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[38010847ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[38040857ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[38070873ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[38100876ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[38130857ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[38160853ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[38190849ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[38220853ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[38250849ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[38280841ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[38310843ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[38340846ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[38370906ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[38400843ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[38430865ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[38460841ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[38490852ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[38520910ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[38550864ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[38580846ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[38610845ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[38640842ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[38670846ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[38700854ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[38730857ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[38760837ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[38790850ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[38820838ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[38850856ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[38880871ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[38910843ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[38940847ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[38970896ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[39000853ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[39030843ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[39060853ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[39090943ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[39120834ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[39150876ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[39180859ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[39210849ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[39240849ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[39270828ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[39300856ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[39330841ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[39360855ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[39390854ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[39420851ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[39450848ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[39480883ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[39510854ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[39540839ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[39570839ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[39600854ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[39630856ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[39660850ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[39690845ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[39720860ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[39750865ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[39780849ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[39810853ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[39840844ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[39870848ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[39900837ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[39930847ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[39960845ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[39990859ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[40020842ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[40050870ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[40080848ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[40110850ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[40140850ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[40170847ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[40200852ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[40230834ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[40260849ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[40290877ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[40320843ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[40350848ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[40380852ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[40410850ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[40440857ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[40470859ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[40500870ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[40530838ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[40560844ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[40590850ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[40620842ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[40650848ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[40680835ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[40710857ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[40740865ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[40770847ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[40800850ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[40830858ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[40860847ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[40890846ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[40920845ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[40950912ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[40980854ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[41010843ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[41040858ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[41070869ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[41100865ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[41130849ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[41160881ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[41190849ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[41220863ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[41250872ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[41280853ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[41310866ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[41340884ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[41370853ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[41400858ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[41430870ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[41460858ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[41490846ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[41520837ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[41550855ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[41580846ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[41610843ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[41640886ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[41670857ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[41700871ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[41730870ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[41760853ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[41790840ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[41820848ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[41850861ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[41880838ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[41910844ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[41940861ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[41970841ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[42000855ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[42030849ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[42060835ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[42090845ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[42120852ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[42150859ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[42180859ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[42210847ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[42240855ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[42270867ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[42300866ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[42330846ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[42360847ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[42390907ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[42420864ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[42450854ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[42480847ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[42510844ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[42540857ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[42570852ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[42600836ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[42630858ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[42660853ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[42690878ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[42720836ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[42750844ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[42780845ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[42810852ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[42840867ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[42870847ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[42900856ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[42930848ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[42960870ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[42990849ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[43020849ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[43050857ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[43080841ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[43110837ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[43140865ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[43170837ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[43200891ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[43230846ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[43260843ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[43290862ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[43320872ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[43350861ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[43380844ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[43410857ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[43440854ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[43470853ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[43500841ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[43530845ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[43560853ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[43590849ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[43620852ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0
+[43650855ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://together-care.vercel.app/api/notifications/unread-count:0

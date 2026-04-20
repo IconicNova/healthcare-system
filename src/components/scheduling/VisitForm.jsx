@@ -7,6 +7,11 @@ import Select from '@/components/ui/Select';
 import Button from '@/components/ui/Button';
 
 export default function VisitForm({ isOpen, onClose, onSubmit, clients = [], staff = [], services = [], branches = [], carePlans = [], loading = false }) {
+  useEffect(() => {
+    console.log('VisitForm - isOpen:', isOpen);
+    console.log('VisitForm - carePlans prop:', carePlans);
+    console.log('VisitForm - carePlans length:', carePlans.length);
+  }, [isOpen, carePlans]);
   const [formData, setFormData] = useState({
     clientId: '',
     staffId: '',

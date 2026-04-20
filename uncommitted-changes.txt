@@ -1,0 +1,114 @@
+# Uncommitted Changes Report
+# Generated: Saturday, April 18, 2026
+# Branch: homecare-pro
+
+================================================================================
+MODIFIED FILES (Changes not staged for commit)
+================================================================================
+
+1. .playwright-cli/console-2026-04-15T15-36-40-571Z.log
+2. .playwright-cli/console-2026-04-15T15-37-20-567Z.log
+3. graphify-out/GRAPH_REPORT.md
+4. graphify-out/graph.json
+5. src/app/api/clients/[id]/route.js
+6. src/app/api/clients/[id]/visits/route.js
+7. src/app/api/staff/[id]/route.js
+8. src/app/api/staff/route.js
+9. src/app/globals.css
+10. src/components/clients/ClientCarePlansTab.jsx
+11. src/components/clients/ClientDocumentsTab.jsx
+12. src/components/clients/ClientForm.jsx
+13. src/components/clients/ClientFormsTab.jsx
+14. src/components/clients/ClientList.jsx
+15. src/components/clients/ClientOverviewTab.jsx
+16. src/components/clients/ClientProfile.jsx
+17. src/components/clients/ClientVisitsTab.jsx
+18. src/components/dashboard/RevenueChart.jsx
+19. src/components/dashboard/VisitChart.jsx
+20. src/components/staff/SkillsCertsTab.jsx
+21. src/components/staff/StaffForm.jsx
+22. src/components/staff/StaffList.jsx
+23. src/components/staff/StaffOverviewTab.jsx
+24. src/components/staff/StaffProfile.jsx
+25. src/components/staff/StaffScheduleTab.jsx
+26. src/components/staff/StaffTimesheetsTab.jsx
+27. test-results/.last-run.json
+
+Total Modified Files: 27
+
+================================================================================
+UNTRACKED FILES (New files not yet added to git)
+================================================================================
+
+Log Files:
+1. .codex-devserver.err.log
+2. .codex-devserver.log
+3. .playwright-cli/console-2026-04-17T08-45-46-904Z.log
+4. .playwright-cli/console-2026-04-17T08-48-46-698Z.log
+5. .playwright-cli/console-2026-04-18T16-57-17-699Z.log
+6. .playwright-cli/console-2026-04-18T16-58-39-205Z.log
+
+Configuration/Documentation:
+7. .agents/
+8. AGENTS.md
+
+Test Files:
+9. test-db.js
+10. src/lib/clients-staff-review.mjs
+11. tests/.tmp-edit-profile-entrypoints-3001.spec.js
+12. tests/clients-staff-review.test.mjs
+13. test-results/tests-create-care-plan-ope-f3d06-sting-and-direct-query-link/
+
+Playwright Page Snapshots (YML files):
+14-69. .playwright-cli/page-*.yml (56 files from 2026-04-17 and 2026-04-18)
+
+Graphify Cache Files:
+70-195. graphify-out/cache/*.json (126 cache files)
+
+Total Untracked Files/Directories: ~195+
+
+================================================================================
+SUMMARY
+================================================================================
+
+Modified Files:      27
+Untracked Files:     ~195+
+Total Changes:       ~222+
+
+Key Modified Areas:
+- API Routes: clients, staff endpoints
+- Client Components: Profile, Forms, Lists, Tabs (Care Plans, Documents, Forms, Visits, Overview)
+- Staff Components: Profile, Forms, Lists, Tabs (Skills/Certs, Overview, Schedule, Timesheets)
+- Dashboard Components: RevenueChart, VisitChart
+- Styling: globals.css
+- Graphify: GRAPH_REPORT.md, graph.json
+
+================================================================================
+RECENT COMMIT HISTORY (Last 3 commits)
+================================================================================
+
+commit 702d629022ab76a48fd2a69b17ee5033a976e981 (HEAD -> homecare-pro, origin/homecare-pro, origin/HEAD)
+Author: IconicNova <siyamthebest123@gmail.com>
+Date:   Sat Apr 18 01:11:50 2026 +0600
+    fix: retune care plans header alignment
+
+commit 81c654e4ea3e472e1f19db1b77348df6c0ef13f4
+Author: IconicNova <siyamthebest123@gmail.com>
+Date:   Sat Apr 18 00:56:51 2026 +0600
+    fix: align dashboard table headers to content
+
+commit 89e8ee2758bfdd07447cdca35f458546a4d2582a
+Author: IconicNova <siyamthebest123@gmail.com>
+Date:   Sat Apr 18 00:35:54 2026 +0600
+    fix: left-align inset table headers
+
+================================================================================
+NOTES
+================================================================================
+
+- Line ending warnings: Several files have LF/CRLF line ending differences
+- Graphify cache files are auto-generated and may not need to be committed
+- Playwright CLI logs and snapshots are test artifacts
+- Consider adding test artifacts and cache files to .gitignore if not needed in repo
+
+================================================================================

@@ -1,0 +1,247 @@
+- generic [ref=e1]:
+  - generic [ref=e5]:
+    - complementary [ref=e6]:
+      - generic [ref=e7]:
+        - generic [ref=e8] [cursor=pointer]:
+          - generic [ref=e10]: TCHS
+          - generic [ref=e11]: Together Care Health Services
+        - button "Collapse sidebar" [ref=e12] [cursor=pointer]:
+          - img [ref=e13]
+      - navigation [ref=e16]:
+        - generic [ref=e17]:
+          - generic [ref=e18]: Main Menu
+          - link "Dashboard" [ref=e19] [cursor=pointer]:
+            - /url: /dashboard
+            - button "Dashboard" [ref=e20]:
+              - img [ref=e21]
+              - generic [ref=e24]: Dashboard
+          - link "Clients" [ref=e25] [cursor=pointer]:
+            - /url: /clients
+            - button "Clients" [ref=e26]:
+              - img [ref=e27]
+              - generic [ref=e32]: Clients
+          - link "Staff" [ref=e33] [cursor=pointer]:
+            - /url: /staff
+            - button "Staff" [ref=e34]:
+              - img [ref=e35]
+              - generic [ref=e38]: Staff
+          - link "Care Delivery" [ref=e39] [cursor=pointer]:
+            - /url: /care-delivery
+            - button "Care Delivery" [ref=e40]:
+              - img [ref=e41]
+              - generic [ref=e45]: Care Delivery
+          - link "Scheduling" [ref=e46] [cursor=pointer]:
+            - /url: /scheduling
+            - button "Scheduling" [ref=e47]:
+              - img [ref=e48]
+              - generic [ref=e50]: Scheduling
+          - link "Care Plans" [ref=e51] [cursor=pointer]:
+            - /url: /care-plans
+            - button "Care Plans" [ref=e52]:
+              - img [ref=e53]
+              - generic [ref=e56]: Care Plans
+          - link "Billing" [ref=e57] [cursor=pointer]:
+            - /url: /billing
+            - button "Billing" [ref=e58]:
+              - img [ref=e59]
+              - generic [ref=e62]: Billing
+          - link "Payroll" [ref=e63] [cursor=pointer]:
+            - /url: /payroll
+            - button "Payroll" [ref=e64]:
+              - img [ref=e65]
+              - generic [ref=e68]: Payroll
+          - link "Reports" [ref=e69] [cursor=pointer]:
+            - /url: /reports
+            - button "Reports" [ref=e70]:
+              - img [ref=e71]
+              - generic [ref=e74]: Reports
+          - link "Notifications" [ref=e75] [cursor=pointer]:
+            - /url: /notifications
+            - button "Notifications" [ref=e76]:
+              - img [ref=e77]
+              - generic [ref=e80]: Notifications
+        - generic [ref=e81]:
+          - generic [ref=e82]: Other
+          - link "Settings" [ref=e83] [cursor=pointer]:
+            - /url: /settings
+            - button "Settings" [ref=e84]:
+              - img [ref=e85]
+              - generic [ref=e88]: Settings
+      - generic [ref=e89]:
+        - generic [ref=e90]:
+          - generic [ref=e91]: MT
+          - generic [ref=e92]:
+            - generic [ref=e93]: Michael Thompson
+            - generic [ref=e94]: Super Admin
+        - button "Logout" [ref=e95] [cursor=pointer]:
+          - img [ref=e96]
+          - generic [ref=e99]: Logout
+    - generic [ref=e100]:
+      - banner [ref=e101]:
+        - navigation "Breadcrumb" [ref=e103]:
+          - link [ref=e104] [cursor=pointer]:
+            - /url: /dashboard
+            - img [ref=e105]
+          - img [ref=e401]
+          - link "Care Delivery" [ref=e403] [cursor=pointer]:
+            - /url: /care-delivery
+          - generic [ref=e404]: Details
+        - generic [ref=e109]:
+          - generic [ref=e110]:
+            - img
+            - textbox "Search..." [ref=e111]
+          - generic [ref=e112]:
+            - button "Notifications" [ref=e114] [cursor=pointer]:
+              - img [ref=e115]
+            - button "User menu" [ref=e119] [cursor=pointer]:
+              - generic [ref=e120]: MT
+              - generic [ref=e121]: Michael
+      - main [ref=e122]:
+        - generic [ref=e405]:
+          - generic [ref=e406]:
+            - button "Back to Care Delivery" [ref=e407] [cursor=pointer]:
+              - img [ref=e408]
+              - text: Back to Care Delivery
+            - generic [ref=e410]:
+              - generic [ref=e411]:
+                - generic [ref=e412]: BC
+                - generic [ref=e413]:
+                  - heading "Barbara Collins" [level=1] [ref=e414]
+                  - generic [ref=e415]:
+                    - generic [ref=e416]: ACTIVE
+                    - generic [ref=e417]: (555) 345-6005
+                  - generic [ref=e418]: 456 North Druid Hills, Atlanta, GA, 30329
+              - generic [ref=e419]:
+                - button "Global Forms Review" [ref=e420] [cursor=pointer]:
+                  - img [ref=e421]
+                  - text: Global Forms Review
+                - button "View Client Profile" [ref=e425] [cursor=pointer]
+          - generic [ref=e426]:
+            - generic [ref=e427]:
+              - button "Tasks" [ref=e428] [cursor=pointer]
+              - button "Forms Review" [ref=e429] [cursor=pointer]
+              - button "Progress Notes" [ref=e430] [cursor=pointer]
+              - button "Visit Reports" [ref=e431] [cursor=pointer]
+              - button "Vitals" [ref=e432] [cursor=pointer]
+            - generic [ref=e434]:
+              - generic [ref=e435]:
+                - heading "Tasks" [level=2] [ref=e436]
+                - generic [ref=e437]:
+                  - button "📅 Calendar" [ref=e438] [cursor=pointer]
+                  - generic [ref=e439]: 4 visits
+              - generic [ref=e440]:
+                - generic [ref=e441]:
+                  - img [ref=e442]
+                  - text: Past Visits (4)
+                - generic [ref=e446] [cursor=pointer]:
+                  - generic [ref=e447]:
+                    - generic [ref=e448]:
+                      - generic [ref=e449]: Wound Care & Medication Review
+                      - generic [ref=e450]: Check surgical incision, change dressing, review medications
+                    - generic [ref=e451]:
+                      - generic [ref=e452]:
+                        - img [ref=e453]
+                        - text: Overdue
+                      - generic [ref=e455]: Scheduled
+                  - generic [ref=e456]:
+                    - generic [ref=e457]:
+                      - img [ref=e458]
+                      - text: Emily Rodriguez
+                    - generic [ref=e461]:
+                      - img [ref=e462]
+                      - text: 3:00 PM - 4:00 PM
+                - generic [ref=e465] [cursor=pointer]:
+                  - generic [ref=e466]:
+                    - generic [ref=e467]:
+                      - generic [ref=e468]: Wound Care Follow-up
+                      - generic [ref=e469]: Assess wound healing, provide patient education
+                    - generic [ref=e470]:
+                      - generic [ref=e471]:
+                        - img [ref=e472]
+                        - text: Overdue
+                      - generic [ref=e474]: Scheduled
+                  - generic [ref=e475]:
+                    - generic [ref=e476]:
+                      - img [ref=e477]
+                      - text: Emily Rodriguez
+                    - generic [ref=e480]:
+                      - img [ref=e481]
+                      - text: 3:00 PM - 4:00 PM
+                - generic [ref=e484] [cursor=pointer]:
+                  - generic [ref=e485]:
+                    - generic [ref=e486]:
+                      - generic [ref=e487]: Weekly Nursing Visit
+                      - generic [ref=e488]: Routine assessment and care
+                    - generic [ref=e490]: Completed
+                  - generic [ref=e491]:
+                    - generic [ref=e492]:
+                      - img [ref=e493]
+                      - text: Emily Rodriguez
+                    - generic [ref=e496]:
+                      - img [ref=e497]
+                      - text: 8:00 PM - 9:00 PM
+                  - generic [ref=e500]: "Actual: 8:05 PM - 8:55 PM"
+                - generic [ref=e501] [cursor=pointer]:
+                  - generic [ref=e502]:
+                    - generic [ref=e503]:
+                      - generic [ref=e504]: Skilled Nursing Visit
+                      - generic [ref=e505]: Routine nursing care
+                    - generic [ref=e506]:
+                      - generic [ref=e507]:
+                        - img [ref=e508]
+                        - text: Overdue
+                      - generic [ref=e510]: Scheduled
+                  - generic [ref=e511]:
+                    - generic [ref=e512]:
+                      - img [ref=e513]
+                      - text: Emily Rodriguez
+                    - generic [ref=e516]:
+                      - img [ref=e517]
+                      - text: 3:00 PM - 4:00 PM
+          - generic [ref=e521]:
+            - generic [ref=e522]:
+              - heading "Edit Visit - Barbara Collins" [level=3] [ref=e523]
+              - button [ref=e524] [cursor=pointer]:
+                - img [ref=e525]
+            - generic [ref=e528]:
+              - generic [ref=e529]:
+                - generic [ref=e530]:
+                  - button "Information" [ref=e531] [cursor=pointer]:
+                    - img [ref=e532]
+                    - text: Information
+                  - button "Service Tasks 0/0" [active] [ref=e534] [cursor=pointer]:
+                    - img [ref=e535]
+                    - text: Service Tasks
+                    - generic [ref=e612]: 0/0
+                  - button "Forms 0" [ref=e539] [cursor=pointer]:
+                    - img [ref=e540]
+                    - text: Forms
+                    - generic [ref=e613]: "0"
+                  - button "Visit Notes 0" [ref=e544] [cursor=pointer]:
+                    - img [ref=e545]
+                    - text: Visit Notes
+                    - generic [ref=e614]: "0"
+                  - button "Goals" [ref=e549] [cursor=pointer]:
+                    - img [ref=e550]
+                    - text: Goals
+                  - button "Timeline" [ref=e554] [cursor=pointer]:
+                    - img [ref=e555]
+                    - text: Timeline
+                  - button "Attachments 0" [ref=e558] [cursor=pointer]:
+                    - img [ref=e559]
+                    - text: Attachments
+                    - generic [ref=e615]: "0"
+                - generic [ref=e616]:
+                  - generic [ref=e617]:
+                    - heading "Task Progress" [level=3] [ref=e618]
+                    - generic [ref=e619]: 0 of 0 completed
+                  - generic [ref=e621]:
+                    - img [ref=e622]
+                    - text: Tasks are view-only for completed visits.
+                  - generic [ref=e624]: No tasks assigned to this visit yet.
+              - generic [ref=e607]:
+                - generic [ref=e608]: "Alt+1-7: switch tabs · Ctrl+S: save"
+                - generic [ref=e609]:
+                  - button "Cancel" [ref=e610] [cursor=pointer]
+                  - button "💾 Save Changes" [disabled] [ref=e611]
+  - alert [ref=e4]

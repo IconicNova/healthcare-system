@@ -1,0 +1,348 @@
+- generic [ref=e1]:
+  - generic [ref=e5]:
+    - complementary [ref=e6]:
+      - generic [ref=e7]:
+        - generic [ref=e8] [cursor=pointer]:
+          - generic [ref=e10]: TCHS
+          - generic [ref=e11]: Together Care Health Services
+        - button "Collapse sidebar" [ref=e12] [cursor=pointer]:
+          - img [ref=e13]
+      - navigation [ref=e16]:
+        - generic [ref=e17]:
+          - generic [ref=e18]: Main Menu
+          - link "Dashboard" [ref=e19] [cursor=pointer]:
+            - /url: /dashboard
+            - button "Dashboard" [ref=e20]:
+              - img [ref=e21]
+              - generic [ref=e24]: Dashboard
+          - link "Clients" [ref=e25] [cursor=pointer]:
+            - /url: /clients
+            - button "Clients" [ref=e26]:
+              - img [ref=e27]
+              - generic [ref=e32]: Clients
+          - link "Staff" [ref=e33] [cursor=pointer]:
+            - /url: /staff
+            - button "Staff" [ref=e34]:
+              - img [ref=e35]
+              - generic [ref=e38]: Staff
+          - link "Care Delivery" [ref=e39] [cursor=pointer]:
+            - /url: /care-delivery
+            - button "Care Delivery" [ref=e40]:
+              - img [ref=e41]
+              - generic [ref=e45]: Care Delivery
+          - link "Scheduling" [ref=e46] [cursor=pointer]:
+            - /url: /scheduling
+            - button "Scheduling" [ref=e47]:
+              - img [ref=e48]
+              - generic [ref=e50]: Scheduling
+          - link "Care Plans" [ref=e51] [cursor=pointer]:
+            - /url: /care-plans
+            - button "Care Plans" [ref=e52]:
+              - img [ref=e53]
+              - generic [ref=e56]: Care Plans
+          - link "Billing" [ref=e57] [cursor=pointer]:
+            - /url: /billing
+            - button "Billing" [ref=e58]:
+              - img [ref=e59]
+              - generic [ref=e62]: Billing
+          - link "Payroll" [ref=e63] [cursor=pointer]:
+            - /url: /payroll
+            - button "Payroll" [ref=e64]:
+              - img [ref=e65]
+              - generic [ref=e68]: Payroll
+          - link "Reports" [ref=e69] [cursor=pointer]:
+            - /url: /reports
+            - button "Reports" [ref=e70]:
+              - img [ref=e71]
+              - generic [ref=e74]: Reports
+          - link "Notifications" [ref=e75] [cursor=pointer]:
+            - /url: /notifications
+            - button "Notifications" [ref=e76]:
+              - img [ref=e77]
+              - generic [ref=e80]: Notifications
+        - generic [ref=e81]:
+          - generic [ref=e82]: Other
+          - link "Settings" [ref=e83] [cursor=pointer]:
+            - /url: /settings
+            - button "Settings" [ref=e84]:
+              - img [ref=e85]
+              - generic [ref=e88]: Settings
+      - generic [ref=e89]:
+        - generic [ref=e90]:
+          - generic [ref=e91]: SM
+          - generic [ref=e92]:
+            - generic [ref=e93]: Sarah Mitchell
+            - generic [ref=e94]: Admin
+        - button "Logout" [ref=e95] [cursor=pointer]:
+          - img [ref=e96]
+          - generic [ref=e99]: Logout
+    - generic [ref=e100]:
+      - banner [ref=e101]:
+        - navigation "Breadcrumb" [ref=e103]:
+          - link [ref=e104] [cursor=pointer]:
+            - /url: /dashboard
+            - img [ref=e105]
+          - generic [ref=e108]: Scheduling
+        - generic [ref=e109]:
+          - generic [ref=e110]:
+            - img
+            - textbox "Search..." [ref=e111]
+          - generic [ref=e112]:
+            - button "Notifications" [ref=e114] [cursor=pointer]:
+              - img [ref=e115]
+            - button "User menu" [ref=e119] [cursor=pointer]:
+              - generic [ref=e120]: SM
+              - generic [ref=e121]: Sarah
+      - main [ref=e122]:
+        - generic [ref=e123]:
+          - generic [ref=e124]:
+            - heading "Scheduling" [level=1] [ref=e125]
+            - paragraph [ref=e126]: Manage and schedule client visits
+          - generic [ref=e127]:
+            - generic [ref=e128]:
+              - button "Month" [active] [ref=e129] [cursor=pointer]:
+                - img [ref=e130]
+                - text: Month
+              - button "Week" [ref=e132] [cursor=pointer]:
+                - img [ref=e133]
+                - text: Week
+              - button "Day" [ref=e136] [cursor=pointer]:
+                - img [ref=e137]
+                - text: Day
+            - button "Create Visit" [ref=e138] [cursor=pointer]:
+              - img [ref=e139]
+              - text: Create Visit
+          - generic [ref=e140]:
+            - 'button "Scheduled: 6" [ref=e141] [cursor=pointer]': "Scheduled: 6"
+            - 'button "Vacant: 2" [ref=e143] [cursor=pointer]': "Vacant: 2"
+            - 'button "Offered: 0" [ref=e145] [cursor=pointer]': "Offered: 0"
+            - 'button "In Progress: 0" [ref=e147] [cursor=pointer]': "In Progress: 0"
+            - 'button "Clocked In: 0" [ref=e149] [cursor=pointer]': "Clocked In: 0"
+            - 'button "Completed: 0" [ref=e151] [cursor=pointer]': "Completed: 0"
+            - 'button "Approved: 0" [ref=e153] [cursor=pointer]': "Approved: 0"
+            - 'button "Cancelled: 0" [ref=e155] [cursor=pointer]': "Cancelled: 0"
+            - 'button "On Hold: 0" [ref=e157] [cursor=pointer]': "On Hold: 0"
+            - 'button "No Show: 0" [ref=e159] [cursor=pointer]': "No Show: 0"
+            - 'button "Missed: 0" [ref=e161] [cursor=pointer]': "Missed: 0"
+            - 'button "Late: 0" [ref=e163] [cursor=pointer]': "Late: 0"
+          - generic [ref=e165]:
+            - generic [ref=e166]: "Filters:"
+            - combobox [ref=e168] [cursor=pointer]:
+              - option "All Staff" [selected]
+              - option "asdfasdfasdf zzzzzzzzzz"
+              - option "sabbir hossain"
+              - option "Maria Garcia"
+              - option "James Williams"
+              - option "Lisa Johnson"
+              - option "David Chen"
+              - option "Emily Rodriguez"
+            - combobox [ref=e170] [cursor=pointer]:
+              - option "All Clients" [selected]
+              - option "Charles Brooks"
+              - option "Barbara Collins"
+              - option "William Turner"
+              - option "Helen Phillips"
+              - option "Richard Evans"
+              - option "Patricia Cooper"
+              - option "Joseph Morgan"
+              - option "Robert Harrison"
+            - combobox [ref=e172] [cursor=pointer]:
+              - option "All Branches" [selected]
+              - option "Atlanta Main Office"
+              - option "Marietta Branch"
+            - combobox [ref=e174] [cursor=pointer]:
+              - option "All Statuses" [selected]
+              - option "Scheduled"
+              - option "Vacant"
+              - option "Offered"
+              - option "In Progress"
+              - option "Clocked In"
+              - option "Completed"
+              - option "Approved"
+              - option "Cancelled"
+              - option "On Hold"
+              - option "No Show"
+              - option "Missed"
+              - option "Late"
+          - generic [ref=e1193]:
+            - text:  
+            - generic "April 2026" [ref=e1194]:
+              - grid [ref=e1196]:
+                - rowgroup [ref=e1197]:
+                  - row "Sunday Monday Tuesday Wednesday Thursday Friday Saturday" [ref=e1201]:
+                    - columnheader "Sunday" [ref=e1202]:
+                      - generic "Sunday" [ref=e1204]: Sun
+                    - columnheader "Monday" [ref=e1205]:
+                      - generic "Monday" [ref=e1207]: Mon
+                    - columnheader "Tuesday" [ref=e1208]:
+                      - generic "Tuesday" [ref=e1210]: Tue
+                    - columnheader "Wednesday" [ref=e1211]:
+                      - generic "Wednesday" [ref=e1213]: Wed
+                    - columnheader "Thursday" [ref=e1214]:
+                      - generic "Thursday" [ref=e1216]: Thu
+                    - columnheader "Friday" [ref=e1217]:
+                      - generic "Friday" [ref=e1219]: Fri
+                    - columnheader "Saturday" [ref=e1220]:
+                      - generic "Saturday" [ref=e1222]: Sat
+                - rowgroup [ref=e1223]:
+                  - generic [ref=e1226]:
+                    - row "March 29, 2026 March 30, 2026 March 31, 2026 April 1, 2026 April 2, 2026 April 3, 2026 April 4, 2026" [ref=e1228]:
+                      - gridcell "March 29, 2026" [ref=e1229]:
+                        - generic "March 29, 2026" [ref=e1232]: "29"
+                      - gridcell "March 30, 2026" [ref=e1234]:
+                        - generic "March 30, 2026" [ref=e1237]: "30"
+                      - gridcell "March 31, 2026" [ref=e1239]:
+                        - generic "March 31, 2026" [ref=e1242]: "31"
+                      - gridcell "April 1, 2026" [ref=e1244]:
+                        - generic "April 1, 2026" [ref=e1247]: "1"
+                      - gridcell "April 2, 2026" [ref=e1249]:
+                        - generic "April 2, 2026" [ref=e1252]: "2"
+                      - gridcell "April 3, 2026" [ref=e1254]:
+                        - generic "April 3, 2026" [ref=e1257]: "3"
+                      - gridcell "April 4, 2026" [ref=e1259]:
+                        - generic "April 4, 2026" [ref=e1262]: "4"
+                    - row "April 5, 2026 April 6, 2026 April 7, 2026 April 8, 2026 April 9, 2026 April 10, 2026 April 11, 2026" [ref=e1264]:
+                      - gridcell "April 5, 2026" [ref=e1265]:
+                        - generic "April 5, 2026" [ref=e1268]: "5"
+                      - gridcell "April 6, 2026" [ref=e1270]:
+                        - generic "April 6, 2026" [ref=e1273]: "6"
+                      - gridcell "April 7, 2026" [ref=e1275]:
+                        - generic "April 7, 2026" [ref=e1278]: "7"
+                      - gridcell "April 8, 2026" [ref=e1280]:
+                        - generic "April 8, 2026" [ref=e1283]: "8"
+                      - gridcell "April 9, 2026" [ref=e1285]:
+                        - generic "April 9, 2026" [ref=e1288]: "9"
+                      - gridcell "April 10, 2026" [ref=e1290]:
+                        - generic "April 10, 2026" [ref=e1293]: "10"
+                      - gridcell "April 11, 2026" [ref=e1295]:
+                        - generic [ref=e1296]:
+                          - generic "April 11, 2026" [ref=e1298]: "11"
+                          - generic [ref=e1299]:
+                            - generic [ref=e1303] [cursor=pointer]:
+                              - generic [ref=e1304]: 2:00 AM - 6:00 AM
+                              - generic [ref=e1305]: Joseph Morgan
+                            - generic [ref=e1309] [cursor=pointer]:
+                              - generic [ref=e1310]: 9:00 AM - 10:00 AM
+                              - generic [ref=e1311]: Charles Brooks
+                    - row "April 12, 2026 April 13, 2026 April 14, 2026 April 15, 2026 April 16, 2026 April 17, 2026 April 18, 2026" [ref=e1312]:
+                      - gridcell "April 12, 2026" [ref=e1313]:
+                        - generic [ref=e1314]:
+                          - generic "April 12, 2026" [ref=e1316]: "12"
+                          - generic [ref=e1317]:
+                            - generic [ref=e1321] [cursor=pointer]:
+                              - generic [ref=e1322]: 2:00 AM - 6:00 AM
+                              - generic [ref=e1323]: Joseph Morgan
+                            - generic [ref=e1327] [cursor=pointer]:
+                              - generic [ref=e1328]: 9:00 AM - 10:00 AM
+                              - generic [ref=e1329]: Charles Brooks
+                      - gridcell "April 13, 2026" [ref=e1330]:
+                        - generic [ref=e1331]:
+                          - generic "April 13, 2026" [ref=e1333]: "13"
+                          - generic [ref=e1338] [cursor=pointer]:
+                            - generic [ref=e1339]: 9:00 AM - 10:00 AM
+                            - generic [ref=e1340]: Charles Brooks
+                      - gridcell "April 14, 2026" [ref=e1341]:
+                        - generic [ref=e1342]:
+                          - generic "April 14, 2026" [ref=e1344]: "14"
+                          - generic [ref=e1349] [cursor=pointer]:
+                            - generic [ref=e1350]: 9:00 AM - 10:00 AM
+                            - generic [ref=e1351]: Joseph Morgan
+                      - gridcell "April 15, 2026" [ref=e1352]:
+                        - generic [ref=e1353]:
+                          - generic "April 15, 2026" [ref=e1355]: "15"
+                          - generic [ref=e1360] [cursor=pointer]:
+                            - generic [ref=e1361]: 9:00 AM - 10:00 AM
+                            - generic [ref=e1362]: Charles Brooks
+                      - gridcell "April 16, 2026" [ref=e1363]:
+                        - generic "April 16, 2026" [ref=e1366]: "16"
+                      - gridcell "April 17, 2026" [ref=e1368]:
+                        - generic [ref=e1369]:
+                          - generic "April 17, 2026" [ref=e1371]: "17"
+                          - generic [ref=e1376] [cursor=pointer]:
+                            - generic [ref=e1377]: 8:00 AM - 8:00 PM
+                            - generic [ref=e1378]: Joseph Morgan
+                      - gridcell "April 18, 2026" [ref=e1379]:
+                        - generic "April 18, 2026" [ref=e1382]: "18"
+                    - row "April 19, 2026 April 20, 2026 April 21, 2026 April 22, 2026 April 23, 2026 April 24, 2026 April 25, 2026" [ref=e1384]:
+                      - gridcell "April 19, 2026" [ref=e1385]:
+                        - generic "April 19, 2026" [ref=e1388]: "19"
+                      - gridcell "April 20, 2026" [ref=e1390]:
+                        - generic "April 20, 2026" [ref=e1393]: "20"
+                      - gridcell "April 21, 2026" [ref=e1395]:
+                        - generic "April 21, 2026" [ref=e1398]: "21"
+                      - gridcell "April 22, 2026" [ref=e1400]:
+                        - generic "April 22, 2026" [ref=e1403]: "22"
+                      - gridcell "April 23, 2026" [ref=e1405]:
+                        - generic "April 23, 2026" [ref=e1408]: "23"
+                      - gridcell "April 24, 2026" [ref=e1410]:
+                        - generic "April 24, 2026" [ref=e1413]: "24"
+                      - gridcell "April 25, 2026" [ref=e1415]:
+                        - generic "April 25, 2026" [ref=e1418]: "25"
+                    - row "April 26, 2026 April 27, 2026 April 28, 2026 April 29, 2026 April 30, 2026 May 1, 2026 May 2, 2026" [ref=e1420]:
+                      - gridcell "April 26, 2026" [ref=e1421]:
+                        - generic "April 26, 2026" [ref=e1424]: "26"
+                      - gridcell "April 27, 2026" [ref=e1426]:
+                        - generic "April 27, 2026" [ref=e1429]: "27"
+                      - gridcell "April 28, 2026" [ref=e1431]:
+                        - generic "April 28, 2026" [ref=e1434]: "28"
+                      - gridcell "April 29, 2026" [ref=e1436]:
+                        - generic "April 29, 2026" [ref=e1439]: "29"
+                      - gridcell "April 30, 2026" [ref=e1441]:
+                        - generic "April 30, 2026" [ref=e1444]: "30"
+                      - gridcell "May 1, 2026" [ref=e1446]:
+                        - generic "May 1, 2026" [ref=e1449]: "1"
+                      - gridcell "May 2, 2026" [ref=e1451]:
+                        - generic "May 2, 2026" [ref=e1454]: "2"
+                    - row "May 3, 2026 May 4, 2026 May 5, 2026 May 6, 2026 May 7, 2026 May 8, 2026 May 9, 2026" [ref=e1456]:
+                      - gridcell "May 3, 2026" [ref=e1457]:
+                        - generic "May 3, 2026" [ref=e1460]: "3"
+                      - gridcell "May 4, 2026" [ref=e1462]:
+                        - generic "May 4, 2026" [ref=e1465]: "4"
+                      - gridcell "May 5, 2026" [ref=e1467]:
+                        - generic "May 5, 2026" [ref=e1470]: "5"
+                      - gridcell "May 6, 2026" [ref=e1472]:
+                        - generic "May 6, 2026" [ref=e1475]: "6"
+                      - gridcell "May 7, 2026" [ref=e1477]:
+                        - generic "May 7, 2026" [ref=e1480]: "7"
+                      - gridcell "May 8, 2026" [ref=e1482]:
+                        - generic "May 8, 2026" [ref=e1485]: "8"
+                      - gridcell "May 9, 2026" [ref=e1487]:
+                        - generic "May 9, 2026" [ref=e1490]: "9"
+          - generic [ref=e1493]:
+            - generic [ref=e1494]:
+              - generic [ref=e1495]:
+                - generic [ref=e1496]: J
+                - generic [ref=e1497]:
+                  - heading "Joseph Morgan" [level=3] [ref=e1498]
+                  - paragraph [ref=e1499]: "Visit #8A3633"
+              - button [ref=e1500] [cursor=pointer]:
+                - img [ref=e1501]
+            - generic [ref=e1504]:
+              - generic [ref=e1506]: SCHEDULED
+              - generic [ref=e1507]:
+                - generic [ref=e1508]:
+                  - img [ref=e1509]
+                  - generic [ref=e1512]:
+                    - paragraph [ref=e1513]: Fri, Apr 17
+                    - paragraph [ref=e1514]: 08:00 AM - 08:00 PM
+                - generic [ref=e1515]:
+                  - img [ref=e1516]
+                  - generic [ref=e1519]:
+                    - paragraph [ref=e1520]:
+                      - generic [ref=e1521]: sabbir hossain
+                    - paragraph
+                - generic [ref=e1522]:
+                  - img [ref=e1523]
+                  - generic [ref=e1526]:
+                    - paragraph [ref=e1527]: 147 Lenox Rd
+                    - paragraph [ref=e1528]: Atlanta, GA
+                - generic [ref=e1529]:
+                  - img [ref=e1531]
+                  - paragraph [ref=e1535]: Home Health Aide
+            - generic [ref=e1536]:
+              - button "Delete" [ref=e1537] [cursor=pointer]:
+                - img [ref=e1538]
+                - text: Delete
+              - button "Close" [ref=e1541] [cursor=pointer]
+              - button "Edit Visit" [ref=e1542] [cursor=pointer]
+  - alert [ref=e4]
