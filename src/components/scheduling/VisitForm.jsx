@@ -61,21 +61,34 @@ export default function VisitForm({ isOpen, onClose, onSubmit, clients = [], sta
   const handleInputChange = (field, value) => {
     setFormData(prev => {
       const updated = { ...prev, [field]: value };
-      // Reset care plan when client changes since care plans are client-specific
+      // Reset care plan, service, and notes when client changes
       if (field === 'clientId') {
         updated.carePlanId = '';
+        updated.serviceId = '';
         updated.recurrence = { type: 'NONE' };
+        updated.notes = '';
       }
-      // Auto-populate recurrence from care plan service frequency
-      if (field === 'carePlanId' && value) {
+      // Auto-populate from care plan when selected, or reset when cleared
+      if (field === 'carePlanId') {
+        if (value) {
         const cp = carePlans.find(c => c.id === value);
         if (cp?.services?.length > 0) {
-          // Use the first service's frequency, or the selected service's frequency
-          const selectedSvc = cp.services.find(s => s.serviceId === prev.serviceId);
-          const frequency = selectedSvc?.frequency || cp.services[0]?.frequency;
+          // Auto-select the first service from the care plan
+          updated.serviceId = cp.services[0]?.serviceId || '';
+          // Use the first service's frequency for recurrence
+          const frequency = cp.services[0]?.frequency;
           if (frequency) {
             updated.recurrence = { type: frequencyToRecurrence(frequency) };
           }
+          // Copy care plan description to notes if notes is empty
+          if (cp.description && !prev.notes) {
+            updated.notes = cp.description;
+          }
+        }
+        } else {
+          // Reset service and recurrence when care plan is cleared
+          updated.serviceId = '';
+          updated.recurrence = { type: 'NONE' };
         }
       }
       // When service changes and a care plan is selected, match recurrence to that service's frequency
