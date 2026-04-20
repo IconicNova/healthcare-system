@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { FileText, AlertCircle } from 'lucide-react';
 import { buildCareDeliveryFormPath } from '@/components/care-delivery/care-delivery.helpers';
@@ -139,6 +139,11 @@ export default function EditVisitFormsTab({ visitId, returnTo = '', onCountChang
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [loadingTemplateId, setLoadingTemplateId] = useState(null);
+  const onCountChangeRef = useRef(onCountChange);
+
+  useEffect(() => {
+    onCountChangeRef.current = onCountChange;
+  }, [onCountChange]);
 
   useEffect(() => {
     if (!visitId) return;
@@ -180,9 +185,8 @@ export default function EditVisitFormsTab({ visitId, returnTo = '', onCountChang
 
   // UX-11: Report form count to parent for tab badge
   useEffect(() => {
-    const total = forms.length;
-    onCountChange?.(total);
-  }, [forms, onCountChange]);
+    onCountChangeRef.current?.(forms.length);
+  }, [forms]);
 
   // UX-11: Compute form completion summary
   const formSummary = useMemo(() => {

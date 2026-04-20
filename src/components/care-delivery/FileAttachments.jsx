@@ -14,27 +14,37 @@ function formatFileSize(bytes) {
 
 export default function FileAttachments({ visitId, onCountChange }) {
   const [attachments, setAttachments] = useState([]);
+  const [loadError, setLoadError] = useState('');
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
   const [dragOver, setDragOver] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [uploadProgress, setUploadProgress] = useState(null);
   const fileInputRef = useRef(null);
+  const onCountChangeRef = useRef(onCountChange);
+
+  useEffect(() => {
+    onCountChangeRef.current = onCountChange;
+  }, [onCountChange]);
 
   const fetchAttachments = useCallback(async () => {
     if (!visitId) return;
     try {
+      setLoadError('');
       const res = await fetch(`/api/visits/${visitId}/attachments`);
-      if (res.ok) {
-        const data = await res.json();
-        const list = data.attachments || [];
-        setAttachments(list);
-        onCountChange?.(list.length);
+      if (!res.ok) {
+        throw new Error('Failed to load attachments');
       }
+      const data = await res.json();
+      const list = data.attachments || [];
+      setAttachments(list);
+      onCountChangeRef.current?.(list.length);
     } catch {
       console.error('Failed to fetch attachments');
+      setAttachments([]);
+      setLoadError('Unable to load attachments right now.');
     }
-  }, [onCountChange, visitId]);
+  }, [visitId]);
 
   useEffect(() => {
     if (!visitId) return;
@@ -161,6 +171,18 @@ export default function FileAttachments({ visitId, onCountChange }) {
         }}>
           <AlertCircle size={14} />
           {error}
+        </div>
+      )}
+
+      {loadError && (
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: '8px',
+          padding: '10px 14px', borderRadius: '8px',
+          background: '#FEF2F2', color: '#B91C1C', fontSize: '13px',
+          marginBottom: '12px',
+        }}>
+          <AlertCircle size={14} />
+          {loadError}
         </div>
       )}
 

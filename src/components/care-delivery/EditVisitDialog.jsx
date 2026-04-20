@@ -118,6 +118,22 @@ export default function EditVisitDialog({
   const [goalsData, setGoalsData] = useState([]);
   const [activities, setActivities] = useState([]);
 
+  const handleTasksCountChange = useCallback((count) => {
+    setTabCounts((prev) => ({ ...prev, tasks: count }));
+  }, []);
+
+  const handleFormsCountChange = useCallback((count) => {
+    setTabCounts((prev) => ({ ...prev, forms: count }));
+  }, []);
+
+  const handleNotesCountChange = useCallback((count) => {
+    setTabCounts((prev) => ({ ...prev, notes: count }));
+  }, []);
+
+  const handleAttachmentsCountChange = useCallback((count) => {
+    setTabCounts((prev) => ({ ...prev, attachments: count }));
+  }, []);
+
   const visitReturnTo = useMemo(() => {
     if (!visit?.id) return '';
     return buildCareDeliveryVisitPath(visit.client?.id, visit.id, activeTab);
@@ -806,20 +822,20 @@ export default function EditVisitDialog({
                 <VisitTasksTab
                   visitId={visit?.id}
                   visitStatus={formData.status}
-                  onCountChange={(counts) => setTabCounts(prev => ({ ...prev, tasks: counts }))}
+                  onCountChange={handleTasksCountChange}
                 />
               )}
               {activeTab === 'forms' && (
                 <EditVisitFormsTab
                   visitId={visit?.id}
                   returnTo={visitReturnTo}
-                  onCountChange={(count) => setTabCounts(prev => ({ ...prev, forms: count }))}
+                  onCountChange={handleFormsCountChange}
                 />
               )}
               {activeTab === 'notes' && (
                 <VisitNotesTab
                   visitId={visit?.id}
-                  onCountChange={(count) => setTabCounts(prev => ({ ...prev, notes: count }))}
+                  onCountChange={handleNotesCountChange}
                 />
               )}
               {activeTab === 'goals' && renderGoalsTab()}
@@ -828,7 +844,7 @@ export default function EditVisitDialog({
               {activeTab === 'attachments' && (
                 <FileAttachments
                   visitId={visit?.id}
-                  onCountChange={(count) => setTabCounts(prev => ({ ...prev, attachments: count }))}
+                  onCountChange={handleAttachmentsCountChange}
                 />
               )}
             </div>

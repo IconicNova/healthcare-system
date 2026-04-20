@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Plus, Edit3, Trash2, X, Check } from 'lucide-react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
@@ -83,29 +83,39 @@ function RichEditor({ content, onUpdate, placeholder, readOnly }) {
 export default function VisitNotesTab({ visitId, onCountChange }) {
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState('');
   const [showAdd, setShowAdd] = useState(false);
   const [newContent, setNewContent] = useState('');
   const [editingId, setEditingId] = useState(null);
   const [editContent, setEditContent] = useState('');
   const [deleteConfirm, setDeleteConfirm] = useState(null);
+  const onCountChangeRef = useRef(onCountChange);
+
+  useEffect(() => {
+    onCountChangeRef.current = onCountChange;
+  }, [onCountChange]);
 
   const fetchNotes = useCallback(async () => {
     if (!visitId) return;
     try {
+      setLoadError('');
       setLoading(true);
       const res = await fetch(`/api/visits/${visitId}/notes`);
-      if (res.ok) {
-        const data = await res.json();
-        const notesList = data.notes || [];
-        setNotes(notesList);
-        onCountChange?.(notesList.length);
+      if (!res.ok) {
+        throw new Error('Failed to load visit notes');
       }
+      const data = await res.json();
+      const notesList = data.notes || [];
+      setNotes(notesList);
+      onCountChangeRef.current?.(notesList.length);
     } catch (err) {
       console.error('Failed to fetch notes:', err);
+      setNotes([]);
+      setLoadError('Unable to load visit notes right now.');
     } finally {
       setLoading(false);
     }
-  }, [onCountChange, visitId]);
+  }, [visitId]);
 
   useEffect(() => {
     if (!visitId) return;
@@ -162,6 +172,26 @@ export default function VisitNotesTab({ visitId, onCountChange }) {
 
   if (loading) {
     return <div style={{ padding: '40px', textAlign: 'center' }}><div className="loading-spinner" /></div>;
+  }
+
+  if (loadError) {
+    return (
+      <div style={{ padding: '24px' }}>
+        <div style={{
+          padding: '12px 14px', borderRadius: '8px', background: '#FEF2F2',
+          color: '#B91C1C', fontSize: '13px', marginBottom: '12px',
+        }}>
+          {loadError}
+        </div>
+        <button onClick={fetchNotes} style={{
+          padding: '8px 14px', borderRadius: '8px', border: 'none',
+          background: 'var(--color-primary)', color: 'white', cursor: 'pointer',
+          fontSize: '13px', fontWeight: 500,
+        }}>
+          Retry
+        </button>
+      </div>
+    );
   }
 
   return (

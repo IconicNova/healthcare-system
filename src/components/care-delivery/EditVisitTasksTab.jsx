@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Plus, Trash2, ChevronDown, ChevronRight, AlertTriangle } from 'lucide-react';
 
 const TERMINAL_STATUSES = ['COMPLETED', 'APPROVED', 'CANCELLED'];
@@ -14,33 +14,43 @@ const CATEGORY_OPTIONS = ['General', 'Assessment', 'Medication', 'Personal Care'
 export default function EditVisitTasksTab({ visitId, visitStatus, onCountChange }) {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState('');
   const [showAddTask, setShowAddTask] = useState(false);
   const [expandedNotes, setExpandedNotes] = useState({});
   const [newTask, setNewTask] = useState({ title: '', category: 'General', priority: 'MEDIUM', notes: '' });
   const [addError, setAddError] = useState('');
   const [mutationError, setMutationError] = useState('');
   const [deleteConfirm, setDeleteConfirm] = useState(null);
+  const onCountChangeRef = useRef(onCountChange);
 
   const isReadOnly = TERMINAL_STATUSES.includes(visitStatus);
+
+  useEffect(() => {
+    onCountChangeRef.current = onCountChange;
+  }, [onCountChange]);
 
   const fetchTasks = useCallback(async () => {
     if (!visitId) return;
     try {
+      setLoadError('');
       setLoading(true);
       const res = await fetch(`/api/visits/${visitId}/tasks`);
-      if (res.ok) {
-        const data = await res.json();
-        const taskList = data.tasks || [];
-        setTasks(taskList);
-        const completed = taskList.filter(t => t.completed).length;
-        onCountChange?.(`${completed}/${taskList.length}`);
+      if (!res.ok) {
+        throw new Error('Failed to load service tasks');
       }
+      const data = await res.json();
+      const taskList = data.tasks || [];
+      setTasks(taskList);
+      const completed = taskList.filter(t => t.completed).length;
+      onCountChangeRef.current?.(`${completed}/${taskList.length}`);
     } catch (err) {
       console.error('Failed to fetch tasks:', err);
+      setTasks([]);
+      setLoadError('Unable to load service tasks right now.');
     } finally {
       setLoading(false);
     }
-  }, [visitId, onCountChange]);
+  }, [visitId]);
 
   useEffect(() => {
     if (!visitId) return;
@@ -49,7 +59,7 @@ export default function EditVisitTasksTab({ visitId, visitStatus, onCountChange 
 
   const syncTaskCount = (taskList) => {
     const completed = taskList.filter((task) => task.completed).length;
-    onCountChange?.(`${completed}/${taskList.length}`);
+    onCountChangeRef.current?.(`${completed}/${taskList.length}`);
   };
 
   const handleAddTask = async () => {
@@ -227,6 +237,30 @@ export default function EditVisitTasksTab({ visitId, visitStatus, onCountChange 
 
   if (loading) {
     return <div style={{ padding: '40px', textAlign: 'center' }}><div className="loading-spinner" /></div>;
+  }
+
+  if (loadError) {
+    return (
+      <div style={{ padding: '24px' }}>
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 14px',
+          borderRadius: '8px', background: '#FEF2F2', color: '#B91C1C', marginBottom: '12px',
+        }}>
+          <AlertTriangle size={16} />
+          <span>{loadError}</span>
+        </div>
+        <button
+          onClick={fetchTasks}
+          style={{
+            padding: '8px 14px', borderRadius: '8px', border: 'none',
+            background: 'var(--color-primary)', color: 'white', cursor: 'pointer',
+            fontSize: '13px', fontWeight: 500,
+          }}
+        >
+          Retry
+        </button>
+      </div>
+    );
   }
 
   return (
