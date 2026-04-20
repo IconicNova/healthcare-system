@@ -61,9 +61,10 @@ export default function VisitForm({ isOpen, onClose, onSubmit, clients = [], sta
   const handleInputChange = (field, value) => {
     setFormData(prev => {
       const updated = { ...prev, [field]: value };
-      // Reset care plan, service, and notes when client changes
+      // Reset care plan, staff, service, and notes when client changes
       if (field === 'clientId') {
         updated.carePlanId = '';
+        updated.staffId = '';
         updated.serviceId = '';
         updated.recurrence = { type: 'NONE' };
         updated.notes = '';
@@ -71,22 +72,32 @@ export default function VisitForm({ isOpen, onClose, onSubmit, clients = [], sta
       // Auto-populate from care plan when selected, or reset when cleared
       if (field === 'carePlanId') {
         if (value) {
-        const cp = carePlans.find(c => c.id === value);
-        if (cp?.services?.length > 0) {
-          // Auto-select the first service from the care plan
-          updated.serviceId = cp.services[0]?.serviceId || '';
-          // Use the first service's frequency for recurrence
-          const frequency = cp.services[0]?.frequency;
-          if (frequency) {
-            updated.recurrence = { type: frequencyToRecurrence(frequency) };
+          const cp = carePlans.find(c => c.id === value);
+          if (cp) {
+            // Auto-fill client from care plan
+            if (cp.clientId) {
+              updated.clientId = cp.clientId;
+            }
+            // Auto-fill staff from care plan if available
+            if (cp.staffId) {
+              updated.staffId = cp.staffId;
+            }
+            // Auto-select the first service from the care plan
+            if (cp?.services?.length > 0) {
+              updated.serviceId = cp.services[0]?.serviceId || '';
+              // Use the first service's frequency for recurrence
+              const frequency = cp.services[0]?.frequency;
+              if (frequency) {
+                updated.recurrence = { type: frequencyToRecurrence(frequency) };
+              }
+            }
+            // Copy care plan description to notes if notes is empty
+            if (cp.description && !prev.notes) {
+              updated.notes = cp.description;
+            }
           }
-          // Copy care plan description to notes if notes is empty
-          if (cp.description && !prev.notes) {
-            updated.notes = cp.description;
-          }
-        }
         } else {
-          // Reset service and recurrence when care plan is cleared
+          // Reset when care plan is cleared
           updated.serviceId = '';
           updated.recurrence = { type: 'NONE' };
         }

@@ -50,13 +50,26 @@ export async function GET(request) {
         skip,
         take: limit,
         orderBy: { createdAt: 'desc' },
-        include: {
-          client: { select: { firstName: true, lastName: true } },
+        select: {
+          id: true,
+          name: true,
+          description: true,
+          clientId: true,
+          staffId: true,
+          startDate: true,
+          endDate: true,
+          status: true,
+          client: { select: { firstName: true, lastName: true, city: true } },
           staff: { select: { firstName: true, lastName: true } },
           services: {
-            include: {
-              service: { select: { name: true, duration: true } },
+            select: {
+              serviceId: true,
+              frequency: true,
+              frequencyText: true,
+              instructions: true,
+              service: { select: { id: true, name: true, duration: true } },
             },
+            orderBy: { order: 'asc' },
           },
         },
       }),
