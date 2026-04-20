@@ -18,6 +18,13 @@ export default function CarePlanForm({ isOpen, onClose, onSubmit, clients = [], 
     serviceDetails: [],
   });
   const [errors, setErrors] = useState({});
+  const [minDateTime, setMinDateTime] = useState('');
+
+  useEffect(() => {
+    // Set minimum datetime to current date/time (prevent past dates)
+    const now = new Date();
+    setMinDateTime(now.toISOString().slice(0, 16));
+  }, []);
 
   useEffect(() => {
     if (carePlan) {
@@ -247,7 +254,7 @@ export default function CarePlanForm({ isOpen, onClose, onSubmit, clients = [], 
           value={formData.startDate}
           onChange={(e) => handleInputChange('startDate', e.target.value)}
           error={errors.startDate}
-          min="1900-01-01T00:00"
+          min={minDateTime}
         />
 
         <Input
@@ -256,7 +263,7 @@ export default function CarePlanForm({ isOpen, onClose, onSubmit, clients = [], 
           value={formData.endDate}
           onChange={(e) => handleInputChange('endDate', e.target.value)}
           error={errors.endDate}
-          min="1900-01-01T00:00"
+          min={minDateTime}
         />
       </div>
 
