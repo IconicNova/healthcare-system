@@ -1304,6 +1304,7 @@ a:hover {
 
 .tabs.tabs-compact {
   display: flex;
+  justify-content: center;
   gap: var(--spacing-2);
   overflow-x: auto;
   flex-wrap: nowrap;
