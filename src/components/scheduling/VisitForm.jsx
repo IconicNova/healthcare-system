@@ -252,10 +252,17 @@ export default function VisitForm({ isOpen, onClose, onSubmit, clients = [], sta
   const carePlanOptions = [
     { value: '', label: 'No Care Plan' },
     ...carePlans
-      .filter(cp => cp.clientId === formData.clientId && cp.status !== false)
+      .filter(cp => {
+        // If client is selected, show only care plans for that client
+        // If no client is selected, show all active care plans
+        if (formData.clientId) {
+          return cp.clientId === formData.clientId && cp.status !== false;
+        }
+        return cp.status !== false;
+      })
       .map(cp => ({
         value: cp.id,
-        label: cp.name,
+        label: `${cp.name} — ${cp.client?.firstName} ${cp.client?.lastName}`,
       })),
   ];
 
