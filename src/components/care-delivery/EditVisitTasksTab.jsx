@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Plus, Trash2, ChevronDown, ChevronRight, AlertTriangle } from 'lucide-react';
 
 const TERMINAL_STATUSES = ['COMPLETED', 'APPROVED', 'CANCELLED'];
@@ -18,16 +18,13 @@ export default function EditVisitTasksTab({ visitId, visitStatus, onCountChange 
   const [expandedNotes, setExpandedNotes] = useState({});
   const [newTask, setNewTask] = useState({ title: '', category: 'General', priority: 'MEDIUM', notes: '' });
   const [addError, setAddError] = useState('');
+  const [mutationError, setMutationError] = useState('');
   const [deleteConfirm, setDeleteConfirm] = useState(null);
 
   const isReadOnly = TERMINAL_STATUSES.includes(visitStatus);
 
-  useEffect(() => {
+  const fetchTasks = useCallback(async () => {
     if (!visitId) return;
-    fetchTasks();
-  }, [visitId]);
-
-  const fetchTasks = async () => {
     try {
       setLoading(true);
       const res = await fetch(`/api/visits/${visitId}/tasks`);
@@ -43,6 +40,16 @@ export default function EditVisitTasksTab({ visitId, visitStatus, onCountChange 
     } finally {
       setLoading(false);
     }
+  }, [visitId, onCountChange]);
+
+  useEffect(() => {
+    if (!visitId) return;
+    fetchTasks();
+  }, [fetchTasks, visitId]);
+
+  const syncTaskCount = (taskList) => {
+    const completed = taskList.filter((task) => task.completed).length;
+    onCountChange?.(`${completed}/${taskList.length}`);
   };
 
   const handleAddTask = async () => {
@@ -110,23 +117,30 @@ export default function EditVisitTasksTab({ visitId, visitStatus, onCountChange 
 
   const handleToggle = async (task) => {
     if (isReadOnly) return;
+    setMutationError('');
     const newCompleted = !task.completed;
+    const previousTasks = tasks;
 
     // Optimistic update
     const updated = tasks.map(t => t.id === task.id ? { ...t, completed: newCompleted } : t);
     setTasks(updated);
-    const completedCount = updated.filter(t => t.completed).length;
-    onCountChange?.(`${completedCount}/${updated.length}`);
+    syncTaskCount(updated);
 
     try {
-      await fetch(`/api/visit-tasks/${task.id}`, {
+      const res = await fetch(`/api/visit-tasks/${task.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ completed: newCompleted }),
       });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || 'Failed to update task');
+      }
     } catch {
       // Revert on error
-      fetchTasks();
+      setTasks(previousTasks);
+      syncTaskCount(previousTasks);
+      setMutationError('Unable to save that task change.');
     }
   };
 
@@ -136,37 +150,62 @@ export default function EditVisitTasksTab({ visitId, visitStatus, onCountChange 
       if (res.ok) {
         const updated = tasks.filter(t => t.id !== taskId);
         setTasks(updated);
-        const completed = updated.filter(t => t.completed).length;
-        onCountChange?.(`${completed}/${updated.length}`);
+        syncTaskCount(updated);
+      } else {
+        const data = await res.json().catch(() => ({}));
+        setMutationError(data.error || 'Unable to delete task.');
       }
     } catch {
       console.error('Failed to delete task');
+      setMutationError('Unable to delete task.');
     }
     setDeleteConfirm(null);
   };
 
   // UX-5: Update task notes inline
   const handleUpdateNotes = async (taskId, notes) => {
+    setMutationError('');
+    const previousTasks = tasks;
+    const updated = tasks.map(t => t.id === taskId ? { ...t, notes } : t);
+    setTasks(updated);
+
     try {
-      await fetch(`/api/visit-tasks/${taskId}`, {
+      const res = await fetch(`/api/visit-tasks/${taskId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ notes }),
       });
-      setTasks(prev => prev.map(t => t.id === taskId ? { ...t, notes } : t));
-    } catch {}
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || 'Failed to update task notes');
+      }
+    } catch {
+      setTasks(previousTasks);
+      setMutationError('Unable to save task notes.');
+    }
   };
 
   // UX-4: Update priority
   const handlePriorityChange = async (taskId, priority) => {
+    setMutationError('');
+    const previousTasks = tasks;
+    const updated = tasks.map(t => t.id === taskId ? { ...t, priority } : t);
+    setTasks(updated);
+
     try {
-      await fetch(`/api/visit-tasks/${taskId}`, {
+      const res = await fetch(`/api/visit-tasks/${taskId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ priority }),
       });
-      setTasks(prev => prev.map(t => t.id === taskId ? { ...t, priority } : t));
-    } catch {}
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || 'Failed to update task priority');
+      }
+    } catch {
+      setTasks(previousTasks);
+      setMutationError('Unable to save task priority.');
+    }
   };
 
   const completedCount = tasks.filter(t => t.completed).length;
@@ -216,6 +255,17 @@ export default function EditVisitTasksTab({ visitId, visitStatus, onCountChange 
         }}>
           <AlertTriangle size={16} />
           Tasks are view-only for {visitStatus?.toLowerCase()} visits.
+        </div>
+      )}
+
+      {mutationError && (
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 14px',
+          background: '#FEE2E2', borderRadius: '8px', marginBottom: '16px',
+          fontSize: '13px', color: '#991B1B',
+        }}>
+          <AlertTriangle size={16} />
+          {mutationError}
         </div>
       )}
 

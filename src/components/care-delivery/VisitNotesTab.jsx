@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Plus, Edit3, Trash2, X, Check } from 'lucide-react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
@@ -89,12 +89,8 @@ export default function VisitNotesTab({ visitId, onCountChange }) {
   const [editContent, setEditContent] = useState('');
   const [deleteConfirm, setDeleteConfirm] = useState(null);
 
-  useEffect(() => {
+  const fetchNotes = useCallback(async () => {
     if (!visitId) return;
-    fetchNotes();
-  }, [visitId]);
-
-  const fetchNotes = async () => {
     try {
       setLoading(true);
       const res = await fetch(`/api/visits/${visitId}/notes`);
@@ -109,7 +105,12 @@ export default function VisitNotesTab({ visitId, onCountChange }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [onCountChange, visitId]);
+
+  useEffect(() => {
+    if (!visitId) return;
+    fetchNotes();
+  }, [fetchNotes, visitId]);
 
   const handleAdd = async () => {
     const stripped = newContent.replace(/<[^>]*>/g, '').trim();

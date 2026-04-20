@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { ArrowLeft, ClipboardCheck } from 'lucide-react';
@@ -16,7 +16,10 @@ import VisitReportsTab from '@/components/care-delivery/VisitReportsTab';
 import VitalsTab from '@/components/care-delivery/VitalsTab';
 import {
   buildCareDeliveryClientPath,
+  buildCareDeliveryVisitPath,
   resolveCareDeliveryTab,
+  resolveCareDeliveryVisitContext,
+  resolveCareDeliveryVisitTab,
   formatInitials,
 } from '@/components/care-delivery/care-delivery.helpers';
 
@@ -28,9 +31,12 @@ export default function CareDeliveryWorkspace({ params }) {
   const [client, setClient] = useState(null);
   const [loading, setLoading] = useState(true);
   const [editVisit, setEditVisit] = useState(null);
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [editVisitTab, setEditVisitTab] = useState('info');
+  const closingVisitIdRef = useRef('');
 
   const activeTab = resolveCareDeliveryTab(searchParams.get('tab'));
+  const visitContext = resolveCareDeliveryVisitContext(searchParams);
+  const visitTabQuery = visitContext.visitTab;
 
   useEffect(() => {
     const fetchClient = async () => {
@@ -54,17 +60,90 @@ export default function CareDeliveryWorkspace({ params }) {
     fetchClient();
   }, [clientId]);
 
+  useEffect(() => {
+    if (!visitContext.visitId) {
+      closingVisitIdRef.current = '';
+      if (editVisit) {
+        setEditVisit(null);
+        setEditVisitTab('info');
+      }
+      return;
+    }
+
+    if (closingVisitIdRef.current === visitContext.visitId) {
+      return;
+    }
+
+    const safeTab = resolveCareDeliveryVisitTab(visitTabQuery);
+    setEditVisitTab(safeTab);
+
+    if (editVisit?.id === visitContext.visitId) {
+      return;
+    }
+
+    let cancelled = false;
+
+    const fetchVisit = async () => {
+      try {
+        const response = await fetch(`/api/visits/${visitContext.visitId}`);
+        if (!response.ok) {
+          if (!cancelled) {
+            router.replace(buildCareDeliveryClientPath(clientId), { scroll: false });
+            setEditVisit(null);
+            setEditVisitTab('info');
+          }
+          return;
+        }
+
+        const data = await response.json();
+        if (!cancelled) {
+          setEditVisit(data);
+        }
+      } catch (error) {
+        console.error('Error fetching visit for modal:', error);
+        if (!cancelled) {
+          router.replace(buildCareDeliveryClientPath(clientId), { scroll: false });
+          setEditVisit(null);
+          setEditVisitTab('info');
+        }
+      }
+    };
+
+    fetchVisit();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [clientId, editVisit, router, visitContext.visitId, visitTabQuery]);
+
   const handleTabChange = (nextTab) => {
     router.replace(buildCareDeliveryClientPath(clientId, nextTab), { scroll: false });
   };
 
   const handleEditVisit = (visit) => {
     setEditVisit(visit);
-    setIsEditDialogOpen(true);
+    setEditVisitTab('info');
+    router.replace(buildCareDeliveryVisitPath(client.id, visit.id, 'info'), { scroll: false });
   };
 
   const handleVisitSave = (updatedVisit) => {
     setEditVisit(updatedVisit);
+  };
+
+  const handleVisitTabChange = (nextTab) => {
+    const safeTab = resolveCareDeliveryVisitTab(nextTab);
+    setEditVisitTab(safeTab);
+
+    if (editVisit?.id) {
+      router.replace(buildCareDeliveryVisitPath(client.id, editVisit.id, safeTab), { scroll: false });
+    }
+  };
+
+  const handleCloseVisit = () => {
+    closingVisitIdRef.current = editVisit?.id || visitContext.visitId || '';
+    setEditVisit(null);
+    setEditVisitTab('info');
+    router.replace(buildCareDeliveryClientPath(client.id), { scroll: false });
   };
 
   if (loading) {
@@ -187,14 +266,12 @@ export default function CareDeliveryWorkspace({ params }) {
       </CareDeliveryLayout>
 
       <EditVisitDialog
-        isOpen={isEditDialogOpen}
-        onClose={() => {
-          setIsEditDialogOpen(false);
-          setEditVisit(null);
-        }}
+        isOpen={Boolean(editVisit)}
+        onClose={handleCloseVisit}
         visit={editVisit}
         onSave={handleVisitSave}
-        formReturnTo={buildCareDeliveryClientPath(client.id)}
+        initialTab={editVisitTab}
+        onTabChange={handleVisitTabChange}
       />
       <BackToTop />
 

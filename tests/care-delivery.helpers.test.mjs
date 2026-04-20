@@ -4,7 +4,12 @@ import {
   CARE_DELIVERY_TABS,
   buildCareDeliveryClientPath,
   buildCareDeliveryFormPath,
+  buildCareDeliveryVisitPath,
+  formatDatetimeLocalInputValue,
   resolveCareDeliveryReturnTo,
+  resolveCareDeliveryVisitContext,
+  resolveCareDeliveryVisitTab,
+  toIsoFromDatetimeLocalInputValue,
 } from '../src/components/care-delivery/care-delivery.helpers.js';
 
 function runTest(name, fn) {
@@ -46,4 +51,33 @@ runTest('resolveCareDeliveryReturnTo allows safe internal paths and rejects exte
   );
   assert.equal(resolveCareDeliveryReturnTo('https://example.com/elsewhere'), '/care-delivery');
   assert.equal(resolveCareDeliveryReturnTo('javascript:alert(1)'), '/care-delivery');
+});
+
+runTest('buildCareDeliveryVisitPath preserves the visit and tab context for modal returns', () => {
+  assert.equal(
+    buildCareDeliveryVisitPath('client-123', 'visit-9', 'forms'),
+    '/care-delivery/client-123?visitId=visit-9&visitTab=forms'
+  );
+  assert.equal(
+    buildCareDeliveryVisitPath('client-123', 'visit-9', 'not-a-tab'),
+    '/care-delivery/client-123?visitId=visit-9&visitTab=info'
+  );
+});
+
+runTest('resolveCareDeliveryVisitContext extracts visit modal state from search params', () => {
+  const searchParams = new URLSearchParams('visitId=visit-9&visitTab=attachments');
+  assert.deepEqual(resolveCareDeliveryVisitContext(searchParams), {
+    visitId: 'visit-9',
+    visitTab: 'attachments',
+  });
+  assert.deepEqual(resolveCareDeliveryVisitContext(new URLSearchParams()), {
+    visitId: '',
+    visitTab: 'info',
+  });
+});
+
+runTest('datetime local helpers round trip between input values and ISO strings', () => {
+  const value = formatDatetimeLocalInputValue('2026-04-17T09:30:00.000Z');
+  assert.match(value, /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/);
+  assert.equal(toIsoFromDatetimeLocalInputValue('2026-04-17T09:30'), new Date('2026-04-17T09:30').toISOString());
 });

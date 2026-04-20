@@ -8,6 +8,11 @@ import VisitTasksTab from '@/components/care-delivery/EditVisitTasksTab';
 import EditVisitFormsTab from '@/components/care-delivery/EditVisitFormsTab';
 import VisitNotesTab from '@/components/care-delivery/VisitNotesTab';
 import FileAttachments from '@/components/care-delivery/FileAttachments';
+import {
+  buildCareDeliveryVisitPath,
+  formatDatetimeLocalInputValue,
+  toIsoFromDatetimeLocalInputValue,
+} from '@/components/care-delivery/care-delivery.helpers';
 import { getValidNextStatuses, getStatusLabel, isTerminalStatus } from '@/lib/visit-status-machine';
 
 
@@ -17,13 +22,6 @@ function formatDateTime(dateString) {
   const d = new Date(dateString);
   return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) +
     ', ' + d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
-}
-
-function toLocalDatetimeValue(isoString) {
-  if (!isoString) return '';
-  const d = new Date(isoString);
-  const pad = (n) => String(n).padStart(2, '0');
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
 function formatDuration(startDate, endDate) {
@@ -98,8 +96,17 @@ function ElapsedTimer({ startTime }) {
   );
 }
 
-export default function EditVisitDialog({ isOpen, onClose, visit, onSave, formReturnTo }) {
-  const [activeTab, setActiveTab] = useState('info');
+const VISIT_MODAL_TABS = ['info', 'tasks', 'forms', 'notes', 'goals', 'activities', 'attachments'];
+
+export default function EditVisitDialog({
+  isOpen,
+  onClose,
+  visit,
+  onSave,
+  initialTab = 'info',
+  onTabChange,
+}) {
+  const [activeTab, setActiveTab] = useState(initialTab);
   const [formData, setFormData] = useState({
     status: '', title: '', description: '', notes: '', actualStart: '', actualEnd: '',
   });
@@ -109,32 +116,42 @@ export default function EditVisitDialog({ isOpen, onClose, visit, onSave, formRe
   const [confirmDialog, setConfirmDialog] = useState(null);
   const [tabCounts, setTabCounts] = useState({ tasks: null, notes: 0, forms: null, attachments: 0 });
   const [goalsData, setGoalsData] = useState([]);
-  const [goalProgress, setGoalProgress] = useState({});
   const [activities, setActivities] = useState([]);
+
+  const visitReturnTo = useMemo(() => {
+    if (!visit?.id) return '';
+    return buildCareDeliveryVisitPath(visit.client?.id, visit.id, activeTab);
+  }, [activeTab, visit?.client?.id, visit?.id]);
 
   // Reset tab + form on open/visit change
   useEffect(() => {
     if (isOpen && visit) {
-      setActiveTab('info');
+      const safeTab = VISIT_MODAL_TABS.includes(initialTab) ? initialTab : 'info';
+      setActiveTab(safeTab);
       const data = {
         status: visit.status || 'SCHEDULED',
         title: visit.title || (visit.service?.name || ''),     // UX-12: auto-populate from service
         description: visit.description || '',
         notes: visit.notes || '',
-        actualStart: visit.actualStart ? toLocalDatetimeValue(visit.actualStart) : '',
-        actualEnd: visit.actualEnd ? toLocalDatetimeValue(visit.actualEnd) : '',
+        actualStart: visit.actualStart ? formatDatetimeLocalInputValue(visit.actualStart) : '',
+        actualEnd: visit.actualEnd ? formatDatetimeLocalInputValue(visit.actualEnd) : '',
       };
       setFormData(data);
       setInitialFormData(data);
       setError('');
-      setGoalProgress({});
 
       // Fetch tab counts
       fetchTabCounts(visit.id);
       fetchGoals(visit);
       fetchActivities(visit.id);
     }
-  }, [isOpen, visit]);
+  }, [initialTab, isOpen, visit]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const safeTab = VISIT_MODAL_TABS.includes(initialTab) ? initialTab : 'info';
+    setActiveTab(safeTab);
+  }, [initialTab, isOpen]);
 
   const fetchTabCounts = async (visitId) => {
     try {
@@ -245,8 +262,8 @@ export default function EditVisitDialog({ isOpen, onClose, visit, onSave, formRe
         title: formData.title || null,
         description: formData.description || null,
         notes: formData.notes || null,
-        actualStart: formData.actualStart ? new Date(formData.actualStart).toISOString() : null,
-        actualEnd: formData.actualEnd ? new Date(formData.actualEnd).toISOString() : null,
+        actualStart: toIsoFromDatetimeLocalInputValue(formData.actualStart),
+        actualEnd: toIsoFromDatetimeLocalInputValue(formData.actualEnd),
       };
 
       const res = await fetch(`/api/visits/${visit.id}`, {
@@ -272,6 +289,12 @@ export default function EditVisitDialog({ isOpen, onClose, visit, onSave, formRe
     }
   }, [visit, formData, onSave]);
 
+  const handleTabChange = useCallback((nextTab) => {
+    const safeTab = VISIT_MODAL_TABS.includes(nextTab) ? nextTab : 'info';
+    setActiveTab(safeTab);
+    onTabChange?.(safeTab);
+  }, [onTabChange]);
+
   // BUG-6 FIX + BUG-9 FIX: Proper keyboard handlers with correct deps, no duplicate Escape
   useEffect(() => {
     if (!isOpen) return;
@@ -279,9 +302,9 @@ export default function EditVisitDialog({ isOpen, onClose, visit, onSave, formRe
       // UX-13: Alt+1 through Alt+6 for tab switching
       if (e.altKey && e.key >= '1' && e.key <= '7') {
         e.preventDefault();
-        const tabKeys = ['info', 'tasks', 'forms', 'notes', 'goals', 'activities', 'attachments'];
+        const tabKeys = VISIT_MODAL_TABS;
         const idx = parseInt(e.key) - 1;
-        if (tabKeys[idx]) setActiveTab(tabKeys[idx]);
+        if (tabKeys[idx]) handleTabChange(tabKeys[idx]);
         return;
       }
       // Ctrl+S to save
@@ -292,7 +315,7 @@ export default function EditVisitDialog({ isOpen, onClose, visit, onSave, formRe
     };
     document.addEventListener('keydown', handler);
     return () => document.removeEventListener('keydown', handler);
-  }, [isOpen, handleSubmit]);
+  }, [handleSubmit, handleTabChange, isOpen]);
 
   // UX-1: Intercept close with unsaved changes warning
   const handleClose = useCallback(() => {
@@ -320,7 +343,7 @@ export default function EditVisitDialog({ isOpen, onClose, visit, onSave, formRe
       onConfirm: async () => {
         setConfirmDialog(null);
         const now = new Date();
-        const localNow = toLocalDatetimeValue(now.toISOString());
+        const localNow = formatDatetimeLocalInputValue(now);
         const body = {
           status: 'IN_PROGRESS',
           actualStart: now.toISOString(),
@@ -355,7 +378,7 @@ export default function EditVisitDialog({ isOpen, onClose, visit, onSave, formRe
       onConfirm: async () => {
         setConfirmDialog(null);
         const now = new Date();
-        const localNow = toLocalDatetimeValue(now.toISOString());
+        const localNow = formatDatetimeLocalInputValue(now);
         const body = {
           status: 'COMPLETED',
           actualEnd: now.toISOString(),
@@ -380,13 +403,6 @@ export default function EditVisitDialog({ isOpen, onClose, visit, onSave, formRe
     });
   };
 
-  const handleGoalProgressChange = (goalId, field, value) => {
-    setGoalProgress(prev => ({
-      ...prev,
-      [goalId]: { ...(prev[goalId] || {}), [field]: value },
-    }));
-  };
-
   if (!visit) return null;
 
   const isTerminal = isTerminalStatus(formData.status);
@@ -396,7 +412,7 @@ export default function EditVisitDialog({ isOpen, onClose, visit, onSave, formRe
   const showElapsedTimer = formData.actualStart && !formData.actualEnd && ['IN_PROGRESS'].includes(formData.status);
 
   // LOGIC-1: Max datetime = now
-  const maxDatetime = toLocalDatetimeValue(new Date().toISOString());
+  const maxDatetime = formatDatetimeLocalInputValue(new Date());
 
   const renderInfoTab = () => (
     <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
@@ -579,7 +595,7 @@ export default function EditVisitDialog({ isOpen, onClose, visit, onSave, formRe
     </div>
   );
 
-  // LOGIC-8 + UX-15: Interactive goals tab
+  // LOGIC-8 + UX-15: View-only goals tab
   const renderGoalsTab = () => {
     if (!visit.carePlanId || goalsData.length === 0) {
       return (
@@ -593,20 +609,38 @@ export default function EditVisitDialog({ isOpen, onClose, visit, onSave, formRe
       );
     }
 
-    const GOAL_STATUSES = [
-      { value: 'ON_TRACK', label: 'On Track', color: '#10B981', bg: '#D1FAE5' },
-      { value: 'AT_RISK', label: 'At Risk', color: '#F59E0B', bg: '#FEF3C7' },
-      { value: 'MET', label: 'Met', color: '#059669', bg: '#A7F3D0' },
-      { value: 'NOT_MET', label: 'Not Met', color: '#EF4444', bg: '#FEE2E2' },
-    ];
-
     return (
       <div style={{ padding: '20px' }}>
         <h3 style={{ margin: '0 0 16px', fontSize: '16px', fontWeight: 600 }}>Care Plan Goals & Services</h3>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          padding: '12px 14px',
+          borderRadius: '8px',
+          background: '#FEF3C7',
+          color: '#92400E',
+          fontSize: '13px',
+          marginBottom: '16px',
+        }}>
+          <AlertTriangle size={16} />
+          Goal editing is view-only in this modal for now, so changes are not saved here.
+        </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           {goalsData.map(goal => {
-            const progress = goalProgress[goal.id] || {};
-            const statusObj = GOAL_STATUSES.find(s => s.value === (progress.status || 'ON_TRACK')) || GOAL_STATUSES[0];
+            const rawStatus = goal.status || goal.progressStatus || goal.progress?.status || 'ON_TRACK';
+            const percent = Number(goal.percent ?? goal.completionPercent ?? goal.progress?.percent ?? 0);
+            const notes = goal.notes || goal.progressNotes || goal.progress?.notes || '';
+            const statusObj = {
+              ON_TRACK: { label: 'On Track', color: '#10B981', bg: '#D1FAE5' },
+              AT_RISK: { label: 'At Risk', color: '#F59E0B', bg: '#FEF3C7' },
+              MET: { label: 'Met', color: '#059669', bg: '#A7F3D0' },
+              NOT_MET: { label: 'Not Met', color: '#EF4444', bg: '#FEE2E2' },
+            }[rawStatus] || {
+              label: String(rawStatus).replace(/_/g, ' '),
+              color: '#6B7280',
+              bg: '#F3F4F6',
+            };
 
             return (
               <div key={goal.id} style={{
@@ -630,20 +664,13 @@ export default function EditVisitDialog({ isOpen, onClose, visit, onSave, formRe
                         background: '#DBEAFE', color: '#1D4ED8', textTransform: 'uppercase',
                       }}>{goal.frequency}</span>
                     )}
-                    <select
-                      value={progress.status || 'ON_TRACK'}
-                      onChange={(e) => handleGoalProgressChange(goal.id, 'status', e.target.value)}
-                      disabled={isTerminal}
-                      style={{
-                        padding: '4px 8px', borderRadius: '6px', fontSize: '12px', fontWeight: 500,
-                        border: `1px solid ${statusObj.color}`,
-                        background: statusObj.bg, color: statusObj.color, cursor: 'pointer',
-                      }}
-                    >
-                      {GOAL_STATUSES.map(s => (
-                        <option key={s.value} value={s.value}>{s.label}</option>
-                      ))}
-                    </select>
+                    <span style={{
+                      padding: '4px 8px', borderRadius: '6px', fontSize: '12px', fontWeight: 600,
+                      border: `1px solid ${statusObj.color}`,
+                      background: statusObj.bg, color: statusObj.color,
+                    }}>
+                      {statusObj.label}
+                    </span>
                   </div>
                 </div>
 
@@ -651,33 +678,34 @@ export default function EditVisitDialog({ isOpen, onClose, visit, onSave, formRe
                 <div style={{ marginBottom: '10px' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
                     <span style={{ fontSize: '12px', color: 'var(--color-text-secondary)' }}>Progress</span>
-                    <span style={{ fontSize: '12px', fontWeight: 500 }}>{progress.percent || 0}%</span>
+                    <span style={{ fontSize: '12px', fontWeight: 500 }}>{Number.isFinite(percent) ? percent : 0}%</span>
                   </div>
                   <div style={{ height: '6px', background: 'var(--color-border)', borderRadius: '3px', overflow: 'hidden' }}>
                     <div style={{
-                      height: '100%', width: `${progress.percent || 0}%`,
+                      height: '100%', width: `${Number.isFinite(percent) ? percent : 0}%`,
                       background: statusObj.color, borderRadius: '3px',
                       transition: 'width 0.3s ease',
                     }} />
                   </div>
                   <input
                     type="range" min="0" max="100" step="5"
-                    value={progress.percent || 0}
-                    onChange={(e) => handleGoalProgressChange(goal.id, 'percent', parseInt(e.target.value))}
-                    disabled={isTerminal}
-                    style={{ width: '100%', marginTop: '4px' }}
+                    value={Number.isFinite(percent) ? percent : 0}
+                    disabled
+                    readOnly
+                    style={{ width: '100%', marginTop: '4px', opacity: 0.6 }}
                   />
                 </div>
 
                 <textarea
                   placeholder="Visit-specific notes for this goal..."
-                  value={progress.notes || ''}
-                  onChange={(e) => handleGoalProgressChange(goal.id, 'notes', e.target.value)}
-                  disabled={isTerminal}
+                  value={notes}
+                  readOnly
+                  disabled
                   rows={2}
                   style={{
                     width: '100%', padding: '8px 10px', borderRadius: '6px',
                     border: '1px solid var(--color-border)', fontSize: '13px', resize: 'vertical',
+                    background: 'var(--color-bg-secondary)',
                   }}
                 />
               </div>
@@ -771,7 +799,7 @@ export default function EditVisitDialog({ isOpen, onClose, visit, onSave, formRe
         {/* UX-10: Responsive container */}
         <div style={{ display: 'flex', flexDirection: 'column', height: 'min(600px, 80vh)' }}>
           <div style={{ flex: 1, overflow: 'auto' }}>
-            <Tabs tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
+            <Tabs tabs={tabs} activeTab={activeTab} onTabChange={handleTabChange} />
             <div>
               {activeTab === 'info' && renderInfoTab()}
               {activeTab === 'tasks' && (
@@ -784,7 +812,7 @@ export default function EditVisitDialog({ isOpen, onClose, visit, onSave, formRe
               {activeTab === 'forms' && (
                 <EditVisitFormsTab
                   visitId={visit?.id}
-                  returnTo={formReturnTo}
+                  returnTo={visitReturnTo}
                   onCountChange={(count) => setTabCounts(prev => ({ ...prev, forms: count }))}
                 />
               )}

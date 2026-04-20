@@ -21,12 +21,8 @@ export default function FileAttachments({ visitId, onCountChange }) {
   const [uploadProgress, setUploadProgress] = useState(null);
   const fileInputRef = useRef(null);
 
-  useEffect(() => {
+  const fetchAttachments = useCallback(async () => {
     if (!visitId) return;
-    fetchAttachments();
-  }, [visitId]);
-
-  const fetchAttachments = async () => {
     try {
       const res = await fetch(`/api/visits/${visitId}/attachments`);
       if (res.ok) {
@@ -38,7 +34,12 @@ export default function FileAttachments({ visitId, onCountChange }) {
     } catch {
       console.error('Failed to fetch attachments');
     }
-  };
+  }, [onCountChange, visitId]);
+
+  useEffect(() => {
+    if (!visitId) return;
+    fetchAttachments();
+  }, [fetchAttachments, visitId]);
 
   const handleUpload = useCallback(async (files) => {
     if (!files.length) return;
@@ -79,7 +80,7 @@ export default function FileAttachments({ visitId, onCountChange }) {
       setUploading(false);
       setUploadProgress(null);
     }
-  }, [visitId]);
+  }, [fetchAttachments, visitId]);
 
   const handleDelete = async (attachmentId) => {
     try {
