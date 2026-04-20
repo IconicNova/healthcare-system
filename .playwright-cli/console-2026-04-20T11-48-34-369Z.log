@@ -2421,3 +2421,63 @@
 [21602937ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
     at eval (webpack-internal:///(app-pages-browser)/./src/components/notifications/NotificationDropdown.jsx:46:36)
     at eval (webpack-internal:///(app-pages-browser)/./src/components/notifications/NotificationDropdown.jsx:115:13) @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/app-index.js:32
+[21632949ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/api/notifications/unread-count:0
+[21632949ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at eval (webpack-internal:///(app-pages-browser)/./src/components/notifications/NotificationDropdown.jsx:46:36)
+    at eval (webpack-internal:///(app-pages-browser)/./src/components/notifications/NotificationDropdown.jsx:115:13) @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/app-index.js:32
+[21662924ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/api/notifications/unread-count:0
+[21662924ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at eval (webpack-internal:///(app-pages-browser)/./src/components/notifications/NotificationDropdown.jsx:46:36)
+    at eval (webpack-internal:///(app-pages-browser)/./src/components/notifications/NotificationDropdown.jsx:115:13) @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/app-index.js:32
+[21692942ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/api/notifications/unread-count:0
+[21692942ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at eval (webpack-internal:///(app-pages-browser)/./src/components/notifications/NotificationDropdown.jsx:46:36)
+    at eval (webpack-internal:///(app-pages-browser)/./src/components/notifications/NotificationDropdown.jsx:115:13) @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/app-index.js:32
+[21722928ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/api/notifications/unread-count:0
+[21722928ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at eval (webpack-internal:///(app-pages-browser)/./src/components/notifications/NotificationDropdown.jsx:46:36)
+    at eval (webpack-internal:///(app-pages-browser)/./src/components/notifications/NotificationDropdown.jsx:115:13) @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/app-index.js:32
+[21752942ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/api/notifications/unread-count:0
+[21752942ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at eval (webpack-internal:///(app-pages-browser)/./src/components/notifications/NotificationDropdown.jsx:46:36)
+    at eval (webpack-internal:///(app-pages-browser)/./src/components/notifications/NotificationDropdown.jsx:115:13) @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/app-index.js:32
+[21782961ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/api/notifications/unread-count:0
+[21782962ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at eval (webpack-internal:///(app-pages-browser)/./src/components/notifications/NotificationDropdown.jsx:46:36)
+    at eval (webpack-internal:///(app-pages-browser)/./src/components/notifications/NotificationDropdown.jsx:115:13) @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/app-index.js:32
+[21812968ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/api/notifications/unread-count:0
+[21812968ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at eval (webpack-internal:///(app-pages-browser)/./src/components/notifications/NotificationDropdown.jsx:46:36)
+    at eval (webpack-internal:///(app-pages-browser)/./src/components/notifications/NotificationDropdown.jsx:115:13) @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/app-index.js:32
+[21842949ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/api/notifications/unread-count:0
+[21842949ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at eval (webpack-internal:///(app-pages-browser)/./src/components/notifications/NotificationDropdown.jsx:46:36)
+    at eval (webpack-internal:///(app-pages-browser)/./src/components/notifications/NotificationDropdown.jsx:115:13) @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/app-index.js:32
+[21872929ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/api/notifications/unread-count:0
+[21872930ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at eval (webpack-internal:///(app-pages-browser)/./src/components/notifications/NotificationDropdown.jsx:46:36)
+    at eval (webpack-internal:///(app-pages-browser)/./src/components/notifications/NotificationDropdown.jsx:115:13) @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/app-index.js:32
+[21902929ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/api/notifications/unread-count:0
+[21902929ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at eval (webpack-internal:///(app-pages-browser)/./src/components/notifications/NotificationDropdown.jsx:46:36)
+    at eval (webpack-internal:///(app-pages-browser)/./src/components/notifications/NotificationDropdown.jsx:115:13) @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/app-index.js:32
+[21932968ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/api/notifications/unread-count:0
+[21932968ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at eval (webpack-internal:///(app-pages-browser)/./src/components/notifications/NotificationDropdown.jsx:46:36)
+    at eval (webpack-internal:///(app-pages-browser)/./src/components/notifications/NotificationDropdown.jsx:115:13) @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/app-index.js:32
+[21962947ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/api/notifications/unread-count:0
+[21962948ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at eval (webpack-internal:///(app-pages-browser)/./src/components/notifications/NotificationDropdown.jsx:46:36)
+    at eval (webpack-internal:///(app-pages-browser)/./src/components/notifications/NotificationDropdown.jsx:115:13) @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/app-index.js:32
+[21992936ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/api/notifications/unread-count:0
+[21992936ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at eval (webpack-internal:///(app-pages-browser)/./src/components/notifications/NotificationDropdown.jsx:46:36)
+    at eval (webpack-internal:///(app-pages-browser)/./src/components/notifications/NotificationDropdown.jsx:115:13) @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/app-index.js:32
+[22022924ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/api/notifications/unread-count:0
+[22022924ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at eval (webpack-internal:///(app-pages-browser)/./src/components/notifications/NotificationDropdown.jsx:46:36)
+    at eval (webpack-internal:///(app-pages-browser)/./src/components/notifications/NotificationDropdown.jsx:115:13) @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/app-index.js:32
+[22052938ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/api/notifications/unread-count:0
+[22052938ms] [ERROR] Error fetching unread count: TypeError: Failed to fetch
+    at eval (webpack-internal:///(app-pages-browser)/./src/components/notifications/NotificationDropdown.jsx:46:36)
+    at eval (webpack-internal:///(app-pages-browser)/./src/components/notifications/NotificationDropdown.jsx:115:13) @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/app-index.js:32
