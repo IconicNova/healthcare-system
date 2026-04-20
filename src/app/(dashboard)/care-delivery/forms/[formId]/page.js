@@ -1,15 +1,14 @@
 'use client';
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { ArrowLeft, Save, Check, Clock, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Save } from 'lucide-react';
 import FormFieldRenderer from '@/components/care-delivery/FormFieldRenderer';
 import { resolveCareDeliveryReturnTo } from '@/components/care-delivery/care-delivery.helpers';
 import { mergeFormDataWithPrefill } from '@/lib/form-prefill';
 import {
   normalizeFormSchema,
   normalizeFormStatus,
-  shouldScheduleFormAutosave,
 } from '@/lib/form-review';
 
 function formatReadOnlyValue(value) {
@@ -59,12 +58,10 @@ export default function FormChartingPage({ params }) {
   const searchParams = useSearchParams();
   const { formId } = params;
 
-  const [form, setForm] = useState(null);
+const [form, setForm] = useState(null);
   const [formData, setFormData] = useState({});
-  const [initialFormData, setInitialFormData] = useState({});
- const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [saveStatus, setSaveStatus] = useState('idle'); // idle, saving, saved, error
   const [validationErrors, setValidationErrors] = useState({});
   const [reviewActionLoading, setReviewActionLoading] = useState(false);
   const returnTo = resolveCareDeliveryReturnTo(searchParams.get('returnTo'));
@@ -96,8 +93,7 @@ export default function FormChartingPage({ params }) {
             visit: data.form.visit,
             formData: data.form.formData || {},
           });
-          setFormData(initialData);
-          setInitialFormData(initialData);
+setFormData(initialData);
         } else {
           alert('Failed to load form');
           router.push(returnTo);
@@ -112,65 +108,11 @@ export default function FormChartingPage({ params }) {
     };
 
     fetchForm();
-  }, [formId, returnTo, router]);
+ }, [formId, returnTo, router]);
 
-  const isDirty = useMemo(
-    () => JSON.stringify(formData) !== JSON.stringify(initialFormData),
-    [formData, initialFormData]
-  );
 
-  // Debounced auto-save
-  const saveForm = useCallback(async () => {
-    if (
-      !form ||
-      !isDirty ||
-      !shouldScheduleFormAutosave({ status: currentStatus, saving, saveStatus })
-    ) {
-      return;
-    }
 
-    setSaving(true);
-    setSaveStatus('saving');
 
-    try {
-      const response = await fetch(`/api/forms/${formId}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ formData }),
-      });
-
-      if (response.ok) {
-        setInitialFormData(formData);
-        setSaveStatus('saved');
-        setTimeout(() => setSaveStatus('idle'), 3000);
-      } else {
-        setSaveStatus('error');
-        setTimeout(() => setSaveStatus('idle'), 3000);
-      }
-    } catch (error) {
-      console.error('Error saving form:', error);
-      setSaveStatus('error');
-      setTimeout(() => setSaveStatus('idle'), 3000);
-    } finally {
-      setSaving(false);
-    }
-  }, [form, formData, saving, saveStatus, formId, currentStatus, isDirty]);
-
-  // Auto-save with debounce (2 seconds)
-  useEffect(() => {
-    if (
-      !isDirty ||
-      !shouldScheduleFormAutosave({ status: currentStatus, saving, saveStatus })
-    ) {
-      return undefined;
-    }
-
-    const timeout = setTimeout(() => {
-      saveForm();
-    }, 2000);
-
-    return () => clearTimeout(timeout);
-  }, [currentStatus, formData, isDirty, saveForm, saveStatus, saving]);
 
   const handleFieldChange = (fieldName, value) => {
     if (!isEditable) {
@@ -375,19 +317,7 @@ export default function FormChartingPage({ params }) {
         )}
       </div>
 
-      {/* Save Status Indicator */}
-      {saveStatus !== 'idle' && (
-        <div
-          className={`form-save-banner form-save-banner-${saveStatus}`}
-        >
-          {saveStatus === 'saving' && <Clock size={16} />}
-          {saveStatus === 'saved' && <Check size={16} />}
-          {saveStatus === 'error' && <AlertCircle size={16} />}
-          {saveStatus === 'saving' && 'Saving...'}
-          {saveStatus === 'saved' && 'Saved successfully!'}
-          {saveStatus === 'error' && 'Error saving form. Please try again.'}
-        </div>
-      )}
+
 
       {/* Form Sections */}
       <div className="form-section-list">
