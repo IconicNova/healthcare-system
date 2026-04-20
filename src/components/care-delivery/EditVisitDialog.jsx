@@ -42,12 +42,13 @@ function ConfirmDialog({ open, title, message, confirmText, confirmColor, onConf
     <div style={{
       position: 'fixed', inset: 0, zIndex: 10001,
       display: 'flex', alignItems: 'center', justifyContent: 'center',
-      background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(2px)',
+      background: 'rgba(15, 23, 42, 0.54)', backdropFilter: 'blur(4px)',
     }}>
       <div style={{
-        background: 'var(--color-bg)', borderRadius: '12px',
+        background: 'white', borderRadius: '12px',
         padding: '24px', maxWidth: '400px', width: '90%',
         boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
+        border: '1px solid var(--color-border)',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
           <AlertTriangle size={20} color={confirmColor || '#F59E0B'} />
