@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { ArrowLeft, Save, Check, Clock, AlertCircle, Eye } from 'lucide-react';
+import { ArrowLeft, Save, Check, Clock, AlertCircle } from 'lucide-react';
 import FormFieldRenderer from '@/components/care-delivery/FormFieldRenderer';
 import { resolveCareDeliveryReturnTo } from '@/components/care-delivery/care-delivery.helpers';
 import { mergeFormDataWithPrefill } from '@/lib/form-prefill';
@@ -62,10 +62,9 @@ export default function FormChartingPage({ params }) {
   const [form, setForm] = useState(null);
   const [formData, setFormData] = useState({});
   const [initialFormData, setInitialFormData] = useState({});
-  const [loading, setLoading] = useState(true);
+ const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saveStatus, setSaveStatus] = useState('idle'); // idle, saving, saved, error
-  const [showPreview, setShowPreview] = useState(false);
   const [validationErrors, setValidationErrors] = useState({});
   const [reviewActionLoading, setReviewActionLoading] = useState(false);
   const returnTo = resolveCareDeliveryReturnTo(searchParams.get('returnTo'));
@@ -448,15 +447,8 @@ export default function FormChartingPage({ params }) {
         ))}
       </div>
 
-      {/* Action Buttons */}
+     {/* Action Buttons */}
       <div className="form-action-row">
-        <button
-          onClick={() => setShowPreview(true)}
-          className="btn btn-secondary form-action-secondary"
-        >
-          <Eye size={18} />
-          Preview
-        </button>
         {isEditable ? (
           <button
             onClick={handleSubmit}
@@ -550,57 +542,8 @@ export default function FormChartingPage({ params }) {
             )}
           </>
         )}
-      </div>
-
-      {/* Preview Modal */}
-      {showPreview && (
-        <div className="form-preview-backdrop" onClick={() => setShowPreview(false)}>
-          <div
-            className="form-preview-shell"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="form-preview-header">
-              <h3 style={{ fontSize: '18px', fontWeight: 600, margin: 0 }}>Form Preview</h3>
-              <button
-                onClick={() => setShowPreview(false)}
-                className="btn btn-secondary form-preview-close"
-              >
-                <span aria-hidden="true">×</span>
-              </button>
-            </div>
-            <div className="form-preview-body">
-              {sections.map((section, sectionIndex) => (
-                <div key={sectionIndex} className="form-preview-section">
-                  <h4 className="form-preview-section-title">
-                    {section.name}
-                  </h4>
-                  <div className="form-preview-grid">
-                    {(section.fields || []).map((field, fieldIndex) => (
-                      <div key={fieldIndex}>
-                        <div className="form-preview-field-label">
-                          {field.label} {field.required && <span style={{ color: 'var(--color-error)' }}>*</span>}
-                        </div>
-                        <div className="form-preview-value">
-                          {formatReadOnlyValue(formData[field.name])}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div className="form-preview-footer">
-              <button
-                onClick={() => setShowPreview(false)}
-                className="btn btn-secondary"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
+       </div>
+     </div>
+   );
+ }
 
