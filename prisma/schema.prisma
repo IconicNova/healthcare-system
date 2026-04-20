@@ -432,6 +432,8 @@ model Visit {
   user         User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
   visitTasks       VisitTask[]
   visitNotes       VisitNote[]
+  visitAttachments VisitAttachment[]
+  visitActivities  VisitActivity[]
   invoices         Invoice[]
   invoiceItems     InvoiceItem[]
   forms            ClientForm[]
@@ -751,6 +753,8 @@ model VisitTask {
   category  String?
   completed Boolean  @default(false)
   notes     String?
+  priority  String   @default("MEDIUM")
+  sortOrder Int      @default(0)
   visitId   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -765,10 +769,41 @@ model VisitNote {
   content   String
   visitId   String
   createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
   visit Visit @relation(fields: [visitId], references: [id], onDelete: Cascade)
 
   @@map("visit_note")
+}
+
+model VisitAttachment {
+  id         String   @id @default(uuid())
+  name       String
+  type       String
+  size       Int?
+  url        String
+  uploadedBy String?
+  visitId    String
+  createdAt  DateTime @default(now())
+
+  visit Visit @relation(fields: [visitId], references: [id], onDelete: Cascade)
+
+  @@index([visitId])
+  @@map("visit_attachment")
+}
+
+model VisitActivity {
+  id          String   @id @default(uuid())
+  visitId     String
+  action      String
+  details     String?
+  performedBy String?
+  createdAt   DateTime @default(now())
+
+  visit Visit @relation(fields: [visitId], references: [id], onDelete: Cascade)
+
+  @@index([visitId, createdAt])
+  @@map("visit_activity")
 }
 
 // ─── CARE DELIVERY CLINICAL MODELS ───────────────────────────────

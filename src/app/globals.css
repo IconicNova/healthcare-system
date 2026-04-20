@@ -8376,3 +8376,111 @@ a:hover {
     gap: 12px !important;
   }
 }
+
+/* ============================================
+   Tiptap WYSIWYG Editor Styles (UX-7)
+   ============================================ */
+
+.tiptap-editor-content .tiptap {
+  outline: none;
+  min-height: 60px;
+}
+
+.tiptap-editor-content .tiptap p {
+  margin-bottom: 0.5em;
+}
+
+.tiptap-editor-content .tiptap p:last-child {
+  margin-bottom: 0;
+}
+
+.tiptap-editor-content .tiptap h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 0.5em;
+}
+
+.tiptap-editor-content .tiptap ul,
+.tiptap-editor-content .tiptap ol {
+  padding-left: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+.tiptap-editor-content .tiptap li {
+  margin-bottom: 0.2em;
+}
+
+.tiptap-editor-content .tiptap blockquote {
+  border-left: 3px solid var(--color-border);
+  padding-left: 12px;
+  margin-left: 0;
+  color: var(--color-text-secondary);
+  font-style: italic;
+}
+
+.tiptap-editor-content .tiptap strong {
+  font-weight: 600;
+}
+
+.tiptap-editor-content .tiptap p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: var(--color-placeholder);
+  pointer-events: none;
+  height: 0;
+}
+
+/* Rendered note content */
+.tiptap-render h3 {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 0.4em;
+}
+
+.tiptap-render p {
+  margin-bottom: 0.4em;
+}
+
+.tiptap-render p:last-child {
+  margin-bottom: 0;
+}
+
+.tiptap-render ul,
+.tiptap-render ol {
+  padding-left: 1.5em;
+  margin-bottom: 0.4em;
+}
+
+.tiptap-render blockquote {
+  border-left: 3px solid var(--color-border);
+  padding-left: 10px;
+  margin: 0.4em 0;
+  color: var(--color-text-secondary);
+  font-style: italic;
+}
+
+/* ============================================
+   Edit Visit Modal Responsive (UX-10)
+   ============================================ */
+
+@media (max-width: 640px) {
+  .tabs {
+    overflow-x: auto !important;
+    flex-wrap: nowrap !important;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar {
+    display: none;
+  }
+  .tabs .tab {
+    white-space: nowrap;
+    font-size: 12px !important;
+    padding: 8px 10px !important;
+  }
+  .modal-lg {
+    width: 98% !important;
+    max-width: 98% !important;
+    margin: 8px !important;
+  }
+}

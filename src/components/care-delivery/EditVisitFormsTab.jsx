@@ -132,7 +132,7 @@ function FormSection({ title, entries, loadingTemplateId, onAction }) {
   );
 }
 
-export default function EditVisitFormsTab({ visitId, returnTo = '' }) {
+export default function EditVisitFormsTab({ visitId, returnTo = '', onCountChange }) {
   const router = useRouter();
   const [templates, setTemplates] = useState([]);
   const [forms, setForms] = useState([]);
@@ -177,6 +177,24 @@ export default function EditVisitFormsTab({ visitId, returnTo = '' }) {
     () => buildVisitFormSections(templates, forms),
     [templates, forms]
   );
+
+  // UX-11: Report form count to parent for tab badge
+  useEffect(() => {
+    const total = forms.length;
+    onCountChange?.(total);
+  }, [forms, onCountChange]);
+
+  // UX-11: Compute form completion summary
+  const formSummary = useMemo(() => {
+    const total = forms.length;
+    const completed = forms.filter(f => f.status === 'SUBMITTED' || f.status === 'APPROVED').length;
+    const requiredForms = sections.required || [];
+    const requiredPending = requiredForms.filter(e => {
+      if (!e.form) return true;
+      return e.form.status === 'DRAFT';
+    }).length;
+    return { total, completed, requiredPending };
+  }, [forms, sections]);
 
   const handleAction = async (entry) => {
     const existingFormId = entry.form?.id;
@@ -243,6 +261,29 @@ export default function EditVisitFormsTab({ visitId, returnTo = '' }) {
           Open required documentation and complete additional visit forms.
         </p>
       </div>
+
+      {/* UX-11: Form completion summary */}
+      {forms.length > 0 && (
+        <div style={{
+          display: 'flex', gap: '16px', padding: '12px 16px',
+          background: 'var(--color-bg-secondary)', borderRadius: '10px',
+          marginBottom: '16px', flexWrap: 'wrap',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px' }}>
+            <span style={{ fontWeight: 600, color: 'var(--color-primary)' }}>{formSummary.completed}/{formSummary.total}</span>
+            <span style={{ color: 'var(--color-text-secondary)' }}>forms completed</span>
+          </div>
+          {formSummary.requiredPending > 0 && (
+            <div style={{
+              display: 'flex', alignItems: 'center', gap: '6px',
+              padding: '2px 8px', borderRadius: '6px',
+              background: '#FEE2E2', color: '#B91C1C', fontSize: '12px', fontWeight: 500,
+            }}>
+              ⚠ {formSummary.requiredPending} required pending
+            </div>
+          )}
+        </div>
+      )}
 
       {error && (
         <div

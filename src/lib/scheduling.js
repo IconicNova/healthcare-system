@@ -52,20 +52,9 @@ export const CREATE_VISIT_STATUSES = ['SCHEDULED', 'VACANT', 'OFFERED', 'ON_HOLD
 export const DEFAULT_VISIT_START_TIME = '09:00';
 export const DEFAULT_VISIT_END_TIME = '10:00';
 
-export const VALID_VISIT_STATUS_TRANSITIONS = {
-  VACANT: ['SCHEDULED', 'OFFERED', 'CANCELLED'],
-  SCHEDULED: ['IN_PROGRESS', 'CLOCKED_IN', 'CANCELLED', 'ON_HOLD', 'VACANT', 'OFFERED'],
-  OFFERED: ['SCHEDULED', 'VACANT', 'CANCELLED'],
-  IN_PROGRESS: ['COMPLETED', 'CLOCKED_IN', 'CANCELLED', 'ON_HOLD'],
-  CLOCKED_IN: ['IN_PROGRESS', 'COMPLETED', 'CANCELLED'],
-  COMPLETED: ['APPROVED'],
-  APPROVED: [],
-  MISSED: ['SCHEDULED'],
-  LATE: ['IN_PROGRESS', 'CLOCKED_IN', 'COMPLETED', 'CANCELLED'],
-  CANCELLED: [],
-  ON_HOLD: ['SCHEDULED', 'CANCELLED'],
-  NO_SHOW: ['SCHEDULED'],
-};
+// BUG-4 FIX: Single source of truth — import + re-export from visit-status-machine
+import { VALID_VISIT_STATUS_TRANSITIONS } from '@/lib/visit-status-machine';
+export { VALID_VISIT_STATUS_TRANSITIONS };
 
 export function normalizeSchedulingViewSlug(value) {
   return VIEW_SLUGS.includes(value) ? value : 'month';

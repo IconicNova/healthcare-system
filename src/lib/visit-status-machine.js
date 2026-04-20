@@ -103,7 +103,11 @@ export const STATUS_CONFIG = {
  * Key = current status, Value = array of statuses that can be transitioned to.
  * Terminal statuses (CANCELLED, NO_SHOW, APPROVED) have no further transitions.
  */
-const ALLOWED_TRANSITIONS = {
+/**
+ * Single source of truth for valid visit status transitions.
+ * Used by: frontend dropdown, scheduling.js, visits/[id]/route.js
+ */
+export const ALLOWED_TRANSITIONS = {
   [VISIT_STATUSES.VACANT]: [
     VISIT_STATUSES.OFFERED,
     VISIT_STATUSES.SCHEDULED,
@@ -111,6 +115,7 @@ const ALLOWED_TRANSITIONS = {
   ],
   [VISIT_STATUSES.OFFERED]: [
     VISIT_STATUSES.SCHEDULED,
+    VISIT_STATUSES.VACANT,
     VISIT_STATUSES.CANCELLED,
   ],
   [VISIT_STATUSES.SCHEDULED]: [
@@ -120,6 +125,8 @@ const ALLOWED_TRANSITIONS = {
     VISIT_STATUSES.NO_SHOW,
     VISIT_STATUSES.ON_HOLD,
     VISIT_STATUSES.LATE,
+    VISIT_STATUSES.VACANT,
+    VISIT_STATUSES.OFFERED,
   ],
   [VISIT_STATUSES.CLOCKED_IN]: [
     VISIT_STATUSES.IN_PROGRESS,
@@ -136,8 +143,12 @@ const ALLOWED_TRANSITIONS = {
   ],
   [VISIT_STATUSES.APPROVED]: [],
   [VISIT_STATUSES.CANCELLED]: [],
-  [VISIT_STATUSES.MISSED]: [],
-  [VISIT_STATUSES.NO_SHOW]: [],
+  [VISIT_STATUSES.MISSED]: [
+    VISIT_STATUSES.SCHEDULED,
+  ],
+  [VISIT_STATUSES.NO_SHOW]: [
+    VISIT_STATUSES.SCHEDULED,
+  ],
   [VISIT_STATUSES.ON_HOLD]: [
     VISIT_STATUSES.SCHEDULED,
     VISIT_STATUSES.IN_PROGRESS,
@@ -146,11 +157,15 @@ const ALLOWED_TRANSITIONS = {
   [VISIT_STATUSES.LATE]: [
     VISIT_STATUSES.IN_PROGRESS,
     VISIT_STATUSES.CLOCKED_IN,
+    VISIT_STATUSES.COMPLETED,
     VISIT_STATUSES.CANCELLED,
     VISIT_STATUSES.NO_SHOW,
     VISIT_STATUSES.MISSED,
   ],
 };
+
+// Alias for backward-compatibility with scheduling.js imports
+export const VALID_VISIT_STATUS_TRANSITIONS = ALLOWED_TRANSITIONS;
 
 /**
  * Returns the list of valid next statuses for a given current status.

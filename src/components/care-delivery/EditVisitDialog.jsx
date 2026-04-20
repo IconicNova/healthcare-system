@@ -1,641 +1,855 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Info, ListTodo, FileText, StickyNote, Target, Paperclip, Clock, AlertTriangle } from 'lucide-react';
 import Modal from '@/components/ui/Modal';
-import Image from 'next/image';
 import Tabs from '@/components/ui/Tabs';
-import { Info, ListTodo, FileText, Target, Check, Save, Clock, AlertTriangle, Paperclip } from 'lucide-react';
-import VisitTasksTab from './EditVisitTasksTab';
-import VisitNotesTab from './VisitNotesTab';
-import EditVisitFormsTab from './EditVisitFormsTab';
-import FileAttachments from './FileAttachments';
-// StaffAssignment available for use in staff column
-import {
-  getValidNextStatuses,
-  getStatusColor,
-  getStatusLabel,
-  canTransition,
-  isTerminalStatus,
-} from '@/lib/visit-status-machine';
+import VisitTasksTab from '@/components/care-delivery/EditVisitTasksTab';
+import EditVisitFormsTab from '@/components/care-delivery/EditVisitFormsTab';
+import VisitNotesTab from '@/components/care-delivery/VisitNotesTab';
+import FileAttachments from '@/components/care-delivery/FileAttachments';
+import { getValidNextStatuses, getStatusLabel, isTerminalStatus } from '@/lib/visit-status-machine';
 
-export default function EditVisitDialog({ isOpen, onClose, visit, onSave, formReturnTo = '' }) {
-    const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    status: 'SCHEDULED',
-    notes: '',
-    actualStart: null,
-    actualEnd: null,
-  });
-  const [isSaving, setIsSaving] = useState(false);
+
+
+function formatDateTime(dateString) {
+  if (!dateString) return '—';
+  const d = new Date(dateString);
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) +
+    ', ' + d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+}
+
+function toLocalDatetimeValue(isoString) {
+  if (!isoString) return '';
+  const d = new Date(isoString);
+  const pad = (n) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+function formatDuration(startDate, endDate) {
+  if (!startDate) return null;
+  const end = endDate ? new Date(endDate) : new Date();
+  const start = new Date(startDate);
+  const diff = Math.max(0, end - start);
+  const hours = Math.floor(diff / 3600000);
+  const minutes = Math.floor((diff % 3600000) / 60000);
+  if (hours > 0) return `${hours}h ${minutes}m`;
+  return `${minutes}m`;
+}
+
+// UX-9: Styled confirmation dialog (replaces window.confirm)
+function ConfirmDialog({ open, title, message, confirmText, confirmColor, onConfirm, onCancel }) {
+  if (!open) return null;
+  return (
+    <div style={{
+      position: 'fixed', inset: 0, zIndex: 10001,
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(2px)',
+    }}>
+      <div style={{
+        background: 'var(--color-bg)', borderRadius: '12px',
+        padding: '24px', maxWidth: '400px', width: '90%',
+        boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
+          <AlertTriangle size={20} color={confirmColor || '#F59E0B'} />
+          <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 600 }}>{title}</h3>
+        </div>
+        <p style={{ margin: '0 0 20px', fontSize: '14px', color: 'var(--color-text-secondary)', lineHeight: 1.5 }}>{message}</p>
+        <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+          <button onClick={onCancel} style={{
+            padding: '8px 16px', borderRadius: '8px', border: '1px solid var(--color-border)',
+            background: 'var(--color-bg)', cursor: 'pointer', fontSize: '14px',
+          }}>Cancel</button>
+          <button onClick={onConfirm} style={{
+            padding: '8px 16px', borderRadius: '8px', border: 'none',
+            background: confirmColor || '#F59E0B', color: 'white', cursor: 'pointer',
+            fontSize: '14px', fontWeight: 500,
+          }}>{confirmText || 'Confirm'}</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// UX-2: Live elapsed time component
+function ElapsedTimer({ startTime }) {
+  const [elapsed, setElapsed] = useState('');
+
+  useEffect(() => {
+    if (!startTime) return;
+    const update = () => setElapsed(formatDuration(startTime, null));
+    update();
+    const timer = setInterval(update, 30000); // update every 30s
+    return () => clearInterval(timer);
+  }, [startTime]);
+
+  if (!startTime || !elapsed) return null;
+
+  return (
+    <div style={{
+      display: 'inline-flex', alignItems: 'center', gap: '6px',
+      padding: '4px 10px', borderRadius: '6px',
+      background: '#FEF3C7', color: '#B45309', fontSize: '13px', fontWeight: 500,
+    }}>
+      <Clock size={14} />
+      <span>Active: {elapsed}</span>
+    </div>
+  );
+}
+
+export default function EditVisitDialog({ isOpen, onClose, visit, onSave, formReturnTo }) {
   const [activeTab, setActiveTab] = useState('info');
-  const [validationError, setValidationError] = useState('');
-  const [carePlanGoals, setCarePlanGoals] = useState([]);
-  const [goalsLoading, setGoalsLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    status: '', title: '', description: '', notes: '', actualStart: '', actualEnd: '',
+  });
+  const [initialFormData, setInitialFormData] = useState(null);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
+  const [confirmDialog, setConfirmDialog] = useState(null);
+  const [tabCounts, setTabCounts] = useState({ tasks: null, notes: 0, forms: null, attachments: 0 });
+  const [goalsData, setGoalsData] = useState([]);
+  const [goalProgress, setGoalProgress] = useState({});
+  const [activities, setActivities] = useState([]);
 
-  // Keyboard shortcuts
-  /* eslint-disable react-hooks/exhaustive-deps */
+  // Reset tab + form on open/visit change
+  useEffect(() => {
+    if (isOpen && visit) {
+      setActiveTab('info');
+      const data = {
+        status: visit.status || 'SCHEDULED',
+        title: visit.title || (visit.service?.name || ''),     // UX-12: auto-populate from service
+        description: visit.description || '',
+        notes: visit.notes || '',
+        actualStart: visit.actualStart ? toLocalDatetimeValue(visit.actualStart) : '',
+        actualEnd: visit.actualEnd ? toLocalDatetimeValue(visit.actualEnd) : '',
+      };
+      setFormData(data);
+      setInitialFormData(data);
+      setError('');
+      setGoalProgress({});
+
+      // Fetch tab counts
+      fetchTabCounts(visit.id);
+      fetchGoals(visit);
+      fetchActivities(visit.id);
+    }
+  }, [isOpen, visit]);
+
+  const fetchTabCounts = async (visitId) => {
+    try {
+      const [tasksRes, notesRes, formsRes, attachRes] = await Promise.all([
+        fetch(`/api/visits/${visitId}/tasks`),
+        fetch(`/api/visits/${visitId}/notes`),
+        fetch(`/api/visits/${visitId}/forms`),
+        fetch(`/api/visits/${visitId}/attachments`),
+      ]);
+      const [tasksData, notesData, formsData, attachData] = await Promise.all([
+        tasksRes.ok ? tasksRes.json() : { tasks: [] },
+        notesRes.ok ? notesRes.json() : { notes: [] },
+        formsRes.ok ? formsRes.json() : { forms: [] },
+        attachRes.ok ? attachRes.json() : { attachments: [] },
+      ]);
+
+      const tasks = tasksData.tasks || [];
+      const completedTasks = tasks.filter(t => t.completed).length;
+
+      setTabCounts({
+        tasks: `${completedTasks}/${tasks.length}`,
+        notes: (notesData.notes || []).length,
+        forms: (formsData.forms || []).length,
+        attachments: (attachData.attachments || []).length,
+      });
+    } catch { /* fail silently */ }
+  };
+
+  const fetchGoals = async (v) => {
+    if (!v?.carePlanId) { setGoalsData([]); return; }
+    try {
+      const res = await fetch(`/api/care-plans/${v.carePlanId}`);
+      if (res.ok) {
+        const data = await res.json();
+        setGoalsData(data.services || []);
+      }
+    } catch { setGoalsData([]); }
+  };
+
+  const fetchActivities = async (visitId) => {
+    try {
+      const res = await fetch(`/api/visits/${visitId}/activities`);
+      if (res.ok) {
+        const data = await res.json();
+        setActivities(data.activities || []);
+      }
+    } catch { setActivities([]); }
+  };
+
+  // UX-1: Track dirty state
+  const isDirty = useMemo(() => {
+    if (!initialFormData) return false;
+    return Object.keys(initialFormData).some(k => formData[k] !== initialFormData[k]);
+  }, [formData, initialFormData]);
+
+  // BUG-6 FIX: Use useCallback so Ctrl+S always uses current formData
+  const handleSubmit = useCallback(async () => {
+    if (!visit) return;
+    setError('');
+    setSaving(true);
+
+    try {
+      // LOGIC-4: Title validation
+      if (formData.title && formData.title.length > 200) {
+        setError('Title must be under 200 characters');
+        setSaving(false);
+        return;
+      }
+      // LOGIC-3: Description/Notes length limits
+      if (formData.description && formData.description.length > 2000) {
+        setError('Description must be under 2000 characters');
+        setSaving(false);
+        return;
+      }
+      if (formData.notes && formData.notes.length > 5000) {
+        setError('Internal notes must be under 5000 characters');
+        setSaving(false);
+        return;
+      }
+
+      // LOGIC-1/2: Validate actual times
+      if (formData.actualStart) {
+        const actualStartDate = new Date(formData.actualStart);
+        const now = new Date();
+        if (actualStartDate > now) {
+          setError('Actual start time cannot be in the future');
+          setSaving(false);
+          return;
+        }
+      }
+      if (formData.actualEnd) {
+        const actualEndDate = new Date(formData.actualEnd);
+        const now = new Date();
+        if (actualEndDate > now) {
+          setError('Actual end time cannot be in the future');
+          setSaving(false);
+          return;
+        }
+        if (formData.actualStart && new Date(formData.actualEnd) <= new Date(formData.actualStart)) {
+          setError('End time must be after start time');
+          setSaving(false);
+          return;
+        }
+      }
+
+      const body = {
+        status: formData.status,
+        title: formData.title || null,
+        description: formData.description || null,
+        notes: formData.notes || null,
+        actualStart: formData.actualStart ? new Date(formData.actualStart).toISOString() : null,
+        actualEnd: formData.actualEnd ? new Date(formData.actualEnd).toISOString() : null,
+      };
+
+      const res = await fetch(`/api/visits/${visit.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        setError(data.error || 'Failed to save changes');
+        setSaving(false);
+        return;
+      }
+
+      const updatedVisit = await res.json();
+      setInitialFormData({ ...formData });
+      onSave?.(updatedVisit);
+    } catch {
+      setError('An unexpected error occurred');
+    } finally {
+      setSaving(false);
+    }
+  }, [visit, formData, onSave]);
+
+  // BUG-6 FIX + BUG-9 FIX: Proper keyboard handlers with correct deps, no duplicate Escape
   useEffect(() => {
     if (!isOpen) return;
-    const handleKeyDown = (e) => {
-      if (e.key === 'Escape') {
-        onClose();
+    const handler = (e) => {
+      // UX-13: Alt+1 through Alt+6 for tab switching
+      if (e.altKey && e.key >= '1' && e.key <= '7') {
+        e.preventDefault();
+        const tabKeys = ['info', 'tasks', 'forms', 'notes', 'goals', 'activities', 'attachments'];
+        const idx = parseInt(e.key) - 1;
+        if (tabKeys[idx]) setActiveTab(tabKeys[idx]);
+        return;
       }
+      // Ctrl+S to save
       if ((e.ctrlKey || e.metaKey) && e.key === 's') {
         e.preventDefault();
         handleSubmit();
       }
     };
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen]);
-  /* eslint-enable react-hooks/exhaustive-deps */
+    document.addEventListener('keydown', handler);
+    return () => document.removeEventListener('keydown', handler);
+  }, [isOpen, handleSubmit]);
 
-  useEffect(() => {
-    if (visit) {
-      setFormData({
-        title: visit.title || '',
-        description: visit.description || '',
-        status: visit.status || 'SCHEDULED',
-        notes: visit.notes || '',
-        actualStart: visit.actualStart ? new Date(visit.actualStart) : null,
-        actualEnd: visit.actualEnd ? new Date(visit.actualEnd) : null,
+  // UX-1: Intercept close with unsaved changes warning
+  const handleClose = useCallback(() => {
+    if (isDirty) {
+      setConfirmDialog({
+        title: 'Unsaved Changes',
+        message: 'You have unsaved changes. Are you sure you want to discard them?',
+        confirmText: 'Discard',
+        confirmColor: '#EF4444',
+        onConfirm: () => { setConfirmDialog(null); onClose(); },
+        onCancel: () => setConfirmDialog(null),
       });
-      setValidationError('');
+    } else {
+      onClose();
     }
-  }, [visit, isOpen]);
+  }, [isDirty, onClose]);
 
-  useEffect(() => {
-    if (isOpen) {
-      setActiveTab('info');
-    }
-  }, [isOpen, visit?.id]);
-
-  // Load care plan goals when Goals tab is active
-  useEffect(() => {
-    if (activeTab === 'goals' && visit?.carePlanId) {
-      setGoalsLoading(true);
-      fetch(`/api/care-plans/${visit.carePlanId}`)
-        .then(res => res.ok ? res.json() : null)
-        .then(data => {
-          if (data) {
-            setCarePlanGoals(data.services || []);
-          }
-        })
-        .catch(() => {})
-        .finally(() => setGoalsLoading(false));
-    }
-  }, [activeTab, visit?.carePlanId]);
-
-  const handleStatusChange = (newStatus) => {
-    if (!canTransition(formData.status, newStatus)) {
-      setValidationError(`Cannot change status from "${getStatusLabel(formData.status)}" to "${getStatusLabel(newStatus)}"`);
-      return;
-    }
-    setValidationError('');
-    setFormData(prev => ({ ...prev, status: newStatus }));
-  };
-
-  const handleSubmit = async () => {
-    if (!visit) return;
-
-    // Validate actual times
-    if (formData.actualEnd && !formData.actualStart) {
-      setValidationError('Cannot set end time without a start time. Please set the start time first.');
-      return;
-    }
-
-    if (formData.actualStart && formData.actualEnd) {
-      if (new Date(formData.actualEnd) <= new Date(formData.actualStart)) {
-        setValidationError('End time must be after start time.');
-        return;
-      }
-    }
-
-    // Validate status transition
-    if (!canTransition(visit.status, formData.status)) {
-      setValidationError(`Cannot change status from "${getStatusLabel(visit.status)}" to "${getStatusLabel(formData.status)}"`);
-      return;
-    }
-
-    setValidationError('');
-    setIsSaving(true);
-    try {
-      const updateData = {
-        title: formData.title,
-        description: formData.description,
-        status: formData.status,
-        notes: formData.notes,
-      };
-
-      if (formData.actualStart) {
-        updateData.actualStart = formData.actualStart.toISOString();
-      }
-      if (formData.actualEnd) {
-        updateData.actualEnd = formData.actualEnd.toISOString();
-      }
-
-      const response = await fetch(`/api/visits/${visit.id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updateData),
-      });
-
-      if (response.ok) {
-        if (onSave) onSave(await response.json());
-      } else {
-        const errData = await response.json().catch(() => ({}));
-        setValidationError(errData.error || 'Failed to save visit');
-      }
-    } catch (error) {
-      console.error('Error saving visit:', error);
-      setValidationError('Failed to save visit. Please try again.');
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
-  const handleStartVisit = async () => {
-    const now = new Date();
-    setFormData(prev => ({
-      ...prev,
-      actualStart: now,
-      status: 'IN_PROGRESS',
-    }));
-
-    try {
-      const response = await fetch(`/api/visits/${visit.id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          actualStart: now.toISOString(),
+  // BUG-5 FIX: Start with confirmation
+  const handleStartVisit = () => {
+    setConfirmDialog({
+      title: 'Start Visit',
+      message: 'This will mark the visit as In Progress with the current time. Continue?',
+      confirmText: 'Start Visit',
+      confirmColor: '#F59E0B',
+      onConfirm: async () => {
+        setConfirmDialog(null);
+        const now = new Date();
+        const localNow = toLocalDatetimeValue(now.toISOString());
+        const body = {
           status: 'IN_PROGRESS',
-        }),
-      });
-
-      if (response.ok) {
-        if (onSave) onSave(await response.json());
-      }
-    } catch (error) {
-      console.error('Error starting visit:', error);
-      setValidationError('Failed to start visit');
-    }
-  };
-
-  const handleEndVisit = async () => {
-    const now = new Date();
-    setFormData(prev => ({
-      ...prev,
-      actualEnd: now,
-      status: 'COMPLETED',
-    }));
-
-    try {
-      const response = await fetch(`/api/visits/${visit.id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          actualStart: formData.actualStart?.toISOString() || now.toISOString(),
-          actualEnd: now.toISOString(),
-          status: 'COMPLETED',
-        }),
-      });
-
-      if (response.ok) {
-        if (onSave) onSave(await response.json());
-      }
-    } catch (error) {
-      console.error('Error ending visit:', error);
-      setValidationError('Failed to complete visit');
-    }
-  };
-
-  const formatDateTime = (date) => {
-    if (!date) return '';
-    return new Date(date).toLocaleString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true,
+          actualStart: now.toISOString(),
+        };
+        try {
+          const res = await fetch(`/api/visits/${visit.id}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body),
+          });
+          if (res.ok) {
+            const updated = await res.json();
+            setFormData(prev => ({ ...prev, status: 'IN_PROGRESS', actualStart: localNow }));
+            setInitialFormData(prev => ({ ...prev, status: 'IN_PROGRESS', actualStart: localNow }));
+            onSave?.(updated);
+            fetchTabCounts(visit.id);
+            fetchActivities(visit.id);
+          }
+        } catch {}
+      },
+      onCancel: () => setConfirmDialog(null),
     });
   };
 
-  // BUG-02 FIX: Only show valid next statuses
-  const validStatuses = getValidNextStatuses(visit?.status || formData.status);
+  // BUG-5 FIX: Complete with confirmation
+  const handleCompleteVisit = () => {
+    setConfirmDialog({
+      title: 'Complete Visit',
+      message: 'This will mark the visit as Completed with the current time. Continue?',
+      confirmText: 'Complete Visit',
+      confirmColor: '#10B981',
+      onConfirm: async () => {
+        setConfirmDialog(null);
+        const now = new Date();
+        const localNow = toLocalDatetimeValue(now.toISOString());
+        const body = {
+          status: 'COMPLETED',
+          actualEnd: now.toISOString(),
+        };
+        try {
+          const res = await fetch(`/api/visits/${visit.id}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body),
+          });
+          if (res.ok) {
+            const updated = await res.json();
+            setFormData(prev => ({ ...prev, status: 'COMPLETED', actualEnd: localNow }));
+            setInitialFormData(prev => ({ ...prev, status: 'COMPLETED', actualEnd: localNow }));
+            onSave?.(updated);
+            fetchTabCounts(visit.id);
+            fetchActivities(visit.id);
+          }
+        } catch {}
+      },
+      onCancel: () => setConfirmDialog(null),
+    });
+  };
 
-  const renderInfoTab = () => {
-    if (!visit) {
-      return (
-        <div style={{ textAlign: 'center', padding: '40px', color: 'var(--color-text-secondary)' }}>
-          No visit selected
+  const handleGoalProgressChange = (goalId, field, value) => {
+    setGoalProgress(prev => ({
+      ...prev,
+      [goalId]: { ...(prev[goalId] || {}), [field]: value },
+    }));
+  };
+
+  if (!visit) return null;
+
+  const isTerminal = isTerminalStatus(formData.status);
+  const validStatuses = getValidNextStatuses(formData.status || visit.status);
+  const showStartButton = !formData.actualStart && ['SCHEDULED', 'CLOCKED_IN', 'LATE'].includes(formData.status);
+  const showCompleteButton = formData.actualStart && !formData.actualEnd && ['IN_PROGRESS', 'CLOCKED_IN'].includes(formData.status);
+  const showElapsedTimer = formData.actualStart && !formData.actualEnd && ['IN_PROGRESS'].includes(formData.status);
+
+  // LOGIC-1: Max datetime = now
+  const maxDatetime = toLocalDatetimeValue(new Date().toISOString());
+
+  const renderInfoTab = () => (
+    <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+      {/* Visit Details Card */}
+      <div style={{
+        border: '1px solid var(--color-border)', borderRadius: '10px', padding: '20px',
+        display: 'flex', flexDirection: 'column', gap: '14px',
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+          <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 600 }}>Visit Details</h3>
+          <select
+            value={formData.status}
+            onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value }))}
+            disabled={isTerminal}
+            style={{
+              padding: '6px 12px', borderRadius: '8px', fontSize: '13px', fontWeight: 500,
+              border: '2px solid var(--color-primary)', cursor: isTerminal ? 'not-allowed' : 'pointer',
+              background: 'var(--color-bg)', color: 'var(--color-text)',
+            }}
+          >
+            {validStatuses.map(s => (
+              <option key={s} value={s}>{getStatusLabel(s)}</option>
+            ))}
+          </select>
         </div>
-      );
-    }
-
-    return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-        {/* Validation Error Banner */}
-        {validationError && (
-          <div style={{
-            padding: '12px 16px',
-            backgroundColor: '#FEF2F2',
-            border: '1px solid #FECACA',
-            borderRadius: '8px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            color: '#DC2626',
-            fontSize: '13px',
-          }}>
-            <AlertTriangle size={16} />
-            {validationError}
+        <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: '8px', fontSize: '14px' }}>
+          <span style={{ color: 'var(--color-text-secondary)' }}>Client</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            {visit.client?.avatar && (
+              <span style={{ width: 24, height: 24, borderRadius: '50%', display: 'inline-block', backgroundImage: `url(${visit.client.avatar})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
+            )}
+            <span>{visit.client?.firstName} {visit.client?.lastName}</span>
           </div>
-        )}
+          <span style={{ color: 'var(--color-text-secondary)' }}>Address</span>
+          <span>{[visit.client?.address, visit.client?.city, visit.client?.state].filter(Boolean).join(', ') || '—'}</span>
+          <span style={{ color: 'var(--color-text-secondary)' }}>Staff</span>
+          <span>{visit.staff?.firstName} {visit.staff?.lastName}</span>
+          {/* UX-8: Service name */}
+          <span style={{ color: 'var(--color-text-secondary)' }}>Service</span>
+          <span>{visit.service?.name || '—'}</span>
+          <span style={{ color: 'var(--color-text-secondary)' }}>Scheduled</span>
+          <span>{formatDateTime(visit.startTime)} - {formatDateTime(visit.endTime)}</span>
+        </div>
+      </div>
 
-        {/* Visit Header */}
-        <div className="card" style={{ padding: '16px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-            <h4 style={{ fontSize: '16px', fontWeight: 600, margin: 0 }}>Visit Details</h4>
-            {/* BUG-02 FIX: Status dropdown only shows valid transitions */}
-            <select
-              value={formData.status}
-              onChange={(e) => handleStatusChange(e.target.value)}
-              disabled={isTerminalStatus(visit.status)}
+      {/* Actual Visit Times */}
+      <div style={{
+        border: '1px solid var(--color-border)', borderRadius: '10px', padding: '20px',
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>
+          <h4 style={{ margin: 0, fontSize: '14px', fontWeight: 600 }}>Actual Visit Times</h4>
+          {showElapsedTimer && <ElapsedTimer startTime={formData.actualStart} />}
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', gap: '12px', alignItems: 'end' }}>
+          <div>
+            <label style={{ fontSize: '12px', fontWeight: 500, color: 'var(--color-text-secondary)', marginBottom: '4px', display: 'block' }}>Start Time</label>
+            <input
+              type="datetime-local"
+              value={formData.actualStart}
+              max={maxDatetime}
+              onChange={(e) => setFormData(prev => ({ ...prev, actualStart: e.target.value }))}
+              disabled={isTerminal}
               style={{
-                padding: '8px 12px',
-                borderRadius: '8px',
-                border: `1px solid ${getStatusColor(formData.status)}`,
-                backgroundColor: 'white',
-                fontSize: '13px',
-                fontWeight: 500,
-                color: getStatusColor(formData.status),
-                cursor: isTerminalStatus(visit.status) ? 'not-allowed' : 'pointer',
-                opacity: isTerminalStatus(visit.status) ? 0.6 : 1,
+                width: '100%', padding: '8px 10px', borderRadius: '8px',
+                border: '1px solid var(--color-border)', fontSize: '13px',
+                background: isTerminal ? 'var(--color-bg-secondary)' : 'var(--color-bg)',
               }}
-            >
-              {validStatuses.map(status => (
-                <option key={status} value={status}>{getStatusLabel(status)}</option>
-              ))}
-            </select>
+            />
           </div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: '12px', marginBottom: '16px' }}>
-            <span style={{ fontSize: '13px', color: 'var(--color-text-secondary)' }}>Client</span>
-            <span style={{ fontSize: '13px', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '8px' }}>
-              {visit.client?.avatar ? (
-                <Image src={visit.client.avatar} alt="" width={24} height={24} style={{ borderRadius: '50%', objectFit: 'cover' }} />
-              ) : (
-                <span style={{ width: '24px', height: '24px', borderRadius: '50%', backgroundColor: 'var(--color-primary-light)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', fontWeight: 600, color: 'white' }}>
-                  {visit.client?.firstName?.charAt(0)}{visit.client?.lastName?.charAt(0)}
-                </span>
-              )}
-              {visit.client?.firstName} {visit.client?.lastName}
-            </span>
-
-            <span style={{ fontSize: '13px', color: 'var(--color-text-secondary)' }}>Address</span>
-            <span style={{ fontSize: '13px' }}>
-              {[visit.client?.address, visit.client?.city, visit.client?.state].filter(Boolean).join(', ')}
-            </span>
-
-            <span style={{ fontSize: '13px', color: 'var(--color-text-secondary)' }}>Staff</span>
-            <span style={{ fontSize: '13px' }}>{visit.staff ? `${visit.staff.firstName} ${visit.staff.lastName}` : 'Unassigned'}</span>
-
-            <span style={{ fontSize: '13px', color: 'var(--color-text-secondary)' }}>Scheduled</span>
-            <span style={{ fontSize: '13px' }}>
-              {formatDateTime(visit.startTime)} - {formatDateTime(visit.endTime)}
-            </span>
-          </div>
-
-          {/* Actual Visit Times */}
-          <div style={{ padding: '12px', backgroundColor: 'var(--color-gray-50)', borderRadius: '8px' }}>
-            <div style={{ fontSize: '12px', fontWeight: 600, marginBottom: '12px', color: 'var(--color-text)' }}>
-              Actual Visit Times
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-              <div>
-                <label style={{ fontSize: '11px', color: 'var(--color-text-secondary)', display: 'block', marginBottom: '4px' }}>
-                  Start Time
-                </label>
-                <div style={{ display: 'flex', gap: '8px' }}>
-                  <input
-                    type="datetime-local"
-                    value={formData.actualStart ? new Date(formData.actualStart.getTime() - formData.actualStart.getTimezoneOffset() * 60000).toISOString().slice(0, 16) : ''}
-                    onChange={(e) => setFormData(prev => ({ ...prev, actualStart: e.target.value ? new Date(e.target.value) : null }))}
-                    style={{
-                      flex: 1,
-                      padding: '8px 12px',
-                      borderRadius: '6px',
-                      border: '1px solid var(--color-border)',
-                      fontSize: '13px',
-                    }}
-                  />
-                  {!formData.actualStart && (formData.status === 'SCHEDULED' || formData.status === 'CLOCKED_IN' || formData.status === 'LATE') && (
-                    <button
-                      onClick={handleStartVisit}
-                      style={{
-                        padding: '8px 16px',
-                        borderRadius: '6px',
-                        border: 'none',
-                        backgroundColor: '#F59E0B',
-                        color: 'white',
-                        fontSize: '12px',
-                        fontWeight: 500,
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '4px',
-                        whiteSpace: 'nowrap',
-                      }}
-                    >
-                      <Clock size={14} />
-                      Start
-                    </button>
-                  )}
-                </div>
-              </div>
-              <div>
-                <label style={{ fontSize: '11px', color: 'var(--color-text-secondary)', display: 'block', marginBottom: '4px' }}>
-                  End Time
-                </label>
-                <div style={{ display: 'flex', gap: '8px' }}>
-                  {/* BUG-04 FIX: disabled as HTML attribute, not CSS property */}
-                  <input
-                    type="datetime-local"
-                    value={formData.actualEnd ? new Date(formData.actualEnd.getTime() - formData.actualEnd.getTimezoneOffset() * 60000).toISOString().slice(0, 16) : ''}
-                    onChange={(e) => setFormData(prev => ({ ...prev, actualEnd: e.target.value ? new Date(e.target.value) : null }))}
-                    disabled={!formData.actualStart}
-                    style={{
-                      flex: 1,
-                      padding: '8px 12px',
-                      borderRadius: '6px',
-                      border: '1px solid var(--color-border)',
-                      fontSize: '13px',
-                      opacity: !formData.actualStart ? 0.5 : 1,
-                      cursor: !formData.actualStart ? 'not-allowed' : 'text',
-                    }}
-                  />
-                  {formData.actualStart && !formData.actualEnd && (formData.status === 'IN_PROGRESS' || formData.status === 'CLOCKED_IN') && (
-                    <button
-                      onClick={handleEndVisit}
-                      style={{
-                        padding: '8px 16px',
-                        borderRadius: '6px',
-                        border: 'none',
-                        backgroundColor: '#16A34A',
-                        color: 'white',
-                        fontSize: '12px',
-                        fontWeight: 500,
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '4px',
-                        whiteSpace: 'nowrap',
-                      }}
-                    >
-                      <Check size={14} />
-                      Complete
-                    </button>
-                  )}
-                </div>
-              </div>
-            </div>
-            {formData.actualStart && formData.actualEnd && (
-              <div style={{ marginTop: '12px', fontSize: '12px', color: 'var(--color-success)' }}>
-                Visit Duration: {Math.round((new Date(formData.actualEnd) - new Date(formData.actualStart)) / 60000)} minutes
-              </div>
+          <div style={{ paddingBottom: '4px' }}>
+            {showStartButton && (
+              <button onClick={handleStartVisit} style={{
+                display: 'flex', alignItems: 'center', gap: '6px',
+                padding: '8px 16px', borderRadius: '8px', border: 'none',
+                background: '#F59E0B', color: 'white', cursor: 'pointer',
+                fontSize: '13px', fontWeight: 500, whiteSpace: 'nowrap',
+              }}>
+                <Clock size={14} /> Start
+              </button>
+            )}
+            {showCompleteButton && (
+              <button onClick={handleCompleteVisit} style={{
+                display: 'flex', alignItems: 'center', gap: '6px',
+                padding: '8px 16px', borderRadius: '8px', border: 'none',
+                background: '#10B981', color: 'white', cursor: 'pointer',
+                fontSize: '13px', fontWeight: 500, whiteSpace: 'nowrap',
+              }}>
+                ✓ Complete
+              </button>
             )}
           </div>
-        </div>
-
-        {/* Title & Description */}
-        <div>
-          <label style={{ fontSize: '13px', fontWeight: 500, display: 'block', marginBottom: '6px' }}>
-            Title
-          </label>
-          <input
-            type="text"
-            value={formData.title}
-            onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
-            placeholder="e.g., Wound Care & Medication Review"
-            style={{
-              width: '100%',
-              padding: '10px 12px',
-              borderRadius: '8px',
-              border: '1px solid var(--color-border)',
-              fontSize: '13px',
-            }}
-          />
-        </div>
-
-        <div>
-          <label style={{ fontSize: '13px', fontWeight: 500, display: 'block', marginBottom: '6px' }}>
-            Description
-          </label>
-          <textarea
-            value={formData.description}
-            onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-            placeholder="Describe the purpose of this visit..."
-            rows={3}
-            style={{
-              width: '100%',
-              padding: '10px 12px',
-              borderRadius: '8px',
-              border: '1px solid var(--color-border)',
-              fontSize: '13px',
-              resize: 'vertical',
-            }}
-          />
-        </div>
-
-        <div>
-          <label style={{ fontSize: '13px', fontWeight: 500, display: 'block', marginBottom: '6px' }}>
-            Notes
-          </label>
-          <textarea
-            value={formData.notes}
-            onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
-            placeholder="Add any notes about this visit..."
-            rows={4}
-            style={{
-              width: '100%',
-              padding: '10px 12px',
-              borderRadius: '8px',
-              border: '1px solid var(--color-border)',
-              fontSize: '13px',
-              resize: 'vertical',
-            }}
-          />
-        </div>
-      </div>
-    );
-  };
-
-  // BUG-08 FIX: Goals tab now shows real care plan goals
-  const renderGoalsTab = () => {
-    if (!visit?.carePlanId) {
-      return (
-        <div style={{ padding: '24px', textAlign: 'center', color: 'var(--color-text-secondary)' }}>
-          <Target size={48} style={{ opacity: 0.3, marginBottom: '16px' }} />
-          <p style={{ fontSize: '14px', fontWeight: 500 }}>No Care Plan Linked</p>
-          <p style={{ fontSize: '12px', marginTop: '8px' }}>Link a care plan to this visit to see goals and services.</p>
-        </div>
-      );
-    }
-
-    if (goalsLoading) {
-      return (
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '48px' }}>
-          <div className="loading-spinner" />
-        </div>
-      );
-    }
-
-    return (
-      <div style={{ padding: '24px' }}>
-        <h4 style={{ fontSize: '16px', fontWeight: 600, marginBottom: '16px' }}>Care Plan Goals & Services</h4>
-        {carePlanGoals.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '24px', backgroundColor: 'var(--color-gray-50)', borderRadius: '12px' }}>
-            <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)' }}>No services defined in this care plan yet.</p>
+          <div>
+            <label style={{ fontSize: '12px', fontWeight: 500, color: 'var(--color-text-secondary)', marginBottom: '4px', display: 'block' }}>End Time</label>
+            <input
+              type="datetime-local"
+              value={formData.actualEnd}
+              max={maxDatetime}
+              onChange={(e) => setFormData(prev => ({ ...prev, actualEnd: e.target.value }))}
+              disabled={isTerminal || !formData.actualStart}
+              style={{
+                width: '100%', padding: '8px 10px', borderRadius: '8px',
+                border: '1px solid var(--color-border)', fontSize: '13px',
+                background: (isTerminal || !formData.actualStart) ? 'var(--color-bg-secondary)' : 'var(--color-bg)',
+              }}
+            />
           </div>
-        ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            {carePlanGoals.map((goal, index) => (
-              <div
-                key={goal.id || index}
-                style={{
-                  padding: '16px',
-                  border: '1px solid var(--color-border)',
-                  borderRadius: '12px',
-                  backgroundColor: 'var(--color-white)',
-                }}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: '14px', fontWeight: 500 }}>
-                    {goal.service?.name || goal.instructions || `Service ${index + 1}`}
-                  </span>
-                  {goal.frequency && (
-                    <span style={{
-                      fontSize: '11px',
-                      padding: '4px 8px',
-                      borderRadius: '12px',
-                      backgroundColor: '#DBEAFE',
-                      color: '#1D4ED8',
-                    }}>
-                      {goal.frequencyText || goal.frequency}
-                    </span>
-                  )}
-                </div>
-                {goal.instructions && (
-                  <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginTop: '8px' }}>
-                    {goal.instructions}
-                  </p>
-                )}
-              </div>
-            ))}
+        </div>
+        {formData.actualStart && formData.actualEnd && (
+          <div style={{ marginTop: '10px', fontSize: '13px', color: 'var(--color-text-secondary)' }}>
+            Duration: {formatDuration(formData.actualStart, formData.actualEnd)}
           </div>
         )}
       </div>
+
+      {/* Title — LOGIC-3: maxLength */}
+      <div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
+          <label style={{ fontSize: '14px', fontWeight: 500 }}>Title</label>
+          <span style={{ fontSize: '11px', color: 'var(--color-text-tertiary)' }}>
+            {formData.title.length}/200
+          </span>
+        </div>
+        <input
+          type="text"
+          value={formData.title}
+          maxLength={200}
+          placeholder="e.g., Wound Care & Medication Review"
+          onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+          style={{
+            width: '100%', padding: '10px 12px', borderRadius: '8px',
+            border: '1px solid var(--color-border)', fontSize: '14px',
+          }}
+        />
+      </div>
+
+      {/* Description — LOGIC-3 */}
+      <div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
+          <label style={{ fontSize: '14px', fontWeight: 500 }}>Description</label>
+          <span style={{ fontSize: '11px', color: 'var(--color-text-tertiary)' }}>
+            {formData.description.length}/2000
+          </span>
+        </div>
+        <textarea
+          value={formData.description}
+          maxLength={2000}
+          placeholder="Describe the purpose of this visit..."
+          onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+          rows={3}
+          style={{
+            width: '100%', padding: '10px 12px', borderRadius: '8px',
+            border: '1px solid var(--color-border)', fontSize: '14px', resize: 'vertical',
+          }}
+        />
+      </div>
+
+      {/* BUG-7 FIX: Renamed to "Internal Notes" with helper text */}
+      <div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+          <label style={{ fontSize: '14px', fontWeight: 500 }}>Internal Notes</label>
+          <span style={{ fontSize: '11px', color: 'var(--color-text-tertiary)' }}>
+            {formData.notes.length}/5000
+          </span>
+        </div>
+        <p style={{ fontSize: '12px', color: 'var(--color-text-tertiary)', margin: '0 0 6px' }}>
+          Private notes for scheduling/admin. For clinical visit notes, use the &ldquo;Visit Notes&rdquo; tab.
+        </p>
+        <textarea
+          value={formData.notes}
+          maxLength={5000}
+          placeholder="Internal scheduling notes..."
+          onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
+          rows={3}
+          style={{
+            width: '100%', padding: '10px 12px', borderRadius: '8px',
+            border: '1px solid var(--color-border)', fontSize: '14px', resize: 'vertical',
+          }}
+        />
+      </div>
+    </div>
+  );
+
+  // LOGIC-8 + UX-15: Interactive goals tab
+  const renderGoalsTab = () => {
+    if (!visit.carePlanId || goalsData.length === 0) {
+      return (
+        <div style={{ padding: '40px', textAlign: 'center' }}>
+          <Target size={40} style={{ color: 'var(--color-text-tertiary)', marginBottom: '12px' }} />
+          <h3 style={{ margin: '0 0 8px', fontSize: '16px', fontWeight: 600 }}>No Care Plan Linked</h3>
+          <p style={{ margin: 0, fontSize: '14px', color: 'var(--color-text-secondary)' }}>
+            Link a care plan to this visit to track goals and services.
+          </p>
+        </div>
+      );
+    }
+
+    const GOAL_STATUSES = [
+      { value: 'ON_TRACK', label: 'On Track', color: '#10B981', bg: '#D1FAE5' },
+      { value: 'AT_RISK', label: 'At Risk', color: '#F59E0B', bg: '#FEF3C7' },
+      { value: 'MET', label: 'Met', color: '#059669', bg: '#A7F3D0' },
+      { value: 'NOT_MET', label: 'Not Met', color: '#EF4444', bg: '#FEE2E2' },
+    ];
+
+    return (
+      <div style={{ padding: '20px' }}>
+        <h3 style={{ margin: '0 0 16px', fontSize: '16px', fontWeight: 600 }}>Care Plan Goals & Services</h3>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          {goalsData.map(goal => {
+            const progress = goalProgress[goal.id] || {};
+            const statusObj = GOAL_STATUSES.find(s => s.value === (progress.status || 'ON_TRACK')) || GOAL_STATUSES[0];
+
+            return (
+              <div key={goal.id} style={{
+                border: '1px solid var(--color-border)', borderRadius: '10px', padding: '16px',
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px', flexWrap: 'wrap', gap: '8px' }}>
+                  <div>
+                    <h4 style={{ margin: 0, fontSize: '15px', fontWeight: 600 }}>
+                      {goal.service?.name || goal.name || 'Service'}
+                    </h4>
+                    {goal.instructions && (
+                      <p style={{ margin: '4px 0 0', fontSize: '13px', color: 'var(--color-text-secondary)' }}>
+                        {goal.instructions}
+                      </p>
+                    )}
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    {goal.frequency && (
+                      <span style={{
+                        padding: '3px 8px', borderRadius: '6px', fontSize: '11px', fontWeight: 600,
+                        background: '#DBEAFE', color: '#1D4ED8', textTransform: 'uppercase',
+                      }}>{goal.frequency}</span>
+                    )}
+                    <select
+                      value={progress.status || 'ON_TRACK'}
+                      onChange={(e) => handleGoalProgressChange(goal.id, 'status', e.target.value)}
+                      disabled={isTerminal}
+                      style={{
+                        padding: '4px 8px', borderRadius: '6px', fontSize: '12px', fontWeight: 500,
+                        border: `1px solid ${statusObj.color}`,
+                        background: statusObj.bg, color: statusObj.color, cursor: 'pointer',
+                      }}
+                    >
+                      {GOAL_STATUSES.map(s => (
+                        <option key={s.value} value={s.value}>{s.label}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                {/* Progress bar */}
+                <div style={{ marginBottom: '10px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                    <span style={{ fontSize: '12px', color: 'var(--color-text-secondary)' }}>Progress</span>
+                    <span style={{ fontSize: '12px', fontWeight: 500 }}>{progress.percent || 0}%</span>
+                  </div>
+                  <div style={{ height: '6px', background: 'var(--color-border)', borderRadius: '3px', overflow: 'hidden' }}>
+                    <div style={{
+                      height: '100%', width: `${progress.percent || 0}%`,
+                      background: statusObj.color, borderRadius: '3px',
+                      transition: 'width 0.3s ease',
+                    }} />
+                  </div>
+                  <input
+                    type="range" min="0" max="100" step="5"
+                    value={progress.percent || 0}
+                    onChange={(e) => handleGoalProgressChange(goal.id, 'percent', parseInt(e.target.value))}
+                    disabled={isTerminal}
+                    style={{ width: '100%', marginTop: '4px' }}
+                  />
+                </div>
+
+                <textarea
+                  placeholder="Visit-specific notes for this goal..."
+                  value={progress.notes || ''}
+                  onChange={(e) => handleGoalProgressChange(goal.id, 'notes', e.target.value)}
+                  disabled={isTerminal}
+                  rows={2}
+                  style={{
+                    width: '100%', padding: '8px 10px', borderRadius: '6px',
+                    border: '1px solid var(--color-border)', fontSize: '13px', resize: 'vertical',
+                  }}
+                />
+              </div>
+            );
+          })}
+        </div>
+      </div>
     );
   };
 
+  // UX-6: Activity timeline tab
+  const renderActivitiesTab = () => (
+    <div style={{ padding: '20px' }}>
+      <h3 style={{ margin: '0 0 16px', fontSize: '16px', fontWeight: 600 }}>Visit Activity Timeline</h3>
+      {activities.length === 0 ? (
+        <div style={{ textAlign: 'center', padding: '30px', color: 'var(--color-text-secondary)' }}>
+          <Clock size={32} style={{ marginBottom: '8px', opacity: 0.5 }} />
+          <p>No activity recorded yet.</p>
+        </div>
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
+          {activities.map((act, i) => (
+            <div key={act.id} style={{
+              display: 'flex', gap: '12px', padding: '12px 0',
+              borderBottom: i < activities.length - 1 ? '1px solid var(--color-border)' : 'none',
+            }}>
+              <div style={{
+                width: '8px', height: '8px', borderRadius: '50%', marginTop: '6px', flexShrink: 0,
+                background: act.action.includes('COMPLETED') || act.action.includes('APPROVED')
+                  ? '#10B981'
+                  : act.action.includes('DELETED') || act.action.includes('CANCELLED')
+                    ? '#EF4444'
+                    : '#3B82F6',
+              }} />
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: '13px', fontWeight: 500, color: 'var(--color-text)' }}>
+                  {act.action.replace(/_/g, ' ').toLowerCase().replace(/^\w/, c => c.toUpperCase())}
+                </div>
+                {act.details && (
+                  <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginTop: '2px' }}>
+                    {act.details}
+                  </div>
+                )}
+                <div style={{ fontSize: '11px', color: 'var(--color-text-tertiary)', marginTop: '4px' }}>
+                  {act.performedBy && `${act.performedBy} · `}
+                  {new Date(act.createdAt).toLocaleString('en-US', {
+                    month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true,
+                  })}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+
+  // UX-3: Tab badge component
+  const TabBadge = ({ count }) => {
+    if (count === null || count === undefined) return null;
+    return (
+      <span style={{
+        display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+        marginLeft: '6px', padding: '1px 6px', borderRadius: '10px',
+        fontSize: '10px', fontWeight: 600,
+        background: 'var(--color-primary-light)', color: 'white',
+        minWidth: '18px',
+      }}>{count}</span>
+    );
+  };
+
+  // BUG-1 FIX + BUG-8 FIX + UX-3 + UX-14 FIX
   const tabs = [
-    {
-      value: 'info',
-      label: 'Information',
-      icon: Info,
-    },
-    {
-      value: 'tasks',
-      label: 'Service Tasks',
-      icon: ListTodo,
-    },
-    {
-      value: 'forms',
-      label: 'Forms',
-      icon: FileText,
-    },
-    {
-      value: 'notes',
-      label: 'View Notes',
-      icon: FileText,
-    },
-    {
-      value: 'goals',
-      label: 'Goals',
-      icon: Target,
-    },
-    { id: 'attachments', label: 'Attachments', icon: Paperclip, content: <FileAttachments visitId={visit?.id} /> },
-    ];
+    { value: 'info', label: 'Information', icon: Info },
+    { value: 'tasks', label: <>Service Tasks<TabBadge count={tabCounts.tasks} /></>, icon: ListTodo },
+    { value: 'forms', label: <>Forms<TabBadge count={tabCounts.forms} /></>, icon: FileText },
+    { value: 'notes', label: <>Visit Notes<TabBadge count={tabCounts.notes} /></>, icon: StickyNote },
+    { value: 'goals', label: 'Goals', icon: Target },
+    { value: 'activities', label: 'Timeline', icon: Clock },
+    { value: 'attachments', label: <>Attachments<TabBadge count={tabCounts.attachments} /></>, icon: Paperclip },
+  ];
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      title={`Edit Visit${visit?.client?.firstName ? ` - ${visit.client.firstName} ${visit.client.lastName}` : ''}`}
-      size="xl"
-    >
-      <div style={{ height: '600px', display: 'flex', flexDirection: 'column' }}>
-        <div style={{ flex: 1, overflow: 'auto' }}>
-          <Tabs tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
-          <div>
-            {/* BUG-09 FIX: info tab rendered only once here, not also in tabs array */}
-            {activeTab === 'info' && renderInfoTab()}
-            {activeTab === 'tasks' && <VisitTasksTab visitId={visit?.id} />}
-            {activeTab === 'forms' && <EditVisitFormsTab visitId={visit?.id} returnTo={formReturnTo} />}
-            {/* BUG-07 FIX: Using real VisitNotesTab instead of stub EditVisitNotesTab */}
-            {activeTab === 'notes' && <VisitNotesTab visitId={visit?.id} />}
-            {/* BUG-08 FIX: Real goals content */}
-            {activeTab === 'goals' && renderGoalsTab()}
+    <>
+      <Modal
+        isOpen={isOpen}
+        onClose={handleClose}
+        title={`Edit Visit - ${visit.client?.firstName} ${visit.client?.lastName}`}
+        size="lg"
+      >
+        {/* UX-10: Responsive container */}
+        <div style={{ display: 'flex', flexDirection: 'column', height: 'min(600px, 80vh)' }}>
+          <div style={{ flex: 1, overflow: 'auto' }}>
+            <Tabs tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
+            <div>
+              {activeTab === 'info' && renderInfoTab()}
+              {activeTab === 'tasks' && (
+                <VisitTasksTab
+                  visitId={visit?.id}
+                  visitStatus={formData.status}
+                  onCountChange={(counts) => setTabCounts(prev => ({ ...prev, tasks: counts }))}
+                />
+              )}
+              {activeTab === 'forms' && (
+                <EditVisitFormsTab
+                  visitId={visit?.id}
+                  returnTo={formReturnTo}
+                  onCountChange={(count) => setTabCounts(prev => ({ ...prev, forms: count }))}
+                />
+              )}
+              {activeTab === 'notes' && (
+                <VisitNotesTab
+                  visitId={visit?.id}
+                  onCountChange={(count) => setTabCounts(prev => ({ ...prev, notes: count }))}
+                />
+              )}
+              {activeTab === 'goals' && renderGoalsTab()}
+              {activeTab === 'activities' && renderActivitiesTab()}
+              {/* BUG-1 FIX: Attachments now properly rendered */}
+              {activeTab === 'attachments' && (
+                <FileAttachments
+                  visitId={visit?.id}
+                  onCountChange={(count) => setTabCounts(prev => ({ ...prev, attachments: count }))}
+                />
+              )}
+            </div>
+          </div>
+
+          {/* Footer */}
+          <div style={{
+            padding: '16px 24px',
+            borderTop: '1px solid var(--color-border)',
+            display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+            flexWrap: 'wrap', gap: '8px',
+          }}>
+            <div style={{ fontSize: '12px', color: 'var(--color-text-tertiary)' }}>
+              {isDirty && <span style={{ color: '#F59E0B' }}>● Unsaved changes</span>}
+              <span style={{ marginLeft: isDirty ? '12px' : '0' }}>
+                Alt+1-7: switch tabs · Ctrl+S: save
+              </span>
+            </div>
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+              {error && (
+                <span style={{ color: '#EF4444', fontSize: '13px', maxWidth: '300px', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  {error}
+                </span>
+              )}
+              <button onClick={handleClose} style={{
+                padding: '8px 20px', borderRadius: '8px',
+                border: '1px solid var(--color-border)', background: 'var(--color-bg)',
+                cursor: 'pointer', fontSize: '14px',
+              }}>Cancel</button>
+              <button
+                onClick={handleSubmit}
+                disabled={saving || !isDirty}
+                style={{
+                  padding: '8px 20px', borderRadius: '8px', border: 'none',
+                  background: (!isDirty || saving) ? 'var(--color-text-tertiary)' : 'var(--color-primary)',
+                  color: 'white', cursor: (!isDirty || saving) ? 'not-allowed' : 'pointer',
+                  fontSize: '14px', fontWeight: 500,
+                  display: 'flex', alignItems: 'center', gap: '6px',
+                }}
+              >
+                {saving ? 'Saving...' : '💾 Save Changes'}
+              </button>
+            </div>
           </div>
         </div>
-        <div style={{
-          padding: '16px 24px',
-          borderTop: '1px solid var(--color-border)',
-          backgroundColor: 'var(--color-gray-50)',
-          display: 'flex',
-          justifyContent: 'flex-end',
-          gap: '12px',
-        }}>
-          <button
-            onClick={onClose}
-            style={{
-              padding: '10px 20px',
-              borderRadius: '8px',
-              border: '1px solid var(--color-border)',
-              backgroundColor: 'white',
-              color: 'var(--color-text)',
-              fontSize: '13px',
-              fontWeight: 500,
-              cursor: 'pointer',
-            }}
-          >
-            Cancel
-          </button>
-          <button
-            onClick={handleSubmit}
-            disabled={isSaving}
-            style={{
-              padding: '10px 20px',
-              borderRadius: '8px',
-              border: 'none',
-              backgroundColor: 'var(--color-primary)',
-              color: 'white',
-              fontSize: '13px',
-              fontWeight: 500,
-              cursor: isSaving ? 'not-allowed' : 'pointer',
-              opacity: isSaving ? 0.7 : 1,
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-            }}
-          >
-            <Save size={16} />
-            {isSaving ? 'Saving...' : 'Save Changes'}
-          </button>
-        </div>
-      </div>
-    </Modal>
+      </Modal>
+
+      {/* UX-9: Styled confirmation dialogs */}
+      {confirmDialog && <ConfirmDialog open={true} {...confirmDialog} />}
+    </>
   );
 }

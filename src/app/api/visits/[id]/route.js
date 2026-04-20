@@ -110,22 +110,7 @@ export async function GET(request, { params }) {
   }
 }
 
-// Valid status transitions — prevents illegal moves like CANCELLED→APPROVED
-const VALID_STATUS_TRANSITIONS = {
-  VACANT: ['SCHEDULED', 'OFFERED', 'CANCELLED'],
-  SCHEDULED: ['IN_PROGRESS', 'CLOCKED_IN', 'CANCELLED', 'ON_HOLD', 'VACANT', 'OFFERED'],
-  OFFERED: ['SCHEDULED', 'VACANT', 'CANCELLED'],
-  IN_PROGRESS: ['COMPLETED', 'CLOCKED_IN', 'CANCELLED', 'ON_HOLD'],
-  CLOCKED_IN: ['IN_PROGRESS', 'COMPLETED', 'CANCELLED'],
-  COMPLETED: ['APPROVED'],
-  APPROVED: [], // Terminal — no further transitions
-  MISSED: ['SCHEDULED'], // Allow rescheduling
-  LATE: ['IN_PROGRESS', 'CLOCKED_IN', 'COMPLETED', 'CANCELLED'],
-  CANCELLED: [], // Terminal — cannot un-cancel
-  ON_HOLD: ['SCHEDULED', 'CANCELLED'],
-  NO_SHOW: ['SCHEDULED'], // Allow rescheduling
-};
-void VALID_STATUS_TRANSITIONS;
+// BUG-4 FIX: Removed inline VALID_STATUS_TRANSITIONS — uses VALID_VISIT_STATUS_TRANSITIONS from scheduling.js
 
 export async function PATCH(request, { params }) {
   try {

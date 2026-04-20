@@ -1,337 +1,483 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Plus, Trash2 } from 'lucide-react';
-import Modal from '@/components/ui/Modal';
+import { useEffect, useState } from 'react';
+import { Plus, Trash2, ChevronDown, ChevronRight, AlertTriangle } from 'lucide-react';
 
-export default function VisitTasksTab({ visitId }) {
+const TERMINAL_STATUSES = ['COMPLETED', 'APPROVED', 'CANCELLED'];
+const PRIORITY_OPTIONS = [
+  { value: 'HIGH', label: 'High', color: '#EF4444', bg: '#FEE2E2' },
+  { value: 'MEDIUM', label: 'Medium', color: '#F59E0B', bg: '#FEF3C7' },
+  { value: 'LOW', label: 'Low', color: '#6B7280', bg: '#F3F4F6' },
+];
+const CATEGORY_OPTIONS = ['General', 'Assessment', 'Medication', 'Personal Care', 'Nutrition', 'Documentation', 'Other'];
+
+export default function EditVisitTasksTab({ visitId, visitStatus, onCountChange }) {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [newTask, setNewTask] = useState({ title: '', category: 'General' });
-  const [error, setError] = useState('');
-  
-  const CATEGORIES = ['Assessment', 'Treatment', 'Documentation', 'Education', 'General'];
+  const [showAddTask, setShowAddTask] = useState(false);
+  const [expandedNotes, setExpandedNotes] = useState({});
+  const [newTask, setNewTask] = useState({ title: '', category: 'General', priority: 'MEDIUM', notes: '' });
+  const [addError, setAddError] = useState('');
+  const [deleteConfirm, setDeleteConfirm] = useState(null);
+
+  const isReadOnly = TERMINAL_STATUSES.includes(visitStatus);
 
   useEffect(() => {
     if (!visitId) return;
-
-    const fetchTasks = async () => {
-      setLoading(true);
-      try {
-        const response = await fetch(`/api/visits/${visitId}/tasks`);
-        if (response.ok) {
-          const data = await response.json();
-          setTasks(data.tasks || []);
-        }
-      } catch (error) {
-        console.error('Error fetching tasks:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchTasks();
   }, [visitId]);
 
-  const handleToggleTask = async (taskId, completed) => {
+  const fetchTasks = async () => {
     try {
-      const response = await fetch(`/api/visit-tasks/${taskId}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ completed: !completed }),
-      });
-
-      if (response.ok) {
-        setTasks(prev => prev.map(t => t.id === taskId ? { ...t, completed: !completed } : t));
+      setLoading(true);
+      const res = await fetch(`/api/visits/${visitId}/tasks`);
+      if (res.ok) {
+        const data = await res.json();
+        const taskList = data.tasks || [];
+        setTasks(taskList);
+        const completed = taskList.filter(t => t.completed).length;
+        onCountChange?.(`${completed}/${taskList.length}`);
       }
-    } catch (error) {
-      console.error('Error updating task:', error);
+    } catch (err) {
+      console.error('Failed to fetch tasks:', err);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleAddTask = async () => {
-    if (!newTask.title.trim()) return;
+    setAddError('');
+    const trimmed = newTask.title.trim();
+
+    // LOGIC-5: Title validation
+    if (!trimmed) {
+      setAddError('Task title is required');
+      return;
+    }
+    if (trimmed.length < 3) {
+      setAddError('Title must be at least 3 characters');
+      return;
+    }
+    if (trimmed.length > 200) {
+      setAddError('Title must be under 200 characters');
+      return;
+    }
+
+    // BUG-3: Frontend duplicate check
+    const duplicate = tasks.find(
+      t => t.title.toLowerCase() === trimmed.toLowerCase() &&
+        (t.category || 'General') === newTask.category
+    );
+    if (duplicate) {
+      setAddError('A task with this title already exists in this category');
+      return;
+    }
 
     try {
-      const response = await fetch(`/api/visits/${visitId}/tasks`, {
+      const res = await fetch(`/api/visits/${visitId}/tasks`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          title: newTask.title,
+          title: trimmed,
           category: newTask.category,
+          priority: newTask.priority,
+          notes: newTask.notes || null,
         }),
       });
 
-      if (response.ok) {
-        const task = await response.json();
-        setTasks(prev => [...prev, task]);
-        setNewTask({ title: '', category: 'General' });
-        setShowAddModal(false);
+      if (res.status === 409) {
+        setAddError('A task with this title already exists in this category');
+        return;
       }
-    } catch (err) {
-      console.error('Error adding task:', err);
-      setError('Failed to add task');
+
+      if (!res.ok) {
+        const data = await res.json();
+        setAddError(data.error || 'Failed to create task');
+        return;
+      }
+
+      const task = await res.json();
+      const updated = [...tasks, task];
+      setTasks(updated);
+      const completed = updated.filter(t => t.completed).length;
+      onCountChange?.(`${completed}/${updated.length}`);
+      setNewTask({ title: '', category: 'General', priority: 'MEDIUM', notes: '' });
+      setShowAddTask(false);
+    } catch {
+      setAddError('Failed to create task');
     }
   };
 
-  const handleDeleteTask = async (taskId) => {
-    if (!confirm('Are you sure you want to delete this task?')) return;
+  const handleToggle = async (task) => {
+    if (isReadOnly) return;
+    const newCompleted = !task.completed;
+
+    // Optimistic update
+    const updated = tasks.map(t => t.id === task.id ? { ...t, completed: newCompleted } : t);
+    setTasks(updated);
+    const completedCount = updated.filter(t => t.completed).length;
+    onCountChange?.(`${completedCount}/${updated.length}`);
 
     try {
-      const response = await fetch(`/api/visit-tasks/${taskId}`, {
-        method: 'DELETE',
+      await fetch(`/api/visit-tasks/${task.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ completed: newCompleted }),
       });
-
-      if (response.ok) {
-        setTasks(prev => prev.filter(t => t.id !== taskId));
-      }
-    } catch (err) {
-      console.error('Error deleting task:', err);
-      setError('Failed to delete task');
+    } catch {
+      // Revert on error
+      fetchTasks();
     }
   };
 
-  const groupedTasks = tasks.reduce((acc, task) => {
-    const category = task.category || 'General';
-    if (!acc[category]) acc[category] = [];
-    acc[category].push(task);
+  const handleDelete = async (taskId) => {
+    try {
+      const res = await fetch(`/api/visit-tasks/${taskId}`, { method: 'DELETE' });
+      if (res.ok) {
+        const updated = tasks.filter(t => t.id !== taskId);
+        setTasks(updated);
+        const completed = updated.filter(t => t.completed).length;
+        onCountChange?.(`${completed}/${updated.length}`);
+      }
+    } catch {
+      console.error('Failed to delete task');
+    }
+    setDeleteConfirm(null);
+  };
+
+  // UX-5: Update task notes inline
+  const handleUpdateNotes = async (taskId, notes) => {
+    try {
+      await fetch(`/api/visit-tasks/${taskId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ notes }),
+      });
+      setTasks(prev => prev.map(t => t.id === taskId ? { ...t, notes } : t));
+    } catch {}
+  };
+
+  // UX-4: Update priority
+  const handlePriorityChange = async (taskId, priority) => {
+    try {
+      await fetch(`/api/visit-tasks/${taskId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ priority }),
+      });
+      setTasks(prev => prev.map(t => t.id === taskId ? { ...t, priority } : t));
+    } catch {}
+  };
+
+  const completedCount = tasks.filter(t => t.completed).length;
+  const progress = tasks.length > 0 ? (completedCount / tasks.length) * 100 : 0;
+
+  // Group by category and sort by priority within groups
+  const PRIORITY_ORDER = { HIGH: 0, MEDIUM: 1, LOW: 2 };
+  const grouped = tasks.reduce((acc, task) => {
+    const cat = task.category || 'General';
+    if (!acc[cat]) acc[cat] = [];
+    acc[cat].push(task);
     return acc;
   }, {});
 
-  const completedCount = tasks.filter(t => t.completed).length;
-  const totalCount = tasks.length;
-  const progress = totalCount > 0 ? (completedCount / totalCount) * 100 : 0;
-
-  if (!visitId) {
-    return (
-      <div style={{ padding: '24px', textAlign: 'center', color: 'var(--color-text-secondary)' }}>
-        <p style={{ fontSize: '14px' }}>Select a visit to view tasks</p>
-      </div>
-    );
-  }
+  // Sort each group by priority
+  Object.values(grouped).forEach(group => {
+    group.sort((a, b) => (PRIORITY_ORDER[a.priority] || 1) - (PRIORITY_ORDER[b.priority] || 1));
+  });
 
   if (loading) {
-    return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '48px' }}>
-        <div className="loading-spinner" />
-      </div>
-    );
+    return <div style={{ padding: '40px', textAlign: 'center' }}><div className="loading-spinner" /></div>;
   }
 
   return (
-    <div style={{ padding: '24px' }}>
-      {error && (
-        <div style={{ padding: '12px 16px', marginBottom: '16px', backgroundColor: '#FEF2F2', border: '1px solid #FECACA', borderRadius: '8px', color: '#DC2626', fontSize: '13px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          {error}
-          <button onClick={() => setError('')} style={{ border: 'none', background: 'none', color: '#DC2626', cursor: 'pointer', fontSize: '16px' }}>&times;</button>
-        </div>
-      )}
-      {/* Progress Header */}
-      <div style={{ marginBottom: '24px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-          <h4 style={{ fontSize: '16px', fontWeight: 600, margin: 0 }}>Task Progress</h4>
-          <span style={{ fontSize: '13px', color: 'var(--color-text-secondary)' }}>
-            {completedCount} of {totalCount} completed
-          </span>
-        </div>
-        <div style={{ height: '8px', backgroundColor: 'var(--color-gray-100)', borderRadius: '4px', overflow: 'hidden' }}>
-          <div style={{
-            width: `${progress}%`,
-            height: '100%',
-            backgroundColor: 'var(--color-primary)',
-            borderRadius: '4px',
-            transition: 'width 0.3s',
-          }} />
-        </div>
+    <div style={{ padding: '20px' }}>
+      {/* Progress bar */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+        <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 600 }}>Task Progress</h3>
+        <span style={{ fontSize: '14px', color: 'var(--color-text-secondary)' }}>
+          {completedCount} of {tasks.length} completed
+        </span>
+      </div>
+      <div style={{ height: '6px', background: 'var(--color-border)', borderRadius: '3px', marginBottom: '16px', overflow: 'hidden' }}>
+        <div style={{
+          height: '100%', width: `${progress}%`,
+          background: progress === 100 ? '#10B981' : '#3B82F6',
+          borderRadius: '3px', transition: 'width 0.3s ease',
+        }} />
       </div>
 
-      {/* Add Task Button */}
-      <button
-        onClick={() => setShowAddModal(true)}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px',
-          width: '100%',
-          padding: '12px',
-          borderRadius: '8px',
-          border: '1px dashed var(--color-border)',
-          backgroundColor: 'var(--color-gray-50)',
-          color: 'var(--color-text-secondary)',
-          fontSize: '13px',
-          fontWeight: 500,
-          cursor: 'pointer',
-          marginBottom: '24px',
-        }}
-      >
-        <Plus size={18} />
-        Add Task
-      </button>
-
-      {/* Task Groups */}
-      {Object.keys(groupedTasks).length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '32px', color: 'var(--color-text-secondary)' }}>
-          <p style={{ fontSize: '14px' }}>No tasks yet. Add tasks to track your visit activities.</p>
+      {/* LOGIC-7: Read-only notice */}
+      {isReadOnly && (
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 14px',
+          background: '#FEF3C7', borderRadius: '8px', marginBottom: '16px',
+          fontSize: '13px', color: '#B45309',
+        }}>
+          <AlertTriangle size={16} />
+          Tasks are view-only for {visitStatus?.toLowerCase()} visits.
         </div>
-      ) : (
-        Object.entries(groupedTasks).map(([category, categoryTasks]) => (
-          <div key={category} style={{ marginBottom: '24px' }}>
-            <h5 style={{
-              fontSize: '13px',
-              fontWeight: 600,
-              color: 'var(--color-text-secondary)',
-              marginBottom: '12px',
-              textTransform: 'uppercase',
-              letterSpacing: '0.05em',
-            }}>
-              {category} ({categoryTasks.filter(t => t.completed).length}/{categoryTasks.length})
-            </h5>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              {categoryTasks.map(task => (
-                <div
-                  key={task.id}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '12px',
-                    padding: '12px',
-                    backgroundColor: 'var(--color-white)',
-                    border: `1px solid ${task.completed ? 'var(--color-success)' : 'var(--color-border)'}`,
-                    borderRadius: '8px',
-                    transition: 'all 0.2s',
-                  }}
-                >
-                  <input
-                    type="checkbox"
-                    checked={task.completed}
-                    onChange={() => handleToggleTask(task.id, task.completed)}
-                    style={{
-                      width: '18px',
-                      height: '18px',
-                      accentColor: 'var(--color-success)',
-                      cursor: 'pointer',
-                    }}
-                  />
-                  <span style={{
-                    flex: 1,
-                    fontSize: '14px',
-                    color: task.completed ? 'var(--color-text-secondary)' : 'var(--color-text)',
-                    textDecoration: task.completed ? 'line-through' : 'none',
-                  }}>
-                    {task.title}
-                  </span>
-                  {task.notes && (
-                    <span style={{ fontSize: '11px', color: 'var(--color-text-muted)', fontStyle: 'italic' }}>
-                      ✓ {task.notes}
-                    </span>
-                  )}
-                  <button
-                    onClick={() => handleDeleteTask(task.id)}
-                    style={{
-                      padding: '6px',
-                      borderRadius: '6px',
-                      border: 'none',
-                      backgroundColor: 'transparent',
-                      color: 'var(--color-text-muted)',
-                      cursor: 'pointer',
-                      transition: 'color 0.2s',
-                    }}
-                    onMouseEnter={(e) => e.target.style.color = 'var(--color-error)'}
-                    onMouseLeave={(e) => e.target.style.color = 'var(--color-text-muted)'}
-                  >
-                    <Trash2 size={16} />
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
-        ))
       )}
 
-      {/* Add Task Modal */}
-      <Modal
-        isOpen={showAddModal}
-        onClose={() => setShowAddModal(false)}
-        title="Add Task"
-      >
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <div>
-            <label style={{ fontSize: '13px', fontWeight: 500, display: 'block', marginBottom: '6px' }}>
-              Task Title *
-            </label>
-            <input
-              type="text"
-              value={newTask.title}
-              onChange={(e) => setNewTask(prev => ({ ...prev, title: e.target.value }))}
-              placeholder="e.g., Change surgical dressing"
-              style={{
-                width: '100%',
-                padding: '10px 12px',
-                borderRadius: '8px',
-                border: '1px solid var(--color-border)',
-                fontSize: '13px',
-              }}
-            />
-          </div>
+      {/* Add Task button */}
+      {!isReadOnly && (
+        <button
+          onClick={() => setShowAddTask(!showAddTask)}
+          style={{
+            display: 'flex', alignItems: 'center', gap: '6px', width: '100%',
+            padding: '10px 14px', borderRadius: '8px',
+            border: '1px dashed var(--color-border)', background: 'var(--color-bg)',
+            cursor: 'pointer', fontSize: '14px', color: 'var(--color-text-secondary)',
+            marginBottom: '16px',
+          }}
+        >
+          <Plus size={16} /> Add Task
+        </button>
+      )}
 
-          <div>
-            <label style={{ fontSize: '13px', fontWeight: 500, display: 'block', marginBottom: '6px' }}>
-              Category
-            </label>
-            <select
-              value={newTask.category}
-              onChange={(e) => setNewTask(prev => ({ ...prev, category: e.target.value }))}
-              style={{
-                width: '100%',
-                padding: '10px 12px',
-                borderRadius: '8px',
-                border: '1px solid var(--color-border)',
-                fontSize: '13px',
-                backgroundColor: 'white',
-              }}
-            >
-              {CATEGORIES.map(cat => (
-                <option key={cat} value={cat}>{cat}</option>
-              ))}
-            </select>
-          </div>
-
-          <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end', marginTop: '8px' }}>
-            <button
-              onClick={() => setShowAddModal(false)}
-              style={{
-                padding: '10px 20px',
-                borderRadius: '8px',
-                border: '1px solid var(--color-border)',
-                backgroundColor: 'white',
-                color: 'var(--color-text)',
-                fontSize: '13px',
-                fontWeight: 500,
-                cursor: 'pointer',
-              }}
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleAddTask}
-              disabled={!newTask.title.trim()}
-              style={{
-                padding: '10px 20px',
-                borderRadius: '8px',
-                border: 'none',
-                backgroundColor: newTask.title.trim() ? 'var(--color-primary)' : 'var(--color-gray-200)',
-                color: newTask.title.trim() ? 'white' : 'var(--color-text-muted)',
-                fontSize: '13px',
-                fontWeight: 500,
-                cursor: newTask.title.trim() ? 'pointer' : 'not-allowed',
-              }}
-            >
-              Add Task
-            </button>
+      {/* Add Task form */}
+      {showAddTask && (
+        <div style={{
+          border: '1px solid var(--color-border)', borderRadius: '10px',
+          padding: '16px', marginBottom: '16px', background: 'var(--color-bg-secondary)',
+        }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <div>
+              <label style={{ fontSize: '12px', fontWeight: 500, marginBottom: '4px', display: 'block' }}>
+                Task Title *
+              </label>
+              <input
+                type="text"
+                value={newTask.title}
+                maxLength={200}
+                placeholder="e.g., Check blood pressure"
+                onChange={(e) => setNewTask(prev => ({ ...prev, title: e.target.value }))}
+                style={{
+                  width: '100%', padding: '8px 10px', borderRadius: '6px',
+                  border: '1px solid var(--color-border)', fontSize: '14px',
+                }}
+              />
+              <span style={{ fontSize: '11px', color: 'var(--color-text-tertiary)' }}>
+                {newTask.title.length}/200 (min 3)
+              </span>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+              <div>
+                <label style={{ fontSize: '12px', fontWeight: 500, marginBottom: '4px', display: 'block' }}>Category</label>
+                <select
+                  value={newTask.category}
+                  onChange={(e) => setNewTask(prev => ({ ...prev, category: e.target.value }))}
+                  style={{
+                    width: '100%', padding: '8px 10px', borderRadius: '6px',
+                    border: '1px solid var(--color-border)', fontSize: '13px',
+                  }}
+                >
+                  {CATEGORY_OPTIONS.map(c => <option key={c} value={c}>{c}</option>)}
+                </select>
+              </div>
+              <div>
+                <label style={{ fontSize: '12px', fontWeight: 500, marginBottom: '4px', display: 'block' }}>Priority</label>
+                <select
+                  value={newTask.priority}
+                  onChange={(e) => setNewTask(prev => ({ ...prev, priority: e.target.value }))}
+                  style={{
+                    width: '100%', padding: '8px 10px', borderRadius: '6px',
+                    border: '1px solid var(--color-border)', fontSize: '13px',
+                  }}
+                >
+                  {PRIORITY_OPTIONS.map(p => <option key={p.value} value={p.value}>{p.label}</option>)}
+                </select>
+              </div>
+            </div>
+            <div>
+              <label style={{ fontSize: '12px', fontWeight: 500, marginBottom: '4px', display: 'block' }}>Notes (optional)</label>
+              <textarea
+                value={newTask.notes}
+                onChange={(e) => setNewTask(prev => ({ ...prev, notes: e.target.value }))}
+                placeholder="Additional details..."
+                rows={2}
+                style={{
+                  width: '100%', padding: '8px 10px', borderRadius: '6px',
+                  border: '1px solid var(--color-border)', fontSize: '13px', resize: 'vertical',
+                }}
+              />
+            </div>
+            {addError && (
+              <span style={{ color: '#EF4444', fontSize: '13px' }}>{addError}</span>
+            )}
+            <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+              <button
+                onClick={() => { setShowAddTask(false); setAddError(''); }}
+                style={{
+                  padding: '6px 14px', borderRadius: '6px', fontSize: '13px',
+                  border: '1px solid var(--color-border)', background: 'var(--color-bg)', cursor: 'pointer',
+                }}
+              >Cancel</button>
+              <button
+                onClick={handleAddTask}
+                style={{
+                  padding: '6px 14px', borderRadius: '6px', fontSize: '13px', fontWeight: 500,
+                  border: 'none', background: 'var(--color-primary)', color: 'white', cursor: 'pointer',
+                }}
+              >Add Task</button>
+            </div>
           </div>
         </div>
-      </Modal>
+      )}
+
+      {/* Tasks grouped by category */}
+      {Object.entries(grouped).map(([category, categoryTasks]) => {
+        const catCompleted = categoryTasks.filter(t => t.completed).length;
+        return (
+          <div key={category} style={{ marginBottom: '16px' }}>
+            <div style={{
+              fontSize: '12px', fontWeight: 600, color: 'var(--color-text-secondary)',
+              textTransform: 'uppercase', letterSpacing: '0.05em',
+              marginBottom: '8px', padding: '0 4px',
+            }}>
+              {category} ({catCompleted}/{categoryTasks.length})
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              {categoryTasks.map(task => {
+                const priorityConfig = PRIORITY_OPTIONS.find(p => p.value === task.priority) || PRIORITY_OPTIONS[1];
+                const isExpanded = expandedNotes[task.id];
+
+                return (
+                  <div key={task.id} style={{
+                    border: '1px solid var(--color-border)', borderRadius: '8px',
+                    padding: '10px 14px', background: task.completed ? 'var(--color-bg-secondary)' : 'var(--color-bg)',
+                    opacity: task.completed ? 0.7 : 1,
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <input
+                        type="checkbox"
+                        checked={task.completed}
+                        onChange={() => handleToggle(task)}
+                        disabled={isReadOnly}
+                        style={{ width: '18px', height: '18px', cursor: isReadOnly ? 'not-allowed' : 'pointer', accentColor: 'var(--color-primary)' }}
+                      />
+                      <span style={{
+                        flex: 1, fontSize: '14px',
+                        textDecoration: task.completed ? 'line-through' : 'none',
+                        color: task.completed ? 'var(--color-text-secondary)' : 'var(--color-text)',
+                      }}>
+                        {task.title}
+                      </span>
+
+                      {/* UX-4: Priority badge */}
+                      {!isReadOnly ? (
+                        <select
+                          value={task.priority || 'MEDIUM'}
+                          onChange={(e) => handlePriorityChange(task.id, e.target.value)}
+                          style={{
+                            padding: '2px 6px', borderRadius: '4px', fontSize: '11px', fontWeight: 600,
+                            border: 'none', background: priorityConfig.bg, color: priorityConfig.color,
+                            cursor: 'pointer',
+                          }}
+                        >
+                          {PRIORITY_OPTIONS.map(p => <option key={p.value} value={p.value}>{p.label}</option>)}
+                        </select>
+                      ) : (
+                        <span style={{
+                          padding: '2px 6px', borderRadius: '4px', fontSize: '11px', fontWeight: 600,
+                          background: priorityConfig.bg, color: priorityConfig.color,
+                        }}>
+                          {priorityConfig.label}
+                        </span>
+                      )}
+
+                      {/* UX-5: Expand notes toggle */}
+                      <button
+                        onClick={() => setExpandedNotes(prev => ({ ...prev, [task.id]: !prev[task.id] }))}
+                        style={{
+                          background: 'none', border: 'none', cursor: 'pointer',
+                          color: task.notes ? 'var(--color-primary)' : 'var(--color-text-tertiary)',
+                          padding: '2px',
+                        }}
+                        title={task.notes ? 'View notes' : 'Add notes'}
+                      >
+                        {isExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+                      </button>
+
+                      {!isReadOnly && (
+                        <button
+                          onClick={() => setDeleteConfirm(task.id)}
+                          style={{
+                            background: 'none', border: 'none', cursor: 'pointer',
+                            color: 'var(--color-text-tertiary)', padding: '2px',
+                          }}
+                          title="Delete task"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      )}
+                    </div>
+
+                    {/* UX-5: Inline notes */}
+                    {isExpanded && (
+                      <div style={{ marginTop: '8px', paddingLeft: '28px' }}>
+                        <textarea
+                          value={task.notes || ''}
+                          onChange={(e) => {
+                            setTasks(prev => prev.map(t =>
+                              t.id === task.id ? { ...t, notes: e.target.value } : t
+                            ));
+                          }}
+                          onBlur={(e) => handleUpdateNotes(task.id, e.target.value)}
+                          disabled={isReadOnly}
+                          placeholder="Task notes (e.g., applied 2x2 gauze, wound improving)..."
+                          rows={2}
+                          style={{
+                            width: '100%', padding: '6px 8px', borderRadius: '6px',
+                            border: '1px solid var(--color-border)', fontSize: '12px',
+                            resize: 'vertical', background: isReadOnly ? 'var(--color-bg-secondary)' : 'var(--color-bg)',
+                          }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })}
+
+      {tasks.length === 0 && !showAddTask && (
+        <div style={{ textAlign: 'center', padding: '30px', color: 'var(--color-text-secondary)' }}>
+          No tasks assigned to this visit yet.
+        </div>
+      )}
+
+      {/* UX-9: Styled delete confirmation */}
+      {deleteConfirm && (
+        <div style={{
+          position: 'fixed', inset: 0, zIndex: 10001,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          background: 'rgba(0,0,0,0.5)',
+        }}>
+          <div style={{
+            background: 'var(--color-bg)', borderRadius: '12px',
+            padding: '24px', maxWidth: '360px', width: '90%',
+            boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
+          }}>
+            <h3 style={{ margin: '0 0 8px', fontSize: '16px', fontWeight: 600 }}>Delete Task?</h3>
+            <p style={{ margin: '0 0 16px', fontSize: '14px', color: 'var(--color-text-secondary)' }}>
+              This action cannot be undone.
+            </p>
+            <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+              <button onClick={() => setDeleteConfirm(null)} style={{
+                padding: '8px 16px', borderRadius: '8px', border: '1px solid var(--color-border)',
+                background: 'var(--color-bg)', cursor: 'pointer', fontSize: '14px',
+              }}>Cancel</button>
+              <button onClick={() => handleDelete(deleteConfirm)} style={{
+                padding: '8px 16px', borderRadius: '8px', border: 'none',
+                background: '#EF4444', color: 'white', cursor: 'pointer', fontSize: '14px', fontWeight: 500,
+              }}>Delete</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

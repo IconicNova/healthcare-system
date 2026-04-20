@@ -1,220 +1,299 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Plus, Calendar, Clock } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Plus, Edit3, Trash2, X, Check } from 'lucide-react';
+import { useEditor, EditorContent } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+import Placeholder from '@tiptap/extension-placeholder';
 
-export default function VisitNotesTab({ visitId }) {
+// UX-7: WYSIWYG Toolbar component
+function EditorToolbar({ editor }) {
+  if (!editor) return null;
+
+  const btnStyle = (isActive) => ({
+    padding: '4px 8px', borderRadius: '4px', fontSize: '13px', fontWeight: 600,
+    border: '1px solid var(--color-border)', cursor: 'pointer',
+    background: isActive ? 'var(--color-primary-light)' : 'var(--color-bg)',
+    color: isActive ? 'white' : 'var(--color-text)',
+  });
+
+  return (
+    <div style={{
+      display: 'flex', gap: '4px', padding: '6px 8px', flexWrap: 'wrap',
+      borderBottom: '1px solid var(--color-border)', background: 'var(--color-bg-secondary)',
+      borderRadius: '8px 8px 0 0',
+    }}>
+      <button type="button" onClick={() => editor.chain().focus().toggleBold().run()}
+        style={btnStyle(editor.isActive('bold'))} title="Bold (Ctrl+B)">B</button>
+      <button type="button" onClick={() => editor.chain().focus().toggleItalic().run()}
+        style={btnStyle(editor.isActive('italic'))} title="Italic (Ctrl+I)"><em>I</em></button>
+      <button type="button" onClick={() => editor.chain().focus().toggleStrike().run()}
+        style={btnStyle(editor.isActive('strike'))} title="Strikethrough"><s>S</s></button>
+      <span style={{ width: '1px', background: 'var(--color-border)', margin: '0 4px' }} />
+      <button type="button" onClick={() => editor.chain().focus().toggleBulletList().run()}
+        style={btnStyle(editor.isActive('bulletList'))} title="Bullet List">• List</button>
+      <button type="button" onClick={() => editor.chain().focus().toggleOrderedList().run()}
+        style={btnStyle(editor.isActive('orderedList'))} title="Numbered List">1. List</button>
+      <span style={{ width: '1px', background: 'var(--color-border)', margin: '0 4px' }} />
+      <button type="button" onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+        style={btnStyle(editor.isActive('heading', { level: 3 }))} title="Heading">H</button>
+      <button type="button" onClick={() => editor.chain().focus().toggleBlockquote().run()}
+        style={btnStyle(editor.isActive('blockquote'))} title="Quote">&ldquo;</button>
+    </div>
+  );
+}
+
+// Reusable WYSIWYG editor
+function RichEditor({ content, onUpdate, placeholder, readOnly }) {
+  const editor = useEditor({
+    extensions: [
+      StarterKit,
+      Placeholder.configure({ placeholder: placeholder || 'Write something...' }),
+    ],
+    content: content || '',
+    editable: !readOnly,
+    immediatelyRender: false,
+    onUpdate: ({ editor }) => {
+      onUpdate?.(editor.getHTML());
+    },
+  });
+
+  // Update content when it changes externally
+  useEffect(() => {
+    if (editor && content !== undefined && editor.getHTML() !== content) {
+      editor.commands.setContent(content || '');
+    }
+  }, [content, editor]);
+
+  return (
+    <div style={{
+      border: '1px solid var(--color-border)', borderRadius: '8px',
+      overflow: 'hidden',
+    }}>
+      {!readOnly && <EditorToolbar editor={editor} />}
+      <div style={{ padding: '10px 12px', minHeight: '80px', fontSize: '14px' }}
+        className="tiptap-editor-content"
+      >
+        <EditorContent editor={editor} />
+      </div>
+    </div>
+  );
+}
+
+export default function VisitNotesTab({ visitId, onCountChange }) {
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [newNote, setNewNote] = useState('');
-  const [showAddNote, setShowAddNote] = useState(false);
-  const [error, setError] = useState('');
+  const [showAdd, setShowAdd] = useState(false);
+  const [newContent, setNewContent] = useState('');
+  const [editingId, setEditingId] = useState(null);
+  const [editContent, setEditContent] = useState('');
+  const [deleteConfirm, setDeleteConfirm] = useState(null);
 
   useEffect(() => {
     if (!visitId) return;
-
-    const fetchNotes = async () => {
-      setLoading(true);
-      try {
-        const response = await fetch(`/api/visits/${visitId}/notes`);
-        if (response.ok) {
-          const data = await response.json();
-          setNotes(data.notes || []);
-        }
-      } catch (error) {
-        console.error('Error fetching notes:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchNotes();
   }, [visitId]);
 
-  const handleAddNote = async () => {
-    if (!newNote.trim()) return;
-
+  const fetchNotes = async () => {
     try {
-      const response = await fetch(`/api/visits/${visitId}/notes`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content: newNote }),
-      });
-
-      if (response.ok) {
-        const note = await response.json();
-        setNotes(prev => [note, ...prev]);
-        setNewNote('');
-        setShowAddNote(false);
+      setLoading(true);
+      const res = await fetch(`/api/visits/${visitId}/notes`);
+      if (res.ok) {
+        const data = await res.json();
+        const notesList = data.notes || [];
+        setNotes(notesList);
+        onCountChange?.(notesList.length);
       }
     } catch (err) {
-      console.error('Error adding note:', err);
-      setError('Failed to add note');
+      console.error('Failed to fetch notes:', err);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const formatDateTime = (dateString) => {
-    const date = new Date(dateString);
-    return {
-      date: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-      time: date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }),
-    };
+  const handleAdd = async () => {
+    const stripped = newContent.replace(/<[^>]*>/g, '').trim();
+    if (!stripped) return;
+
+    try {
+      const res = await fetch(`/api/visits/${visitId}/notes`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: newContent }),
+      });
+      if (res.ok) {
+        setNewContent('');
+        setShowAdd(false);
+        fetchNotes();
+      }
+    } catch {}
   };
 
-  if (!visitId) {
-    return (
-      <div style={{ padding: '24px', textAlign: 'center', color: 'var(--color-text-secondary)' }}>
-        <p style={{ fontSize: '14px' }}>Select a visit to view notes</p>
-      </div>
-    );
-  }
+  // LOGIC-6: Edit note
+  const handleEdit = async (noteId) => {
+    const stripped = editContent.replace(/<[^>]*>/g, '').trim();
+    if (!stripped) return;
+
+    try {
+      const res = await fetch(`/api/visit-notes/${noteId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: editContent }),
+      });
+      if (res.ok) {
+        setEditingId(null);
+        setEditContent('');
+        fetchNotes();
+      }
+    } catch {}
+  };
+
+  // LOGIC-6: Delete note
+  const handleDelete = async (noteId) => {
+    try {
+      const res = await fetch(`/api/visit-notes/${noteId}`, { method: 'DELETE' });
+      if (res.ok) {
+        fetchNotes();
+      }
+    } catch {}
+    setDeleteConfirm(null);
+  };
 
   if (loading) {
-    return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '48px' }}>
-        <div className="loading-spinner" />
-      </div>
-    );
+    return <div style={{ padding: '40px', textAlign: 'center' }}><div className="loading-spinner" /></div>;
   }
 
   return (
-    <div style={{ padding: '24px' }}>
-      {error && (
-        <div style={{ padding: '12px 16px', marginBottom: '16px', backgroundColor: '#FEF2F2', border: '1px solid #FECACA', borderRadius: '8px', color: '#DC2626', fontSize: '13px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          {error}
-          <button onClick={() => setError('')} style={{ border: 'none', background: 'none', color: '#DC2626', cursor: 'pointer', fontSize: '16px' }}>&times;</button>
-        </div>
-      )}
-      {/* Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-        <h4 style={{ fontSize: '16px', fontWeight: 600, margin: 0 }}>Visit Notes</h4>
+    <div style={{ padding: '20px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+        {/* UX-14: Renamed from "View Notes" */}
+        <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 600 }}>Visit Notes</h3>
         <button
-          onClick={() => setShowAddNote(true)}
+          onClick={() => setShowAdd(!showAdd)}
           style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-            padding: '8px 16px',
-            borderRadius: '8px',
-            border: 'none',
-            backgroundColor: 'var(--color-primary)',
-            color: 'white',
-            fontSize: '13px',
-            fontWeight: 500,
-            cursor: 'pointer',
+            display: 'flex', alignItems: 'center', gap: '6px',
+            padding: '8px 14px', borderRadius: '8px', border: 'none',
+            background: 'var(--color-primary)', color: 'white',
+            cursor: 'pointer', fontSize: '13px', fontWeight: 500,
           }}
         >
-          <Plus size={16} />
-          Add Note
+          <Plus size={14} /> Add Note
         </button>
       </div>
 
-      {/* Notes List */}
-      {notes.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '48px', backgroundColor: 'var(--color-gray-50)', borderRadius: '12px' }}>
-          <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)' }}>No notes yet. Add your first note to document this visit.</p>
+      {/* Add note form — UX-7: Full WYSIWYG */}
+      {showAdd && (
+        <div style={{
+          border: '1px solid var(--color-border)', borderRadius: '10px',
+          padding: '16px', marginBottom: '16px', background: 'var(--color-bg-secondary)',
+        }}>
+          <RichEditor
+            content={newContent}
+            onUpdate={setNewContent}
+            placeholder="Write your visit note here... (supports bold, lists, headings)"
+          />
+          <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end', marginTop: '10px' }}>
+            <button onClick={() => { setShowAdd(false); setNewContent(''); }} style={{
+              padding: '6px 14px', borderRadius: '6px', fontSize: '13px',
+              border: '1px solid var(--color-border)', background: 'var(--color-bg)', cursor: 'pointer',
+            }}>Cancel</button>
+            <button onClick={handleAdd} style={{
+              padding: '6px 14px', borderRadius: '6px', fontSize: '13px', fontWeight: 500,
+              border: 'none', background: 'var(--color-primary)', color: 'white', cursor: 'pointer',
+            }}>Save Note</button>
+          </div>
+        </div>
+      )}
+
+      {/* Notes list */}
+      {notes.length === 0 && !showAdd ? (
+        <div style={{ textAlign: 'center', padding: '30px', color: 'var(--color-text-secondary)' }}>
+          No visit notes yet. Click &ldquo;Add Note&rdquo; to create one.
         </div>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
           {notes.map(note => (
-            <div
-              key={note.id}
-              style={{
-                backgroundColor: 'var(--color-white)',
-                border: '1px solid var(--color-border)',
-                borderRadius: '12px',
-                padding: '16px',
-              }}
-            >
-              <div style={{ display: 'flex', gap: '16px', marginBottom: '12px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', color: 'var(--color-text-muted)' }}>
-                  <Calendar size={12} />
-                  {formatDateTime(note.createdAt).date}
+            <div key={note.id} style={{
+              border: '1px solid var(--color-border)', borderRadius: '10px',
+              padding: '14px', background: 'var(--color-bg)',
+            }}>
+              {/* Header */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: 'var(--color-text-secondary)' }}>
+                  <span>📅 {new Date(note.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                  <span>🕐 {new Date(note.createdAt).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}</span>
+                  {note.updatedAt && note.updatedAt !== note.createdAt && (
+                    <span style={{ fontStyle: 'italic' }}>(edited)</span>
+                  )}
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', color: 'var(--color-text-muted)' }}>
-                  <Clock size={12} />
-                  {formatDateTime(note.createdAt).time}
+                {/* LOGIC-6: Edit & Delete buttons */}
+                <div style={{ display: 'flex', gap: '4px' }}>
+                  {editingId === note.id ? (
+                    <>
+                      <button onClick={() => handleEdit(note.id)} style={{
+                        background: 'none', border: 'none', cursor: 'pointer', color: '#10B981', padding: '4px',
+                      }} title="Save"><Check size={14} /></button>
+                      <button onClick={() => { setEditingId(null); setEditContent(''); }} style={{
+                        background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-text-tertiary)', padding: '4px',
+                      }} title="Cancel"><X size={14} /></button>
+                    </>
+                  ) : (
+                    <>
+                      <button onClick={() => { setEditingId(note.id); setEditContent(note.content); }} style={{
+                        background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-text-tertiary)', padding: '4px',
+                      }} title="Edit note"><Edit3 size={14} /></button>
+                      <button onClick={() => setDeleteConfirm(note.id)} style={{
+                        background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-text-tertiary)', padding: '4px',
+                      }} title="Delete note"><Trash2 size={14} /></button>
+                    </>
+                  )}
                 </div>
               </div>
-              <div style={{ fontSize: '14px', color: 'var(--color-text)', lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>
-                {note.content}
-              </div>
+
+              {/* Content */}
+              {editingId === note.id ? (
+                <RichEditor
+                  content={editContent}
+                  onUpdate={setEditContent}
+                  placeholder="Edit your note..."
+                />
+              ) : (
+                <div
+                  style={{ fontSize: '14px', lineHeight: 1.6 }}
+                  className="tiptap-render"
+                  dangerouslySetInnerHTML={{ __html: note.content }}
+                />
+              )}
             </div>
           ))}
         </div>
       )}
 
-      {/* Add Note Modal */}
-      {showAddNote && (
+      {/* Delete confirmation */}
+      {deleteConfirm && (
         <div style={{
-          position: 'fixed',
-          inset: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 500,
-        }} onClick={() => setShowAddNote(false)}>
-          <div
-            style={{
-              backgroundColor: 'white',
-              borderRadius: '16px',
-              padding: '24px',
-              width: '90%',
-              maxWidth: '500px',
-              maxHeight: '80vh',
-              overflow: 'auto',
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h4 style={{ fontSize: '16px', fontWeight: 600, marginBottom: '16px' }}>Add Visit Note</h4>
-            <textarea
-              value={newNote}
-              onChange={(e) => setNewNote(e.target.value)}
-              placeholder="Document your observations, assessments, and interventions..."
-              rows={6}
-              style={{
-                width: '100%',
-                padding: '12px',
-                borderRadius: '8px',
-                border: '1px solid var(--color-border)',
-                fontSize: '14px',
-                resize: 'vertical',
-                marginBottom: '16px',
-              }}
-            />
-            <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
-              <button
-                onClick={() => setShowAddNote(false)}
-                style={{
-                  padding: '10px 20px',
-                  borderRadius: '8px',
-                  border: '1px solid var(--color-border)',
-                  backgroundColor: 'white',
-                  color: 'var(--color-text)',
-                  fontSize: '13px',
-                  fontWeight: 500,
-                  cursor: 'pointer',
-                }}
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleAddNote}
-                disabled={!newNote.trim()}
-                style={{
-                  padding: '10px 20px',
-                  borderRadius: '8px',
-                  border: 'none',
-                  backgroundColor: newNote.trim() ? 'var(--color-primary)' : 'var(--color-gray-200)',
-                  color: newNote.trim() ? 'white' : 'var(--color-text-muted)',
-                  fontSize: '13px',
-                  fontWeight: 500,
-                  cursor: newNote.trim() ? 'pointer' : 'not-allowed',
-                }}
-              >
-                Add Note
-              </button>
+          position: 'fixed', inset: 0, zIndex: 10001,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          background: 'rgba(0,0,0,0.5)',
+        }}>
+          <div style={{
+            background: 'var(--color-bg)', borderRadius: '12px',
+            padding: '24px', maxWidth: '360px', width: '90%',
+            boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
+          }}>
+            <h3 style={{ margin: '0 0 8px', fontSize: '16px', fontWeight: 600 }}>Delete Note?</h3>
+            <p style={{ margin: '0 0 16px', fontSize: '14px', color: 'var(--color-text-secondary)' }}>
+              This action cannot be undone.
+            </p>
+            <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+              <button onClick={() => setDeleteConfirm(null)} style={{
+                padding: '8px 16px', borderRadius: '8px', border: '1px solid var(--color-border)',
+                background: 'var(--color-bg)', cursor: 'pointer', fontSize: '14px',
+              }}>Cancel</button>
+              <button onClick={() => handleDelete(deleteConfirm)} style={{
+                padding: '8px 16px', borderRadius: '8px', border: 'none',
+                background: '#EF4444', color: 'white', cursor: 'pointer', fontSize: '14px', fontWeight: 500,
+              }}>Delete</button>
             </div>
           </div>
         </div>
