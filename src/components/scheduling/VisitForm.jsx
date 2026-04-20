@@ -249,21 +249,25 @@ export default function VisitForm({ isOpen, onClose, onSubmit, clients = [], sta
     ...branches.map(b => ({ value: b.id, label: b.name })),
   ];
 
+  const filteredCarePlans = carePlans.filter(cp => {
+    // If client is selected, show only care plans for that client
+    // If no client is selected, show all active care plans
+    if (formData.clientId) {
+      return cp.clientId === formData.clientId && (cp.status === true || cp.status === undefined);
+    }
+    return cp.status === true || cp.status === undefined;
+  });
+
+  console.log('Care plans data:', carePlans);
+  console.log('Filtered care plans:', filteredCarePlans);
+  console.log('Current client ID:', formData.clientId);
+
   const carePlanOptions = [
     { value: '', label: 'No Care Plan' },
-    ...carePlans
-      .filter(cp => {
-        // If client is selected, show only care plans for that client
-        // If no client is selected, show all active care plans
-        if (formData.clientId) {
-          return cp.clientId === formData.clientId && cp.status !== false;
-        }
-        return cp.status !== false;
-      })
-      .map(cp => ({
-        value: cp.id,
-        label: `${cp.name} — ${cp.client?.firstName} ${cp.client?.lastName}`,
-      })),
+    ...filteredCarePlans.map(cp => ({
+      value: cp.id,
+      label: `${cp.name} — ${cp.client?.firstName} ${cp.client?.lastName}`,
+    })),
   ];
 
   // Check if selected staff matches care plan's assigned staff
