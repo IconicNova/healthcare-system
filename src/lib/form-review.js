@@ -4,6 +4,27 @@ export function normalizeFormStatus(status) {
   return status || 'DRAFT';
 }
 
+export function normalizeFormSchema(schema) {
+  if (!schema) {
+    return { sections: [] };
+  }
+
+  if (typeof schema === 'string') {
+    try {
+      const parsed = JSON.parse(schema);
+      return parsed && typeof parsed === 'object' ? parsed : { sections: [] };
+    } catch {
+      return { sections: [] };
+    }
+  }
+
+  if (typeof schema === 'object') {
+    return schema;
+  }
+
+  return { sections: [] };
+}
+
 export function normalizeRejectionReason(value) {
   return typeof value === 'string' ? value.trim() : '';
 }

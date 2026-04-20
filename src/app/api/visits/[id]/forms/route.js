@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
-import { normalizeFormStatus } from '@/lib/form-review';
+import { normalizeFormSchema, normalizeFormStatus } from '@/lib/form-review';
 
 function isUniqueConstraintError(error) {
   return error?.code === 'P2002';
@@ -50,6 +50,12 @@ export async function GET(request, { params }) {
     return NextResponse.json({
       forms: forms.map((form) => ({
         ...form,
+        template: form.template
+          ? {
+              ...form.template,
+              schema: normalizeFormSchema(form.template.schema),
+            }
+          : null,
         status: normalizeFormStatus(form.status),
       })),
     });
@@ -127,6 +133,12 @@ export async function POST(request, { params }) {
       return NextResponse.json({
         form: {
           ...existingForm,
+          template: existingForm.template
+            ? {
+                ...existingForm.template,
+                schema: normalizeFormSchema(existingForm.template.schema),
+              }
+            : null,
           status: normalizeFormStatus(existingForm.status),
         },
       });
@@ -187,6 +199,12 @@ export async function POST(request, { params }) {
       return NextResponse.json({
         form: {
           ...concurrentForm,
+          template: concurrentForm.template
+            ? {
+                ...concurrentForm.template,
+                schema: normalizeFormSchema(concurrentForm.template.schema),
+              }
+            : null,
           status: normalizeFormStatus(concurrentForm.status),
         },
       });
@@ -195,6 +213,12 @@ export async function POST(request, { params }) {
     return NextResponse.json({
       form: {
         ...form,
+        template: form.template
+          ? {
+              ...form.template,
+              schema: normalizeFormSchema(form.template.schema),
+            }
+          : null,
         status: normalizeFormStatus(form.status),
       },
     }, { status: 201 });

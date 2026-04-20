@@ -6,6 +6,7 @@ import { ArrowLeft, Save, Check, Clock, AlertCircle, Eye } from 'lucide-react';
 import FormFieldRenderer from '@/components/care-delivery/FormFieldRenderer';
 import { resolveCareDeliveryReturnTo } from '@/components/care-delivery/care-delivery.helpers';
 import {
+  normalizeFormSchema,
   normalizeFormStatus,
   shouldAutosaveDraft,
   shouldScheduleFormAutosave,
@@ -270,7 +271,7 @@ export default function FormChartingPage({ params }) {
   }
 
   const schema = form.template?.schema || {};
-  const sections = schema.sections || [];
+  const sections = normalizeFormSchema(schema).sections || [];
 
   return (
     <div>

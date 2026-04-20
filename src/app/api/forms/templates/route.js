@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { ensureOrganizationChartingTemplates } from '@/lib/charting-templates';
+import { normalizeFormSchema } from '@/lib/form-review';
 
 export const dynamic = 'force-dynamic';
 
@@ -47,8 +48,13 @@ export async function GET(request) {
       ],
     });
 
+    const normalizedTemplates = templates.map((template) => ({
+      ...template,
+      schema: normalizeFormSchema(template.schema),
+    }));
+
     // Group templates by category
-    const grouped = templates.reduce((acc, template) => {
+    const grouped = normalizedTemplates.reduce((acc, template) => {
       const cat = template.category || 'Other';
       if (!acc[cat]) acc[cat] = [];
       acc[cat].push(template);
@@ -56,7 +62,7 @@ export async function GET(request) {
     }, {});
 
     return NextResponse.json({
-      templates,
+      templates: normalizedTemplates,
       grouped,
     });
   } catch (error) {

@@ -1,11 +1,11 @@
 # Graph Report - .  (2026-04-20)
 
 ## Corpus Check
-- 271 files · ~201,289 words
+- 271 files · ~201,433 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 577 nodes · 498 edges · 186 communities detected
+- 578 nodes · 499 edges · 186 communities detected
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 1 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
@@ -236,12 +236,12 @@ Cohesion: 0.14
 Nodes (20): addDays(), addMonths(), buildSchedulingRange(), buildSchedulingSearchParams(), buildSchedulingStatusPillSections(), buildVisitCreateFormState(), endOfDay(), formatLongDate() (+12 more)
 
 ### Community 3 - "Community 3"
-Cohesion: 0.22
-Nodes (7): buildCareDeliveryClientPath(), buildCareDeliveryFormPath(), buildCareDeliveryVisitPath(), resolveCareDeliveryReturnTo(), resolveCareDeliveryTab(), resolveCareDeliveryVisitContext(), resolveCareDeliveryVisitTab()
+Cohesion: 0.25
+Nodes (11): buildReviewMetadataPatch(), buildReviewQueueWhereClause(), canTransitionFormStatus(), getReviewableStatuses(), hasMeaningfulFormContent(), hasMeaningfulValue(), normalizeFormStatus(), normalizeRejectionReason() (+3 more)
 
 ### Community 4 - "Community 4"
-Cohesion: 0.28
-Nodes (11): buildReviewMetadataPatch(), buildReviewQueueWhereClause(), canTransitionFormStatus(), getReviewableStatuses(), hasMeaningfulFormContent(), hasMeaningfulValue(), normalizeFormStatus(), normalizeRejectionReason() (+3 more)
+Cohesion: 0.22
+Nodes (7): buildCareDeliveryClientPath(), buildCareDeliveryFormPath(), buildCareDeliveryVisitPath(), resolveCareDeliveryReturnTo(), resolveCareDeliveryTab(), resolveCareDeliveryVisitContext(), resolveCareDeliveryVisitTab()
 
 ### Community 5 - "Community 5"
 Cohesion: 0.15

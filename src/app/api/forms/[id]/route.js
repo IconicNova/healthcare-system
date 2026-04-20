@@ -6,6 +6,7 @@ import {
   buildReviewMetadataPatch,
   canTransitionFormStatus,
   normalizeRejectionReason,
+  normalizeFormSchema,
   normalizeFormStatus,
 } from '@/lib/form-review';
 
@@ -70,6 +71,12 @@ export async function GET(request, { params }) {
     return NextResponse.json({
       form: {
         ...form,
+        template: form.template
+          ? {
+              ...form.template,
+              schema: normalizeFormSchema(form.template.schema),
+            }
+          : null,
         status: normalizeFormStatus(form.status),
       },
     });
@@ -180,6 +187,12 @@ export async function PATCH(request, { params }) {
     return NextResponse.json({
       form: {
         ...updatedForm,
+        template: updatedForm.template
+          ? {
+              ...updatedForm.template,
+              schema: normalizeFormSchema(updatedForm.template.schema),
+            }
+          : null,
         status: normalizeFormStatus(updatedForm.status),
       },
     });
