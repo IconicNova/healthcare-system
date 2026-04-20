@@ -9,7 +9,7 @@ export default function CarePlanForm({ isOpen, onClose, onSubmit, clients = [], 
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    startDate: new Date().toISOString().split('T')[0],
+    startDate: new Date().toISOString().slice(0, 16),
     endDate: '',
     status: true,
     clientId: '',
@@ -24,8 +24,8 @@ export default function CarePlanForm({ isOpen, onClose, onSubmit, clients = [], 
       setFormData({
         name: carePlan.name || '',
         description: carePlan.description || '',
-        startDate: carePlan.startDate ? new Date(carePlan.startDate).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
-        endDate: carePlan.endDate ? new Date(carePlan.endDate).toISOString().split('T')[0] : '',
+        startDate: carePlan.startDate ? new Date(carePlan.startDate).toISOString().slice(0, 16) : new Date().toISOString().slice(0, 16),
+        endDate: carePlan.endDate ? new Date(carePlan.endDate).toISOString().slice(0, 16) : '',
         status: carePlan.status ?? true,
         clientId: carePlan.clientId || '',
         staffId: carePlan.staffId || '',
@@ -41,7 +41,7 @@ export default function CarePlanForm({ isOpen, onClose, onSubmit, clients = [], 
     setFormData({
       name: '',
       description: '',
-      startDate: new Date().toISOString().split('T')[0],
+      startDate: new Date().toISOString().slice(0, 16),
       endDate: '',
       status: true,
       clientId: '',
@@ -101,7 +101,7 @@ export default function CarePlanForm({ isOpen, onClose, onSubmit, clients = [], 
     if (!formData.startDate) {
       newErrors.startDate = 'Start date is required';
     }
-    if (formData.endDate && formData.startDate && formData.endDate <= formData.startDate) {
+    if (formData.endDate && formData.startDate && new Date(formData.endDate) <= new Date(formData.startDate)) {
       newErrors.endDate = 'End date must be after start date';
     }
     if (formData.serviceDetails.length === 0) {
@@ -243,20 +243,20 @@ export default function CarePlanForm({ isOpen, onClose, onSubmit, clients = [], 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
         <Input
           label="Start Date"
-          type="date"
+          type="datetime-local"
           value={formData.startDate}
           onChange={(e) => handleInputChange('startDate', e.target.value)}
           error={errors.startDate}
-          min="1900-01-01"
+          min="1900-01-01T00:00"
         />
 
         <Input
           label="End Date (Optional)"
-          type="date"
+          type="datetime-local"
           value={formData.endDate}
           onChange={(e) => handleInputChange('endDate', e.target.value)}
           error={errors.endDate}
-          min="1900-01-01"
+          min="1900-01-01T00:00"
         />
       </div>
 
