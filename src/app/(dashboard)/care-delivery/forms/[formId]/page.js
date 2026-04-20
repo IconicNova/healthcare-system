@@ -293,9 +293,9 @@ export default function FormChartingPage({ params }) {
   const sections = normalizeFormSchema(form.template?.schema).sections || [];
 
   return (
-    <div>
+    <div className="form-charting-page">
       {/* Header */}
-      <div style={{ marginBottom: '24px' }}>
+      <div className="form-page-hero">
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
           <button
             onClick={() => router.push(returnTo)}
@@ -322,7 +322,7 @@ export default function FormChartingPage({ params }) {
       </div>
 
       {/* Form Header Info */}
-      <div className="card" style={{ padding: '16px', marginBottom: '24px' }}>
+      <div className="card form-summary-card">
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
           <div>
             <span style={{ fontSize: '12px', color: 'var(--color-text-secondary)' }}>Form</span>
@@ -378,20 +378,9 @@ export default function FormChartingPage({ params }) {
 
       {/* Save Status Indicator */}
       {saveStatus !== 'idle' && (
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px',
-          padding: '12px 16px',
-          marginBottom: '20px',
-          borderRadius: '8px',
-          backgroundColor: saveStatus === 'saved' ? 'var(--color-success-light)' :
-                          saveStatus === 'error' ? 'var(--color-error-light)' : 'var(--color-gray-50)',
-          fontSize: '13px',
-          fontWeight: 500,
-          color: saveStatus === 'saved' ? '#065f46' :
-                 saveStatus === 'error' ? '#991b1b' : 'var(--color-text-secondary)',
-        }}>
+        <div
+          className={`form-save-banner form-save-banner-${saveStatus}`}
+        >
           {saveStatus === 'saving' && <Clock size={16} />}
           {saveStatus === 'saved' && <Check size={16} />}
           {saveStatus === 'error' && <AlertCircle size={16} />}
@@ -402,19 +391,15 @@ export default function FormChartingPage({ params }) {
       )}
 
       {/* Form Sections */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+      <div className="form-section-list">
         {sections.map((section, sectionIndex) => (
-          <div key={sectionIndex} className="card">
-            <div style={{
-              padding: '16px 20px',
-              borderBottom: '1px solid var(--color-border)',
-              backgroundColor: 'var(--color-gray-50)',
-            }}>
+          <div key={sectionIndex} className="card form-section-card">
+            <div className="form-section-header">
               <h3 style={{ fontSize: '16px', fontWeight: 600, margin: 0 }}>
                 {section.name}
               </h3>
             </div>
-            <div style={{ padding: '20px' }}>
+            <div className="form-section-body">
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
                 {(section.fields || []).map((field, fieldIndex) => (
                   <div key={fieldIndex}>
@@ -464,28 +449,10 @@ export default function FormChartingPage({ params }) {
       </div>
 
       {/* Action Buttons */}
-      <div style={{
-        padding: '20px 0',
-        display: 'flex',
-        justifyContent: 'flex-end',
-        gap: '12px',
-        marginTop: '24px',
-      }}>
+      <div className="form-action-row">
         <button
           onClick={() => setShowPreview(true)}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            padding: '12px 24px',
-            borderRadius: '8px',
-            border: '1px solid var(--color-border)',
-            backgroundColor: 'white',
-            color: 'var(--color-text)',
-            fontSize: '14px',
-            fontWeight: 500,
-            cursor: 'pointer',
-          }}
+          className="btn btn-secondary form-action-secondary"
         >
           <Eye size={18} />
           Preview
@@ -494,19 +461,7 @@ export default function FormChartingPage({ params }) {
           <button
             onClick={handleSubmit}
             disabled={saving}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              padding: '12px 24px',
-              borderRadius: '8px',
-              border: 'none',
-              backgroundColor: saving ? 'var(--color-gray-200)' : 'var(--color-primary)',
-              color: saving ? 'var(--color-text-muted)' : 'white',
-              fontSize: '14px',
-              fontWeight: 500,
-              cursor: saving ? 'not-allowed' : 'pointer',
-            }}
+            className="btn btn-primary form-action-primary"
           >
             <Save size={18} />
             {saving ? 'Submitting...' : 'Submit Form'}
@@ -599,62 +554,33 @@ export default function FormChartingPage({ params }) {
 
       {/* Preview Modal */}
       {showPreview && (
-        <div style={{
-          position: 'fixed',
-          inset: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 500,
-        }} onClick={() => setShowPreview(false)}>
+        <div className="form-preview-backdrop" onClick={() => setShowPreview(false)}>
           <div
-            style={{
-              backgroundColor: 'white',
-              borderRadius: '16px',
-              width: '90%',
-              maxWidth: '700px',
-              maxHeight: '80vh',
-              overflow: 'auto',
-            }}
+            className="form-preview-shell"
             onClick={(e) => e.stopPropagation()}
           >
-            <div style={{
-              padding: '20px 24px',
-              borderBottom: '1px solid var(--color-border)',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}>
+            <div className="form-preview-header">
               <h3 style={{ fontSize: '18px', fontWeight: 600, margin: 0 }}>Form Preview</h3>
               <button
                 onClick={() => setShowPreview(false)}
-                style={{
-                  padding: '8px',
-                  borderRadius: '6px',
-                  border: 'none',
-                  backgroundColor: 'var(--color-gray-100)',
-                  cursor: 'pointer',
-                }}
+                className="btn btn-secondary form-preview-close"
               >
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                </svg>
+                <span aria-hidden="true">×</span>
               </button>
             </div>
-            <div style={{ padding: '24px' }}>
+            <div className="form-preview-body">
               {sections.map((section, sectionIndex) => (
-                <div key={sectionIndex} style={{ marginBottom: '24px' }}>
-                  <h4 style={{ fontSize: '14px', fontWeight: 600, marginBottom: '16px', color: 'var(--color-text-secondary)' }}>
+                <div key={sectionIndex} className="form-preview-section">
+                  <h4 className="form-preview-section-title">
                     {section.name}
                   </h4>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
+                  <div className="form-preview-grid">
                     {(section.fields || []).map((field, fieldIndex) => (
                       <div key={fieldIndex}>
-                        <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '4px' }}>
+                        <div className="form-preview-field-label">
                           {field.label} {field.required && <span style={{ color: 'var(--color-error)' }}>*</span>}
                         </div>
-                        <div style={{ fontSize: '14px', color: 'var(--color-text)', padding: '10px', backgroundColor: 'var(--color-gray-50)', borderRadius: '6px' }}>
+                        <div className="form-preview-value">
                           {formatReadOnlyValue(formData[field.name])}
                         </div>
                       </div>
@@ -663,24 +589,10 @@ export default function FormChartingPage({ params }) {
                 </div>
               ))}
             </div>
-            <div style={{
-              padding: '16px 24px',
-              borderTop: '1px solid var(--color-border)',
-              display: 'flex',
-              justifyContent: 'flex-end',
-            }}>
+            <div className="form-preview-footer">
               <button
                 onClick={() => setShowPreview(false)}
-                style={{
-                  padding: '10px 20px',
-                  borderRadius: '8px',
-                  border: '1px solid var(--color-border)',
-                  backgroundColor: 'white',
-                  color: 'var(--color-text)',
-                  fontSize: '13px',
-                  fontWeight: 500,
-                  cursor: 'pointer',
-                }}
+                className="btn btn-secondary"
               >
                 Close
               </button>

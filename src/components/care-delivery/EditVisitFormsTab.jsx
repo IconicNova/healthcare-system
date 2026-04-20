@@ -291,11 +291,12 @@ export default function EditVisitFormsTab({ visitId, visit, returnTo = '', onCou
           </div>
           {formSummary.requiredPending > 0 && (
             <div style={{
-              display: 'flex', alignItems: 'center', gap: '6px',
-              padding: '2px 8px', borderRadius: '6px',
-              background: '#FEE2E2', color: '#B91C1C', fontSize: '12px', fontWeight: 500,
+              display: 'inline-flex', alignItems: 'center', gap: '6px',
+              padding: '4px 10px', borderRadius: '999px',
+              background: 'var(--color-error-light)', color: '#991b1b', fontSize: '12px', fontWeight: 600,
             }}>
-              ⚠ {formSummary.requiredPending} required pending
+              <AlertCircle size={14} />
+              {formSummary.requiredPending} required pending
             </div>
           )}
         </div>

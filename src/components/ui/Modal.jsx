@@ -42,6 +42,7 @@ export default function Modal({
     md: '',
     lg: 'modal-lg',
     xl: 'modal-xl',
+    visit: 'modal-visit',
   };
 
   return (

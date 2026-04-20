@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Info, ListTodo, FileText, StickyNote, Target, Paperclip, Clock, AlertTriangle } from 'lucide-react';
+import { Info, ListTodo, FileText, StickyNote, Target, Paperclip, Clock, AlertTriangle, Save } from 'lucide-react';
 import Modal from '@/components/ui/Modal';
 import Tabs from '@/components/ui/Tabs';
 import VisitTasksTab from '@/components/care-delivery/EditVisitTasksTab';
@@ -779,29 +779,15 @@ export default function EditVisitDialog({
     </div>
   );
 
-  // UX-3: Tab badge component
-  const TabBadge = ({ count }) => {
-    if (count === null || count === undefined) return null;
-    return (
-      <span style={{
-        display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-        marginLeft: '6px', padding: '1px 6px', borderRadius: '10px',
-        fontSize: '10px', fontWeight: 600,
-        background: 'var(--color-primary-light)', color: 'white',
-        minWidth: '18px',
-      }}>{count}</span>
-    );
-  };
-
   // BUG-1 FIX + BUG-8 FIX + UX-3 + UX-14 FIX
   const tabs = [
     { value: 'info', label: 'Information', icon: Info },
-    { value: 'tasks', label: <>Service Tasks<TabBadge count={tabCounts.tasks} /></>, icon: ListTodo },
-    { value: 'forms', label: <>Forms<TabBadge count={tabCounts.forms} /></>, icon: FileText },
-    { value: 'notes', label: <>Visit Notes<TabBadge count={tabCounts.notes} /></>, icon: StickyNote },
+    { value: 'tasks', label: 'Service Tasks', icon: ListTodo, badge: tabCounts.tasks },
+    { value: 'forms', label: 'Forms', icon: FileText, badge: tabCounts.forms },
+    { value: 'notes', label: 'Visit Notes', icon: StickyNote, badge: tabCounts.notes },
     { value: 'goals', label: 'Goals', icon: Target },
     { value: 'activities', label: 'Timeline', icon: Clock },
-    { value: 'attachments', label: <>Attachments<TabBadge count={tabCounts.attachments} /></>, icon: Paperclip },
+    { value: 'attachments', label: 'Attachments', icon: Paperclip, badge: tabCounts.attachments },
   ];
 
   return (
@@ -810,13 +796,13 @@ export default function EditVisitDialog({
         isOpen={isOpen}
         onClose={handleClose}
         title={`Edit Visit - ${visit.client?.firstName} ${visit.client?.lastName}`}
-        size="lg"
+        size="visit"
+        bodyClassName="visit-modal-body"
       >
-        {/* UX-10: Responsive container */}
-        <div style={{ display: 'flex', flexDirection: 'column', height: 'min(600px, 80vh)' }}>
-          <div style={{ flex: 1, overflow: 'auto' }}>
-            <Tabs tabs={tabs} activeTab={activeTab} onTabChange={handleTabChange} />
-            <div>
+        <div className="visit-modal-shell">
+          <div className="visit-modal-scroll">
+            <Tabs tabs={tabs} activeTab={activeTab} onTabChange={handleTabChange} variant="compact" className="visit-modal-tabs" />
+            <div className="visit-modal-panel">
               {activeTab === 'info' && renderInfoTab()}
               {activeTab === 'tasks' && (
                 <VisitTasksTab
@@ -826,12 +812,12 @@ export default function EditVisitDialog({
                 />
               )}
               {activeTab === 'forms' && (
-              <EditVisitFormsTab
-                visitId={visit?.id}
-                visit={visit}
-                returnTo={visitReturnTo}
-                onCountChange={handleFormsCountChange}
-              />
+                <EditVisitFormsTab
+                  visitId={visit?.id}
+                  visit={visit}
+                  returnTo={visitReturnTo}
+                  onCountChange={handleFormsCountChange}
+                />
               )}
               {activeTab === 'notes' && (
                 <VisitNotesTab
@@ -852,41 +838,29 @@ export default function EditVisitDialog({
           </div>
 
           {/* Footer */}
-          <div style={{
-            padding: '16px 24px',
-            borderTop: '1px solid var(--color-border)',
-            display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-            flexWrap: 'wrap', gap: '8px',
-          }}>
-            <div style={{ fontSize: '12px', color: 'var(--color-text-tertiary)' }}>
-              {isDirty && <span style={{ color: '#F59E0B' }}>● Unsaved changes</span>}
-              <span style={{ marginLeft: isDirty ? '12px' : '0' }}>
+          <div className="visit-modal-footer">
+            <div className="visit-modal-footnote">
+              {isDirty && <span className="visit-dirty-indicator">• Unsaved changes</span>}
+              <span className={isDirty ? 'visit-shortcuts with-dirty' : 'visit-shortcuts'}>
                 Alt+1-7: switch tabs · Ctrl+S: save
               </span>
             </div>
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+            <div className="visit-modal-actions">
               {error && (
-                <span style={{ color: '#EF4444', fontSize: '13px', maxWidth: '300px', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                <span className="visit-modal-error">
                   {error}
                 </span>
               )}
-              <button onClick={handleClose} style={{
-                padding: '8px 20px', borderRadius: '8px',
-                border: '1px solid var(--color-border)', background: 'var(--color-bg)',
-                cursor: 'pointer', fontSize: '14px',
-              }}>Cancel</button>
+              <button onClick={handleClose} className="btn btn-secondary">
+                Cancel
+              </button>
               <button
                 onClick={handleSubmit}
                 disabled={saving || !isDirty}
-                style={{
-                  padding: '8px 20px', borderRadius: '8px', border: 'none',
-                  background: (!isDirty || saving) ? 'var(--color-text-tertiary)' : 'var(--color-primary)',
-                  color: 'white', cursor: (!isDirty || saving) ? 'not-allowed' : 'pointer',
-                  fontSize: '14px', fontWeight: 500,
-                  display: 'flex', alignItems: 'center', gap: '6px',
-                }}
+                className="btn btn-primary visit-save-button"
               >
-                {saving ? 'Saving...' : '💾 Save Changes'}
+                {saving ? <Clock size={16} /> : <Save size={16} />}
+                {saving ? 'Saving...' : 'Save changes'}
               </button>
             </div>
           </div>
