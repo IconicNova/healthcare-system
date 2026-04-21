@@ -16,13 +16,13 @@ import { useToast } from '@/components/ui/useToast';
 
 const COLUMNS = [
   { key: 'fullName', label: 'Employee', sortable: true, width: '200px', headerInsetStart: '52px' },
-  { key: 'role', label: 'Role', sortable: true, width: '120px', headerContentWidth: '96px' },
+  { key: 'role', label: 'Role', sortable: true, width: '120px', headerContentWidth: '96px', textAlign: 'center' },
   { key: 'branch', label: 'Branch', sortable: true, width: '150px', headerContentWidth: '140px' },
-  { key: 'phone', label: 'Phone', sortable: true, width: '140px', headerContentWidth: '100px' },
-  { key: 'skills', label: 'Skills', sortable: false, width: '180px', headerContentWidth: '160px' },
+  { key: 'phone', label: 'Phone', sortable: true, width: '140px', headerContentWidth: '100px', textAlign: 'center' },
+  { key: 'skills', label: 'Skills', sortable: false, width: '180px', headerContentWidth: '160px', textAlign: 'center' },
   { key: 'status', label: 'Status', sortable: true, width: '120px', headerContentWidth: '64px' },
-  { key: 'hireDate', label: 'Hire Date', sortable: true, width: '120px', headerContentWidth: '88px' },
-  { key: 'payRate', label: 'Pay Rate', sortable: true, width: '120px', headerContentWidth: '110px' },
+  { key: 'hireDate', label: 'Hire Date', sortable: true, width: '120px', headerContentWidth: '88px', textAlign: 'center' },
+  { key: 'payRate', label: 'Pay Rate', sortable: true, width: '120px', headerContentWidth: '110px', textAlign: 'center' },
   { key: 'actions', label: '', sortable: false, width: '140px' },
 ];
 
@@ -202,7 +202,11 @@ export default function StaffList() {
     }
 
     if (key === 'role') {
-      return <StatusBadge status={member.role} variant={ROLE_VARIANTS[member.role] || 'gray'} />;
+      return (
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <StatusBadge status={member.role} variant={ROLE_VARIANTS[member.role] || 'gray'} />
+        </div>
+      );
     }
 
     if (key === 'branch') {
@@ -216,10 +220,14 @@ export default function StaffList() {
     if (key === 'skills') {
       const skills = member.skills || [];
       if (skills.length === 0) {
-        return <span style={{ fontSize: '13px', color: 'var(--color-text-muted)' }}>No skills</span>;
+        return (
+          <div style={{ fontSize: '13px', color: 'var(--color-text-muted)', textAlign: 'center' }}>
+            No skills
+          </div>
+        );
       }
       return (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', textAlign: 'center' }}>
           {skills.slice(0, 2).map(skill => (
             <span
               key={skill.id}
@@ -233,7 +241,7 @@ export default function StaffList() {
           ))}
           {skills.length > 2 && (
             <span style={{
-              alignSelf: 'flex-start',
+              alignSelf: 'center',
               fontSize: '11px',
               padding: '2px 8px',
               borderRadius: '12px',
@@ -253,17 +261,17 @@ export default function StaffList() {
 
     if (key === 'hireDate') {
       return member.hireDate ? (
-        <div style={{ fontSize: '13px', color: 'var(--color-text)' }}>
+        <div style={{ fontSize: '13px', color: 'var(--color-text)', textAlign: 'center' }}>
           {new Date(member.hireDate).toLocaleDateString()}
         </div>
-      ) : <span style={{ fontSize: '13px', color: 'var(--color-text-muted)' }}>-</span>;
+      ) : <span style={{ fontSize: '13px', color: 'var(--color-text-muted)', display: 'block', textAlign: 'center' }}>-</span>;
     }
 
     if (key === 'payRate') {
       const payType = member.payType || 'HOURLY';
       const rate = member.hourlyRate || 0;
       return (
-        <div style={{ fontSize: '13px', fontWeight: 500, color: 'var(--color-text)' }}>
+        <div style={{ fontSize: '13px', fontWeight: 500, color: 'var(--color-text)', textAlign: 'center' }}>
           ${rate.toFixed(2)} / {payType === 'HOURLY' ? 'hr' : payType === 'PER_VISIT' ? 'visit' : 'yr'}
         </div>
       );

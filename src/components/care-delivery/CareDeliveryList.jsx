@@ -14,7 +14,7 @@ import { buildCareDeliveryClientPath, formatInitials } from '@/components/care-d
 
 const COLUMNS = [
   { key: 'fullName', label: 'Client', sortable: true, headerInsetStart: '52px' },
-  { key: 'phone', label: 'Phone', sortable: true, width: '150px', headerContentWidth: '100px' },
+  { key: 'phone', label: 'Phone', sortable: true, width: '150px', headerContentWidth: '100px', textAlign: 'center' },
   { key: 'status', label: 'Status', sortable: true, width: '120px', headerContentWidth: '64px' },
   { key: 'upcomingVisits', label: 'Upcoming Visits', sortable: false, width: '130px', headerContentWidth: '18px' },
   { key: 'totalVisits', label: 'Visits', sortable: false, width: '100px', headerContentWidth: '18px' },

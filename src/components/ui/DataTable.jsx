@@ -53,7 +53,21 @@ export default function DataTable({
       style.width = column.width;
     }
 
+    if (column.textAlign) {
+      style.textAlign = column.textAlign;
+    }
+
     return Object.keys(style).length > 0 ? style : undefined;
+  };
+
+  const getBodyCellStyle = (column) => {
+    if (!column.textAlign) {
+      return undefined;
+    }
+
+    return {
+      textAlign: column.textAlign,
+    };
   };
 
   const getHeaderContentStyle = (column) => {
@@ -125,7 +139,7 @@ export default function DataTable({
             {sortedData.map((row, rowIndex) => (
               <tr key={rowIndex}>
                 {columns.map((column) => (
-                  <td key={column.key}>
+                  <td key={column.key} style={getBodyCellStyle(column)}>
                     {renderCell ? renderCell(row, column.key) : column.render ? column.render(row[column.key], row) : row[column.key]}
                   </td>
                 ))}
