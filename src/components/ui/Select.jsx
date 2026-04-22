@@ -12,7 +12,6 @@ export default function Select({
   disabled = false,
   name,
   id,
-  placeholder,
   ...restProps
 }) {
   const selectClasses = `select ${error ? 'input-error' : ''} ${className}`;

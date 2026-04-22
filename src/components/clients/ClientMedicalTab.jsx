@@ -17,20 +17,19 @@ export default function ClientMedicalTab({ client }) {
   const [medications, setMedications] = useState(client.medications || []);
 
   useEffect(() => {
+    const fetchMedications = async () => {
+      try {
+        const response = await fetch(`/api/clients/${client.id}/medications`);
+        if (response.ok) {
+          const data = await response.json();
+          setMedications(data.medications || []);
+        }
+      } catch (error) {
+        console.error('Error fetching medications:', error);
+      }
+    };
     fetchMedications();
   }, [client.id]);
-
-  const fetchMedications = async () => {
-    try {
-      const response = await fetch(`/api/clients/${client.id}/medications`);
-      if (response.ok) {
-        const data = await response.json();
-        setMedications(data.medications || []);
-      }
-    } catch (error) {
-      console.error('Error fetching medications:', error);
-    }
-  };
 
   const handleAddMedication = async () => {
     if (!medForm.name.trim()) {
