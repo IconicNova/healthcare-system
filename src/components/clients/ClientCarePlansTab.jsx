@@ -138,8 +138,18 @@ export default function ClientCarePlansTab({ clientId }) {
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-      {carePlans.map((plan) => {
+    <div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+        <h3 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--color-text)', margin: 0 }}>
+          Care Plans ({carePlans.length})
+        </h3>
+        <Button onClick={() => setShowCreateForm(true)} variant="secondary" size="small">
+          <Plus size={14} />
+          Add Care Plan
+        </Button>
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        {carePlans.map((plan) => {
         const statusBadge = getStatusBadge(plan);
         const isExpanded = expandedPlan === plan.id;
 
@@ -237,6 +247,51 @@ export default function ClientCarePlansTab({ clientId }) {
           </div>
         );
       })}
+      </div>
+
+      {/* Create Care Plan Form - shown when there are existing care plans */}
+      {showCreateForm && (
+        <div style={{ marginTop: '24px', padding: '20px', backgroundColor: 'var(--color-background-secondary)', borderRadius: '8px' }}>
+          <h4 style={{ fontSize: '14px', fontWeight: 600, color: 'var(--color-text)', marginBottom: '16px' }}>
+            Create New Care Plan
+          </h4>
+          <Input
+            label="Care Plan Name"
+            value={createForm.name}
+            onChange={(e) => setCreateForm(prev => ({ ...prev, name: e.target.value }))}
+            style={{ marginBottom: '12px' }}
+          />
+          <Input
+            label="Description"
+            value={createForm.description}
+            onChange={(e) => setCreateForm(prev => ({ ...prev, description: e.target.value }))}
+            multiline
+            style={{ marginBottom: '12px' }}
+          />
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '16px' }}>
+            <Input
+              label="Start Date"
+              type="date"
+              value={createForm.startDate}
+              onChange={(e) => setCreateForm(prev => ({ ...prev, startDate: e.target.value }))}
+            />
+            <Input
+              label="End Date (optional)"
+              type="date"
+              value={createForm.endDate}
+              onChange={(e) => setCreateForm(prev => ({ ...prev, endDate: e.target.value }))}
+            />
+          </div>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <Button size="small" onClick={handleCreateCarePlan} disabled={saving}>
+              Create
+            </Button>
+            <Button variant="secondary" size="small" onClick={() => setShowCreateForm(false)}>
+              Cancel
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
