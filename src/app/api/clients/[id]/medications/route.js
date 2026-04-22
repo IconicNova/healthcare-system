@@ -46,6 +46,53 @@ export async function GET(request, { params }) {
     });
   } catch (error) {
     console.error('Error fetching client medications:', error);
-    return NextResponse.json({ error: 'Failed to fetch client medications' }, { status: 500 });
+   return NextResponse.json({ error: 'Failed to fetch client medications' }, { status: 500 });
+  }
+}
+
+// POST - Create a new medication for a client
+export async function POST(request, { params }) {
+  try {
+    const session = await getServerSession(authOptions);
+
+    if (!session || !session.user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { id: clientId } = params;
+
+    // Verify the client belongs to the user's organization
+    const client = await prisma.client.findFirst({
+      where: {
+        id: clientId,
+        organizationId: session.user.organizationId,
+      },
+    });
+
+    if (!client) {
+      return NextResponse.json({ error: 'Client not found' }, { status: 404 });
+    }
+
+    const body = await request.json();
+    const { name, dosage, frequency, notes } = body;
+
+    if (!name || !dosage || !frequency) {
+      return NextResponse.json({ error: 'Name, dosage, and frequency are required' }, { status: 400 });
+    }
+
+    const medication = await prisma.medication.create({
+      data: {
+        clientId,
+        name,
+        dosage,
+        frequency,
+        notes: notes || null,
+      },
+    });
+
+    return NextResponse.json(medication, { status: 201 });
+  } catch (error) {
+    console.error('Error creating medication:', error);
+    return NextResponse.json({ error: 'Failed to create medication' }, { status: 500 });
   }
 }

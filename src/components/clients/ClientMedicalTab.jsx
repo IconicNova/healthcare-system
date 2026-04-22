@@ -1,27 +1,75 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
+import { useToast } from '@/components/ui/useToast';
 import { Plus, Pill, Activity } from 'lucide-react';
 
 export default function ClientMedicalTab({ client }) {
-    const [showMedForm, setShowMedForm] = useState(false);
+  const toast = useToast();
+  const [showMedForm, setShowMedForm] = useState(false);
   const [showHistoryForm, setShowHistoryForm] = useState(false);
   const [medForm, setMedForm] = useState({ name: '', dosage: '', frequency: '', notes: '' });
   const [historyForm, setHistoryForm] = useState({ condition: '', diagnosis: '', date: '', notes: '' });
   const [saving, setSaving] = useState(false);
+  const [medications, setMedications] = useState(client.medications || []);
 
-  const handleAddMedication = () => {
-    if (!medForm.name.trim()) return;
+  useEffect(() => {
+    fetchMedications();
+  }, [client.id]);
+
+  const fetchMedications = async () => {
+    try {
+      const response = await fetch(`/api/clients/${client.id}/medications`);
+      if (response.ok) {
+        const data = await response.json();
+        setMedications(data.medications || []);
+      }
+    } catch (error) {
+      console.error('Error fetching medications:', error);
+    }
+  };
+
+  const handleAddMedication = async () => {
+    if (!medForm.name.trim()) {
+      toast('warning', 'Missing Name', 'Please enter a medication name');
+      return;
+    }
+    if (!medForm.dosage.trim()) {
+      toast('warning', 'Missing Dosage', 'Please enter a dosage');
+      return;
+    }
+    if (!medForm.frequency.trim()) {
+      toast('warning', 'Missing Frequency', 'Please enter a frequency');
+      return;
+    }
+
     setSaving(true);
-    // In a full implementation, this would add to the medications array
-    setTimeout(() => {
-      setShowMedForm(false);
-      setMedForm({ name: '', dosage: '', frequency: '', notes: '' });
+    try {
+      const response = await fetch(`/api/clients/${client.id}/medications`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(medForm),
+      });
+
+      if (response.ok) {
+        const newMedication = await response.json();
+        setMedications(prev => [...prev, newMedication]);
+        setShowMedForm(false);
+        setMedForm({ name: '', dosage: '', frequency: '', notes: '' });
+        toast('success', 'Added', 'Medication saved successfully');
+      } else {
+        const error = await response.json();
+        toast('error', 'Save Failed', error.error || 'Failed to save medication');
+      }
+    } catch (error) {
+      console.error('Error saving medication:', error);
+      toast('error', 'Save Failed', 'Failed to save medication');
+    } finally {
       setSaving(false);
-    }, 500);
+    }
   };
 
   const handleAddHistory = () => {
@@ -88,9 +136,9 @@ export default function ClientMedicalTab({ client }) {
               </div>
             )}
 
-            {client.medications?.length > 0 ? (
+            {medications?.length > 0 ? (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                {client.medications.map((med) => (
+                {medications.map((med) => (
                   <div
                     key={med.id}
                     style={{
