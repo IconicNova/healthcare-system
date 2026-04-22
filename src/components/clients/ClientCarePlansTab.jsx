@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { format } from 'date-fns';
 import Button from '@/components/ui/Button';
 import StatusBadge from '@/components/ui/StatusBadge';
@@ -8,6 +9,7 @@ import Input from '@/components/ui/Input';
 import { Calendar, ChevronRight, Plus } from 'lucide-react';
 
 export default function ClientCarePlansTab({ clientId }) {
+  const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [carePlans, setCarePlans] = useState([]);
   const [expandedPlan, setExpandedPlan] = useState(null);
@@ -47,6 +49,13 @@ export default function ClientCarePlansTab({ clientId }) {
       setCreateForm({ name: '', description: '', startDate: '', endDate: '' });
       setSaving(false);
     }, 500);
+  };
+
+  const handleScheduleVisit = (carePlanId) => {
+    const params = new URLSearchParams({
+      fromCarePlan: carePlanId,
+    });
+    router.push(`/scheduling/month?${params.toString()}`);
   };
 
   const getStatusBadge = (carePlan) => {
@@ -217,7 +226,7 @@ export default function ClientCarePlansTab({ clientId }) {
                         Schedule the first visit for this care plan to start building the care timeline here.
                       </div>
                     </div>
-                    <Button variant="secondary" size="small" style={{ width: 'fit-content' }}>
+                    <Button variant="secondary" size="small" style={{ width: 'fit-content' }} onClick={() => handleScheduleVisit(plan.id)}>
                       <Calendar size={14} />
                       Schedule Visit
                     </Button>

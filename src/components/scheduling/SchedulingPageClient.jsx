@@ -123,6 +123,7 @@ export default function SchedulingPageClient({ viewSlug }) {
     status: searchParams.get('status') || '',
     branchId: searchParams.get('branchId') || '',
   };
+  const fromCarePlanId = searchParams.get('fromCarePlan') || '';
   const visibleRange = buildSchedulingRange(currentView, currentDate);
   const visibleRangeStart = visibleRange.start.toISOString();
   const visibleRangeEnd = visibleRange.end.toISOString();
@@ -277,7 +278,10 @@ export default function SchedulingPageClient({ viewSlug }) {
   };
 
   const openCreateVisitForm = (initialValues = null) => {
-    setVisitFormInitialValues(initialValues);
+    const initialValuesWithCarePlan = fromCarePlanId && !initialValues?.carePlanId
+      ? { ...initialValues, carePlanId: fromCarePlanId }
+      : initialValues;
+    setVisitFormInitialValues(initialValuesWithCarePlan);
     setShowVisitForm(true);
   };
 
