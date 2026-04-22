@@ -7,7 +7,7 @@ import { useToast } from '@/components/ui/useToast';
 import { formatDate } from '@/lib/utils';
 
 export default function GenerateTimesheetModal({ isOpen, onClose, onSuccess }) {
-  const { showToast } = useToast();
+  const toast = useToast();
   const [loading, setLoading] = useState(false);
   const [previewLoading, setPreviewLoading] = useState(false);
 
@@ -38,7 +38,7 @@ export default function GenerateTimesheetModal({ isOpen, onClose, onSuccess }) {
 
   const handlePreview = async () => {
     if (!weekStart) {
-      showToast('Please select a week start date', 'warning');
+      toast('warning', 'Missing Date', 'Please select a week start date');
       return;
     }
 
@@ -66,7 +66,7 @@ export default function GenerateTimesheetModal({ isOpen, onClose, onSuccess }) {
         });
 
         // Group by staff
-        const grouped = visits.reduce((acc, visit) => {
+        const grouped = visits?.reduce((acc, visit) => {
           if (!acc[visit.staffId]) {
             acc[visit.staffId] = {
               staffId: visit.staffId,
@@ -95,7 +95,7 @@ export default function GenerateTimesheetModal({ isOpen, onClose, onSuccess }) {
       }
     } catch (error) {
       console.error('Error fetching preview:', error);
-      showToast('Failed to load preview', 'error');
+      toast('error', 'Preview Failed', 'Failed to load preview');
     } finally {
       setPreviewLoading(false);
     }
@@ -103,7 +103,7 @@ export default function GenerateTimesheetModal({ isOpen, onClose, onSuccess }) {
 
   const handleGenerate = async () => {
     if (preview.length === 0) {
-      showToast('No visits found to generate timesheets', 'warning');
+      toast('warning', 'No Visits', 'No visits found to generate timesheets');
       return;
     }
 
@@ -123,16 +123,16 @@ export default function GenerateTimesheetModal({ isOpen, onClose, onSuccess }) {
 
       if (response.ok) {
         const data = await response.json();
-        showToast(`${data.message}`, 'success');
+        toast('success', 'Generated', data.message);
         onSuccess();
         onClose();
       } else {
         const error = await response.json();
-        showToast(error.error || 'Failed to generate timesheets', 'error');
+        toast('error', 'Generation Failed', error.error || 'Failed to generate timesheets');
       }
     } catch (error) {
       console.error('Error generating timesheets:', error);
-      showToast('Failed to generate timesheets', 'error');
+      toast('error', 'Generation Failed', 'Failed to generate timesheets');
     } finally {
       setLoading(false);
     }
