@@ -15,7 +15,7 @@ const PAYMENT_METHODS = [
 ];
 
 export default function PaymentForm({ isOpen, onClose, invoiceId, invoiceNumber, amountDue, onSuccess }) {
-  const { showToast } = useToast();
+  const toast = useToast();
   const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -31,12 +31,12 @@ export default function PaymentForm({ isOpen, onClose, invoiceId, invoiceNumber,
 
     const amount = parseFloat(formData.amount);
     if (isNaN(amount) || amount <= 0) {
-      showToast('Please enter a valid amount', 'warning');
+      toast('warning', 'Invalid Amount', 'Please enter a valid amount');
       return;
     }
 
     if (amount > amountDue) {
-      showToast(`Amount cannot exceed balance due of ${formatCurrency(amountDue)}`, 'error');
+      toast('error', 'Amount Too High', `Amount cannot exceed balance due of ${formatCurrency(amountDue)}`);
       return;
     }
 
@@ -56,15 +56,15 @@ export default function PaymentForm({ isOpen, onClose, invoiceId, invoiceNumber,
       });
 
       if (response.ok) {
-        showToast('Payment recorded successfully', 'success');
+        toast('success', 'Payment Recorded', 'Payment saved successfully');
         onSuccess();
       } else {
         const error = await response.json();
-        showToast(error.error || 'Failed to record payment', 'error');
+        toast('error', 'Save Failed', error.error || 'Failed to record payment');
       }
     } catch (error) {
       console.error('Error recording payment:', error);
-      showToast('Failed to record payment', 'error');
+      toast('error', 'Save Failed', 'Failed to record payment');
     } finally {
       setLoading(false);
     }

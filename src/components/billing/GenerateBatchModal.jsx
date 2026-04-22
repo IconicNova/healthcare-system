@@ -7,7 +7,7 @@ import { useToast } from '@/components/ui/useToast';
 import { formatCurrency } from '@/lib/utils';
 
 export default function GenerateBatchModal({ isOpen, onClose, onSuccess }) {
-  const { showToast } = useToast();
+  const toast = useToast();
   const [loading, setLoading] = useState(false);
   const [previewLoading, setPreviewLoading] = useState(false);
 
@@ -36,20 +36,17 @@ export default function GenerateBatchModal({ isOpen, onClose, onSuccess }) {
 
   const handlePreview = async () => {
     if (!formData.startDate || !formData.endDate) {
-      showToast('Please select a date range', 'warning');
+      toast('warning', 'Missing Dates', 'Please select a date range');
       return;
     }
 
     setPreviewLoading(true);
     try {
-      const response = await fetch('/api/billing/invoices/uninvoiced-visits', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          startDate: formData.startDate,
-          endDate: formData.endDate,
-        }),
+      const params = new URLSearchParams({
+        startDate: formData.startDate,
+        endDate: formData.endDate,
       });
+      const response = await fetch(`/api/billing/invoices/uninvoiced-visits?${params}`);
 
       if (response.ok) {
         const data = await response.json();
@@ -57,7 +54,7 @@ export default function GenerateBatchModal({ isOpen, onClose, onSuccess }) {
       }
     } catch (error) {
       console.error('Error fetching preview:', error);
-      showToast('Failed to load preview', 'error');
+      toast('error', 'Preview Failed', 'Failed to load preview');
     } finally {
       setPreviewLoading(false);
     }
@@ -81,7 +78,7 @@ export default function GenerateBatchModal({ isOpen, onClose, onSuccess }) {
 
   const handleGenerate = async () => {
     if (formData.selectedClientIds.length === 0) {
-      showToast('Please select at least one client', 'warning');
+      toast('warning', 'No Selection', 'Please select at least one client');
       return;
     }
 
@@ -99,16 +96,16 @@ export default function GenerateBatchModal({ isOpen, onClose, onSuccess }) {
 
       if (response.ok) {
         const data = await response.json();
-        showToast(`${data.message}`, 'success');
+        toast('success', 'Generated', data.message);
         onSuccess();
         onClose();
       } else {
         const error = await response.json();
-        showToast(error.error || 'Failed to generate invoices', 'error');
+        toast('error', 'Generation Failed', error.error || 'Failed to generate invoices');
       }
     } catch (error) {
       console.error('Error generating batch invoices:', error);
-      showToast('Failed to generate invoices', 'error');
+      toast('error', 'Generation Failed', 'Failed to generate invoices');
     } finally {
       setLoading(false);
     }

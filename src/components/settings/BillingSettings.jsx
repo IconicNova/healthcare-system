@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useToast } from '@/components/ui/useToast';
 
 export default function BillingSettings() {
-  const { showToast } = useToast();
+  const toast = useToast();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [config, setConfig] = useState({
@@ -44,13 +44,13 @@ export default function BillingSettings() {
       });
 
       if (response.ok) {
-        showToast('success', 'Settings saved', 'Billing settings have been updated');
+        toast('success', 'Settings saved', 'Billing settings have been updated');
       } else {
-        showToast('error', 'Error', 'Failed to save settings');
+        toast('error', 'Error', 'Failed to save settings');
       }
     } catch (error) {
       console.error('Error saving config:', error);
-      showToast('error', 'Error', 'Failed to save settings');
+      toast('error', 'Error', 'Failed to save settings');
     } finally {
       setSaving(false);
     }

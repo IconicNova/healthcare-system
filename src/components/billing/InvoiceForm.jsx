@@ -10,7 +10,7 @@ import { useToast } from '@/components/ui/useToast';
 import { formatCurrency } from '@/lib/utils';
 
 export default function InvoiceForm({ onSuccess, onCancel, invoice }) {
-  const { showToast } = useToast();
+  const toast = useToast();
   const [loading, setLoading] = useState(false);
   const [clients, setClients] = useState([]);
   const [loadingClients, setLoadingClients] = useState(true);
@@ -75,19 +75,19 @@ export default function InvoiceForm({ onSuccess, onCancel, invoice }) {
     });
 
     setFormData(prev => ({ ...prev, invoiceItems: existingItems }));
-    showToast(`${selectedVisits.length} visits imported`, 'success');
+    toast('success', 'Imported', `${selectedVisits.length} visits imported`);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!formData.clientId) {
-      showToast('Please select a client', 'warning');
+      toast('warning', 'Missing Client', 'Please select a client');
       return;
     }
 
     if (formData.invoiceItems.length === 0 || formData.invoiceItems.every(item => !item.description)) {
-      showToast('Please add at least one line item', 'warning');
+      toast('warning', 'Missing Items', 'Please add at least one line item');
       return;
     }
 
@@ -108,15 +108,15 @@ export default function InvoiceForm({ onSuccess, onCancel, invoice }) {
       });
 
       if (response.ok) {
-        showToast(invoice ? 'Invoice updated' : 'Invoice created', 'success');
+        toast('success', invoice ? 'Updated' : 'Created', 'Invoice saved successfully');
         onSuccess();
       } else {
         const error = await response.json();
-        showToast(error.error || 'Failed to save invoice', 'error');
+        toast('error', 'Save Failed', error.error || 'Failed to save invoice');
       }
     } catch (error) {
       console.error('Error saving invoice:', error);
-      showToast('Failed to save invoice', 'error');
+      toast('error', 'Save Failed', 'Failed to save invoice');
     } finally {
       setLoading(false);
     }
