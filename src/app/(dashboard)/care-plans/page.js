@@ -258,7 +258,7 @@ export default function CarePlansPage() {
         throw new Error(error.message || 'Failed to create care plan');
       }
 
-      const result = await response.json();
+      await response.json();
 
       setIsAddModalOpen(false);
       fetchData();

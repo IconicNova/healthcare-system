@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 
 export default function TimesheetEntryForm({ isOpen, onClose, timesheetId, onSuccess }) {
   const [loading, setLoading] = useState(false);
-  const [timesheet, setTimesheet] = useState(null);
+  const [, setTimesheet] = useState(null);
   const [error, setError] = useState(null);
   const [formData, setFormData] = useState({
     date: '',
