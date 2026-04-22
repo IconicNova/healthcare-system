@@ -171,8 +171,12 @@ export default function VisitCreateForm({
       return;
     }
 
-    const startTime = new Date(`${formData.date}T${formData.startTime}`);
-    const endTime = new Date(`${formData.date}T${formData.endTime}`);
+    const [startHour, startMinute] = formData.startTime.split(':').map(Number);
+    const [endHour, endMinute] = formData.endTime.split(':').map(Number);
+    const startDate = new Date(formData.date);
+    const endDate = new Date(formData.date);
+    const startTime = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), startHour, startMinute, 0, 0);
+    const endTime = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), endHour, endMinute, 0, 0);
 
     try {
       await onSubmit({

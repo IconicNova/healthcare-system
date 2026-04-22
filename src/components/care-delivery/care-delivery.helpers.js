@@ -167,5 +167,6 @@ export function toIsoFromDatetimeLocalInputValue(value) {
     return null;
   }
 
-  return date.toISOString();
+  const tzOffset = date.getTimezoneOffset() * 60000;
+  return new Date(date.getTime() + tzOffset).toISOString();
 }

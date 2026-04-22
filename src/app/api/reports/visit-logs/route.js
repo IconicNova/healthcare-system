@@ -33,10 +33,14 @@ export async function GET(request) {
     };
 
     if (dateFrom) {
-      where.startTime = { ...where.startTime, gte: parseISO(dateFrom) };
+      const fromDate = parseISO(dateFrom);
+      const startOfDay = new Date(fromDate.getFullYear(), fromDate.getMonth(), fromDate.getDate(), 0, 0, 0, 0);
+      where.startTime = { ...where.startTime, gte: startOfDay };
     }
     if (dateTo) {
-      where.startTime = { ...where.startTime, lte: parseISO(dateTo) };
+      const toDate = parseISO(dateTo);
+      const endOfDay = new Date(toDate.getFullYear(), toDate.getMonth(), toDate.getDate(), 23, 59, 59, 999);
+      where.startTime = { ...where.startTime, lte: endOfDay };
     }
     if (clientId) {
       where.clientId = clientId;
