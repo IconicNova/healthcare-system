@@ -216,7 +216,7 @@ export default function MedicationsPage() {
             View and administer medications for clients
           </p>
         </div>
-        <button
+       <button
           onClick={() => router.push('/care-delivery/medications/schedule')}
           style={{
             display: 'flex',
@@ -234,20 +234,6 @@ export default function MedicationsPage() {
         >
           <Calendar size={16} />
           Schedule View
-        </button>
-        <button
-          onClick={() => router.push('/care-delivery/medications/schedule')}
-          title="Medication Reconciliation"
-          style={{
-            display: 'flex', alignItems: 'center', gap: '8px',
-            padding: '10px 20px', borderRadius: '10px',
-            border: '1px solid var(--color-border)',
-            backgroundColor: 'white', color: 'var(--color-text)',
-            fontSize: '13px', fontWeight: 500, cursor: 'pointer',
-          }}
-        >
-          <Pill size={16} />
-          Reconciliation
         </button>
       </div>
 
