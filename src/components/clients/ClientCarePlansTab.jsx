@@ -6,10 +6,12 @@ import { format } from 'date-fns';
 import Button from '@/components/ui/Button';
 import StatusBadge from '@/components/ui/StatusBadge';
 import Input from '@/components/ui/Input';
+import { useToast } from '@/components/ui/useToast';
 import { Calendar, ChevronRight, Plus } from 'lucide-react';
 
 export default function ClientCarePlansTab({ clientId }) {
   const router = useRouter();
+  const toast = useToast();
   const [loading, setLoading] = useState(true);
   const [carePlans, setCarePlans] = useState([]);
   const [expandedPlan, setExpandedPlan] = useState(null);
@@ -40,15 +42,46 @@ export default function ClientCarePlansTab({ clientId }) {
     fetchCarePlans();
   }, [clientId]);
 
-  const handleCreateCarePlan = () => {
-    if (!createForm.name.trim()) return;
+  const handleCreateCarePlan = async () => {
+    if (!createForm.name.trim()) {
+      toast('warning', 'Missing Name', 'Please enter a care plan name');
+      return;
+    }
+    if (!createForm.startDate) {
+      toast('warning', 'Missing Start Date', 'Please select a start date');
+      return;
+    }
+
     setSaving(true);
-    // In a full implementation, this would API call to create the care plan
-    setTimeout(() => {
-      setShowCreateForm(false);
-      setCreateForm({ name: '', description: '', startDate: '', endDate: '' });
+    try {
+      const response = await fetch('/api/care-plans', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: createForm.name,
+          description: createForm.description || null,
+          startDate: createForm.startDate,
+          endDate: createForm.endDate || null,
+          clientId,
+        }),
+      });
+
+      if (response.ok) {
+        const newCarePlan = await response.json();
+        setCarePlans(prev => [...prev, newCarePlan]);
+        setShowCreateForm(false);
+        setCreateForm({ name: '', description: '', startDate: '', endDate: '' });
+        toast('success', 'Created', 'Care plan saved successfully');
+      } else {
+        const error = await response.json();
+        toast('error', 'Creation Failed', error.error || 'Failed to create care plan');
+      }
+    } catch (error) {
+      console.error('Error creating care plan:', error);
+      toast('error', 'Creation Failed', 'Failed to create care plan');
+    } finally {
       setSaving(false);
-    }, 500);
+    }
   };
 
   const handleScheduleVisit = (carePlanId) => {

@@ -68,8 +68,34 @@ export async function GET(request) {
       .filter(inv => inv.status !== 'CANCELLED')
       .reduce((sum, inv) => sum + inv.amount, 0);
 
-    // Calculate total expenses (placeholder - would come from payroll)
-    const totalExpenses = totalRevenue * 0.3; // Placeholder: 30% of revenue
+    // Calculate total expenses from payroll (timesheets)
+    const timesheets = await prisma.timesheet.findMany({
+      where: {
+        organizationId: session.user.organizationId,
+        startDate: {
+          gte: fromDate,
+          lte: toDate,
+        },
+        status: { in: ['APPROVED', 'PAID'] },
+      },
+      include: {
+        staff: true,
+      },
+    });
+
+    // Get staff hourly rates
+    const staffRates = {};
+    timesheets.forEach(ts => {
+      if (ts.staff && !staffRates[ts.staffId]) {
+        staffRates[ts.staffId] = ts.staff.hourlyRate || 0;
+      }
+    });
+
+    const totalExpenses = timesheets.reduce((sum, ts) => {
+      const rate = staffRates[ts.staffId] || 0;
+      return sum + (ts.totalHours * rate);
+    }, 0);
+
     const netProfit = totalRevenue - totalExpenses;
 
     // Service breakdown

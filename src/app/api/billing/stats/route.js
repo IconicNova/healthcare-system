@@ -32,16 +32,21 @@ export async function GET() {
       },
     });
 
-    // Get pending amount (invoices not paid)
-    const pendingResult = await prisma.invoice.aggregate({
+    // Get pending amount (invoices not fully paid)
+    const pendingInvoices = await prisma.invoice.findMany({
       where: {
         organizationId,
-        status: { in: ['DRAFT', 'SENT'] },
+        status: { in: ['DRAFT', 'SENT', 'PARTIALLY_PAID', 'OVERDUE'] },
       },
-      _sum: { amount: true },
+      include: {
+        payments: true,
+      },
     });
 
-    const pendingAmount = pendingResult._sum.amount || 0;
+    const pendingAmount = pendingInvoices.reduce((sum, inv) => {
+      const paid = inv.payments.reduce((pSum, p) => pSum + p.amount, 0);
+      return sum + (inv.amount - paid);
+    }, 0);
 
     // Get paid amount
     const paidResult = await prisma.invoice.aggregate({
