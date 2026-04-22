@@ -259,7 +259,6 @@ export default function CarePlansPage() {
       }
 
       const result = await response.json();
-      console.log('Care plan created:', result);
 
       setIsAddModalOpen(false);
       fetchData();

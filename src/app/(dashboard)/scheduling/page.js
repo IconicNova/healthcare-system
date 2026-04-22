@@ -76,7 +76,6 @@ export default function SchedulingPage() {
         if (servicesRes.ok) setServices(await servicesRes.json());
         if (branchesRes.ok) setBranches((await branchesRes.json()).branches || []);
         const carePlansData = await carePlansRes.json();
-        console.log('Care Plans API response:', carePlansData);
         if (carePlansRes.ok) setCarePlans(carePlansData.carePlans || []);
       } catch (error) {
         console.error('Error fetching reference data:', error);

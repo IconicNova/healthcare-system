@@ -3,8 +3,6 @@
 import { useState, useEffect, useCallback } from 'react';
 
 export default function TimesheetEntryForm({ isOpen, onClose, timesheetId, onSuccess }) {
-  console.log('Rendering TimesheetEntryForm', { isOpen, timesheetId });
-
   const [loading, setLoading] = useState(false);
   const [timesheet, setTimesheet] = useState(null);
   const [error, setError] = useState(null);
@@ -16,22 +14,16 @@ export default function TimesheetEntryForm({ isOpen, onClose, timesheetId, onSuc
     visitId: null,
   });
 
-  console.log('TimesheetEntryForm state', { loading, timesheet, error, formData });
-
   useEffect(() => {
-    console.log('useEffect running', { isOpen, timesheetId });
     if (isOpen && timesheetId) {
-      console.log('Fetching timesheet...');
       fetchTimesheet();
     }
   }, [isOpen, timesheetId, fetchTimesheet]);
 
   const formatDateString = (dateValue) => {
-    console.log('formatDateString input:', dateValue);
     if (!dateValue) return '';
     try {
       const d = new Date(dateValue);
-      console.log('Parsed date:', d);
       if (isNaN(d.getTime())) return '';
       return d.toISOString().split('T')[0];
     } catch (e) {
@@ -42,18 +34,14 @@ export default function TimesheetEntryForm({ isOpen, onClose, timesheetId, onSuc
 
   const fetchTimesheet = useCallback(async () => {
     try {
-      console.log('fetchTimesheet called with timesheetId:', timesheetId);
       const response = await fetch(`/api/payroll/timesheets/${timesheetId}`);
-      console.log('Response status:', response.status);
       if (!response.ok) {
         throw new Error(`API error: ${response.status}`);
       }
       const data = await response.json();
-      console.log('Response data:', data);
       setTimesheet(data);
       if (data.startDate) {
         const formattedDate = formatDateString(data.startDate);
-        console.log('Setting form date to:', formattedDate);
         setFormData(prev => ({
           ...prev,
           date: formattedDate,
@@ -103,11 +91,8 @@ export default function TimesheetEntryForm({ isOpen, onClose, timesheetId, onSuc
   };
 
   if (!isOpen) {
-    console.log('Not rendering - isOpen is false');
     return null;
   }
-
-  console.log('Rendering modal with form');
 
   return (
     <div style={{

@@ -41,3 +41,8 @@ screenshots/
 
 .vercel
 .worktrees/
+
+# auth session files (contain live tokens - NEVER commit)
+audit-auth.json
+*.session.json
+playwright-auth*.json

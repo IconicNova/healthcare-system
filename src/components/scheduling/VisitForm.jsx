@@ -7,17 +7,6 @@ import Select from '@/components/ui/Select';
 import Button from '@/components/ui/Button';
 
 export default function VisitForm({ isOpen, onClose, onSubmit, clients = [], staff = [], services = [], branches = [], carePlans = [], loading = false }) {
-  // Log at component render time
-  console.log('=== VisitForm rendering ===');
-  console.log('isOpen:', isOpen);
-  console.log('carePlans received:', carePlans);
-  console.log('carePlans.length:', carePlans.length);
-
-  useEffect(() => {
-    console.log('VisitForm useEffect - isOpen:', isOpen);
-    console.log('VisitForm useEffect - carePlans prop:', carePlans);
-    console.log('VisitForm useEffect - carePlans length:', carePlans.length);
-  }, [isOpen, carePlans]);
   const [formData, setFormData] = useState({
     clientId: '',
     staffId: '',
@@ -268,10 +257,6 @@ export default function VisitForm({ isOpen, onClose, onSubmit, clients = [], sta
     }
     return cp.status === true || cp.status === undefined;
   });
-
-  console.log('Care plans data:', carePlans);
-  console.log('Filtered care plans:', filteredCarePlans);
-  console.log('Current client ID:', formData.clientId);
 
   const carePlanOptions = [
     { value: '', label: 'No Care Plan' },
