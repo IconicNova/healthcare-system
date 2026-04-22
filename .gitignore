@@ -40,3 +40,4 @@ prisma.lnk
 screenshots/
 
 .vercel
+.worktrees/
