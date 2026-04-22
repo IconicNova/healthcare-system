@@ -7,15 +7,30 @@ export default function Select({
   className = '',
   inline = false,
   onChange,
-  ...props
+  value,
+  defaultValue,
+  disabled = false,
+  name,
+  id,
+  placeholder,
+  ...restProps
 }) {
   const selectClasses = `select ${error ? 'input-error' : ''} ${className}`;
   const wrapperClass = inline ? '' : 'form-group';
 
   const handleChange = (e) => {
     if (onChange) {
-      onChange(e);
+      onChange(e.target.value, e);
     }
+  };
+
+  const selectProps = {
+    value,
+    defaultValue,
+    disabled,
+    name,
+    id,
+    ...restProps,
   };
 
   return (
@@ -25,7 +40,7 @@ export default function Select({
           {label}
         </label>
       )}
-      <select className={selectClasses} onChange={handleChange} {...props}>
+      <select className={selectClasses} onChange={handleChange} {...selectProps}>
         {options.length > 0 && options[0].value === '' ? null : <option value="">Select an option</option>}
         {options.map((option) => (
           <option key={option.value} value={option.value}>
