@@ -96,7 +96,7 @@ export async function GET(request) {
         ? ((new Date(visit.endTime) - new Date(visit.startTime)) / (1000 * 60 * 60)).toFixed(2)
         : 'N/A',
       status: visit.status,
-      evvVerified: visit.actualStart !== null, // Placeholder for GPS verification
+      evvVerified: visit.actualStart !== null && visit.actualEnd !== null,
       branch: visit.branch?.name || 'Main',
     }));
 

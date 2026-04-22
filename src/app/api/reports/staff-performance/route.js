@@ -77,6 +77,11 @@ export async function GET(request) {
       // Count forms submitted (placeholder - would need to query forms table)
       const formsSubmitted = Math.floor(totalVisits * 0.8); // Placeholder
 
+      // Calculate rating based on completion rate and punctuality (0-5 scale)
+      const rating = totalVisits > 0
+        ? parseFloat(((parseFloat(completionRate) / 100 * 3) + (parseFloat(punctuality) / 100 * 2)).toFixed(1))
+        : 0;
+
       return {
         id: staffMember.id,
         name: `${staffMember.firstName} ${staffMember.lastName}`,
@@ -88,7 +93,7 @@ export async function GET(request) {
         avgDuration: parseFloat(avgDuration),
         punctuality: parseFloat(punctuality),
         formsSubmitted,
-        rating: 4.5, // Placeholder
+        rating,
       };
     });
 
