@@ -946,12 +946,12 @@ model AuditLog {
   action         String
   entity         String
   entityId       String?
-  organizationId String
+  organizationId String?
   userId         String?
   changes        Json?
   createdAt      DateTime @default(now())
 
-  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  organization Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
   user         User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
 
   @@index([createdAt])

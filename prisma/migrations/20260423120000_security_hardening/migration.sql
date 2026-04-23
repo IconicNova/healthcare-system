@@ -37,11 +37,8 @@ WHERE al."userId" = u.id
   AND al."organizationId" IS NULL;
 
 ALTER TABLE "audit_log"
-  ALTER COLUMN "organizationId" SET NOT NULL;
-
-ALTER TABLE "audit_log"
   ADD CONSTRAINT "audit_log_organizationId_fkey"
-  FOREIGN KEY ("organizationId") REFERENCES "organization"("id") ON DELETE RESTRICT ON UPDATE CASCADE,
+  FOREIGN KEY ("organizationId") REFERENCES "organization"("id") ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT "audit_log_userId_fkey"
   FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
