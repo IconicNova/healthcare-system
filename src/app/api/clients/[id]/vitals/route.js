@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { VitalSignSchema } from '@/lib/validations';
+import { parsePaginationParams } from '@/lib/api-safety';
 
 // GET - Fetch vitals for a client
 export async function GET(request, { params }) {
@@ -15,7 +16,7 @@ export async function GET(request, { params }) {
 
     const { id } = params;
     const { searchParams } = new URL(request.url);
-    const limit = parseInt(searchParams.get('limit') || '50');
+    const { limit } = parsePaginationParams(searchParams, { defaultLimit: 50 });
     const startDate = searchParams.get('startDate');
     const endDate = searchParams.get('endDate');
 

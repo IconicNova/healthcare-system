@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { normalizeFormStatus } from '@/lib/form-review';
+import { parsePaginationParams } from '@/lib/api-safety';
 
 export async function GET(request, { params }) {
   try {
@@ -14,9 +15,7 @@ export async function GET(request, { params }) {
 
     const { id } = params;
     const { searchParams } = new URL(request.url);
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '20');
-    const skip = (page - 1) * limit;
+    const { page, limit, skip } = parsePaginationParams(searchParams, { defaultLimit: 20 });
     const type = searchParams.get('type') || '';
 
     // Check if client exists

@@ -5,6 +5,9 @@ import prisma from '@/lib/prisma';
 import { encrypt, getEncryptionConfigurationError } from '@/lib/encryption';
 import { ClientSchema } from '@/lib/validations';
 import { ApiResponse } from '@/lib/api-response';
+import { parsePaginationParams, requireRole } from '@/lib/api-safety';
+
+const CLIENT_MUTATION_ROLES = ['SUPER_ADMIN', 'ADMIN', 'MANAGER'];
 
 export async function GET(request) {
   try {
@@ -15,11 +18,9 @@ export async function GET(request) {
     }
 
     const { searchParams } = new URL(request.url);
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '10');
+    const { page, limit, skip } = parsePaginationParams(searchParams, { defaultLimit: 10 });
     const search = searchParams.get('search') || '';
     const status = searchParams.get('status');
-    const skip = (page - 1) * limit;
 
     const where = {
       organizationId: session.user.organizationId,
@@ -99,6 +100,11 @@ export async function POST(request) {
 
     if (!session || !session.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const forbiddenResponse = requireRole(session, CLIENT_MUTATION_ROLES);
+    if (forbiddenResponse) {
+      return forbiddenResponse;
     }
 
     const body = await request.json();

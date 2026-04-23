@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import { parsePaginationParams } from '@/lib/api-safety';
 
 // GET - Fetch medication administration history
 export async function GET(request, { params }) {
@@ -14,9 +15,7 @@ export async function GET(request, { params }) {
 
     const { id } = params;
     const { searchParams } = new URL(request.url);
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '20');
-    const skip = (page - 1) * limit;
+    const { page, limit, skip } = parsePaginationParams(searchParams, { defaultLimit: 20 });
 
     // Verify the medication belongs to a client in the user's organization
     const medication = await prisma.medication.findFirst({

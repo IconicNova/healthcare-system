@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import { AVATAR_VALIDATION_ERROR, requireRole, validateAvatarDataUrl } from '@/lib/api-safety';
+
+const STAFF_MUTATION_ROLES = ['SUPER_ADMIN', 'ADMIN', 'MANAGER'];
 
 // PUT /api/staff/[id]/avatar - Update staff avatar
 export async function PUT(request, { params }) {
@@ -11,9 +14,19 @@ export async function PUT(request, { params }) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const forbiddenResponse = requireRole(session, STAFF_MUTATION_ROLES);
+    if (forbiddenResponse) {
+      return forbiddenResponse;
+    }
+
     const { id } = await params;
     const body = await request.json();
     const { avatarUrl } = body;
+    const avatarValidation = validateAvatarDataUrl(avatarUrl);
+
+    if (!avatarValidation.ok) {
+      return NextResponse.json({ error: AVATAR_VALIDATION_ERROR }, { status: 400 });
+    }
 
     // Check if staff exists
     const existing = await prisma.staff.findUnique({
@@ -33,7 +46,7 @@ export async function PUT(request, { params }) {
     if (existing.userId) {
       result = await prisma.user.update({
         where: { id: existing.userId },
-        data: { avatar: avatarUrl || null },
+        data: { avatar: avatarValidation.value },
         select: {
           id: true,
           firstName: true,
@@ -62,6 +75,11 @@ export async function DELETE(request, { params }) {
     const session = await getServerSession(authOptions);
     if (!session || !session.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const forbiddenResponse = requireRole(session, STAFF_MUTATION_ROLES);
+    if (forbiddenResponse) {
+      return forbiddenResponse;
     }
 
     const { id } = await params;

@@ -6,6 +6,9 @@ import bcrypt from 'bcryptjs';
 import { CreateStaffSchema } from '@/lib/validations';
 import { ApiResponse } from '@/lib/api-response';
 import { getUserStatusFromStaffStatus } from '@/lib/clients-staff-review.mjs';
+import { canManageStaffRole, parsePaginationParams, requireRole } from '@/lib/api-safety';
+
+const STAFF_MUTATION_ROLES = ['SUPER_ADMIN', 'ADMIN', 'MANAGER'];
 
 export async function GET(request) {
   try {
@@ -16,8 +19,7 @@ export async function GET(request) {
     }
 
     const { searchParams } = new URL(request.url);
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '10');
+    const { page, limit, skip } = parsePaginationParams(searchParams, { defaultLimit: 10 });
     const search = searchParams.get('search') || '';
     const status = searchParams.get('status');
     const branchId = searchParams.get('branchId');
@@ -28,8 +30,6 @@ export async function GET(request) {
     const ALLOWED_ORDER_VALUES = ['asc', 'desc'];
     const sort = ALLOWED_SORT_FIELDS.includes(searchParams.get('sort')) ? searchParams.get('sort') : 'createdAt';
     const order = ALLOWED_ORDER_VALUES.includes(searchParams.get('order')) ? searchParams.get('order') : 'desc';
-    const skip = (page - 1) * limit;
-
     const where = {
       organizationId: session.user.organizationId,
     };
@@ -129,6 +129,11 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const forbiddenResponse = requireRole(session, STAFF_MUTATION_ROLES);
+    if (forbiddenResponse) {
+      return forbiddenResponse;
+    }
+
     const body = await request.json();
 
     const validationResult = CreateStaffSchema.safeParse(body);
@@ -153,10 +158,9 @@ export async function POST(request) {
     } = validationResult.data;
     const nextStaffStatus = status || 'INACTIVE';
 
-    // Validate role - never allow ADMIN creation through API
-    if (role === 'ADMIN' || role === 'SUPER_ADMIN') {
+    if (!canManageStaffRole(session.user.role, role)) {
       return NextResponse.json(
-        { error: 'Cannot create ADMIN or SUPER_ADMIN users through API' },
+        { error: 'Forbidden' },
         { status: 403 }
       );
     }

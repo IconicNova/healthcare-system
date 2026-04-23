@@ -5,6 +5,9 @@ import prisma from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
 import { UpdateStaffSchema } from '@/lib/validations';
 import { getUserStatusFromStaffStatus } from '@/lib/clients-staff-review.mjs';
+import { canManageStaffRole, requireRole } from '@/lib/api-safety';
+
+const STAFF_MUTATION_ROLES = ['SUPER_ADMIN', 'ADMIN', 'MANAGER'];
 
 export async function GET(request, { params }) {
   try {
@@ -125,6 +128,11 @@ export async function PATCH(request, { params }) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const forbiddenResponse = requireRole(session, STAFF_MUTATION_ROLES);
+    if (forbiddenResponse) {
+      return forbiddenResponse;
+    }
+
     const { id } = params;
     const body = await request.json();
     const validationResult = UpdateStaffSchema.safeParse(body);
@@ -153,6 +161,10 @@ export async function PATCH(request, { params }) {
     const nextRole = data.role || existing.role;
     const nextStatus = data.status || existing.status;
     const nextBranchId = data.branchId !== undefined ? data.branchId : existing.branchId;
+
+    if (!canManageStaffRole(session.user.role, nextRole)) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
 
     // Handle password update if provided
     let userData = {};
@@ -322,6 +334,11 @@ export async function DELETE(request, { params }) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const forbiddenResponse = requireRole(session, STAFF_MUTATION_ROLES);
+    if (forbiddenResponse) {
+      return forbiddenResponse;
+    }
+
     const { id } = params;
 
     // Check if staff exists
@@ -335,6 +352,10 @@ export async function DELETE(request, { params }) {
 
     if (!existing) {
       return NextResponse.json({ error: 'Staff member not found' }, { status: 404 });
+    }
+
+    if (!canManageStaffRole(session.user.role, existing.role)) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
     // Nullify staff on visits instead of deleting them (preserves client care history)

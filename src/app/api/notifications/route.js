@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import { parsePaginationParams } from '@/lib/api-safety';
 
 export async function GET(request) {
   const session = await getServerSession(authOptions);
@@ -11,8 +12,10 @@ export async function GET(request) {
 
   try {
     const { searchParams } = new URL(request.url);
-    const page = parseInt(searchParams.get('page') || '1');
-    const pageSize = parseInt(searchParams.get('pageSize') || '20');
+    const { page, limit: pageSize, skip } = parsePaginationParams(searchParams, {
+      defaultLimit: 20,
+      pageSizeParam: 'pageSize',
+    });
     const readFilter = searchParams.get('read');
     const category = searchParams.get('category');
 
@@ -27,8 +30,6 @@ export async function GET(request) {
     if (category && category !== 'all') {
       where.type = category;
     }
-
-    const skip = (page - 1) * pageSize;
 
     const [notifications, totalCount] = await Promise.all([
       prisma.notification.findMany({

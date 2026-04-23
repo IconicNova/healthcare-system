@@ -4,6 +4,9 @@ import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
 import { encrypt, getEncryptionConfigurationError, maskSSN } from '@/lib/encryption';
+import { requireRole } from '@/lib/api-safety';
+
+const CLIENT_MUTATION_ROLES = ['SUPER_ADMIN', 'ADMIN', 'MANAGER'];
 
 export async function GET(request, { params }) {
   try {
@@ -104,6 +107,11 @@ export async function PATCH(request, { params }) {
 
     if (!session || !session.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const forbiddenResponse = requireRole(session, CLIENT_MUTATION_ROLES);
+    if (forbiddenResponse) {
+      return forbiddenResponse;
     }
 
     const { id } = params;
@@ -330,6 +338,11 @@ export async function DELETE(request, { params }) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const forbiddenResponse = requireRole(session, CLIENT_MUTATION_ROLES);
+    if (forbiddenResponse) {
+      return forbiddenResponse;
+    }
+
     const { id } = params;
 
     // Check if client exists and count visits
@@ -350,40 +363,31 @@ export async function DELETE(request, { params }) {
       return NextResponse.json({ error: 'Client not found' }, { status: 404 });
     }
 
-    // Delete all related records and visits before deleting client/user
-    await prisma.$transaction(async (tx) => {
-      // Delete insurance claims FIRST (onDelete: Restrict — won't cascade)
-      await tx.insuranceClaim.deleteMany({ where: { clientId: id } });
-
-      // Delete all visits for this client (related records cascade automatically)
-      await tx.visit.deleteMany({ where: { clientId: id } });
-
-      // Delete all invoices for this client
-      await tx.invoice.deleteMany({ where: { clientId: id } });
-
-      // Delete all related records
-      await tx.emergencyContact.deleteMany({ where: { clientId: id } });
-      await tx.medication.deleteMany({ where: { clientId: id } });
-      await tx.clientForm.deleteMany({ where: { clientId: id } });
-      await tx.document.deleteMany({ where: { clientId: id } });
-      await tx.medicalHistory.deleteMany({ where: { clientId: id } });
-      await tx.clientMedicalInfo.deleteMany({ where: { clientId: id } });
-
-      // Delete associated user if exists - this will cascade delete the client record
+    // Preserve clinical and billing history; discharge the client and disable portal access.
+    const client = await prisma.$transaction(async (tx) => {
       if (existing.userId) {
-        await tx.user.delete({
+        await tx.user.update({
           where: { id: existing.userId },
-        });
-        // Client is automatically deleted via CASCADE when user is deleted
-      } else {
-        // If no user, delete client directly
-        await tx.client.delete({
-          where: { id },
+          data: { status: false },
         });
       }
+
+      return tx.client.update({
+        where: { id },
+        data: { status: 'DISCHARGED' },
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          email: true,
+          phone: true,
+          status: true,
+          updatedAt: true,
+        },
+      });
     });
 
-    return NextResponse.json({ message: 'Client deleted successfully' });
+    return NextResponse.json({ message: 'Client discharged', client });
   } catch (error) {
     console.error('Error deleting client:', error);
     return NextResponse.json({ error: 'Failed to delete client' }, { status: 500 });

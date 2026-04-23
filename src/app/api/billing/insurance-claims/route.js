@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { hasRoleAccess } from '@/lib/utils';
+import { parsePaginationParams } from '@/lib/api-safety';
 
 // GET - List insurance claims with filtering
 export async function GET(request) {
@@ -17,16 +18,13 @@ export async function GET(request) {
     }
 
     const { searchParams } = new URL(request.url);
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '10');
+    const { page, limit, skip } = parsePaginationParams(searchParams, { defaultLimit: 10 });
     const search = searchParams.get('search') || '';
     const status = searchParams.get('status') || '';
     const dateFrom = searchParams.get('dateFrom');
     const dateTo = searchParams.get('dateTo');
 
     const organizationId = session.user.organizationId;
-    const skip = (page - 1) * limit;
-
     const where = { organizationId };
 
     if (status) {

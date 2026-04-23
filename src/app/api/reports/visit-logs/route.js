@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { format, parseISO } from 'date-fns';
+import { parsePaginationParams } from '@/lib/api-safety';
 
 export async function GET(request) {
   const session = await getServerSession(authOptions);
@@ -14,9 +15,10 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
 
     // Pagination
-    const page = parseInt(searchParams.get('page') || '1');
-    const pageSize = parseInt(searchParams.get('pageSize') || '25');
-    const skip = (page - 1) * pageSize;
+    const { page, limit: pageSize, skip } = parsePaginationParams(searchParams, {
+      defaultLimit: 25,
+      pageSizeParam: 'pageSize',
+    });
 
     // Filters
     const dateFrom = searchParams.get('dateFrom');

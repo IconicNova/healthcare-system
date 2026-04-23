@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { hasRoleAccess } from '@/lib/utils';
+import { parsePaginationParams } from '@/lib/api-safety';
 
 // GET - List all payments with invoice info
 export async function GET(request) {
@@ -18,9 +19,7 @@ export async function GET(request) {
     }
 
     const { searchParams } = new URL(request.url);
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '10');
-    const skip = (page - 1) * limit;
+    const { page, limit, skip } = parsePaginationParams(searchParams, { defaultLimit: 10 });
     const startDate = searchParams.get('startDate');
     const endDate = searchParams.get('endDate');
 

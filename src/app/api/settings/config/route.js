@@ -1,42 +1,8 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-
-// In a real app, this would be stored in the database
-// For now, we'll use localStorage-like storage in a file
-let config = {
-  scheduling: {
-    defaultShiftLength: 8,
-    maxOvertimeHours: 10,
-    clockInWindow: 15,
-    lateThreshold: 6,
-    requireGPS: true,
-    autoCancelHours: 24,
-  },
-  billing: {
-    taxRate: 0,
-    paymentTerms: 30,
-    invoicePrefix: 'INV',
-    paymentMethods: ['cash', 'check', 'card', 'transfer'],
-  },
-  payroll: {
-    overtimeThreshold: 40,
-    overtimeMultiplier: 1.5,
-    mileageRate: 0.67,
-    payPeriod: 'biweekly',
-  },
-  notifications: {
-    lateClockInAlert: true,
-    lateClockInThreshold: 15,
-    missedVisitAlert: true,
-    expiringCertWarning: true,
-    expiringCertDays: 30,
-    formDueReminder: true,
-    formDueHours: 24,
-    invoiceOverdueAlert: true,
-    invoiceOverdueDays: 7,
-  },
-};
+import prisma from '@/lib/prisma';
+import { buildSettingsConfigPatch, mergeSettingsConfig } from '@/lib/settings-config';
 
 export async function GET() {
   const session = await getServerSession(authOptions);
@@ -44,7 +10,17 @@ export async function GET() {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  return NextResponse.json(config);
+  try {
+    const organization = await prisma.organization.findUnique({
+      where: { id: session.user.organizationId },
+      select: { config: true },
+    });
+
+    return NextResponse.json(mergeSettingsConfig(organization?.config));
+  } catch (error) {
+    console.error('Error fetching config:', error);
+    return NextResponse.json({ error: 'Failed to fetch config' }, { status: 500 });
+  }
 }
 
 export async function PATCH(request) {
@@ -60,24 +36,23 @@ export async function PATCH(request) {
 
   try {
     const body = await request.json();
+    const organization = await prisma.organization.findUnique({
+      where: { id: session.user.organizationId },
+      select: { config: true },
+    });
+    const currentConfig = mergeSettingsConfig(organization?.config);
+    const patchResult = buildSettingsConfigPatch(currentConfig, body);
 
-    // Update config based on what's provided
-    if (body.scheduling) {
-      config.scheduling = { ...config.scheduling, ...body.scheduling };
-    }
-    if (body.billing) {
-      config.billing = { ...config.billing, ...body.billing };
-    }
-    if (body.payroll) {
-      config.payroll = { ...config.payroll, ...body.payroll };
-    }
-    if (body.notifications) {
-      config.notifications = { ...config.notifications, ...body.notifications };
+    if (!patchResult.ok) {
+      return NextResponse.json({ error: patchResult.error }, { status: 400 });
     }
 
-    // In a real app, save to database here
+    await prisma.organization.update({
+      where: { id: session.user.organizationId },
+      data: { config: patchResult.value },
+    });
 
-    return NextResponse.json(config);
+    return NextResponse.json(patchResult.value);
   } catch (error) {
     console.error('Error updating config:', error);
     return NextResponse.json({ error: 'Failed to update config' }, { status: 500 });

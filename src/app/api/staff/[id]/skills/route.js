@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import { requireRole } from '@/lib/api-safety';
+
+const STAFF_MUTATION_ROLES = ['SUPER_ADMIN', 'ADMIN', 'MANAGER'];
 
 export async function GET(request, { params }) {
   try {
@@ -49,6 +52,11 @@ export async function POST(request, { params }) {
 
     if (!session || !session.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const forbiddenResponse = requireRole(session, STAFF_MUTATION_ROLES);
+    if (forbiddenResponse) {
+      return forbiddenResponse;
     }
 
     const { id } = params;

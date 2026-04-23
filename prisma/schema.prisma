@@ -137,6 +137,7 @@ model Organization {
   state     String?
   zipCode   String?
   status    Boolean  @default(true)
+  config    Json?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

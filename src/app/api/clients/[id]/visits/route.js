@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import { parsePaginationParams } from '@/lib/api-safety';
 
 export async function GET(request, { params }) {
   try {
@@ -13,13 +14,11 @@ export async function GET(request, { params }) {
 
     const { id } = params;
     const { searchParams } = new URL(request.url);
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '20');
+    const { page, limit, skip } = parsePaginationParams(searchParams, { defaultLimit: 20 });
     const requestedStatus = searchParams.get('status') || '';
     const status = ['SCHEDULED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED', 'NO_SHOW', 'MISSED'].includes(requestedStatus)
       ? requestedStatus
       : '';
-    const skip = (page - 1) * limit;
 
     // Check if client exists
     const client = await prisma.client.findFirst({
