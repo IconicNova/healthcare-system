@@ -5,6 +5,7 @@ import { Plus, Edit3, Trash2, X, Check } from 'lucide-react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
+import { sanitizeHtml } from '@/lib/rich-text-sanitizer';
 
 // UX-7: WYSIWYG Toolbar component
 function EditorToolbar({ editor }) {
@@ -80,10 +81,21 @@ function RichEditor({ content, onUpdate, placeholder, readOnly }) {
   );
 }
 
+async function readErrorMessage(res, fallback) {
+  try {
+    const data = await res.json();
+    return data?.error || data?.message || fallback;
+  } catch (error) {
+    console.error('Failed to parse visit note response:', error);
+    return fallback;
+  }
+}
+
 export default function VisitNotesTab({ visitId, onCountChange }) {
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState('');
+  const [actionError, setActionError] = useState('');
   const [showAdd, setShowAdd] = useState(false);
   const [newContent, setNewContent] = useState('');
   const [editingId, setEditingId] = useState(null);
@@ -99,6 +111,7 @@ export default function VisitNotesTab({ visitId, onCountChange }) {
     if (!visitId) return;
     try {
       setLoadError('');
+      setActionError('');
       setLoading(true);
       const res = await fetch(`/api/visits/${visitId}/notes`);
       if (!res.ok) {
@@ -127,17 +140,22 @@ export default function VisitNotesTab({ visitId, onCountChange }) {
     if (!stripped) return;
 
     try {
+      setActionError('');
       const res = await fetch(`/api/visits/${visitId}/notes`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ content: newContent }),
       });
-      if (res.ok) {
-        setNewContent('');
-        setShowAdd(false);
-        fetchNotes();
+      if (!res.ok) {
+        setActionError(await readErrorMessage(res, 'Unable to save this note right now.'));
+        return;
       }
-    } catch {}
+      setNewContent('');
+      setShowAdd(false);
+      fetchNotes();
+    } catch {
+      setActionError('Unable to save this note right now.');
+    }
   };
 
   // LOGIC-6: Edit note
@@ -146,27 +164,37 @@ export default function VisitNotesTab({ visitId, onCountChange }) {
     if (!stripped) return;
 
     try {
+      setActionError('');
       const res = await fetch(`/api/visit-notes/${noteId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ content: editContent }),
       });
-      if (res.ok) {
-        setEditingId(null);
-        setEditContent('');
-        fetchNotes();
+      if (!res.ok) {
+        setActionError(await readErrorMessage(res, 'Unable to update this note right now.'));
+        return;
       }
-    } catch {}
+      setEditingId(null);
+      setEditContent('');
+      fetchNotes();
+    } catch {
+      setActionError('Unable to update this note right now.');
+    }
   };
 
   // LOGIC-6: Delete note
   const handleDelete = async (noteId) => {
     try {
+      setActionError('');
       const res = await fetch(`/api/visit-notes/${noteId}`, { method: 'DELETE' });
-      if (res.ok) {
+      if (!res.ok) {
+        setActionError(await readErrorMessage(res, 'Unable to delete this note right now.'));
+      } else {
         fetchNotes();
       }
-    } catch {}
+    } catch {
+      setActionError('Unable to delete this note right now.');
+    }
     setDeleteConfirm(null);
   };
 
@@ -213,6 +241,16 @@ export default function VisitNotesTab({ visitId, onCountChange }) {
       </div>
 
       {/* Add note form — UX-7: Full WYSIWYG */}
+      {actionError && (
+        <div style={{
+          padding: '12px 14px', borderRadius: '8px', background: '#FEF2F2',
+          color: '#B91C1C', fontSize: '13px', marginBottom: '12px',
+          border: '1px solid #FECACA',
+        }}>
+          {actionError}
+        </div>
+      )}
+
       {showAdd && (
         <div style={{
           border: '1px solid var(--color-border)', borderRadius: '10px',
@@ -292,7 +330,7 @@ export default function VisitNotesTab({ visitId, onCountChange }) {
                 <div
                   style={{ fontSize: '14px', lineHeight: 1.6 }}
                   className="tiptap-render"
-                  dangerouslySetInnerHTML={{ __html: note.content }}
+                  dangerouslySetInnerHTML={{ __html: sanitizeHtml(note.content || '') }}
                 />
               )}
             </div>

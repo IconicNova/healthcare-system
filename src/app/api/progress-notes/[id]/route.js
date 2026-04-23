@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import { pickAllowedFields, requireClinicalRole } from '@/lib/api-safety';
 
 // GET - Fetch a single progress note
 export async function GET(request, { params }) {
@@ -10,6 +11,11 @@ export async function GET(request, { params }) {
 
     if (!session || !session.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const forbiddenResponse = requireClinicalRole(session);
+    if (forbiddenResponse) {
+      return forbiddenResponse;
     }
 
     const { id } = params;
@@ -59,6 +65,11 @@ export async function PATCH(request, { params }) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const forbiddenResponse = requireClinicalRole(session);
+    if (forbiddenResponse) {
+      return forbiddenResponse;
+    }
+
     const { id } = params;
     const body = await request.json();
 
@@ -75,9 +86,19 @@ export async function PATCH(request, { params }) {
       return NextResponse.json({ error: 'Progress note not found' }, { status: 404 });
     }
 
+    const allowedUpdate = pickAllowedFields(body, [
+      'type',
+      'subjective',
+      'objective',
+      'assessment',
+      'plan',
+      'narrative',
+      'visitId',
+    ]);
+
     const updatedNote = await prisma.progressNote.update({
       where: { id },
-      data: body,
+      data: allowedUpdate,
     });
 
     return NextResponse.json(updatedNote);
@@ -94,6 +115,11 @@ export async function DELETE(request, { params }) {
 
     if (!session || !session.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const forbiddenResponse = requireClinicalRole(session);
+    if (forbiddenResponse) {
+      return forbiddenResponse;
     }
 
     const { id } = params;

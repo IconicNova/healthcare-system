@@ -3,7 +3,28 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { VitalSignSchema } from '@/lib/validations';
-import { parsePaginationParams } from '@/lib/api-safety';
+import { parsePaginationParams, pickAllowedFields, requireClinicalRole } from '@/lib/api-safety';
+
+const ALLOWED_VITAL_FIELDS = [
+  'temperature',
+  'temperatureUnit',
+  'bloodPressureSystolic',
+  'bloodPressureDiastolic',
+  'heartRate',
+  'respiratoryRate',
+  'oxygenSaturation',
+  'painLevel',
+  'weight',
+  'weightUnit',
+  'height',
+  'heightUnit',
+  'bmi',
+  'glucose',
+  'glucoseUnit',
+  'visitId',
+  'recordedAt',
+  'notes',
+];
 
 // GET - Fetch vitals for a client
 export async function GET(request, { params }) {
@@ -12,6 +33,11 @@ export async function GET(request, { params }) {
 
     if (!session || !session.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const forbiddenResponse = requireClinicalRole(session);
+    if (forbiddenResponse) {
+      return forbiddenResponse;
     }
 
     const { id } = params;
@@ -69,6 +95,11 @@ export async function POST(request, { params }) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const forbiddenResponse = requireClinicalRole(session);
+    if (forbiddenResponse) {
+      return forbiddenResponse;
+    }
+
     const { id } = params;
     const body = await request.json();
 
@@ -84,9 +115,11 @@ export async function POST(request, { params }) {
       return NextResponse.json({ error: 'Client not found' }, { status: 404 });
     }
 
+    const vitalPayload = pickAllowedFields(body, ALLOWED_VITAL_FIELDS);
+
     // Validate the data
     const validationResult = VitalSignSchema.safeParse({
-      ...body,
+      ...vitalPayload,
       clientId: id,
     });
 
@@ -117,7 +150,7 @@ export async function POST(request, { params }) {
       glucoseUnit: data.glucoseUnit || 'mg/dL',
       visitId: data.visitId || null,
       recordedBy: session.user.id,
-      notes: body.notes || null,
+      notes: vitalPayload.notes || null,
     };
 
     if (data.recordedAt) {

@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { hasRoleAccess } from '@/lib/utils';
+import { requireClinicalRole } from '@/lib/api-safety';
 
 // POST - Record medication administration
 export async function POST(request, { params }) {
@@ -11,6 +12,11 @@ export async function POST(request, { params }) {
 
     if (!session || !session.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const forbiddenResponse = requireClinicalRole(session);
+    if (forbiddenResponse) {
+      return forbiddenResponse;
     }
 
     // Only staff-level roles can administer medications

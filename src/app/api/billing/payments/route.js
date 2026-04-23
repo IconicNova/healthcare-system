@@ -4,6 +4,7 @@ import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { hasRoleAccess } from '@/lib/utils';
 import { parsePaginationParams } from '@/lib/api-safety';
+import { serializeApiValue } from '@/lib/serialization';
 
 // GET - List all payments with invoice info
 export async function GET(request) {
@@ -70,9 +71,9 @@ export async function GET(request) {
     }));
 
     // Calculate total payments
-    const totalAmount = payments.reduce((sum, p) => sum + p.amount, 0);
+    const totalAmount = payments.reduce((sum, p) => sum + Number(p.amount), 0);
 
-    return NextResponse.json({
+    return NextResponse.json(serializeApiValue({
       payments: formattedPayments,
       pagination: {
         page,
@@ -81,7 +82,7 @@ export async function GET(request) {
         totalPages: Math.ceil(total / limit),
       },
       totalAmount,
-    });
+    }));
   } catch (error) {
     console.error('Error fetching payments:', error);
     return NextResponse.json({ error: 'Failed to fetch payments' }, { status: 500 });
@@ -103,6 +104,7 @@ export async function POST(request) {
 
     const body = await request.json();
     const { invoiceId, amount, paymentMethod, referenceNumber, paymentDate, notes } = body;
+    const paymentAmount = Number(amount);
 
     // Validate required fields
     if (!invoiceId || !amount || !paymentMethod) {
@@ -112,7 +114,7 @@ export async function POST(request) {
       );
     }
 
-    if (amount <= 0) {
+    if (paymentAmount <= 0) {
       return NextResponse.json(
         { error: 'Payment amount must be greater than 0' },
         { status: 400 }
@@ -145,10 +147,10 @@ export async function POST(request) {
     }
 
     // Calculate current balance
-    const totalPaid = invoice.payments.reduce((sum, p) => sum + p.amount, 0);
-    const balanceDue = invoice.amount - totalPaid;
+    const totalPaid = invoice.payments.reduce((sum, p) => sum + Number(p.amount), 0);
+    const balanceDue = Number(invoice.amount) - totalPaid;
 
-    if (amount > balanceDue) {
+    if (paymentAmount > balanceDue) {
       return NextResponse.json(
         { error: `Payment amount exceeds balance due of ${balanceDue.toFixed(2)}` },
         { status: 400 }
@@ -161,7 +163,7 @@ export async function POST(request) {
       const newPayment = await tx.payment.create({
         data: {
           invoiceId,
-          amount,
+          amount: paymentAmount,
           paymentMethod,
           referenceNumber: referenceNumber || null,
           paymentDate: paymentDate ? new Date(paymentDate) : new Date(),
@@ -170,10 +172,10 @@ export async function POST(request) {
       });
 
       // Calculate new total
-      const newTotalPaid = totalPaid + amount;
+      const newTotalPaid = totalPaid + paymentAmount;
 
       // Update invoice status based on payment coverage
-      if (newTotalPaid >= invoice.amount) {
+      if (newTotalPaid >= Number(invoice.amount)) {
         // Fully paid
         await tx.invoice.update({
           where: { id: invoiceId },
@@ -195,7 +197,7 @@ export async function POST(request) {
       return newPayment;
     });
 
-    return NextResponse.json(payment, { status: 201 });
+    return NextResponse.json(serializeApiValue(payment), { status: 201 });
   } catch (error) {
     console.error('Error recording payment:', error);
     return NextResponse.json({ error: 'Failed to record payment' }, { status: 500 });

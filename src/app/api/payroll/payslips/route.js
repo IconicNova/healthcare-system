@@ -5,6 +5,7 @@ import prisma from '@/lib/prisma';
 
 export const dynamic = 'force-dynamic';
 import { hasRoleAccess } from '@/lib/utils';
+import { serializeApiValue } from '@/lib/serialization';
 
 const OVERTIME_THRESHOLD = 40;
 const OVERTIME_MULTIPLIER = 1.5;
@@ -114,7 +115,7 @@ export async function GET(request) {
 
     const payslips = Array.from(staffMap.values()).map((entry) => {
       const { staff, timesheets: staffTimesheets } = entry;
-      const payRate = staff.hourlyRate || 0;
+      const payRate = Number(staff.hourlyRate || 0);
 
       // Aggregate ALL hours across timesheets first, THEN apply overtime threshold
       const totalHoursWorked = staffTimesheets.reduce((sum, ts) => sum + (ts.totalHours || 0), 0);
@@ -195,7 +196,7 @@ export async function GET(request) {
       };
     });
 
-    return NextResponse.json({
+    return NextResponse.json(serializeApiValue({
       payslips,
       period: {
         startDate: start.toISOString(),
@@ -213,7 +214,7 @@ export async function GET(request) {
           payslips.reduce((sum, p) => sum + p.deductions.totalDeductions, 0).toFixed(2)
         ),
       },
-    });
+    }));
   } catch (error) {
     console.error('Error computing payslips:', error);
     return NextResponse.json({ error: 'Failed to compute payslips' }, { status: 500 });

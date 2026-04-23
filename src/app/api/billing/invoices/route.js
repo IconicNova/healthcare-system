@@ -7,6 +7,7 @@ import { hasRoleAccess } from '@/lib/utils';
 import { InvoiceSchema } from '@/lib/validations';
 import { ApiResponse } from '@/lib/api-response';
 import { parsePaginationParams } from '@/lib/api-safety';
+import { serializeApiValue } from '@/lib/serialization';
 
 // GET - List invoices with pagination, search, filter
 export async function GET(request) {
@@ -86,7 +87,7 @@ export async function GET(request) {
       client: undefined, // Remove nested client object
     }));
 
-    return NextResponse.json({
+    return NextResponse.json(serializeApiValue({
       invoices: formattedInvoices,
       pagination: {
         page,
@@ -94,7 +95,7 @@ export async function GET(request) {
         total,
         totalPages: Math.ceil(total / limit),
       },
-    });
+    }));
   } catch (error) {
     console.error('Error fetching invoices:', error);
     return NextResponse.json({ error: 'Failed to fetch invoices' }, { status: 500 });
@@ -140,7 +141,7 @@ export async function POST(request) {
 
     // Calculate total amount from invoice items
     const totalAmount = invoiceItems.reduce((sum, item) => {
-      return sum + ((item.quantity || 1) * (item.unitPrice || 0));
+      return sum + ((item.quantity || 1) * Number(item.unitPrice || 0));
     }, 0);
 
     // Create invoice with items in transaction (includes number generation to prevent races)
@@ -171,8 +172,8 @@ export async function POST(request) {
           data: invoiceItems.map((item) => ({
             description: item.description,
             quantity: item.quantity || 1,
-            unitPrice: item.unitPrice || 0,
-            amount: (item.quantity || 1) * (item.unitPrice || 0),
+            unitPrice: Number(item.unitPrice || 0),
+            amount: (item.quantity || 1) * Number(item.unitPrice || 0),
             invoiceId: createdInvoice.id,
             visitId: item.visitId || null,
             serviceId: item.serviceId || null,
@@ -194,7 +195,7 @@ export async function POST(request) {
       });
     });
 
-    return NextResponse.json(invoice, { status: 201 });
+    return NextResponse.json(serializeApiValue(invoice), { status: 201 });
   } catch (error) {
     console.error('Error creating invoice:', error);
     return NextResponse.json({ error: 'Failed to create invoice' }, { status: 500 });

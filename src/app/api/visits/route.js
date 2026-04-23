@@ -5,6 +5,8 @@ import prisma from '@/lib/prisma';
 import { VisitSchema } from '@/lib/validations';
 import { ApiResponse } from '@/lib/api-response';
 import { normalizeVisitPayload } from '@/lib/scheduling';
+import { serializeApiValue } from '@/lib/serialization';
+import { parsePaginationParams, requireClinicalRole } from '@/lib/api-safety';
 import {
   buildRecurringVisitPayloads,
   collectVisitConflicts,
@@ -19,7 +21,16 @@ export async function GET(request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const forbiddenResponse = requireClinicalRole(session);
+    if (forbiddenResponse) {
+      return forbiddenResponse;
+    }
+
     const { searchParams } = new URL(request.url);
+    const { limit, skip } = parsePaginationParams(searchParams, {
+      defaultLimit: 500,
+      maxLimit: 1000,
+    });
     const startDate = searchParams.get('start') || searchParams.get('startDate');
     const endDate = searchParams.get('end') || searchParams.get('endDate');
     const staffId = searchParams.get('staffId');
@@ -106,9 +117,11 @@ export async function GET(request) {
         },
       },
       orderBy: { startTime: 'asc' },
+      take: limit,
+      skip,
     });
 
-    return NextResponse.json(visits);
+    return NextResponse.json(serializeApiValue(visits));
   } catch (error) {
     console.error('Error fetching visits:', error);
     return NextResponse.json({ error: 'Failed to fetch visits' }, { status: 500 });
@@ -121,6 +134,11 @@ export async function POST(request) {
 
     if (!session || !session.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const forbiddenResponse = requireClinicalRole(session);
+    if (forbiddenResponse) {
+      return forbiddenResponse;
     }
 
     const rawBody = await request.json();
@@ -340,13 +358,13 @@ export async function POST(request) {
       }
     }
 
-    return NextResponse.json({
+    return NextResponse.json(serializeApiValue({
       ...visit,
       conflicts,
       recurringOccurrences: occurrences,
       skippedDates,
       warnings: businessValidation.warnings,
-    }, { status: 201 });
+    }), { status: 201 });
   } catch (error) {
     console.error('Error creating visit:', error);
     return NextResponse.json({ error: 'Failed to create visit' }, { status: 500 });

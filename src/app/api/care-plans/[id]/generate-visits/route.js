@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import { requireClinicalRole } from '@/lib/api-safety';
 
 // Frequencies that should NOT be auto-generated (require manual creation)
 const NON_AUTO_GENERATED_FREQUENCIES = ['AS_NEEDED', 'CUSTOM'];
@@ -15,6 +16,11 @@ export async function POST(request, { params }) {
 
     if (!session || !session.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const forbiddenResponse = requireClinicalRole(session);
+    if (forbiddenResponse) {
+      return forbiddenResponse;
     }
 
     const { id } = params;

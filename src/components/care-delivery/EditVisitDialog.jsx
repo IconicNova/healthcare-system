@@ -97,6 +97,16 @@ function ElapsedTimer({ startTime }) {
   );
 }
 
+async function readErrorMessage(res, fallback) {
+  try {
+    const data = await res.json();
+    return data?.error || data?.message || fallback;
+  } catch (error) {
+    console.error('Failed to parse visit response:', error);
+    return fallback;
+  }
+}
+
 const VISIT_MODAL_TABS = ['info', 'tasks', 'forms', 'notes', 'goals', 'activities', 'attachments'];
 
 export default function EditVisitDialog({
@@ -194,7 +204,9 @@ export default function EditVisitDialog({
         forms: (formsData.forms || []).length,
         attachments: (attachData.attachments || []).length,
       });
-    } catch { /* fail silently */ }
+    } catch {
+      setError('Unable to refresh visit details right now.');
+    }
   };
 
   const fetchGoals = async (v) => {
@@ -204,8 +216,14 @@ export default function EditVisitDialog({
       if (res.ok) {
         const data = await res.json();
         setGoalsData(data.services || []);
+      } else {
+        setGoalsData([]);
+        setError('Unable to load care plan goals right now.');
       }
-    } catch { setGoalsData([]); }
+    } catch {
+      setGoalsData([]);
+      setError('Unable to load care plan goals right now.');
+    }
   };
 
   const fetchActivities = async (visitId) => {
@@ -214,8 +232,14 @@ export default function EditVisitDialog({
       if (res.ok) {
         const data = await res.json();
         setActivities(data.activities || []);
+      } else {
+        setActivities([]);
+        setError('Unable to load visit activity right now.');
       }
-    } catch { setActivities([]); }
+    } catch {
+      setActivities([]);
+      setError('Unable to load visit activity right now.');
+    }
   };
 
   // UX-1: Track dirty state
@@ -234,18 +258,15 @@ export default function EditVisitDialog({
       // LOGIC-4: Title validation
       if (formData.title && formData.title.length > 200) {
         setError('Title must be under 200 characters');
-        setSaving(false);
         return;
       }
       // LOGIC-3: Description/Notes length limits
       if (formData.description && formData.description.length > 2000) {
         setError('Description must be under 2000 characters');
-        setSaving(false);
         return;
       }
       if (formData.notes && formData.notes.length > 5000) {
         setError('Internal notes must be under 5000 characters');
-        setSaving(false);
         return;
       }
 
@@ -255,7 +276,6 @@ export default function EditVisitDialog({
         const now = new Date();
         if (actualStartDate > now) {
           setError('Actual start time cannot be in the future');
-          setSaving(false);
           return;
         }
       }
@@ -264,12 +284,10 @@ export default function EditVisitDialog({
         const now = new Date();
         if (actualEndDate > now) {
           setError('Actual end time cannot be in the future');
-          setSaving(false);
           return;
         }
         if (formData.actualStart && new Date(formData.actualEnd) <= new Date(formData.actualStart)) {
           setError('End time must be after start time');
-          setSaving(false);
           return;
         }
       }
@@ -290,9 +308,7 @@ export default function EditVisitDialog({
       });
 
       if (!res.ok) {
-        const data = await res.json();
-        setError(data.error || 'Failed to save changes');
-        setSaving(false);
+        setError(await readErrorMessage(res, 'Failed to save changes'));
         return;
       }
 
@@ -300,7 +316,7 @@ export default function EditVisitDialog({
       setInitialFormData({ ...formData });
       onSave?.(updatedVisit);
     } catch {
-      setError('An unexpected error occurred');
+      setError('An unexpected error occurred while saving changes');
     } finally {
       setSaving(false);
     }
@@ -366,20 +382,25 @@ export default function EditVisitDialog({
           actualStart: now.toISOString(),
         };
         try {
+          setError('');
           const res = await fetch(`/api/visits/${visit.id}`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(body),
           });
-          if (res.ok) {
-            const updated = await res.json();
-            setFormData(prev => ({ ...prev, status: 'IN_PROGRESS', actualStart: localNow }));
-            setInitialFormData(prev => ({ ...prev, status: 'IN_PROGRESS', actualStart: localNow }));
-            onSave?.(updated);
-            fetchTabCounts(visit.id);
-            fetchActivities(visit.id);
+          if (!res.ok) {
+            setError(await readErrorMessage(res, 'Failed to start visit'));
+            return;
           }
-        } catch {}
+          const updated = await res.json();
+          setFormData(prev => ({ ...prev, status: 'IN_PROGRESS', actualStart: localNow }));
+          setInitialFormData(prev => ({ ...prev, status: 'IN_PROGRESS', actualStart: localNow }));
+          onSave?.(updated);
+          fetchTabCounts(visit.id);
+          fetchActivities(visit.id);
+        } catch {
+          setError('Failed to start visit');
+        }
       },
       onCancel: () => setConfirmDialog(null),
     });
@@ -401,20 +422,25 @@ export default function EditVisitDialog({
           actualEnd: now.toISOString(),
         };
         try {
+          setError('');
           const res = await fetch(`/api/visits/${visit.id}`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(body),
           });
-          if (res.ok) {
-            const updated = await res.json();
-            setFormData(prev => ({ ...prev, status: 'COMPLETED', actualEnd: localNow }));
-            setInitialFormData(prev => ({ ...prev, status: 'COMPLETED', actualEnd: localNow }));
-            onSave?.(updated);
-            fetchTabCounts(visit.id);
-            fetchActivities(visit.id);
+          if (!res.ok) {
+            setError(await readErrorMessage(res, 'Failed to complete visit'));
+            return;
           }
-        } catch {}
+          const updated = await res.json();
+          setFormData(prev => ({ ...prev, status: 'COMPLETED', actualEnd: localNow }));
+          setInitialFormData(prev => ({ ...prev, status: 'COMPLETED', actualEnd: localNow }));
+          onSave?.(updated);
+          fetchTabCounts(visit.id);
+          fetchActivities(visit.id);
+        } catch {
+          setError('Failed to complete visit');
+        }
       },
       onCancel: () => setConfirmDialog(null),
     });

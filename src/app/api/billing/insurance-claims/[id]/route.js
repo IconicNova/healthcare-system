@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import { serializeApiValue } from '@/lib/serialization';
 import { hasRoleAccess } from '@/lib/utils';
 
 // GET - Get single insurance claim
@@ -59,7 +60,7 @@ export async function GET(request, { params }) {
       return NextResponse.json({ error: 'Claim not found' }, { status: 404 });
     }
 
-    return NextResponse.json({ claim });
+    return NextResponse.json(serializeApiValue({ claim }));
   } catch (error) {
     console.error('Error fetching insurance claim:', error);
     return NextResponse.json({ error: 'Failed to fetch claim' }, { status: 500 });
@@ -105,7 +106,7 @@ export async function PATCH(request, { params }) {
       }
     }
 
-    if (body.approvedAmount !== undefined) updateData.approvedAmount = body.approvedAmount;
+    if (body.approvedAmount !== undefined) updateData.approvedAmount = Number(body.approvedAmount);
     if (body.denialReason !== undefined) updateData.denialReason = body.denialReason;
     if (body.diagnosisCode !== undefined) updateData.diagnosisCode = body.diagnosisCode;
     if (body.authorizationNumber !== undefined) updateData.authorizationNumber = body.authorizationNumber;
@@ -124,7 +125,7 @@ export async function PATCH(request, { params }) {
       },
     });
 
-    return NextResponse.json({ claim: updatedClaim });
+    return NextResponse.json(serializeApiValue({ claim: updatedClaim }));
   } catch (error) {
     console.error('Error updating insurance claim:', error);
     return NextResponse.json({ error: 'Failed to update claim' }, { status: 500 });

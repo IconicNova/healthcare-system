@@ -4,6 +4,7 @@ import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { hasRoleAccess } from '@/lib/utils';
 import { parsePaginationParams } from '@/lib/api-safety';
+import { serializeApiValue } from '@/lib/serialization';
 
 // GET - List insurance claims with filtering
 export async function GET(request) {
@@ -100,7 +101,7 @@ export async function GET(request) {
       createdAt: claim.createdAt,
     }));
 
-    return NextResponse.json({
+    return NextResponse.json(serializeApiValue({
       claims: formattedClaims,
       pagination: {
         page,
@@ -108,7 +109,7 @@ export async function GET(request) {
         total,
         totalPages: Math.ceil(total / limit),
       },
-    });
+    }));
   } catch (error) {
     console.error('Error fetching insurance claims:', error);
     return NextResponse.json({ error: 'Failed to fetch insurance claims' }, { status: 500 });
@@ -203,7 +204,7 @@ export async function POST(request) {
         diagnosisCode: diagnosisCode || null,
         authorizationNumber: authorizationNumber || null,
         serviceDate: serviceDate,
-        amount: invoice.amount,
+        amount: Number(invoice.amount),
         status: 'PENDING',
         notes: notes || null,
         organizationId,
@@ -218,7 +219,7 @@ export async function POST(request) {
       },
     });
 
-    return NextResponse.json({ claim }, { status: 201 });
+    return NextResponse.json(serializeApiValue({ claim }), { status: 201 });
   } catch (error) {
     console.error('Error creating insurance claim:', error);
     return NextResponse.json({ error: 'Failed to create insurance claim' }, { status: 500 });

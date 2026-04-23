@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import { requireClinicalRole } from '@/lib/api-safety';
 
 // GET - Fetch medications for a client
 export async function GET(request, { params }) {
@@ -10,6 +11,11 @@ export async function GET(request, { params }) {
 
     if (!session || !session.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const forbiddenResponse = requireClinicalRole(session);
+    if (forbiddenResponse) {
+      return forbiddenResponse;
     }
 
     const { id } = params;
@@ -46,7 +52,7 @@ export async function GET(request, { params }) {
     });
   } catch (error) {
     console.error('Error fetching client medications:', error);
-   return NextResponse.json({ error: 'Failed to fetch client medications' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to fetch client medications' }, { status: 500 });
   }
 }
 
@@ -57,6 +63,11 @@ export async function POST(request, { params }) {
 
     if (!session || !session.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const forbiddenResponse = requireClinicalRole(session);
+    if (forbiddenResponse) {
+      return forbiddenResponse;
     }
 
     const { id: clientId } = params;

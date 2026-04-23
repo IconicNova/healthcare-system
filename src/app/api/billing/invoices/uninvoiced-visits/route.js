@@ -5,6 +5,7 @@ import prisma from '@/lib/prisma';
 
 export const dynamic = 'force-dynamic';
 import { hasRoleAccess } from '@/lib/utils';
+import { serializeApiValue } from '@/lib/serialization';
 
 // GET - Get completed visits that haven't been invoiced yet
 export async function GET(request) {
@@ -91,7 +92,7 @@ export async function GET(request) {
         hours = visit.service.duration / 60; // Convert minutes to hours
       }
 
-      const rate = visit.service?.baseRate || 0;
+      const rate = Number(visit.service?.baseRate || 0);
       const amount = hours * rate;
 
       return {
@@ -129,10 +130,10 @@ export async function GET(request) {
       return acc;
     }, {});
 
-    return NextResponse.json({
+    return NextResponse.json(serializeApiValue({
       visits: formattedVisits,
       groupedByClient: Object.values(groupedByClient),
-    });
+    }));
   } catch (error) {
     console.error('Error fetching uninvoiced visits:', error);
     return NextResponse.json({ error: 'Failed to fetch uninvoiced visits' }, { status: 500 });

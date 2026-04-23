@@ -292,7 +292,6 @@ export async function PATCH(request, { params }) {
           status: true,
           dateOfBirth: true,
           gender: true,
-          ssn: true,
           insuranceType: true,
           insuranceId: true,
           avatar: true,

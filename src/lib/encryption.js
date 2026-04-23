@@ -69,8 +69,7 @@ export function decrypt(encryptedString) {
   const [ivHex, encrypted, authTagHex] = encryptedString.split(':');
 
   if (!ivHex || !encrypted || !authTagHex) {
-    // Malformed encrypted string, return as-is (backward compatibility)
-    return encryptedString;
+    throw new Error('Malformed encrypted SSN');
   }
 
   const iv = Buffer.from(ivHex, 'hex');

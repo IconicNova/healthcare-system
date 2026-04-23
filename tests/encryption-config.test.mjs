@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
-import { getEncryptionConfigurationError } from '../src/lib/encryption.js';
+import { decrypt, encrypt, getEncryptionConfigurationError } from '../src/lib/encryption.js';
 
-function run() {
+async function run() {
   const originalKey = process.env.ENCRYPTION_KEY;
 
   delete process.env.ENCRYPTION_KEY;
@@ -25,6 +25,17 @@ function run() {
     'expected malformed keys to produce a clear configuration error'
   );
 
+  process.env.ENCRYPTION_KEY = '00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff';
+  const encrypted = encrypt('123-45-6789');
+  assert.equal(typeof encrypted, 'string');
+  assert.equal(decrypt(encrypted), '123-45-6789');
+
+  assert.throws(
+    () => decrypt('foo:bar'),
+    /Malformed encrypted SSN|invalid/i,
+    'expected malformed ciphertext to throw instead of falling back to plaintext'
+  );
+
   if (originalKey === undefined) {
     delete process.env.ENCRYPTION_KEY;
   } else {
@@ -32,5 +43,5 @@ function run() {
   }
 }
 
-run();
+await run();
 console.log('encryption configuration tests passed');

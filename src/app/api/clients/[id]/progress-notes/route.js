@@ -3,6 +3,17 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { ProgressNoteSchema } from '@/lib/validations';
+import { pickAllowedFields, requireClinicalRole } from '@/lib/api-safety';
+
+const ALLOWED_NOTE_FIELDS = [
+  'type',
+  'subjective',
+  'objective',
+  'assessment',
+  'plan',
+  'narrative',
+  'visitId',
+];
 
 // GET - Fetch progress notes for a client
 export async function GET(request, { params }) {
@@ -11,6 +22,11 @@ export async function GET(request, { params }) {
 
     if (!session || !session.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const forbiddenResponse = requireClinicalRole(session);
+    if (forbiddenResponse) {
+      return forbiddenResponse;
     }
 
     const { id } = params;
@@ -57,6 +73,11 @@ export async function POST(request, { params }) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const forbiddenResponse = requireClinicalRole(session);
+    if (forbiddenResponse) {
+      return forbiddenResponse;
+    }
+
     const { id } = params;
     const body = await request.json();
 
@@ -72,9 +93,11 @@ export async function POST(request, { params }) {
       return NextResponse.json({ error: 'Client not found' }, { status: 404 });
     }
 
+    const notePayload = pickAllowedFields(body, ALLOWED_NOTE_FIELDS);
+
     // Validate the data
     const validationResult = ProgressNoteSchema.safeParse({
-      ...body,
+      ...notePayload,
       clientId: id,
     });
 

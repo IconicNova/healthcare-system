@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { hasRoleAccess } from '@/lib/utils';
+import { serializeApiValue } from '@/lib/serialization';
 
 // GET - Get timesheet detail with entries
 export async function GET(request, { params }) {
@@ -78,10 +79,10 @@ export async function GET(request, { params }) {
       }
     }
 
-    return NextResponse.json({
+    return NextResponse.json(serializeApiValue({
       ...timesheet,
       staffName: `${timesheet.staff.firstName} ${timesheet.staff.lastName}`,
-    });
+    }));
   } catch (error) {
     console.error('Error fetching timesheet:', error);
     return NextResponse.json({ error: 'Failed to fetch timesheet' }, { status: 500 });
@@ -151,10 +152,10 @@ export async function PATCH(request, { params }) {
       },
     });
 
-    return NextResponse.json({
+    return NextResponse.json(serializeApiValue({
       ...updatedTimesheet,
       staffName: `${updatedTimesheet.staff.firstName} ${updatedTimesheet.staff.lastName}`,
-    });
+    }));
   } catch (error) {
     console.error('Error updating timesheet:', error);
     return NextResponse.json({ error: 'Failed to update timesheet' }, { status: 500 });

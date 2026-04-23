@@ -4,7 +4,9 @@ import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { ApiResponse } from '@/lib/api-response';
 import { normalizeVisitPayload, VALID_VISIT_STATUS_TRANSITIONS } from '@/lib/scheduling';
+import { serializeApiValue } from '@/lib/serialization';
 import { collectVisitConflicts, validateVisitBusinessRules } from '@/lib/visit-business-rules';
+import { requireClinicalRole } from '@/lib/api-safety';
 
 export async function GET(request, { params }) {
   try {
@@ -12,6 +14,11 @@ export async function GET(request, { params }) {
 
     if (!session || !session.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const forbiddenResponse = requireClinicalRole(session);
+    if (forbiddenResponse) {
+      return forbiddenResponse;
     }
 
     const { id } = params;
@@ -104,14 +111,14 @@ export async function GET(request, { params }) {
       return NextResponse.json({ error: 'Visit not found' }, { status: 404 });
     }
 
-    return NextResponse.json(visit);
+    return NextResponse.json(serializeApiValue(visit));
   } catch (error) {
     console.error('Error fetching visit:', error);
     return NextResponse.json({ error: 'Failed to fetch visit' }, { status: 500 });
   }
 }
 
-// BUG-4 FIX: Removed inline VALID_STATUS_TRANSITIONS — uses VALID_VISIT_STATUS_TRANSITIONS from scheduling.js
+// BUG-4 FIX: Removed inline VALID_STATUS_TRANSITIONS â€” uses VALID_VISIT_STATUS_TRANSITIONS from scheduling.js
 
 export async function PATCH(request, { params }) {
   try {
@@ -119,6 +126,11 @@ export async function PATCH(request, { params }) {
 
     if (!session || !session.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const forbiddenResponse = requireClinicalRole(session);
+    if (forbiddenResponse) {
+      return forbiddenResponse;
     }
 
     const { id } = params;
@@ -273,10 +285,10 @@ export async function PATCH(request, { params }) {
       },
     });
 
-    return NextResponse.json({
+    return NextResponse.json(serializeApiValue({
       ...visit,
       warnings: businessValidation.warnings,
-    });
+    }));
   } catch (error) {
     console.error('Error updating visit:', error);
     return NextResponse.json({ error: 'Failed to update visit' }, { status: 500 });
@@ -289,6 +301,11 @@ export async function DELETE(request, { params }) {
 
     if (!session || !session.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const forbiddenResponse = requireClinicalRole(session);
+    if (forbiddenResponse) {
+      return forbiddenResponse;
     }
 
     const { id } = params;

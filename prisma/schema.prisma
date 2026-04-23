@@ -152,6 +152,7 @@ model Organization {
   timesheets    Timesheet[]
   formTemplates FormTemplate[]
   insuranceClaims InsuranceClaim[]
+  auditLogs     AuditLog[]
 
   @@map("organization")
 }
@@ -309,7 +310,7 @@ model Staff {
   phone          String
   role           String
   payType        PayType      @default(HOURLY)
-  hourlyRate     Float?
+  hourlyRate     Decimal?     @db.Decimal(10, 2)
   status         StaffStatus  @default(INACTIVE)
   licenseNumber  String?
   licenseExpiry  DateTime?
@@ -342,7 +343,7 @@ model Service {
   name           String
   description    String?
   duration       Int?
-  baseRate       Float
+  baseRate       Decimal           @db.Decimal(10, 2)
   status         Boolean           @default(true)
   organizationId String
   createdAt      DateTime          @default(now())
@@ -455,7 +456,7 @@ model Visit {
 model Invoice {
   id             String         @id @default(uuid())
   invoiceNumber  String         @unique
-  amount         Float
+  amount         Decimal        @db.Decimal(10, 2)
   status         InvoiceStatus  @default(DRAFT)
   dueDate        DateTime
   paidDate       DateTime?
@@ -493,8 +494,8 @@ model InsuranceClaim {
   diagnosisCode     String?
   authorizationNumber String?
   serviceDate       DateTime
-  amount            Float
-  approvedAmount    Float?
+  amount            Decimal              @db.Decimal(10, 2)
+  approvedAmount    Decimal?             @db.Decimal(10, 2)
   status            InsuranceClaimStatus @default(PENDING)
   submittedDate     DateTime?
   responseDate      DateTime?
@@ -703,8 +704,8 @@ model InvoiceItem {
   id          String @id @default(uuid())
   description String
   quantity    Int    @default(1)
-  unitPrice   Float
-  amount      Float
+  unitPrice   Decimal @db.Decimal(10, 2)
+  amount      Decimal @db.Decimal(10, 2)
   invoiceId   String
   visitId     String?
   serviceId   String?
@@ -720,7 +721,7 @@ model InvoiceItem {
 model Payment {
   id              String   @id @default(uuid())
   invoiceId       String
-  amount          Float
+  amount          Decimal  @db.Decimal(10, 2)
   paymentMethod   String
   paymentDate     DateTime
   referenceNumber String?
@@ -941,15 +942,21 @@ model Notification {
 }
 
 model AuditLog {
-  id        String   @id @default(uuid())
-  action    String
-  entity    String
-  entityId  String?
-  userId    String
-  changes   String?
-  createdAt DateTime @default(now())
+  id             String   @id @default(uuid())
+  action         String
+  entity         String
+  entityId       String?
+  organizationId String
+  userId         String?
+  changes        Json?
+  createdAt      DateTime @default(now())
 
-  user User @relation(fields: [userId], references: [id], onDelete: Restrict)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  user         User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([createdAt])
+  @@index([organizationId, createdAt])
+  @@index([entity, entityId])
 
   @@map("audit_log")
 }

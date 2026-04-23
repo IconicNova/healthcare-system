@@ -5,6 +5,7 @@ import prisma from '@/lib/prisma';
 
 export const dynamic = 'force-dynamic';
 import { hasRoleAccess } from '@/lib/utils';
+import { serializeApiValue } from '@/lib/serialization';
 
 // IRS mileage rate (2024)
 const MILEAGE_RATE = 0.67;
@@ -88,7 +89,7 @@ export async function GET(request) {
       const overtimeHours = Math.max(0, totalHours - 40);
 
       // Get pay rate
-      const payRate = staff.hourlyRate || 0;
+      const payRate = Number(staff.hourlyRate || 0);
 
       // Calculate pay based on pay type
       let regularPay = 0;
@@ -148,7 +149,7 @@ export async function GET(request) {
       { regularHours: 0, overtimeHours: 0, regularPay: 0, overtimePay: 0, mileagePay: 0, grossPay: 0 }
     );
 
-    return NextResponse.json({
+    return NextResponse.json(serializeApiValue({
       paySummary,
       totals: {
         regularHours: parseFloat(totals.regularHours.toFixed(2)),
@@ -162,7 +163,7 @@ export async function GET(request) {
         startDate: start.toISOString(),
         endDate: end.toISOString(),
       },
-    });
+    }));
   } catch (error) {
     console.error('Error fetching pay summary:', error);
     return NextResponse.json({ error: 'Failed to fetch pay summary' }, { status: 500 });

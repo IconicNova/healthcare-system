@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { hasRoleAccess } from '@/lib/utils';
+import { serializeApiValue } from '@/lib/serialization';
 
 // GET - Get invoice detail with items and payments
 export async function GET(request, { params }) {
@@ -72,19 +73,16 @@ export async function GET(request, { params }) {
     }
 
     // Calculate total payments
-    const totalPaid = invoice.payments.reduce(
-      (sum, payment) => sum + payment.amount,
-      0
-    );
-    const balanceDue = invoice.amount - totalPaid;
+    const totalPaid = invoice.payments.reduce((sum, payment) => sum + Number(payment.amount), 0);
+    const balanceDue = Number(invoice.amount) - totalPaid;
 
-    return NextResponse.json({
+    return NextResponse.json(serializeApiValue({
       ...invoice,
       clientName: `${invoice.client.firstName} ${invoice.client.lastName}`,
       userName: invoice.user ? `${invoice.user.firstName} ${invoice.user.lastName}` : null,
       totalPaid,
       balanceDue,
-    });
+    }));
   } catch (error) {
     console.error('Error fetching invoice:', error);
     return NextResponse.json({ error: 'Failed to fetch invoice' }, { status: 500 });
@@ -138,7 +136,7 @@ export async function PATCH(request, { params }) {
     if (invoiceItems) {
       // Update with new line items - need to recalculate total
       const totalAmount = invoiceItems.reduce(
-        (sum, item) => sum + (item.quantity || 1) * (item.unitPrice || 0),
+        (sum, item) => sum + (item.quantity || 1) * Number(item.unitPrice || 0),
         0
       );
 
@@ -164,8 +162,8 @@ export async function PATCH(request, { params }) {
           data: invoiceItems.map((item) => ({
             description: item.description,
             quantity: item.quantity || 1,
-            unitPrice: item.unitPrice || 0,
-            amount: (item.quantity || 1) * (item.unitPrice || 0),
+            unitPrice: Number(item.unitPrice || 0),
+            amount: (item.quantity || 1) * Number(item.unitPrice || 0),
             invoiceId: id,
             visitId: item.visitId || null,
             serviceId: item.serviceId || null,
@@ -206,7 +204,7 @@ export async function PATCH(request, { params }) {
       });
     }
 
-    return NextResponse.json(updatedInvoice);
+    return NextResponse.json(serializeApiValue(updatedInvoice));
   } catch (error) {
     console.error('Error updating invoice:', error);
     return NextResponse.json({ error: 'Failed to update invoice' }, { status: 500 });
@@ -248,10 +246,10 @@ export async function DELETE(request, { params }) {
       data: { status: 'CANCELLED' },
     });
 
-    return NextResponse.json({
+    return NextResponse.json(serializeApiValue({
       message: 'Invoice cancelled successfully',
       invoice: updatedInvoice,
-    });
+    }));
   } catch (error) {
     console.error('Error cancelling invoice:', error);
     return NextResponse.json({ error: 'Failed to cancel invoice' }, { status: 500 });

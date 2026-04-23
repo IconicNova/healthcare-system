@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { hasRoleAccess } from '@/lib/utils';
+import { serializeApiValue } from '@/lib/serialization';
 
 // POST - Batch generate invoices from uninvoiced visits
 export async function POST(request) {
@@ -137,7 +138,7 @@ export async function POST(request) {
             hours = visit.service.duration / 60;
           }
 
-          const rate = visit.service?.baseRate || 0;
+          const rate = Number(visit.service?.baseRate || 0);
           const amount = hours * rate;
 
           return {
@@ -152,7 +153,7 @@ export async function POST(request) {
           };
         });
 
-        const totalAmount = lineItems.reduce((sum, item) => sum + item.amount, 0);
+        const totalAmount = lineItems.reduce((sum, item) => sum + Number(item.amount), 0);
 
         // Create invoice
         const invoice = await tx.invoice.create({
@@ -196,10 +197,10 @@ export async function POST(request) {
       return invoices;
     });
 
-    return NextResponse.json({
+    return NextResponse.json(serializeApiValue({
       message: `Successfully generated ${generatedInvoices.length} invoices`,
       invoices: generatedInvoices,
-    });
+    }));
   } catch (error) {
     console.error('Error generating batch invoices:', error);
     return NextResponse.json({ error: 'Failed to generate batch invoices' }, { status: 500 });

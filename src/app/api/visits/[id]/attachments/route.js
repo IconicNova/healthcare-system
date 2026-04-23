@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import { requireClinicalRole, validateAttachmentFile } from '@/lib/api-safety';
 
 // GET - Fetch attachments for a visit
 export async function GET(request, { params }) {
@@ -9,6 +10,11 @@ export async function GET(request, { params }) {
     const session = await getServerSession(authOptions);
     if (!session?.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const forbiddenResponse = requireClinicalRole(session);
+    if (forbiddenResponse) {
+      return forbiddenResponse;
     }
 
     const { id } = params;
@@ -41,6 +47,11 @@ export async function POST(request, { params }) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const forbiddenResponse = requireClinicalRole(session);
+    if (forbiddenResponse) {
+      return forbiddenResponse;
+    }
+
     const { id } = params;
 
     const visit = await prisma.visit.findFirst({
@@ -58,10 +69,18 @@ export async function POST(request, { params }) {
       return NextResponse.json({ error: 'No files provided' }, { status: 400 });
     }
 
+    if (files.length > 5) {
+      return NextResponse.json({ error: 'You can upload up to 5 files at a time' }, { status: 400 });
+    }
+
     const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
     const created = [];
 
     for (const file of files) {
+      if (!file || typeof file.arrayBuffer !== 'function') {
+        return NextResponse.json({ error: 'Invalid file upload' }, { status: 400 });
+      }
+
       if (file.size > MAX_FILE_SIZE) {
         return NextResponse.json(
           { error: `File "${file.name}" exceeds 10MB limit` },
@@ -70,6 +89,11 @@ export async function POST(request, { params }) {
       }
 
       const buffer = Buffer.from(await file.arrayBuffer());
+      const validation = validateAttachmentFile(file, buffer);
+      if (!validation.ok) {
+        return NextResponse.json({ error: validation.error }, { status: 400 });
+      }
+
       const base64 = buffer.toString('base64');
       const dataUrl = `data:${file.type};base64,${base64}`;
 

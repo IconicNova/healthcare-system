@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { startOfMonth, endOfMonth, eachDayOfInterval, format, parseISO } from 'date-fns';
+import { serializeApiValue } from '@/lib/serialization';
 
 export async function GET(request) {
   const session = await getServerSession(authOptions);
@@ -53,7 +54,7 @@ export async function GET(request) {
     invoices.forEach(invoice => {
       const invoiceDate = format(new Date(invoice.createdAt), 'yyyy-MM-dd');
       if (dailyRevenue[invoiceDate] !== undefined) {
-        dailyRevenue[invoiceDate] += invoice.amount;
+        dailyRevenue[invoiceDate] += Number(invoice.amount);
       }
     });
 
@@ -66,7 +67,7 @@ export async function GET(request) {
     // Calculate total revenue
     const totalRevenue = invoices
       .filter(inv => inv.status !== 'CANCELLED')
-      .reduce((sum, inv) => sum + inv.amount, 0);
+      .reduce((sum, inv) => sum + Number(inv.amount), 0);
 
     // Calculate total expenses from payroll (timesheets)
     const timesheets = await prisma.timesheet.findMany({
@@ -87,13 +88,13 @@ export async function GET(request) {
     const staffRates = {};
     timesheets.forEach(ts => {
       if (ts.staff && !staffRates[ts.staffId]) {
-        staffRates[ts.staffId] = ts.staff.hourlyRate || 0;
+        staffRates[ts.staffId] = Number(ts.staff.hourlyRate || 0);
       }
     });
 
     const totalExpenses = timesheets.reduce((sum, ts) => {
       const rate = staffRates[ts.staffId] || 0;
-      return sum + (ts.totalHours * rate);
+      return sum + (Number(ts.totalHours) * rate);
     }, 0);
 
     const netProfit = totalRevenue - totalExpenses;
@@ -119,7 +120,7 @@ export async function GET(request) {
               serviceBreakdown[item.service.name].hours += duration;
             }
           }
-          serviceBreakdown[item.service.name].revenue += item.amount;
+          serviceBreakdown[item.service.name].revenue += Number(item.amount);
         }
       });
     });
@@ -147,7 +148,7 @@ export async function GET(request) {
       .forEach(invoice => {
         const dueDate = new Date(invoice.dueDate);
         const daysOverdue = Math.floor((now - dueDate) / (1000 * 60 * 60 * 24));
-        const outstanding = invoice.amount - invoice.payments.reduce((sum, p) => sum + p.amount, 0);
+        const outstanding = Number(invoice.amount) - invoice.payments.reduce((sum, p) => sum + Number(p.amount), 0);
 
         if (daysOverdue < 0) {
           agingBuckets.current.count++;
@@ -175,7 +176,7 @@ export async function GET(request) {
       { bucket: '90+ days', count: agingBuckets['90+'].count, total: agingBuckets['90+'].total },
     ];
 
-    return NextResponse.json({
+    return NextResponse.json(serializeApiValue({
       revenueData,
       summary: {
         totalRevenue: parseFloat(totalRevenue.toFixed(2)),
@@ -186,7 +187,7 @@ export async function GET(request) {
       agingData,
       dateFrom,
       dateTo,
-    });
+    }));
   } catch (error) {
     console.error('Error fetching financial report:', error);
     return NextResponse.json({ error: 'Failed to fetch financial report' }, { status: 500 });
