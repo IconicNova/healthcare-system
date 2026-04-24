@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Input from '@/components/ui/Input';
 import Select from '@/components/ui/Select';
 import Button from '@/components/ui/Button';
+import { getCarePlanStatusOptions, normalizeCarePlanStatus } from '@/lib/care-plan-status';
 
 export default function CarePlanForm({ isOpen, onClose, onSubmit, clients = [], staff = [], services = [], carePlan = null, loading = false }) {
   const [formData, setFormData] = useState({
@@ -11,7 +12,7 @@ export default function CarePlanForm({ isOpen, onClose, onSubmit, clients = [], 
     description: '',
     startDate: new Date().toISOString().slice(0, 16),
     endDate: '',
-    status: true,
+    status: 'ACTIVE',
     clientId: '',
     staffId: '',
     serviceIds: [],
@@ -33,7 +34,7 @@ export default function CarePlanForm({ isOpen, onClose, onSubmit, clients = [], 
         description: carePlan.description || '',
         startDate: carePlan.startDate ? new Date(carePlan.startDate).toISOString().slice(0, 16) : new Date().toISOString().slice(0, 16),
         endDate: carePlan.endDate ? new Date(carePlan.endDate).toISOString().slice(0, 16) : '',
-        status: carePlan.status ?? true,
+        status: normalizeCarePlanStatus(carePlan.status),
         clientId: carePlan.clientId || '',
         staffId: carePlan.staffId || '',
         serviceIds: carePlan.services?.map(s => s.serviceId) || [],
@@ -50,7 +51,7 @@ export default function CarePlanForm({ isOpen, onClose, onSubmit, clients = [], 
       description: '',
       startDate: new Date().toISOString().slice(0, 16),
       endDate: '',
-      status: true,
+      status: 'ACTIVE',
       clientId: '',
       staffId: '',
       serviceIds: [],
@@ -202,6 +203,7 @@ export default function CarePlanForm({ isOpen, onClose, onSubmit, clients = [], 
       label: `${s.name} (${s.duration ? s.duration + ' min' : ''}) - $${s.baseRate}`,
     })),
   ];
+  const statusOptions = getCarePlanStatusOptions();
 
   if (!isOpen) return null;
 
@@ -246,6 +248,13 @@ export default function CarePlanForm({ isOpen, onClose, onSubmit, clients = [], 
           options={staffOptions}
         />
       </div>
+
+      <Select
+        label="Status"
+        value={formData.status}
+        onChange={(e) => handleInputChange('status', e.target.value)}
+        options={statusOptions}
+      />
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
         <Input

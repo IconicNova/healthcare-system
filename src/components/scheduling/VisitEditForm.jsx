@@ -5,6 +5,7 @@ import Input from '@/components/ui/Input';
 import Select from '@/components/ui/Select';
 import Button from '@/components/ui/Button';
 import Modal from '@/components/ui/Modal';
+import { isActiveCarePlanStatus } from '@/lib/care-plan-status';
 
 export default function VisitEditForm({ isOpen, onClose, onSubmit, visit, clients = [], staff = [], services = [], branches = [], carePlans = [], loading = false }) {
   const [formData, setFormData] = useState({
@@ -43,7 +44,23 @@ export default function VisitEditForm({ isOpen, onClose, onSubmit, visit, client
   }, [isOpen, visit]);
 
   const handleInputChange = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData(prev => {
+      const next = { ...prev, [field]: value };
+      if (field === 'clientId') {
+        next.branchId = '';
+        next.carePlanId = '';
+      }
+      if (field === 'carePlanId' && value) {
+        const nextCarePlan = carePlans.find((carePlan) => carePlan.id === value);
+        if (nextCarePlan?.branchId) {
+          next.branchId = nextCarePlan.branchId;
+        }
+      }
+      if (field === 'carePlanId' && !value) {
+        next.branchId = '';
+      }
+      return next;
+    });
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: null }));
     }
@@ -54,9 +71,6 @@ export default function VisitEditForm({ isOpen, onClose, onSubmit, visit, client
 
     if (!formData.clientId) {
       newErrors.clientId = 'Client is required';
-    }
-    if (!formData.serviceId) {
-      newErrors.serviceId = 'Service is required';
     }
     if (!formData.date) {
       newErrors.date = 'Date is required';
@@ -89,9 +103,9 @@ export default function VisitEditForm({ isOpen, onClose, onSubmit, visit, client
       await onSubmit({
         clientId: formData.clientId,
         staffId: formData.staffId || null,
-        serviceId: formData.serviceId,
+        serviceId: formData.serviceId || null,
         carePlanId: formData.carePlanId || null,
-        branchId: formData.branchId,
+        branchId: formData.branchId || null,
         startTime: startTime.toISOString(),
         endTime: endTime.toISOString(),
         status: formData.status,
@@ -160,7 +174,7 @@ export default function VisitEditForm({ isOpen, onClose, onSubmit, visit, client
   ];
 
   const serviceOptions = [
-    { value: '', label: 'Select Service' },
+    { value: '', label: 'Select Service (Optional)' },
     ...services.map(s => ({
       value: s.id,
       label: `${s.name} (${s.duration ? s.duration + ' min' : ''})`,
@@ -170,7 +184,7 @@ export default function VisitEditForm({ isOpen, onClose, onSubmit, visit, client
   const carePlanOptions = [
     { value: '', label: 'No Care Plan' },
     ...carePlans
-      .filter(cp => cp.clientId === formData.clientId && cp.status !== false)
+      .filter(cp => cp.clientId === formData.clientId && isActiveCarePlanStatus(cp.status))
       .map(cp => ({
         value: cp.id,
         label: cp.name,
@@ -191,7 +205,7 @@ export default function VisitEditForm({ isOpen, onClose, onSubmit, visit, client
   };
 
   const branchOptions = [
-    { value: '', label: 'Select Branch' },
+    { value: '', label: 'Auto-resolved if omitted' },
     ...branches.map(b => ({ value: b.id, label: b.name })),
   ];
 
@@ -222,7 +236,7 @@ export default function VisitEditForm({ isOpen, onClose, onSubmit, visit, client
           )}
 
           <Select
-            label="Service"
+            label="Service (Optional)"
             value={formData.serviceId}
             onChange={(e) => handleInputChange('serviceId', e.target.value)}
             options={serviceOptions}
@@ -237,7 +251,7 @@ export default function VisitEditForm({ isOpen, onClose, onSubmit, visit, client
           />
 
           <Select
-            label="Branch"
+            label="Branch (Optional)"
             value={formData.branchId}
             onChange={(e) => handleInputChange('branchId', e.target.value)}
             options={branchOptions}

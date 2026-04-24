@@ -3,6 +3,8 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { hasRoleAccess } from '@/lib/utils';
+import { logAuditEvent } from '@/lib/audit-log';
+import { rateLimit } from '@/lib/rate-limit';
 
 // GET - Get invoice detail with items and payments
 export async function GET(request, { params }) {
@@ -106,11 +108,29 @@ export async function PATCH(request, { params }) {
 
     const { id } = params;
     const organizationId = session.user.organizationId;
+    const rateLimitResult = await rateLimit(`billing:invoices:update:${session.user.id}`, {
+      maxRequests: 30,
+      windowMs: 60 * 1000,
+    });
+    if (!rateLimitResult.success) {
+      return NextResponse.json(
+        { error: 'Too many invoice changes. Please try again shortly.' },
+        {
+          status: 429,
+          headers: { 'Retry-After': String(Math.ceil(rateLimitResult.retryAfterMs / 1000)) },
+        }
+      );
+    }
+
     const body = await request.json();
 
     // Get existing invoice
     const existingInvoice = await prisma.invoice.findUnique({
       where: { id },
+      include: {
+        invoiceItems: true,
+        payments: true,
+      },
     });
 
     if (!existingInvoice) {
@@ -206,6 +226,15 @@ export async function PATCH(request, { params }) {
       });
     }
 
+    await logAuditEvent({
+      action: 'UPDATE',
+      entity: 'Invoice',
+      entityId: id,
+      userId: session.user.id,
+      before: existingInvoice,
+      after: updatedInvoice,
+    });
+
     return NextResponse.json(updatedInvoice);
   } catch (error) {
     console.error('Error updating invoice:', error);
@@ -228,6 +257,19 @@ export async function DELETE(request, { params }) {
 
     const { id } = params;
     const organizationId = session.user.organizationId;
+    const rateLimitResult = await rateLimit(`billing:invoices:delete:${session.user.id}`, {
+      maxRequests: 20,
+      windowMs: 60 * 1000,
+    });
+    if (!rateLimitResult.success) {
+      return NextResponse.json(
+        { error: 'Too many invoice changes. Please try again shortly.' },
+        {
+          status: 429,
+          headers: { 'Retry-After': String(Math.ceil(rateLimitResult.retryAfterMs / 1000)) },
+        }
+      );
+    }
 
     const existingInvoice = await prisma.invoice.findUnique({
       where: { id },
@@ -246,6 +288,16 @@ export async function DELETE(request, { params }) {
     const updatedInvoice = await prisma.invoice.update({
       where: { id },
       data: { status: 'CANCELLED' },
+    });
+
+    await logAuditEvent({
+      action: 'DELETE',
+      entity: 'Invoice',
+      entityId: id,
+      userId: session.user.id,
+      before: existingInvoice,
+      after: updatedInvoice,
+      changes: { status: { before: existingInvoice.status, after: 'CANCELLED' } },
     });
 
     return NextResponse.json({

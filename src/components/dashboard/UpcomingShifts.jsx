@@ -4,11 +4,17 @@ import { useEffect, useState } from 'react';
 import StatusBadge from '@/components/ui/StatusBadge';
 import { MapPin, User } from 'lucide-react';
 
-export default function UpcomingShifts() {
-  const [loading, setLoading] = useState(true);
-  const [shifts, setShifts] = useState([]);
+export default function UpcomingShifts({ shifts: initialShifts = null }) {
+  const [loading, setLoading] = useState(!initialShifts);
+  const [shifts, setShifts] = useState(initialShifts || []);
 
   useEffect(() => {
+    if (initialShifts) {
+      setShifts(initialShifts);
+      setLoading(false);
+      return;
+    }
+
     async function fetchShifts() {
       try {
         const response = await fetch('/api/dashboard/upcoming-shifts');
@@ -24,7 +30,7 @@ export default function UpcomingShifts() {
     }
 
     fetchShifts();
-  }, []);
+  }, [initialShifts]);
 
   const getStatusColor = (status) => {
     switch (status) {

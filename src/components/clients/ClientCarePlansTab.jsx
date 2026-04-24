@@ -8,6 +8,7 @@ import StatusBadge from '@/components/ui/StatusBadge';
 import Input from '@/components/ui/Input';
 import { useToast } from '@/components/ui/useToast';
 import { Calendar, ChevronRight, Plus } from 'lucide-react';
+import { getCarePlanStatusMeta, isActiveCarePlanStatus } from '@/lib/care-plan-status';
 
 export default function ClientCarePlansTab({ clientId }) {
   const router = useRouter();
@@ -92,13 +93,13 @@ export default function ClientCarePlansTab({ clientId }) {
   };
 
   const getStatusBadge = (carePlan) => {
-    if (!carePlan.status) return { label: 'Inactive', variant: 'default' };
+    const statusMeta = getCarePlanStatusMeta(carePlan.status);
 
     const now = new Date();
-    if (carePlan.endDate && new Date(carePlan.endDate) < now) {
+    if (carePlan.endDate && new Date(carePlan.endDate) < now && isActiveCarePlanStatus(carePlan.status)) {
       return { label: 'Expired', variant: 'error' };
     }
-    return { label: 'Active', variant: 'success' };
+    return statusMeta;
   };
 
   if (loading) {

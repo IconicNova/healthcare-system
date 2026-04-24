@@ -5,6 +5,7 @@ import { X } from 'lucide-react';
 import Input from '@/components/ui/Input';
 import Select from '@/components/ui/Select';
 import Button from '@/components/ui/Button';
+import { isActiveCarePlanStatus } from '@/lib/care-plan-status';
 
 export default function VisitForm({ isOpen, onClose, onSubmit, clients = [], staff = [], services = [], branches = [], carePlans = [], loading = false }) {
   const [formData, setFormData] = useState({
@@ -66,6 +67,7 @@ export default function VisitForm({ isOpen, onClose, onSubmit, clients = [], sta
         updated.carePlanId = '';
         updated.staffId = '';
         updated.serviceId = '';
+        updated.branchId = '';
         updated.recurrence = { type: 'NONE' };
         updated.notes = '';
       }
@@ -91,6 +93,9 @@ export default function VisitForm({ isOpen, onClose, onSubmit, clients = [], sta
                 updated.recurrence = { type: frequencyToRecurrence(frequency) };
               }
             }
+            if (cp.branchId) {
+              updated.branchId = cp.branchId;
+            }
             // Copy care plan description to notes if notes is empty
             if (cp.description && !prev.notes) {
               updated.notes = cp.description;
@@ -99,6 +104,7 @@ export default function VisitForm({ isOpen, onClose, onSubmit, clients = [], sta
         } else {
           // Reset when care plan is cleared
           updated.serviceId = '';
+          updated.branchId = '';
           updated.recurrence = { type: 'NONE' };
         }
       }
@@ -129,12 +135,6 @@ export default function VisitForm({ isOpen, onClose, onSubmit, clients = [], sta
 
     if (!formData.clientId) {
       newErrors.clientId = 'Client is required';
-    }
-    if (!formData.serviceId) {
-      newErrors.serviceId = 'Service is required';
-    }
-    if (!formData.branchId) {
-      newErrors.branchId = 'Branch is required';
     }
     if (!formData.date) {
       newErrors.date = 'Date is required';
@@ -167,9 +167,9 @@ export default function VisitForm({ isOpen, onClose, onSubmit, clients = [], sta
       await onSubmit({
         clientId: formData.clientId,
         staffId: formData.staffId || null,
-        serviceId: formData.serviceId,
+        serviceId: formData.serviceId || null,
         carePlanId: formData.carePlanId || null,
-        branchId: formData.branchId,
+        branchId: formData.branchId || null,
         startTime: startTime.toISOString(),
         endTime: endTime.toISOString(),
         status: formData.status,
@@ -237,7 +237,7 @@ export default function VisitForm({ isOpen, onClose, onSubmit, clients = [], sta
     : services;
 
   const serviceOptions = [
-    { value: '', label: 'Select Service' },
+    { value: '', label: 'Select Service (Optional)' },
     ...filteredServices.map(s => ({
       value: s.id,
       label: `${s.name} (${s.duration ? s.duration + ' min' : ''})`,
@@ -245,7 +245,7 @@ export default function VisitForm({ isOpen, onClose, onSubmit, clients = [], sta
   ];
 
   const branchOptions = [
-    { value: '', label: 'Select Branch' },
+    { value: '', label: 'Auto-resolved if omitted' },
     ...branches.map(b => ({ value: b.id, label: b.name })),
   ];
 
@@ -253,9 +253,9 @@ export default function VisitForm({ isOpen, onClose, onSubmit, clients = [], sta
     // If client is selected, show only care plans for that client
     // If no client is selected, show all active care plans
     if (formData.clientId) {
-      return cp.clientId === formData.clientId && (cp.status === true || cp.status === undefined);
+      return cp.clientId === formData.clientId && isActiveCarePlanStatus(cp.status);
     }
-    return cp.status === true || cp.status === undefined;
+    return isActiveCarePlanStatus(cp.status);
   });
 
   const carePlanOptions = [
@@ -340,19 +340,17 @@ export default function VisitForm({ isOpen, onClose, onSubmit, clients = [], sta
               )}
 
               <Select
-                label="Service"
+                label="Service (Optional)"
                 value={formData.serviceId}
                 onChange={(e) => handleInputChange('serviceId', e.target.value)}
                 options={serviceOptions}
-                error={errors.serviceId}
               />
 
               <Select
-                label="Branch"
+                label="Branch (Optional)"
                 value={formData.branchId}
                 onChange={(e) => handleInputChange('branchId', e.target.value)}
                 options={branchOptions}
-                error={errors.branchId}
               />
 
               <Select

@@ -11,6 +11,7 @@ import {
   getCarePlanStaffWarning,
   getVisitStatusLabel,
 } from '@/lib/scheduling';
+import { isActiveCarePlanStatus } from '@/lib/care-plan-status';
 
 export default function VisitEditDialog({
   isOpen,
@@ -80,6 +81,18 @@ export default function VisitEditDialog({
 
       if (field === 'clientId') {
         nextValue.carePlanId = '';
+        nextValue.branchId = '';
+      }
+
+      if (field === 'carePlanId' && !value) {
+        nextValue.branchId = '';
+      }
+
+      if (field === 'carePlanId' && value) {
+        const nextCarePlan = carePlans.find((carePlan) => carePlan.id === value);
+        if (nextCarePlan?.branchId) {
+          nextValue.branchId = nextCarePlan.branchId;
+        }
       }
 
       if (field === 'status' && value === 'VACANT') {
@@ -100,12 +113,6 @@ export default function VisitEditDialog({
 
     if (!formData.clientId) {
       nextErrors.clientId = 'Client is required';
-    }
-    if (!formData.serviceId) {
-      nextErrors.serviceId = 'Service is required';
-    }
-    if (!formData.branchId) {
-      nextErrors.branchId = 'Branch is required';
     }
     if (!formData.date) {
       nextErrors.date = 'Date is required';
@@ -138,9 +145,9 @@ export default function VisitEditDialog({
       await onSubmit({
         clientId: formData.clientId,
         staffId: formData.staffId || null,
-        serviceId: formData.serviceId,
+        serviceId: formData.serviceId || null,
         carePlanId: formData.carePlanId || null,
-        branchId: formData.branchId,
+        branchId: formData.branchId || null,
         startTime: startTime.toISOString(),
         endTime: endTime.toISOString(),
         status: formData.status,
@@ -172,7 +179,7 @@ export default function VisitEditDialog({
     })),
   ];
   const serviceOptions = [
-    { value: '', label: 'Select Service' },
+    { value: '', label: 'Select Service (Optional)' },
     ...filteredServices.map((service) => ({
       value: service.id,
       label: `${service.name}${service.duration ? ` (${service.duration} min)` : ''}`,
@@ -181,7 +188,7 @@ export default function VisitEditDialog({
   const carePlanOptions = [
     { value: '', label: 'No Care Plan' },
     ...carePlans
-      .filter((carePlan) => carePlan.clientId === formData.clientId && carePlan.status !== false)
+      .filter((carePlan) => carePlan.clientId === formData.clientId && isActiveCarePlanStatus(carePlan.status))
       .map((carePlan) => ({
         value: carePlan.id,
         label: carePlan.name,
@@ -230,7 +237,7 @@ export default function VisitEditDialog({
           />
 
           <Select
-            label="Service"
+            label="Service (Optional)"
             value={formData.serviceId}
             onChange={(event) => handleInputChange('serviceId', event.target.value)}
             options={serviceOptions}
@@ -245,11 +252,10 @@ export default function VisitEditDialog({
           />
 
           <Select
-            label="Branch"
+            label="Branch (Optional)"
             value={formData.branchId}
             onChange={(event) => handleInputChange('branchId', event.target.value)}
             options={branchOptions}
-            error={errors.branchId}
           />
 
           <Select

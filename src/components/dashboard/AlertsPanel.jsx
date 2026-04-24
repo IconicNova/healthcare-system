@@ -3,11 +3,17 @@
 import { useEffect, useState } from 'react';
 import { Bell, Clock, FileText, Calendar, AlertCircle } from 'lucide-react';
 
-export default function AlertsPanel() {
-  const [loading, setLoading] = useState(true);
-  const [alerts, setAlerts] = useState([]);
+export default function AlertsPanel({ alerts: initialAlerts = null }) {
+  const [loading, setLoading] = useState(!initialAlerts);
+  const [alerts, setAlerts] = useState(initialAlerts || []);
 
   useEffect(() => {
+    if (initialAlerts) {
+      setAlerts(initialAlerts);
+      setLoading(false);
+      return;
+    }
+
     async function fetchAlerts() {
       try {
         const response = await fetch('/api/dashboard/alerts');
@@ -23,7 +29,7 @@ export default function AlertsPanel() {
     }
 
     fetchAlerts();
-  }, []);
+  }, [initialAlerts]);
 
   const getIcon = (type) => {
     switch (type) {

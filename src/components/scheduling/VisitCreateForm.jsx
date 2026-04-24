@@ -14,6 +14,7 @@ import {
   getVisitStatusLabel,
   validateRecurrence,
 } from '@/lib/scheduling';
+import { isActiveCarePlanStatus } from '@/lib/care-plan-status';
 
 function mapFrequencyToRecurrence(frequency) {
   const map = {
@@ -79,18 +80,20 @@ export default function VisitCreateForm({
       if (field === 'clientId') {
         nextValue.carePlanId = '';
         nextValue.recurrence = { type: 'NONE' };
+        nextValue.branchId = '';
       }
 
       if (field === 'carePlanId') {
         if (!value) {
           nextValue.recurrence = { type: 'NONE' };
+          nextValue.branchId = '';
         } else {
           const nextCarePlan = carePlans.find((carePlan) => carePlan.id === value);
           const matchingService = nextCarePlan?.services?.find((service) => service.serviceId === currentValue.serviceId);
           const recurrenceSource = matchingService?.frequency || nextCarePlan?.services?.[0]?.frequency;
           nextValue.recurrence = mapFrequencyToRecurrence(recurrenceSource);
 
-          if (nextCarePlan?.branchId && !currentValue.branchId) {
+          if (nextCarePlan?.branchId) {
             nextValue.branchId = nextCarePlan.branchId;
           }
         }
@@ -136,12 +139,6 @@ export default function VisitCreateForm({
     if (!formData.clientId) {
       nextErrors.clientId = 'Client is required';
     }
-    if (!formData.serviceId) {
-      nextErrors.serviceId = 'Service is required';
-    }
-    if (!formData.branchId) {
-      nextErrors.branchId = 'Branch is required';
-    }
     if (!formData.date) {
       nextErrors.date = 'Date is required';
     }
@@ -182,9 +179,9 @@ export default function VisitCreateForm({
       await onSubmit({
         clientId: formData.clientId,
         staffId: formData.staffId || null,
-        serviceId: formData.serviceId,
+        serviceId: formData.serviceId || null,
         carePlanId: formData.carePlanId || null,
-        branchId: formData.branchId,
+        branchId: formData.branchId || null,
         startTime: startTime.toISOString(),
         endTime: endTime.toISOString(),
         status: formData.status,
@@ -227,20 +224,20 @@ export default function VisitCreateForm({
     })),
   ];
   const serviceOptions = [
-    { value: '', label: 'Select Service' },
+    { value: '', label: 'Select Service (Optional)' },
     ...filteredServices.map((service) => ({
       value: service.id,
       label: `${service.name}${service.duration ? ` (${service.duration} min)` : ''}`,
     })),
   ];
   const branchOptions = [
-    { value: '', label: 'Select Branch' },
+    { value: '', label: 'Auto-resolved if omitted' },
     ...branches.map((branch) => ({ value: branch.id, label: branch.name })),
   ];
   const carePlanOptions = [
     { value: '', label: 'No Care Plan' },
     ...carePlans
-      .filter((carePlan) => carePlan.clientId === formData.clientId && carePlan.status !== false)
+      .filter((carePlan) => carePlan.clientId === formData.clientId && isActiveCarePlanStatus(carePlan.status))
       .map((carePlan) => ({
         value: carePlan.id,
         label: carePlan.name,
@@ -293,7 +290,7 @@ export default function VisitCreateForm({
 
           <div>
             <Select
-              label="Service"
+              label="Service (Optional)"
               value={formData.serviceId}
               onChange={(event) => handleInputChange('serviceId', event.target.value)}
               options={serviceOptions}
@@ -302,11 +299,10 @@ export default function VisitCreateForm({
           </div>
 
           <Select
-            label="Branch"
+            label="Branch (Optional)"
             value={formData.branchId}
             onChange={(event) => handleInputChange('branchId', event.target.value)}
             options={branchOptions}
-            error={errors.branchId}
           />
 
           <Select

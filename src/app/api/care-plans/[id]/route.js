@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import { logAuditEvent } from '@/lib/audit-log';
+import { normalizeCarePlanStatus } from '@/lib/care-plan-status';
+import { rateLimit } from '@/lib/rate-limit';
 
 export async function GET(request, { params }) {
   try {
@@ -79,12 +82,32 @@ export async function PATCH(request, { params }) {
     }
 
     const { id } = params;
+
+    const rateLimitResult = await rateLimit(`care-plans:update:${session.user.id}`, {
+      maxRequests: 30,
+      windowMs: 60 * 1000,
+    });
+    if (!rateLimitResult.success) {
+      return NextResponse.json(
+        { error: 'Too many care plan changes. Please try again shortly.' },
+        {
+          status: 429,
+          headers: { 'Retry-After': String(Math.ceil(rateLimitResult.retryAfterMs / 1000)) },
+        }
+      );
+    }
+
     const body = await request.json();
 
     const carePlan = await prisma.carePlan.findFirst({
       where: {
         id,
         organizationId: session.user.organizationId,
+      },
+      include: {
+        services: {
+          include: { service: true },
+        },
       },
     });
 
@@ -99,7 +122,7 @@ export async function PATCH(request, { params }) {
     if (description !== undefined) updateData.description = description;
     if (startDate !== undefined) updateData.startDate = new Date(startDate);
     if (endDate !== undefined) updateData.endDate = endDate ? new Date(endDate) : null;
-    if (status !== undefined) updateData.status = status;
+    if (status !== undefined) updateData.status = normalizeCarePlanStatus(status);
     if (clientId !== undefined) updateData.clientId = clientId;
     if (staffId !== undefined) updateData.staffId = staffId || null;
 
@@ -170,6 +193,15 @@ export async function PATCH(request, { params }) {
       });
     });
 
+    await logAuditEvent({
+      action: 'UPDATE',
+      entity: 'CarePlan',
+      entityId: id,
+      userId: session.user.id,
+      before: carePlan,
+      after: updatedCarePlan,
+    });
+
     return NextResponse.json(updatedCarePlan);
   } catch (error) {
     console.error('Error updating care plan:', error);
@@ -198,11 +230,38 @@ export async function DELETE(request, { params }) {
       return NextResponse.json({ error: 'Care plan not found' }, { status: 404 });
     }
 
-    await prisma.carePlan.delete({
+    const rateLimitResult = await rateLimit(`care-plans:delete:${session.user.id}`, {
+      maxRequests: 20,
+      windowMs: 60 * 1000,
+    });
+    if (!rateLimitResult.success) {
+      return NextResponse.json(
+        { error: 'Too many care plan changes. Please try again shortly.' },
+        {
+          status: 429,
+          headers: { 'Retry-After': String(Math.ceil(rateLimitResult.retryAfterMs / 1000)) },
+        }
+      );
+    }
+
+    const revokedCarePlan = await prisma.carePlan.update({
       where: { id },
+      data: {
+        status: 'REVOKED',
+      },
     });
 
-    return NextResponse.json({ success: true });
+    await logAuditEvent({
+      action: 'DELETE',
+      entity: 'CarePlan',
+      entityId: id,
+      userId: session.user.id,
+      before: carePlan,
+      after: revokedCarePlan,
+      changes: { status: { before: carePlan.status, after: 'REVOKED' } },
+    });
+
+    return NextResponse.json({ success: true, status: 'REVOKED' });
   } catch (error) {
     console.error('Error deleting care plan:', error);
     return NextResponse.json({ error: 'Failed to delete care plan' }, { status: 500 });

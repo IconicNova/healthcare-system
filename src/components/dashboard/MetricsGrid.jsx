@@ -4,8 +4,8 @@ import { useEffect, useState } from 'react';
 import KPICard from '@/components/ui/KPICard';
 import { Users, User, Calendar, DollarSign } from 'lucide-react';
 
-export default function MetricsGrid() {
-  const [loading, setLoading] = useState(true);
+export default function MetricsGrid({ metrics: initialMetrics = null }) {
+  const [loading, setLoading] = useState(!initialMetrics);
   const [metrics, setMetrics] = useState({
     totalClients: { value: '-', change: '0%', changeType: 'neutral' },
     activeStaff: { value: '-', change: '0%', changeType: 'neutral' },
@@ -14,6 +14,12 @@ export default function MetricsGrid() {
   });
 
   useEffect(() => {
+    if (initialMetrics) {
+      setMetrics(initialMetrics);
+      setLoading(false);
+      return;
+    }
+
     async function fetchMetrics() {
       try {
         const response = await fetch('/api/dashboard/stats');
@@ -29,7 +35,7 @@ export default function MetricsGrid() {
     }
 
     fetchMetrics();
-  }, []);
+  }, [initialMetrics]);
 
   const kpiConfig = [
     {

@@ -4,6 +4,9 @@ import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { hasRoleAccess } from '@/lib/utils';
 import { parsePaginationParams } from '@/lib/api-safety';
+import { hasTimesheetOverlap } from '@/lib/timesheet-helpers';
+import { logAuditEvent } from '@/lib/audit-log';
+import { rateLimit } from '@/lib/rate-limit';
 
 // GET - List timesheets with filters
 export async function GET(request) {
@@ -124,6 +127,20 @@ export async function POST(request) {
     const body = await request.json();
     const { staffId, startDate, endDate, notes } = body;
 
+    const rateLimitResult = await rateLimit(`timesheets:create:${session.user.id}`, {
+      maxRequests: 30,
+      windowMs: 60 * 1000,
+    });
+    if (!rateLimitResult.success) {
+      return NextResponse.json(
+        { error: 'Too many timesheet changes. Please try again shortly.' },
+        {
+          status: 429,
+          headers: { 'Retry-After': String(Math.ceil(rateLimitResult.retryAfterMs / 1000)) },
+        }
+      );
+    }
+
     // Validate required fields
     if (!staffId || !startDate || !endDate) {
       return NextResponse.json(
@@ -142,26 +159,35 @@ export async function POST(request) {
 
     const organizationId = session.user.organizationId;
 
-    // Check if timesheet already exists for this staff and week
-    const existing = await prisma.timesheet.findFirst({
-      where: {
-        organizationId,
-        staffId,
-        startDate: new Date(startDate),
-      },
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) {
+      return NextResponse.json(
+        { error: 'Invalid start or end date' },
+        { status: 400 }
+      );
+    }
+
+    const hasOverlap = await hasTimesheetOverlap({
+      prisma,
+      organizationId,
+      staffId,
+      startDate: start,
+      endDate: end,
     });
 
-    if (existing) {
+    if (hasOverlap) {
       return NextResponse.json(
-        { error: 'Timesheet already exists for this period' },
+        { error: 'Timesheet overlaps an existing period' },
         { status: 400 }
       );
     }
 
     const timesheet = await prisma.timesheet.create({
       data: {
-        startDate: new Date(startDate),
-        endDate: new Date(endDate),
+        startDate: start,
+        endDate: end,
         totalHours: 0,
         status: 'DRAFT',
         notes: notes || null,
@@ -178,6 +204,14 @@ export async function POST(request) {
           },
         },
       },
+    });
+
+    await logAuditEvent({
+      action: 'CREATE',
+      entity: 'Timesheet',
+      entityId: timesheet.id,
+      userId: session.user.id,
+      after: timesheet,
     });
 
     return NextResponse.json(timesheet, { status: 201 });

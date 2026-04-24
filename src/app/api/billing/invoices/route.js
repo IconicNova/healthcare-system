@@ -7,6 +7,8 @@ import { hasRoleAccess } from '@/lib/utils';
 import { InvoiceSchema } from '@/lib/validations';
 import { ApiResponse } from '@/lib/api-response';
 import { parsePaginationParams } from '@/lib/api-safety';
+import { logAuditEvent } from '@/lib/audit-log';
+import { rateLimit } from '@/lib/rate-limit';
 
 // GET - List invoices with pagination, search, filter
 export async function GET(request) {
@@ -116,6 +118,20 @@ export async function POST(request) {
 
     const organizationId = session.user.organizationId;
 
+    const rateLimitResult = await rateLimit(`billing:invoices:create:${session.user.id}`, {
+      maxRequests: 30,
+      windowMs: 60 * 1000,
+    });
+    if (!rateLimitResult.success) {
+      return NextResponse.json(
+        { error: 'Too many invoice changes. Please try again shortly.' },
+        {
+          status: 429,
+          headers: { 'Retry-After': String(Math.ceil(rateLimitResult.retryAfterMs / 1000)) },
+        }
+      );
+    }
+
     const body = await request.json();
 
     const validationResult = InvoiceSchema.safeParse(body);
@@ -192,6 +208,14 @@ export async function POST(request) {
           },
         },
       });
+    });
+
+    await logAuditEvent({
+      action: 'CREATE',
+      entity: 'Invoice',
+      entityId: invoice.id,
+      userId: session.user.id,
+      after: invoice,
     });
 
     return NextResponse.json(invoice, { status: 201 });

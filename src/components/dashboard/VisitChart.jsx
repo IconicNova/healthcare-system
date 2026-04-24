@@ -12,11 +12,17 @@ import {
   Area,
 } from 'recharts';
 
-export default function VisitChart() {
-  const [loading, setLoading] = useState(true);
-  const [data, setData] = useState([]);
+export default function VisitChart({ data: initialData = null }) {
+  const [loading, setLoading] = useState(!initialData);
+  const [data, setData] = useState(initialData || []);
 
   useEffect(() => {
+    if (initialData) {
+      setData(initialData);
+      setLoading(false);
+      return;
+    }
+
     async function fetchVisitData() {
       try {
         const response = await fetch('/api/dashboard/visit-chart');
@@ -32,7 +38,7 @@ export default function VisitChart() {
     }
 
     fetchVisitData();
-  }, []);
+  }, [initialData]);
 
   if (loading) {
     return (

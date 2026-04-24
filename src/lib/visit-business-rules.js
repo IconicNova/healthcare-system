@@ -4,6 +4,7 @@ import {
   getRecurrenceTotalVisits,
   validateRecurrence,
 } from '@/lib/scheduling';
+import { isActiveCarePlanStatus } from '@/lib/care-plan-status';
 
 export async function validateVisitBusinessRules({
   organizationId,
@@ -86,7 +87,7 @@ export async function validateVisitBusinessRules({
   }
 
   if (carePlan) {
-    if (!carePlan.status) {
+    if (!isActiveCarePlanStatus(carePlan.status)) {
       errors.carePlanId = ['Inactive care plans cannot be used for scheduling.'];
     }
 

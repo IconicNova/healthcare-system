@@ -4,6 +4,8 @@ import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { hasRoleAccess } from '@/lib/utils';
 import { parsePaginationParams } from '@/lib/api-safety';
+import { logAuditEvent } from '@/lib/audit-log';
+import { rateLimit } from '@/lib/rate-limit';
 
 // GET - List all payments with invoice info
 export async function GET(request) {
@@ -104,6 +106,20 @@ export async function POST(request) {
     const body = await request.json();
     const { invoiceId, amount, paymentMethod, referenceNumber, paymentDate, notes } = body;
 
+    const rateLimitResult = await rateLimit(`billing:payments:create:${session.user.id}`, {
+      maxRequests: 30,
+      windowMs: 60 * 1000,
+    });
+    if (!rateLimitResult.success) {
+      return NextResponse.json(
+        { error: 'Too many payment changes. Please try again shortly.' },
+        {
+          status: 429,
+          headers: { 'Retry-After': String(Math.ceil(rateLimitResult.retryAfterMs / 1000)) },
+        }
+      );
+    }
+
     // Validate required fields
     if (!invoiceId || !amount || !paymentMethod) {
       return NextResponse.json(
@@ -193,6 +209,14 @@ export async function POST(request) {
       }
 
       return newPayment;
+    });
+
+    await logAuditEvent({
+      action: 'CREATE',
+      entity: 'Payment',
+      entityId: payment.id,
+      userId: session.user.id,
+      after: payment,
     });
 
     return NextResponse.json(payment, { status: 201 });

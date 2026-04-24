@@ -4,11 +4,17 @@ import { useEffect, useState } from 'react';
 import StatusBadge from '@/components/ui/StatusBadge';
 import { FileText } from 'lucide-react';
 
-export default function RecentInvoices() {
-  const [loading, setLoading] = useState(true);
-  const [invoices, setInvoices] = useState([]);
+export default function RecentInvoices({ invoices: initialInvoices = null }) {
+  const [loading, setLoading] = useState(!initialInvoices);
+  const [invoices, setInvoices] = useState(initialInvoices || []);
 
   useEffect(() => {
+    if (initialInvoices) {
+      setInvoices(initialInvoices);
+      setLoading(false);
+      return;
+    }
+
     async function fetchInvoices() {
       try {
         const response = await fetch('/api/dashboard/recent-invoices');
@@ -24,7 +30,7 @@ export default function RecentInvoices() {
     }
 
     fetchInvoices();
-  }, []);
+  }, [initialInvoices]);
 
   const getStatusVariant = (status) => {
     switch (status) {

@@ -4,17 +4,23 @@ import { useEffect, useState } from 'react';
 import { MapPin } from 'lucide-react';
 import { format, startOfDay, endOfDay } from 'date-fns';
 
-export default function EVVWidget() {
-  const [loading, setLoading] = useState(true);
-  const [data, setData] = useState({
+export default function EVVWidget({ data: initialData = null }) {
+  const [loading, setLoading] = useState(!initialData);
+  const [data, setData] = useState(initialData || {
     verified: 0,
     unverified: 0,
     rate: 0,
   });
 
   useEffect(() => {
+    if (initialData) {
+      setData(initialData);
+      setLoading(false);
+      return;
+    }
+
     fetchEVVData();
-  }, []);
+  }, [initialData]);
 
   const fetchEVVData = async () => {
     setLoading(true);

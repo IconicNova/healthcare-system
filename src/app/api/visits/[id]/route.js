@@ -4,6 +4,8 @@ import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { ApiResponse } from '@/lib/api-response';
 import { normalizeVisitPayload, VALID_VISIT_STATUS_TRANSITIONS } from '@/lib/scheduling';
+import { logAuditEvent } from '@/lib/audit-log';
+import { rateLimit } from '@/lib/rate-limit';
 import { collectVisitConflicts, validateVisitBusinessRules } from '@/lib/visit-business-rules';
 
 export async function GET(request, { params }) {
@@ -122,6 +124,20 @@ export async function PATCH(request, { params }) {
     }
 
     const { id } = params;
+    const rateLimitResult = await rateLimit(`visits:update:${session.user.id}`, {
+      maxRequests: 60,
+      windowMs: 60 * 1000,
+    });
+    if (!rateLimitResult.success) {
+      return NextResponse.json(
+        { error: 'Too many visit changes. Please try again shortly.' },
+        {
+          status: 429,
+          headers: { 'Retry-After': String(Math.ceil(rateLimitResult.retryAfterMs / 1000)) },
+        }
+      );
+    }
+
     const rawBody = await request.json();
 
     if (rawBody.status === 'VACANT' && rawBody.staffId) {
@@ -178,6 +194,18 @@ export async function PATCH(request, { params }) {
       return ApiResponse.error('Validation failed', 400, businessValidation.errors);
     }
 
+    const resolvedBranchId =
+      effectiveBranchId ||
+      businessValidation.records.carePlan?.branchId ||
+      businessValidation.records.client?.branchId ||
+      null;
+
+    if (!resolvedBranchId) {
+      return ApiResponse.error('Branch is required', 400, {
+        branchId: ['Branch is required for visits when it cannot be inferred from the care plan or client.'],
+      });
+    }
+
     const timesOrAssignmentsChanged =
       body.startTime ||
       body.endTime ||
@@ -219,7 +247,7 @@ export async function PATCH(request, { params }) {
         ...(body.staffId !== undefined && { staffId: body.staffId }),
         ...(body.serviceId !== undefined && { serviceId: body.serviceId }),
         ...(body.carePlanId !== undefined && { carePlanId: body.carePlanId }),
-        ...(body.branchId !== undefined && { branchId: body.branchId }),
+        ...(body.branchId !== undefined || existing.branchId !== resolvedBranchId ? { branchId: resolvedBranchId } : {}),
       },
       include: {
         client: {
@@ -273,6 +301,15 @@ export async function PATCH(request, { params }) {
       },
     });
 
+    await logAuditEvent({
+      action: 'UPDATE',
+      entity: 'Visit',
+      entityId: id,
+      userId: session.user.id,
+      before: existing,
+      after: visit,
+    });
+
     return NextResponse.json({
       ...visit,
       warnings: businessValidation.warnings,
@@ -292,6 +329,19 @@ export async function DELETE(request, { params }) {
     }
 
     const { id } = params;
+    const rateLimitResult = await rateLimit(`visits:delete:${session.user.id}`, {
+      maxRequests: 40,
+      windowMs: 60 * 1000,
+    });
+    if (!rateLimitResult.success) {
+      return NextResponse.json(
+        { error: 'Too many visit changes. Please try again shortly.' },
+        {
+          status: 429,
+          headers: { 'Retry-After': String(Math.ceil(rateLimitResult.retryAfterMs / 1000)) },
+        }
+      );
+    }
 
     const existing = await prisma.visit.findFirst({
       where: {
@@ -315,6 +365,14 @@ export async function DELETE(request, { params }) {
 
     await prisma.visit.delete({
       where: { id },
+    });
+
+    await logAuditEvent({
+      action: 'DELETE',
+      entity: 'Visit',
+      entityId: id,
+      userId: session.user.id,
+      before: existing,
     });
 
     return NextResponse.json({ message: 'Visit deleted successfully' });

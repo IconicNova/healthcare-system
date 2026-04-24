@@ -11,6 +11,7 @@ import StatusBadge from '@/components/ui/StatusBadge';
 import Button from '@/components/ui/Button';
 import Modal from '@/components/ui/Modal';
 import CarePlanForm from '@/components/care-plans/CarePlanForm';
+import { getCarePlanStatusMeta } from '@/lib/care-plan-status';
 
 const COLUMNS = [
   { key: 'name', label: 'Care Plan Name', sortable: true, width: '250px', headerContentWidth: '190px' },
@@ -180,9 +181,8 @@ export default function CarePlansPage() {
     }
 
     if (key === 'status') {
-      const status = plan.status ? 'Active' : 'Inactive';
-      const variant = plan.status ? 'success' : 'default';
-      return <StatusBadge status={status} variant={variant} />;
+      const statusMeta = getCarePlanStatusMeta(plan.status);
+      return <StatusBadge status={statusMeta.label} variant={statusMeta.variant} />;
     }
 
     if (key === 'actions') {

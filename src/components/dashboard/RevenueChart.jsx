@@ -12,11 +12,17 @@ import {
   Legend,
 } from 'recharts';
 
-export default function RevenueChart() {
-  const [loading, setLoading] = useState(true);
-  const [data, setData] = useState([]);
+export default function RevenueChart({ data: initialData = null }) {
+  const [loading, setLoading] = useState(!initialData);
+  const [data, setData] = useState(initialData || []);
 
   useEffect(() => {
+    if (initialData) {
+      setData(initialData);
+      setLoading(false);
+      return;
+    }
+
     async function fetchRevenueData() {
       try {
         const response = await fetch('/api/dashboard/revenue-chart');
@@ -32,7 +38,7 @@ export default function RevenueChart() {
     }
 
     fetchRevenueData();
-  }, []);
+  }, [initialData]);
 
   if (loading) {
     return (

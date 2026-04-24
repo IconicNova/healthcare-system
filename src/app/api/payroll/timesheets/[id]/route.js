@@ -3,6 +3,8 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { hasRoleAccess } from '@/lib/utils';
+import { logAuditEvent } from '@/lib/audit-log';
+import { rateLimit } from '@/lib/rate-limit';
 
 // GET - Get timesheet detail with entries
 export async function GET(request, { params }) {
@@ -106,6 +108,20 @@ export async function PATCH(request, { params }) {
     const body = await request.json();
     const { status, reason } = body;
 
+    const rateLimitResult = await rateLimit(`timesheets:update:${session.user.id}`, {
+      maxRequests: 30,
+      windowMs: 60 * 1000,
+    });
+    if (!rateLimitResult.success) {
+      return NextResponse.json(
+        { error: 'Too many timesheet changes. Please try again shortly.' },
+        {
+          status: 429,
+          headers: { 'Retry-After': String(Math.ceil(rateLimitResult.retryAfterMs / 1000)) },
+        }
+      );
+    }
+
     // Validate status update
     if (!status || !['APPROVED', 'REJECTED'].includes(status)) {
       return NextResponse.json(
@@ -149,6 +165,15 @@ export async function PATCH(request, { params }) {
           },
         },
       },
+    });
+
+    await logAuditEvent({
+      action: 'UPDATE',
+      entity: 'Timesheet',
+      entityId: id,
+      userId: session.user.id,
+      before: existingTimesheet,
+      after: updatedTimesheet,
     });
 
     return NextResponse.json({

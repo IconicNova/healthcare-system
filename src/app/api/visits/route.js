@@ -5,6 +5,8 @@ import prisma from '@/lib/prisma';
 import { VisitSchema } from '@/lib/validations';
 import { ApiResponse } from '@/lib/api-response';
 import { normalizeVisitPayload } from '@/lib/scheduling';
+import { logAuditEvent } from '@/lib/audit-log';
+import { rateLimit } from '@/lib/rate-limit';
 import {
   buildRecurringVisitPayloads,
   collectVisitConflicts,
@@ -124,6 +126,21 @@ export async function POST(request) {
     }
 
     const rawBody = await request.json();
+
+    const rateLimitResult = await rateLimit(`visits:create:${session.user.id}`, {
+      maxRequests: 60,
+      windowMs: 60 * 1000,
+    });
+    if (!rateLimitResult.success) {
+      return NextResponse.json(
+        { error: 'Too many visit changes. Please try again shortly.' },
+        {
+          status: 429,
+          headers: { 'Retry-After': String(Math.ceil(rateLimitResult.retryAfterMs / 1000)) },
+        }
+      );
+    }
+
     if (rawBody.status === 'VACANT' && rawBody.staffId) {
       return ApiResponse.error('Vacant visits cannot have assigned staff', 400, {
         staffId: ['Vacant visits cannot have assigned staff.'],
@@ -152,10 +169,6 @@ export async function POST(request) {
       recurrence,
     } = body;
 
-    if (!serviceId || !branchId) {
-      return ApiResponse.error('Service and Branch are required', 400);
-    }
-
     if (new Date(endTime) <= new Date(startTime)) {
       return ApiResponse.error('End time must be after start time', 400);
     }
@@ -170,6 +183,18 @@ export async function POST(request) {
     });
     if (Object.keys(businessValidation.errors).length > 0) {
       return ApiResponse.error('Validation failed', 400, businessValidation.errors);
+    }
+
+    const resolvedBranchId =
+      branchId ||
+      businessValidation.records.carePlan?.branchId ||
+      businessValidation.records.client?.branchId ||
+      null;
+
+    if (!resolvedBranchId) {
+      return ApiResponse.error('Branch is required', 400, {
+        branchId: ['Branch is required for visits when it cannot be inferred from the care plan or client.'],
+      });
     }
 
     const normalizedStartTime = new Date(startTime);
@@ -190,7 +215,7 @@ export async function POST(request) {
         description: description || null,
         notes: notes || null,
         organizationId: session.user.organizationId,
-        branchId: branchId || null,
+        branchId: resolvedBranchId,
         userId: session.user.id,
       },
     });
@@ -229,7 +254,7 @@ export async function POST(request) {
         description: description || null,
         notes: notes || null,
         organizationId: session.user.organizationId,
-        branchId: branchId || null,
+        branchId: resolvedBranchId,
         userId: session.user.id,
       },
       include: {
@@ -340,13 +365,34 @@ export async function POST(request) {
       }
     }
 
-    return NextResponse.json({
+    const responseBody = {
       ...visit,
       conflicts,
       recurringOccurrences: occurrences,
       skippedDates,
       warnings: businessValidation.warnings,
-    }, { status: 201 });
+    };
+
+    await logAuditEvent({
+      action: 'CREATE',
+      entity: 'Visit',
+      entityId: visit.id,
+      userId: session.user.id,
+      after: {
+        id: visit.id,
+        clientId,
+        staffId: staffId || null,
+        serviceId: serviceId || null,
+        carePlanId: carePlanId || null,
+        branchId: resolvedBranchId,
+        startTime: normalizedStartTime,
+        endTime: normalizedEndTime,
+        status: status || 'SCHEDULED',
+        recurringOccurrences: occurrences.length,
+      },
+    });
+
+    return NextResponse.json(responseBody, { status: 201 });
   } catch (error) {
     console.error('Error creating visit:', error);
     return NextResponse.json({ error: 'Failed to create visit' }, { status: 500 });
