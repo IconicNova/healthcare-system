@@ -1,3 +1,0 @@
-[   20529ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "new-password"): (More info: https://goo.gl/9p2vKq) %o @ https://together-care.vercel.app/staff:0
-[   20529ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "new-password"): (More info: https://goo.gl/9p2vKq) %o @ https://together-care.vercel.app/staff:0
-[  326650ms] [ERROR] Pattern attribute value ^\+?[1]?[-.\s]?\(?([0-9]{3})\)?[-.\s]?([0-9]{3})[-.\s]?([0-9]{4})$ is not a valid regular expression: Uncaught SyntaxError: Invalid regular expression: /^\+?[1]?[-.\s]?\(?([0-9]{3})\)?[-.\s]?([0-9]{3})[-.\s]?([0-9]{4})$/v: Invalid character in character class @ https://together-care.vercel.app/staff:0
