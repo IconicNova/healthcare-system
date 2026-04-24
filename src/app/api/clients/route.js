@@ -6,6 +6,7 @@ import { encrypt, getEncryptionConfigurationError } from '@/lib/encryption';
 import { ClientSchema } from '@/lib/validations';
 import { ApiResponse } from '@/lib/api-response';
 import { parsePaginationParams, requireRole } from '@/lib/api-safety';
+import { buildClientListWhere } from '@/lib/client-list-filters';
 
 const CLIENT_MUTATION_ROLES = ['SUPER_ADMIN', 'ADMIN', 'MANAGER'];
 
@@ -22,24 +23,11 @@ export async function GET(request) {
     const search = searchParams.get('search') || '';
     const status = searchParams.get('status');
 
-    const where = {
+    const where = buildClientListWhere({
       organizationId: session.user.organizationId,
-    };
-
-    if (search) {
-      where.OR = [
-        { firstName: { contains: search, mode: 'insensitive' } },
-        { lastName: { contains: search, mode: 'insensitive' } },
-        { email: { contains: search, mode: 'insensitive' } },
-        { phone: { contains: search } },
-        { city: { contains: search, mode: 'insensitive' } },
-      ];
-    }
-
-    // Validate status is a valid ClientStatus enum value
-    if (status && typeof status === 'string' && ['ACTIVE', 'INACTIVE', 'PENDING', 'ON_HOLD', 'DISCHARGED'].includes(status)) {
-      where.status = status;
-    }
+      search,
+      status,
+    });
 
     const [clients, total] = await Promise.all([
       prisma.client.findMany({

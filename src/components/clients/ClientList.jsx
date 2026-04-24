@@ -8,7 +8,7 @@ import SearchInput from '@/components/ui/SearchInput';
 import Select from '@/components/ui/Select';
 import Pagination from '@/components/ui/Pagination';
 import StatusBadge from '@/components/ui/StatusBadge';
-import { Plus, Edit, Trash2, Eye } from 'lucide-react';
+import { Plus, Edit, UserMinus, Eye } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Modal from '@/components/ui/Modal';
 import ClientForm from './ClientForm';
@@ -22,7 +22,12 @@ const COLUMNS = [
   { key: 'status', label: 'Status', sortable: true, width: '120px', headerContentWidth: '64px' },
   { key: 'carePlans', label: 'Care Plans', sortable: false, width: '100px', headerContentWidth: '18px' },
   { key: 'visits', label: 'Visits', sortable: false, width: '100px', headerContentWidth: '18px' },
-  { key: 'actions', label: '', sortable: false, width: '120px' },
+  { key: 'actions', label: '', sortable: false, width: '220px' },
+];
+
+const CLIENT_VIEW_OPTIONS = [
+  { value: 'active', label: 'Active Clients' },
+  { value: 'discharged', label: 'Discharged Clients' },
 ];
 
 const STATUS_OPTIONS = [
@@ -31,7 +36,6 @@ const STATUS_OPTIONS = [
   { value: 'INACTIVE', label: 'Inactive' },
   { value: 'PENDING', label: 'Pending' },
   { value: 'ON_HOLD', label: 'On Hold' },
-  { value: 'DISCHARGED', label: 'Discharged' },
 ];
 
 const STATUS_VARIANTS = {
@@ -49,6 +53,7 @@ export default function ClientList() {
   const [clients, setClients] = useState([]);
   const [searchInput, setSearchInput] = useState('');
   const [search, setSearch] = useState('');
+  const [clientView, setClientView] = useState('active');
   const [statusFilter, setStatusFilter] = useState('');
   const [pagination, setPagination] = useState({
     page: 1,
@@ -57,9 +62,8 @@ export default function ClientList() {
     totalPages: 0,
   });
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [clientToDelete, setClientToDelete] = useState(null);
-  const [deleting, setDeleting] = useState(false);
+  const [dischargeModalOpen, setDischargeModalOpen] = useState(false);
+  const [clientToDischarge, setClientToDischarge] = useState(null);
   const [discharging, setDischarging] = useState(false);
 
   const fetchData = async () => {
@@ -70,7 +74,11 @@ export default function ClientList() {
         limit: pagination.limit.toString(),
       });
       if (search) params.append('search', search);
-      if (statusFilter) params.append('status', statusFilter);
+      if (clientView === 'discharged') {
+        params.append('status', 'DISCHARGED');
+      } else if (statusFilter) {
+        params.append('status', statusFilter);
+      }
 
       const response = await fetch(`/api/clients?${params}`);
       if (response.ok) {
@@ -89,7 +97,7 @@ export default function ClientList() {
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pagination.page, pagination.limit, search, statusFilter]);
+  }, [pagination.page, pagination.limit, search, statusFilter, clientView]);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -107,6 +115,13 @@ export default function ClientList() {
   const handleStatusChange = (e) => {
     const value = e.target?.value || e;
     setStatusFilter(value);
+    setPagination(prev => ({ ...prev, page: 1 }));
+  };
+
+  const handleClientViewChange = (e) => {
+    const value = e.target?.value || e;
+    setClientView(value);
+    setStatusFilter('');
     setPagination(prev => ({ ...prev, page: 1 }));
   };
 
@@ -229,25 +244,27 @@ export default function ClientList() {
             <Eye size={12} />
             View Profile
           </button>
-          <button
-            onClick={() => handleDeleteClick(client)}
-            style={{
-              padding: '6px 10px',
-              borderRadius: '6px',
-              border: 'none',
-              backgroundColor: 'var(--color-error)',
-              color: 'white',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '4px',
-              fontSize: '12px',
-              transition: 'background-color 0.15s ease',
-            }}
-          >
-            <Trash2 size={12} />
-            Remove
-          </button>
+          {client.status !== 'DISCHARGED' && (
+            <button
+              onClick={() => handleDischargeClick(client)}
+              style={{
+                padding: '6px 10px',
+                borderRadius: '6px',
+                border: 'none',
+                backgroundColor: 'var(--color-error)',
+                color: 'white',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+                fontSize: '12px',
+                transition: 'background-color 0.15s ease',
+              }}
+            >
+              <UserMinus size={12} />
+              Discharge
+            </button>
+          )}
         </div>
       );
     }
@@ -274,55 +291,24 @@ export default function ClientList() {
     setIsAddModalOpen(false);
   };
 
-  const handleDeleteClick = (client) => {
-    setClientToDelete(client);
-    setDeleteModalOpen(true);
+  const handleDischargeClick = (client) => {
+    setClientToDischarge(client);
+    setDischargeModalOpen(true);
   };
 
-  const handleDeleteConfirm = async () => {
-    if (!clientToDelete) return;
+  const handleDischargeConfirm = async () => {
+    if (!clientToDischarge) return;
 
-    setDeleting(true);
+    setDischarging(true);
     try {
-      const response = await fetch(`/api/clients/${clientToDelete.id}`, {
+      const response = await fetch(`/api/clients/${clientToDischarge.id}`, {
         method: 'DELETE',
       });
 
       if (response.ok) {
-        setDeleteModalOpen(false);
-        setClientToDelete(null);
-        fetchData();
-      } else {
-        const data = await response.json();
-        toast('error', 'Error', data.error || 'Failed to delete client');
-      }
-    } catch (error) {
-      console.error('Error deleting client:', error);
-      toast('error', 'Error', 'Failed to delete client');
-    } finally {
-      setDeleting(false);
-    }
-  };
-
-  const handleDeleteCancel = () => {
-    setDeleteModalOpen(false);
-    setClientToDelete(null);
-  };
-
-  const handleDischargeInstead = async () => {
-    if (!clientToDelete) return;
-
-    setDischarging(true);
-    try {
-      const response = await fetch(`/api/clients/${clientToDelete.id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: 'DISCHARGED' }),
-      });
-
-      if (response.ok) {
-        toast('success', 'Client discharged', 'The client was discharged instead of being deleted.');
-        handleDeleteCancel();
+        toast('success', 'Client discharged', 'Client has been moved to the discharged clients view.');
+        setDischargeModalOpen(false);
+        setClientToDischarge(null);
         fetchData();
       } else {
         const data = await response.json();
@@ -334,6 +320,11 @@ export default function ClientList() {
     } finally {
       setDischarging(false);
     }
+  };
+
+  const handleDischargeCancel = () => {
+    setDischargeModalOpen(false);
+    setClientToDischarge(null);
   };
 
   return (
@@ -366,11 +357,19 @@ export default function ClientList() {
             style={{ flex: 1 }}
           />
           <Select
-            value={statusFilter}
-            onChange={handleStatusChange}
-            options={STATUS_OPTIONS}
-            style={{ width: '160px' }}
+            value={clientView}
+            onChange={handleClientViewChange}
+            options={CLIENT_VIEW_OPTIONS}
+            style={{ width: '180px' }}
           />
+          {clientView === 'active' && (
+            <Select
+              value={statusFilter}
+              onChange={handleStatusChange}
+              options={STATUS_OPTIONS}
+              style={{ width: '160px' }}
+            />
+          )}
         </div>
         <Button onClick={handleAddClient}>
           <Plus size={16} />
@@ -407,32 +406,27 @@ export default function ClientList() {
         />
       </Modal>
 
-      {/* Remove Confirmation Modal */}
+      {/* Discharge Confirmation Modal */}
       <Modal
-        isOpen={deleteModalOpen}
-        onClose={handleDeleteCancel}
-        title="Remove Client"
+        isOpen={dischargeModalOpen}
+        onClose={handleDischargeCancel}
+        title="Discharge Client"
         size="sm"
       >
         <div style={{ padding: '20px' }}>
           <p style={{ fontSize: '14px', color: 'var(--color-text)', marginBottom: '8px' }}>
-            Are you sure you want to remove <strong>{clientToDelete?.firstName} {clientToDelete?.lastName}</strong>?
+            Are you sure you want to discharge <strong>{clientToDischarge?.firstName} {clientToDischarge?.lastName}</strong>?
           </p>
           <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginBottom: '20px' }}>
-            This action cannot be undone. Visits, medications, forms, documents, emergency contacts, invoices, insurance claims, and medical history linked to this client will be permanently deleted.
+            This marks the client as discharged and removes them from the active clients table. Their visits, care plans, billing records, documents, and clinical history remain available.
           </p>
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
-            <Button variant="secondary" onClick={handleDeleteCancel}>
+            <Button variant="secondary" onClick={handleDischargeCancel}>
               Cancel
             </Button>
-            {clientToDelete?.status !== 'DISCHARGED' && (
-              <Button variant="secondary" onClick={handleDischargeInstead} loading={discharging}>
-                Discharge Instead
-              </Button>
-            )}
-            <Button variant="error" onClick={handleDeleteConfirm} loading={deleting}>
-              <Trash2 size={14} />
-              Remove Client
+            <Button variant="error" onClick={handleDischargeConfirm} loading={discharging}>
+              <UserMinus size={14} />
+              Discharge Client
             </Button>
           </div>
         </div>

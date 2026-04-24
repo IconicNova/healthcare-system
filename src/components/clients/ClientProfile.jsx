@@ -11,10 +11,11 @@ import ClientVisitsTab from './ClientVisitsTab';
 import ClientDocumentsTab from './ClientDocumentsTab';
 import ClientFormsTab from './ClientFormsTab';
 import StatusBadge from '@/components/ui/StatusBadge';
-import { ArrowLeft, Edit, Upload, X } from 'lucide-react';
+import { ArrowLeft, Edit, Upload, UserMinus, X } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Modal from '@/components/ui/Modal';
 import ClientForm from './ClientForm';
+import { useToast } from '@/components/ui/useToast';
 
 const TABS = [
   { id: 'overview', label: 'Overview' },
@@ -36,6 +37,7 @@ const STATUS_VARIANTS = {
 export default function ClientProfilePage({ params }) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const toast = useToast();
   const fileInputRef = useRef(null);
   const { id } = params;
   const [loading, setLoading] = useState(true);
@@ -45,6 +47,8 @@ export default function ClientProfilePage({ params }) {
   const [avatarUploading, setAvatarUploading] = useState(false);
   const [avatarError, setAvatarError] = useState('');
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showDischargeModal, setShowDischargeModal] = useState(false);
+  const [discharging, setDischarging] = useState(false);
   const validTabIds = new Set(TABS.map(tab => tab.id));
 
   const getResolvedTab = (tabValue) => (tabValue && validTabIds.has(tabValue) ? tabValue : 'overview');
@@ -188,6 +192,31 @@ export default function ClientProfilePage({ params }) {
   const handleEditSuccess = async () => {
     await fetchClient();
     handleCloseEditModal();
+  };
+
+  const handleDischargeClient = async () => {
+    if (!client?.id) return;
+
+    setDischarging(true);
+    try {
+      const response = await fetch(`/api/clients/${client.id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || 'Failed to discharge client');
+      }
+
+      toast('success', 'Client discharged', 'Client has been moved to the discharged clients view.');
+      setShowDischargeModal(false);
+      await fetchClient();
+    } catch (error) {
+      console.error('Error discharging client:', error);
+      toast('error', 'Error', error.message || 'Failed to discharge client');
+    } finally {
+      setDischarging(false);
+    }
   };
 
   const handleTabChange = (nextTab) => {
@@ -371,10 +400,18 @@ export default function ClientProfilePage({ params }) {
               )}
             </div>
           </div>
-          <Button variant="secondary" onClick={handleOpenEditModal}>
-            <Edit size={16} />
-            Edit Client
-          </Button>
+          <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+            {client.status !== 'DISCHARGED' && (
+              <Button variant="error" onClick={() => setShowDischargeModal(true)}>
+                <UserMinus size={16} />
+                Discharge Client
+              </Button>
+            )}
+            <Button variant="secondary" onClick={handleOpenEditModal}>
+              <Edit size={16} />
+              Edit Client
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -393,6 +430,31 @@ export default function ClientProfilePage({ params }) {
 
       <Modal isOpen={showEditModal} onClose={handleCloseEditModal} title="Edit Client" size="xl">
         <ClientForm client={client} onSuccess={handleEditSuccess} onCancel={handleCloseEditModal} />
+      </Modal>
+
+      <Modal
+        isOpen={showDischargeModal}
+        onClose={() => setShowDischargeModal(false)}
+        title="Discharge Client"
+        size="sm"
+      >
+        <div style={{ padding: '20px' }}>
+          <p style={{ fontSize: '14px', color: 'var(--color-text)', marginBottom: '8px' }}>
+            Are you sure you want to discharge <strong>{client.firstName} {client.lastName}</strong>?
+          </p>
+          <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginBottom: '20px' }}>
+            This marks the client as discharged and removes them from the active clients table. Their history remains available in the discharged clients view.
+          </p>
+          <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
+            <Button variant="secondary" onClick={() => setShowDischargeModal(false)}>
+              Cancel
+            </Button>
+            <Button variant="error" onClick={handleDischargeClient} loading={discharging}>
+              <UserMinus size={14} />
+              Discharge Client
+            </Button>
+          </div>
+        </div>
       </Modal>
     </div>
   );
