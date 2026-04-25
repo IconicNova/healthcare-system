@@ -5,6 +5,7 @@ import { Plus, Edit3, Trash2, X, Check } from 'lucide-react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
+import { sanitizeRichTextHtml } from '@/lib/rich-text-sanitizer';
 
 // UX-7: WYSIWYG Toolbar component
 function EditorToolbar({ editor }) {
@@ -84,6 +85,7 @@ export default function VisitNotesTab({ visitId, onCountChange }) {
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState('');
+  const [actionError, setActionError] = useState('');
   const [showAdd, setShowAdd] = useState(false);
   const [newContent, setNewContent] = useState('');
   const [editingId, setEditingId] = useState(null);
@@ -127,6 +129,7 @@ export default function VisitNotesTab({ visitId, onCountChange }) {
     if (!stripped) return;
 
     try {
+      setActionError('');
       const res = await fetch(`/api/visits/${visitId}/notes`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -136,8 +139,13 @@ export default function VisitNotesTab({ visitId, onCountChange }) {
         setNewContent('');
         setShowAdd(false);
         fetchNotes();
+      } else {
+        setActionError('Failed to save visit note.');
       }
-    } catch {}
+    } catch (error) {
+      console.error('Failed to save note:', error);
+      setActionError('Failed to save visit note.');
+    }
   };
 
   // LOGIC-6: Edit note
@@ -146,6 +154,7 @@ export default function VisitNotesTab({ visitId, onCountChange }) {
     if (!stripped) return;
 
     try {
+      setActionError('');
       const res = await fetch(`/api/visit-notes/${noteId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
@@ -155,19 +164,30 @@ export default function VisitNotesTab({ visitId, onCountChange }) {
         setEditingId(null);
         setEditContent('');
         fetchNotes();
+      } else {
+        setActionError('Failed to update visit note.');
       }
-    } catch {}
+    } catch (error) {
+      console.error('Failed to update note:', error);
+      setActionError('Failed to update visit note.');
+    }
   };
 
   // LOGIC-6: Delete note
   const handleDelete = async (noteId) => {
     try {
+      setActionError('');
       const res = await fetch(`/api/visit-notes/${noteId}`, { method: 'DELETE' });
       if (res.ok) {
         fetchNotes();
+        setDeleteConfirm(null);
+      } else {
+        setActionError('Failed to delete visit note.');
       }
-    } catch {}
-    setDeleteConfirm(null);
+    } catch (error) {
+      console.error('Failed to delete note:', error);
+      setActionError('Failed to delete visit note.');
+    }
   };
 
   if (loading) {
@@ -211,6 +231,19 @@ export default function VisitNotesTab({ visitId, onCountChange }) {
           <Plus size={14} /> Add Note
         </button>
       </div>
+
+      {actionError && (
+        <div style={{
+          marginBottom: '16px',
+          padding: '12px 14px',
+          borderRadius: '8px',
+          background: '#FEF2F2',
+          color: '#B91C1C',
+          fontSize: '13px',
+        }}>
+          {actionError}
+        </div>
+      )}
 
       {/* Add note form — UX-7: Full WYSIWYG */}
       {showAdd && (
@@ -292,7 +325,7 @@ export default function VisitNotesTab({ visitId, onCountChange }) {
                 <div
                   style={{ fontSize: '14px', lineHeight: 1.6 }}
                   className="tiptap-render"
-                  dangerouslySetInnerHTML={{ __html: note.content }}
+                  dangerouslySetInnerHTML={{ __html: sanitizeRichTextHtml(note.content) }}
                 />
               )}
             </div>

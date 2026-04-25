@@ -4,6 +4,17 @@ import {
   getRecurrenceTotalVisits,
   validateRecurrence,
 } from '@/lib/scheduling';
+import { isActiveCarePlanStatus } from '@/lib/care-plan-status';
+
+function addMonthsClamped(date, amount) {
+  const next = new Date(date);
+  const dayOfMonth = next.getDate();
+  next.setDate(1);
+  next.setMonth(next.getMonth() + amount);
+  const lastDayOfTargetMonth = new Date(next.getFullYear(), next.getMonth() + 1, 0).getDate();
+  next.setDate(Math.min(dayOfMonth, lastDayOfTargetMonth));
+  return next;
+}
 
 export async function validateVisitBusinessRules({
   organizationId,
@@ -86,7 +97,7 @@ export async function validateVisitBusinessRules({
   }
 
   if (carePlan) {
-    if (!carePlan.status) {
+    if (!isActiveCarePlanStatus(carePlan.status)) {
       errors.carePlanId = ['Inactive care plans cannot be used for scheduling.'];
     }
 
@@ -238,7 +249,7 @@ export function buildRecurringVisitPayloads({
     const nextStart = new Date(startTime);
 
     if (recurrence.type === 'MONTHLY') {
-      nextStart.setMonth(nextStart.getMonth() + index);
+      nextStart.setTime(addMonthsClamped(startTime, index).getTime());
     } else if (recurrence.type === 'BI_WEEKLY') {
       nextStart.setDate(nextStart.getDate() + index * 14);
     } else if (recurrence.type === 'WEEKLY') {

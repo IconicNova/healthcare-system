@@ -94,6 +94,15 @@ enum Frequency {
   CUSTOM
 }
 
+enum CarePlanStatus {
+  ACTIVE
+  ON_HOLD
+  COMPLETED
+  DISCHARGED
+  REVOKED
+  DRAFT
+}
+
 enum InsuranceClaimStatus {
   PENDING
   SUBMITTED
@@ -364,7 +373,7 @@ model CarePlan {
   description    String?
   startDate      DateTime
   endDate        DateTime?
-  status         Boolean  @default(true)
+  status         CarePlanStatus @default(ACTIVE)
   organizationId String
   branchId       String?
   clientId       String
@@ -382,7 +391,7 @@ model CarePlan {
   services     CarePlanService[]
 
   @@index([organizationId, clientId])
-  @@unique([organizationId, name])
+  @@index([organizationId, name])
   @@map("care_plan")
 }
 

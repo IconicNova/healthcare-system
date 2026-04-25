@@ -4,6 +4,8 @@ import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { hasRoleAccess } from '@/lib/utils';
 import { parsePaginationParams } from '@/lib/api-safety';
+import { enforceRouteRateLimit } from '@/lib/route-rate-limit';
+import { logAuditEvent } from '@/lib/audit-log';
 
 // GET - List all payments with invoice info
 export async function GET(request) {
@@ -101,6 +103,15 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
+    const rateLimitResponse = await enforceRouteRateLimit(session, 'payments-create', {
+      maxRequests: 30,
+      windowMs: 15 * 60 * 1000,
+      message: 'Too many payment attempts. Please try again later.',
+    });
+    if (rateLimitResponse) {
+      return rateLimitResponse;
+    }
+
     const body = await request.json();
     const { invoiceId, amount, paymentMethod, referenceNumber, paymentDate, notes } = body;
 
@@ -193,6 +204,14 @@ export async function POST(request) {
       }
 
       return newPayment;
+    });
+
+    await logAuditEvent({
+      action: 'CREATE',
+      entity: 'Payment',
+      entityId: payment.id,
+      userId: session.user.id,
+      after: payment,
     });
 
     return NextResponse.json(payment, { status: 201 });

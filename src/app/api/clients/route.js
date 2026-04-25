@@ -7,6 +7,8 @@ import { ClientSchema } from '@/lib/validations';
 import { ApiResponse } from '@/lib/api-response';
 import { parsePaginationParams, requireRole } from '@/lib/api-safety';
 import { buildClientListWhere } from '@/lib/client-list-filters';
+import { enforceRouteRateLimit } from '@/lib/route-rate-limit';
+import { logAuditEvent } from '@/lib/audit-log';
 
 const CLIENT_MUTATION_ROLES = ['SUPER_ADMIN', 'ADMIN', 'MANAGER'];
 
@@ -93,6 +95,15 @@ export async function POST(request) {
     const forbiddenResponse = requireRole(session, CLIENT_MUTATION_ROLES);
     if (forbiddenResponse) {
       return forbiddenResponse;
+    }
+
+    const rateLimitResponse = await enforceRouteRateLimit(session, 'clients-create', {
+      maxRequests: 30,
+      windowMs: 15 * 60 * 1000,
+      message: 'Too many client creation attempts. Please try again later.',
+    });
+    if (rateLimitResponse) {
+      return rateLimitResponse;
     }
 
     const body = await request.json();
@@ -203,6 +214,14 @@ export async function POST(request) {
           },
         },
       },
+    });
+
+    await logAuditEvent({
+      action: 'CREATE',
+      entity: 'Client',
+      entityId: client.id,
+      userId: session.user.id,
+      after: client,
     });
 
     return NextResponse.json(client, { status: 201 });

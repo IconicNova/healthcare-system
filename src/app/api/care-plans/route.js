@@ -3,6 +3,9 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { parsePaginationParams } from '@/lib/api-safety';
+import { logAuditEvent } from '@/lib/audit-log';
+import { normalizeCarePlanStatus } from '@/lib/care-plan-status';
+import { rateLimit } from '@/lib/rate-limit';
 
 export async function GET(request) {
   try {
@@ -37,9 +40,11 @@ export async function GET(request) {
     }
 
     if (status === 'active') {
-      where.status = true;
+      where.status = 'ACTIVE';
     } else if (status === 'inactive') {
-      where.status = false;
+      where.status = { not: 'ACTIVE' };
+    } else if (status) {
+      where.status = normalizeCarePlanStatus(status);
     }
 
     const [carePlans, total] = await Promise.all([
@@ -100,6 +105,20 @@ export async function POST(request) {
     const body = await request.json();
     const { name, description, startDate, endDate, status, clientId, staffId, services } = body;
 
+    const rateLimitResult = await rateLimit(`care-plans:create:${session.user.id}`, {
+      maxRequests: 30,
+      windowMs: 60 * 1000,
+    });
+    if (!rateLimitResult.success) {
+      return NextResponse.json(
+        { error: 'Too many care plan changes. Please try again shortly.' },
+        {
+          status: 429,
+          headers: { 'Retry-After': String(Math.ceil(rateLimitResult.retryAfterMs / 1000)) },
+        }
+      );
+    }
+
     if (!name || !clientId || !startDate) {
       return NextResponse.json(
         { error: 'Name, client, and start date are required' },
@@ -140,7 +159,7 @@ export async function POST(request) {
         description: description || null,
         startDate: new Date(startDate),
         endDate: endDate ? new Date(endDate) : null,
-        status: status !== false,
+        status: normalizeCarePlanStatus(status),
         organizationId: session.user.organizationId,
         clientId,
         staffId: staffId || null,
@@ -163,6 +182,14 @@ export async function POST(request) {
           },
         },
       },
+    });
+
+    await logAuditEvent({
+      action: 'CREATE',
+      entity: 'CarePlan',
+      entityId: carePlan.id,
+      userId: session.user.id,
+      after: carePlan,
     });
 
     return NextResponse.json(carePlan, { status: 201 });

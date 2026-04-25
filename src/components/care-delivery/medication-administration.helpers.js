@@ -2,6 +2,13 @@ function trimText(value) {
   return typeof value === 'string' ? value.trim() : '';
 }
 
+export const VALID_MEDICATION_ADMINISTRATION_STATUSES = new Set([
+  'ADMINISTERED',
+  'HELD',
+  'REFUSED',
+  'NOT_GIVEN',
+]);
+
 export function formatAdministrationVisitLabel(visit) {
   const title = trimText(visit?.title) || 'Scheduled Visit';
   const serviceName = trimText(visit?.serviceName);
@@ -31,6 +38,10 @@ export function buildMedicationAdministrationPayload(data) {
 
   if (!status) {
     throw new Error('Medication administration status is required.');
+  }
+
+  if (!VALID_MEDICATION_ADMINISTRATION_STATUSES.has(status)) {
+    throw new Error('Invalid medication administration status.');
   }
 
   if (!visitId) {

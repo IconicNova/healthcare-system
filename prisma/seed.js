@@ -95,7 +95,7 @@ async function main() {
     },
   });
 
-  const superAdminUser = await prisma.user.upsert({
+  await prisma.user.upsert({
     where: {
       organizationId_email: {
         organizationId: organization.id,
@@ -374,7 +374,7 @@ async function main() {
   await prisma.staffAvailability.createMany({ data: availabilityData });
 
   // Create Services
-  const services = await prisma.service.createMany({
+  await prisma.service.createMany({
     data: [
       {
         name: 'Skilled Nursing',
@@ -428,7 +428,7 @@ async function main() {
   });
 
   // Create Form Templates with rich schemas
-  const formTemplates = await prisma.formTemplate.createMany({
+  await prisma.formTemplate.createMany({
     data: [
       {
         name: 'Initial Assessment',
@@ -613,7 +613,7 @@ async function main() {
   });
 
   // Create Clients
-  const clients = await prisma.client.createMany({
+  await prisma.client.createMany({
     data: [
       {
         firstName: 'Margaret',
@@ -814,7 +814,7 @@ async function main() {
   await prisma.medicalHistory.createMany({ data: medicalHistory });
 
   // Create Care Plans
-  const carePlans = await prisma.carePlan.createMany({
+  await prisma.carePlan.createMany({
     data: [
       {
         name: 'Post-Surgery Recovery - Margaret Anderson',
@@ -862,7 +862,7 @@ async function main() {
   });
 
   // Create Visits
-  const visits = await prisma.visit.createMany({
+  await prisma.visit.createMany({
     data: [
       // Margaret Anderson visits
       {
@@ -1223,7 +1223,7 @@ async function main() {
   await prisma.clientForm.createMany({ data: clientForms });
 
   // Create Invoices
-  const invoices = await prisma.invoice.createMany({
+  await prisma.invoice.createMany({
     data: [
       {
         invoiceNumber: 'INV-2024-001',
@@ -1298,7 +1298,7 @@ async function main() {
   await prisma.invoiceItem.createMany({ data: invoiceItems });
 
   // Create Timesheets
-  const timesheets = await prisma.timesheet.createMany({
+  await prisma.timesheet.createMany({
     data: [
       {
         startDate: new Date('2024-03-11'),

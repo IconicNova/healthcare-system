@@ -3,6 +3,9 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
+import { SettingsUserCreateSchema } from '@/lib/validations';
+import { enforceRouteRateLimit } from '@/lib/route-rate-limit';
+import { logAuditEvent } from '@/lib/audit-log';
 
 export async function GET() {
   const session = await getServerSession(authOptions);
@@ -68,21 +71,41 @@ export async function POST(request) {
   }
 
   try {
-    const body = await request.json();
+    const rateLimitResponse = await enforceRouteRateLimit(session, 'settings-users-create', {
+      maxRequests: 10,
+      windowMs: 15 * 60 * 1000,
+      message: 'Too many user creation attempts. Please try again later.',
+    });
+    if (rateLimitResponse) {
+      return rateLimitResponse;
+    }
 
-    // Hash password
-    const hashedPassword = await bcrypt.hash(body.password, 10);
+    const body = await request.json();
+    const normalizedBody = {
+      ...body,
+      branchId: body.branchId || null,
+      };
+      const validationResult = SettingsUserCreateSchema.safeParse(normalizedBody);
+      if (!validationResult.success) {
+        return NextResponse.json(
+          { error: 'Invalid data', details: validationResult.error.format() },
+          { status: 400 }
+        );
+      }
+
+      // Hash password
+      const hashedPassword = await bcrypt.hash(validationResult.data.password, 10);
 
     const user = await prisma.user.create({
       data: {
-        email: body.email,
+        email: validationResult.data.email,
         password: hashedPassword,
-        firstName: body.firstName,
-        lastName: body.lastName,
-        role: body.role || 'STAFF',
-        organizationId: session.user.organizationId,
-        branchId: body.branchId || null,
-      },
+          firstName: validationResult.data.firstName,
+          lastName: validationResult.data.lastName,
+          role: validationResult.data.role || 'STAFF',
+          organizationId: session.user.organizationId,
+          branchId: validationResult.data.branchId || null,
+        },
       select: {
         id: true,
         email: true,
@@ -93,6 +116,14 @@ export async function POST(request) {
         createdAt: true,
         branchId: true,
       },
+    });
+
+    await logAuditEvent({
+      action: 'CREATE',
+      entity: 'User',
+      entityId: user.id,
+      userId: session.user.id,
+      after: user,
     });
 
     return NextResponse.json(user, { status: 201 });

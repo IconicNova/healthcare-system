@@ -15,7 +15,7 @@ export async function PATCH(request, { params }) {
     const body = await request.json();
 
     // Check if client exists
-    const client = await prisma.client.findUnique({
+    const client = await prisma.client.findFirst({
       where: {
         id,
         organizationId: session.user.organizationId,
@@ -71,8 +71,11 @@ export async function PATCH(request, { params }) {
     }
 
     // Return updated client with medical info
-    const updatedClient = await prisma.client.findUnique({
-      where: { id },
+    const updatedClient = await prisma.client.findFirst({
+      where: {
+        id,
+        organizationId: session.user.organizationId,
+      },
       include: {
         medications: {
           select: {

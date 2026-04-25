@@ -3,6 +3,9 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
+import { SettingsUserUpdateSchema } from '@/lib/validations';
+import { enforceRouteRateLimit } from '@/lib/route-rate-limit';
+import { logAuditEvent } from '@/lib/audit-log';
 
 export async function PATCH(request, { params }) {
   const session = await getServerSession(authOptions);
@@ -16,37 +19,69 @@ export async function PATCH(request, { params }) {
   }
 
   try {
+    const rateLimitResponse = await enforceRouteRateLimit(session, 'settings-users-update', {
+      maxRequests: 10,
+      windowMs: 15 * 60 * 1000,
+      message: 'Too many password or profile changes. Please try again later.',
+    });
+    if (rateLimitResponse) {
+      return rateLimitResponse;
+    }
+
     const { id } = await params;
     const body = await request.json();
+    const normalizedBody = {
+      ...body,
+      branchId: body.branchId || null,
+    };
+    const validationResult = SettingsUserUpdateSchema.safeParse(normalizedBody);
+    if (!validationResult.success) {
+      return NextResponse.json(
+        { error: 'Invalid data', details: validationResult.error.format() },
+        { status: 400 }
+      );
+    }
 
     // Prevent self-modification of role
-    if (id === session.user.id && body.role && body.role !== session.user.role) {
+    if (id === session.user.id && validationResult.data.role && validationResult.data.role !== session.user.role) {
       return NextResponse.json({ error: 'Cannot modify your own role' }, { status: 403 });
     }
 
     // Prevent non-SUPER_ADMIN from assigning SUPER_ADMIN role
-    if (body.role === 'SUPER_ADMIN' && session.user.role !== 'SUPER_ADMIN') {
+    if (validationResult.data.role === 'SUPER_ADMIN' && session.user.role !== 'SUPER_ADMIN') {
       return NextResponse.json({ error: 'Only SUPER_ADMIN can assign SUPER_ADMIN role' }, { status: 403 });
     }
 
-    // Validate role is a valid enum value
-    const VALID_ROLES = ['STAFF', 'SUPERVISOR', 'MANAGER', 'ADMIN', 'SUPER_ADMIN'];
-    if (body.role && !VALID_ROLES.includes(body.role)) {
-      return NextResponse.json({ error: 'Invalid role' }, { status: 400 });
-    }
-
     const updateData = {
-      firstName: body.firstName,
-      lastName: body.lastName,
-      role: body.role,
-      status: body.status !== undefined ? body.status : undefined,
-      branchId: body.branchId || null,
+      ...(validationResult.data.email !== undefined && { email: validationResult.data.email }),
+      ...(validationResult.data.firstName !== undefined && { firstName: validationResult.data.firstName }),
+      ...(validationResult.data.lastName !== undefined && { lastName: validationResult.data.lastName }),
+      ...(validationResult.data.role !== undefined && { role: validationResult.data.role }),
+      ...(validationResult.data.status !== undefined && { status: validationResult.data.status }),
+      ...(validationResult.data.branchId !== undefined && { branchId: validationResult.data.branchId || null }),
     };
 
     // Hash password if provided
-    if (body.password) {
-      updateData.password = await bcrypt.hash(body.password, 10);
+    if (validationResult.data.password) {
+      updateData.password = await bcrypt.hash(validationResult.data.password, 10);
     }
+
+    const beforeUser = await prisma.user.findFirst({
+      where: {
+        id,
+        organizationId: session.user.organizationId,
+      },
+      select: {
+        id: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        role: true,
+        status: true,
+        avatar: true,
+        branchId: true,
+      },
+    });
 
     const user = await prisma.user.update({
       where: {
@@ -66,6 +101,15 @@ export async function PATCH(request, { params }) {
         updatedAt: true,
         branchId: true,
       },
+    });
+
+    await logAuditEvent({
+      action: 'UPDATE',
+      entity: 'User',
+      entityId: user.id,
+      userId: session.user.id,
+      before: beforeUser,
+      after: user,
     });
 
     return NextResponse.json(user);

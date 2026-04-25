@@ -3,6 +3,8 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { hasRoleAccess } from '@/lib/utils';
+import { enforceRouteRateLimit } from '@/lib/route-rate-limit';
+import { logAuditEvent } from '@/lib/audit-log';
 
 // POST - Batch generate invoices from uninvoiced visits
 export async function POST(request) {
@@ -15,6 +17,15 @@ export async function POST(request) {
     // Check RBAC - only ADMIN, MANAGER can generate invoices
     if (!hasRoleAccess(session.user.role, ['ADMIN', 'MANAGER'])) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+
+    const rateLimitResponse = await enforceRouteRateLimit(session, 'invoices-generate-batch', {
+      maxRequests: 10,
+      windowMs: 60 * 60 * 1000,
+      message: 'Too many invoice generation attempts. Please try again later.',
+    });
+    if (rateLimitResponse) {
+      return rateLimitResponse;
     }
 
     const body = await request.json();
@@ -195,6 +206,16 @@ export async function POST(request) {
 
       return invoices;
     });
+
+    await Promise.all(
+      generatedInvoices.map((invoice) => logAuditEvent({
+        action: 'CREATE',
+        entity: 'Invoice',
+        entityId: invoice.id,
+        userId: session.user.id,
+        after: invoice,
+      }))
+    );
 
     return NextResponse.json({
       message: `Successfully generated ${generatedInvoices.length} invoices`,

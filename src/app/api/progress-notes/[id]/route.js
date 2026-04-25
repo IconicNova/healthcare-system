@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import { ProgressNotePatchSchema } from '@/lib/validations';
+import { logAuditEvent } from '@/lib/audit-log';
 
 // GET - Fetch a single progress note
 export async function GET(request, { params }) {
@@ -61,6 +63,13 @@ export async function PATCH(request, { params }) {
 
     const { id } = params;
     const body = await request.json();
+    const validationResult = ProgressNotePatchSchema.safeParse(body);
+    if (!validationResult.success) {
+      return NextResponse.json(
+        { error: 'Invalid data', details: validationResult.error.format() },
+        { status: 400 }
+      );
+    }
 
     const note = await prisma.progressNote.findFirst({
       where: {
@@ -75,9 +84,39 @@ export async function PATCH(request, { params }) {
       return NextResponse.json({ error: 'Progress note not found' }, { status: 404 });
     }
 
+    if (validationResult.data.visitId !== undefined && validationResult.data.visitId !== null) {
+      const visit = await prisma.visit.findFirst({
+        where: {
+          id: validationResult.data.visitId,
+          organizationId: session.user.organizationId,
+          clientId: note.clientId,
+        },
+        select: { id: true },
+      });
+
+      if (!visit) {
+        return NextResponse.json(
+          { error: 'Selected visit is invalid for this client' },
+          { status: 400 }
+        );
+      }
+    }
+
     const updatedNote = await prisma.progressNote.update({
       where: { id },
-      data: body,
+      data: {
+        ...validationResult.data,
+        ...(validationResult.data.visitId === undefined ? {} : { visitId: validationResult.data.visitId }),
+      },
+    });
+
+    await logAuditEvent({
+      action: 'UPDATE',
+      entity: 'ProgressNote',
+      entityId: updatedNote.id,
+      userId: session.user.id,
+      before: note,
+      after: updatedNote,
     });
 
     return NextResponse.json(updatedNote);
@@ -113,6 +152,14 @@ export async function DELETE(request, { params }) {
 
     await prisma.progressNote.delete({
       where: { id },
+    });
+
+    await logAuditEvent({
+      action: 'DELETE',
+      entity: 'ProgressNote',
+      entityId: note.id,
+      userId: session.user.id,
+      before: note,
     });
 
     return NextResponse.json({ success: true });

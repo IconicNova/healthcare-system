@@ -3,6 +3,9 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { hasRoleAccess } from '@/lib/utils';
+import { buildMedicationAdministrationPayload } from '@/components/care-delivery/medication-administration.helpers';
+import { enforceRouteRateLimit } from '@/lib/route-rate-limit';
+import { logAuditEvent } from '@/lib/audit-log';
 
 // POST - Record medication administration
 export async function POST(request, { params }) {
@@ -18,30 +21,28 @@ export async function POST(request, { params }) {
       return NextResponse.json({ error: 'Forbidden: insufficient role for medication administration' }, { status: 403 });
     }
 
+    const rateLimitResponse = await enforceRouteRateLimit(session, 'medication-administer', {
+      maxRequests: 60,
+      windowMs: 15 * 60 * 1000,
+      message: 'Too many medication administration attempts. Please try again later.',
+    });
+    if (rateLimitResponse) {
+      return rateLimitResponse;
+    }
+
     const { id } = params;
     const body = await request.json();
-    const { status, dosage, unit, reason, comment, visitId } = body;
-
-    if (!status) {
+    let administrationData;
+    try {
+      administrationData = buildMedicationAdministrationPayload(body);
+    } catch (error) {
       return NextResponse.json(
-        { error: 'Status is required' },
+        { error: error.message || 'Invalid medication administration data' },
         { status: 400 }
       );
     }
 
-    if (!visitId) {
-      return NextResponse.json(
-        { error: 'A linked visit is required for medication administration' },
-        { status: 400 }
-      );
-    }
-
-    if (status.toUpperCase() !== 'ADMINISTERED' && !reason?.trim()) {
-      return NextResponse.json(
-        { error: 'A reason is required when medication is not administered' },
-        { status: 400 }
-      );
-    }
+    const { status, dosage, unit, reason, comment, visitId } = administrationData;
 
     // Verify the medication belongs to a client in the user's organization
     const medication = await prisma.medication.findFirst({
@@ -91,7 +92,7 @@ export async function POST(request, { params }) {
         visitId,
         staffId: staff.id,
         administeredAt: new Date(),
-        status: status.toUpperCase(),
+        status,
         dosage: dosage || null,
         unit: unit || null,
         reason: reason || null,
@@ -123,6 +124,14 @@ export async function POST(request, { params }) {
           },
         },
       },
+    });
+
+    await logAuditEvent({
+      action: 'ADMINISTER',
+      entity: 'MedAdministration',
+      entityId: administration.id,
+      userId: session.user.id,
+      after: administration,
     });
 
     return NextResponse.json({

@@ -14,7 +14,7 @@ export async function POST(request, context) {
     request.headers.get('x-real-ip') ||
     'unknown';
 
-  const { success, retryAfterMs } = rateLimit(`auth:${ip}`, {
+  const { success, retryAfterMs } = await rateLimit(`auth:${ip}`, {
     maxRequests: 5,
     windowMs: 15 * 60 * 1000,
   });

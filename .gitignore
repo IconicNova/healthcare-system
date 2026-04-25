@@ -46,3 +46,54 @@ screenshots/
 audit-auth.json
 *.session.json
 playwright-auth*.json
+
+# Playwright CLI artifacts (console logs, page snapshots)
+.playwright-cli/
+
+# AI assistant artifacts
+.pi/
+.opencode/
+subagents/
+reviews/
+session_summary.txt
+opencode.json
+
+# Graphify transient files
+.graphify/
+.graphify_detect.json
+graphify-out/
+graphify-out/cache/
+graphify-out/.graphify_analysis.json
+graphify-out/.graphify_ast.json
+graphify-out/.graphify_cached.json
+graphify-out/.graphify_extract.json
+graphify-out/.graphify_semantic.json
+graphify-out/.graphify_uncached.txt
+graphify-out/.graphify_python
+graphify-out/cost.json
+graphify-out/graph.html
+graphify-out/graph.json
+graphify-out/manifest.json
+
+# Full review reports (one-time AI artifacts)
+.full-review/
+.full-review-*/
+
+# Playwright CLI and test artifacts
+.playwright/
+test-results/
+
+# Dev server logs
+.codex-devserver*.log
+dev-local.log
+dev-local.err
+
+# One-time scripts and reports
+prompt.md
+uncommitted-changes.txt
+test-db.js
+setup_db.bat
+setup_db.sql
+
+# Screenshots
+modal-shot*.png

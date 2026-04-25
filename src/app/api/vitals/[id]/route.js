@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import { VitalSignPatchSchema } from '@/lib/validations';
+import { logAuditEvent } from '@/lib/audit-log';
 
 // GET - Fetch a single vital sign entry
 export async function GET(request, { params }) {
@@ -60,6 +62,13 @@ export async function PATCH(request, { params }) {
 
     const { id } = params;
     const body = await request.json();
+    const validationResult = VitalSignPatchSchema.safeParse(body);
+    if (!validationResult.success) {
+      return NextResponse.json(
+        { error: 'Invalid data', details: validationResult.error.format() },
+        { status: 400 }
+      );
+    }
 
     const vital = await prisma.vitalSign.findFirst({
       where: {
@@ -74,9 +83,44 @@ export async function PATCH(request, { params }) {
       return NextResponse.json({ error: 'Vital sign not found' }, { status: 404 });
     }
 
+    if (validationResult.data.visitId !== undefined && validationResult.data.visitId !== null) {
+      const visit = await prisma.visit.findFirst({
+        where: {
+          id: validationResult.data.visitId,
+          organizationId: session.user.organizationId,
+          clientId: vital.clientId,
+        },
+        select: { id: true },
+      });
+
+      if (!visit) {
+        return NextResponse.json(
+          { error: 'Selected visit is invalid for this client' },
+          { status: 400 }
+        );
+      }
+    }
+
+    const updateData = {
+      ...validationResult.data,
+    };
+
+    if (Object.prototype.hasOwnProperty.call(updateData, 'recordedAt') && updateData.recordedAt) {
+      updateData.recordedAt = new Date(updateData.recordedAt);
+    }
+
     const updatedVital = await prisma.vitalSign.update({
       where: { id },
-      data: body,
+      data: updateData,
+    });
+
+    await logAuditEvent({
+      action: 'UPDATE',
+      entity: 'VitalSign',
+      entityId: updatedVital.id,
+      userId: session.user.id,
+      before: vital,
+      after: updatedVital,
     });
 
     return NextResponse.json(updatedVital);
@@ -112,6 +156,14 @@ export async function DELETE(request, { params }) {
 
     await prisma.vitalSign.delete({
       where: { id },
+    });
+
+    await logAuditEvent({
+      action: 'DELETE',
+      entity: 'VitalSign',
+      entityId: vital.id,
+      userId: session.user.id,
+      before: vital,
     });
 
     return NextResponse.json({ success: true });

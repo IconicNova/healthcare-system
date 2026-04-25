@@ -81,6 +81,11 @@ const passwordSchema = z.string()
     message: 'Password cannot contain spaces',
   });
 
+export const PasswordSchema = passwordSchema;
+
+const optionalText = (maxLength) => z.string().trim().max(maxLength).optional().nullable();
+const patchHasAnyValue = (value) => Object.values(value).some((entry) => entry !== undefined);
+
 const optionalDateSchema = z.union([z.string(), z.date()])
   .refine(...minDateRefinement)
   .optional()
@@ -312,4 +317,105 @@ export const MedicationOrderSchema = z.object({
   refillCount: z.number().min(0).optional(),
   maxRefills: z.number().min(0).optional().nullable(),
   status: z.string().optional()
+});
+
+export const SettingsUserCreateSchema = z.object({
+  email: normalizedEmailSchema,
+  password: passwordSchema,
+  firstName: buildHumanNameSchema('First name'),
+  lastName: buildHumanNameSchema('Last name'),
+  role: z.enum(['STAFF', 'SUPERVISOR', 'MANAGER', 'ADMIN', 'SUPER_ADMIN']),
+  branchId: z.string().uuid().optional().nullable(),
+}).strict();
+
+export const SettingsUserUpdateSchema = z.object({
+  email: normalizedEmailSchema.optional(),
+  password: passwordSchema.optional(),
+  firstName: buildHumanNameSchema('First name').optional(),
+  lastName: buildHumanNameSchema('Last name').optional(),
+  role: z.enum(['STAFF', 'SUPERVISOR', 'MANAGER', 'ADMIN', 'SUPER_ADMIN']).optional(),
+  status: z.boolean().optional(),
+  branchId: z.string().uuid().optional().nullable(),
+}).strict().refine(patchHasAnyValue, {
+  message: 'At least one field is required',
+});
+
+export const SettingsOrganizationPatchSchema = z.object({
+  name: z.string().trim().min(1).max(255).optional(),
+  email: normalizedEmailSchema.optional(),
+  phone: optionalText(50),
+  address: optionalText(255),
+  city: optionalText(100),
+  state: optionalText(100),
+  zipCode: optionalText(20),
+}).strict().refine(patchHasAnyValue, {
+  message: 'At least one field is required',
+});
+
+export const SettingsServiceCreateSchema = z.object({
+  name: z.string().trim().min(1).max(255),
+  description: optionalText(2000),
+  duration: z.number().int().positive().optional().nullable(),
+  baseRate: z.number().finite().nonnegative(),
+  status: z.boolean().optional(),
+}).strict();
+
+export const SettingsServiceUpdateSchema = z.object({
+  name: z.string().trim().min(1).max(255).optional(),
+  description: optionalText(2000),
+  duration: z.number().int().positive().optional().nullable(),
+  baseRate: z.number().finite().nonnegative().optional(),
+  status: z.boolean().optional(),
+}).strict().refine(patchHasAnyValue, {
+  message: 'At least one field is required',
+});
+
+export const ProgressNotePatchSchema = z.object({
+  visitId: z.string().uuid().optional().nullable(),
+  type: z.enum(['SOAP', 'DAP', 'NARRATIVE', 'INCIDENT']).optional(),
+  subjective: optionalText(2000),
+  objective: optionalText(2000),
+  assessment: optionalText(2000),
+  plan: optionalText(2000),
+  narrative: optionalText(10000),
+}).strict().refine(patchHasAnyValue, {
+  message: 'At least one field is required',
+});
+
+export const VitalSignPatchSchema = z.object({
+  visitId: z.string().uuid().optional().nullable(),
+  temperature: z.number().finite().optional().nullable(),
+  temperatureUnit: z.string().trim().max(8).optional().nullable(),
+  bloodPressureSystolic: z.number().finite().optional().nullable(),
+  bloodPressureDiastolic: z.number().finite().optional().nullable(),
+  heartRate: z.number().finite().optional().nullable(),
+  respiratoryRate: z.number().finite().optional().nullable(),
+  oxygenSaturation: z.number().finite().optional().nullable(),
+  painLevel: z.number().finite().optional().nullable(),
+  weight: z.number().finite().optional().nullable(),
+  weightUnit: z.string().trim().max(12).optional().nullable(),
+  height: z.number().finite().optional().nullable(),
+  heightUnit: z.string().trim().max(12).optional().nullable(),
+  bmi: z.number().finite().optional().nullable(),
+  glucose: z.number().finite().optional().nullable(),
+  glucoseUnit: z.string().trim().max(20).optional().nullable(),
+  recordedAt: z.string().datetime().or(z.date()).optional(),
+  notes: z.string().max(5000).optional().nullable(),
+}).strict().refine(patchHasAnyValue, {
+  message: 'At least one field is required',
+});
+
+export const VisitReportPatchSchema = z.object({
+  type: z.enum(['VISIT_SUMMARY', 'PERIOD_SUMMARY']).optional(),
+  period: z.enum(['DAILY', 'WEEKLY', 'MONTHLY']).optional().nullable(),
+  startDate: z.string().datetime().or(z.date()).optional(),
+  endDate: z.string().datetime().or(z.date()).optional(),
+  summary: optionalText(5000),
+  servicesDelivered: z.any().optional().nullable(),
+  clientCondition: optionalText(2000),
+  notableEvents: optionalText(2000),
+  recommendations: optionalText(2000),
+  visitIds: z.array(z.string().uuid()).optional(),
+}).strict().refine(patchHasAnyValue, {
+  message: 'At least one field is required',
 });

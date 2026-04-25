@@ -5,6 +5,8 @@ import prisma from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
 import { encrypt, getEncryptionConfigurationError, maskSSN } from '@/lib/encryption';
 import { requireRole } from '@/lib/api-safety';
+import { logAuditEvent } from '@/lib/audit-log';
+import { enforceRouteRateLimit } from '@/lib/route-rate-limit';
 
 const CLIENT_MUTATION_ROLES = ['SUPER_ADMIN', 'ADMIN', 'MANAGER'];
 
@@ -112,6 +114,15 @@ export async function PATCH(request, { params }) {
     const forbiddenResponse = requireRole(session, CLIENT_MUTATION_ROLES);
     if (forbiddenResponse) {
       return forbiddenResponse;
+    }
+
+    const rateLimitResponse = await enforceRouteRateLimit(session, 'clients-update', {
+      maxRequests: 30,
+      windowMs: 15 * 60 * 1000,
+      message: 'Too many client update attempts. Please try again later.',
+    });
+    if (rateLimitResponse) {
+      return rateLimitResponse;
     }
 
     const { id } = params;
@@ -319,8 +330,18 @@ export async function PATCH(request, { params }) {
       return { user, client };
     });
 
+    await logAuditEvent({
+      action: 'UPDATE',
+      entity: 'Client',
+      entityId: result.client.id,
+      userId: session.user.id,
+      before: existing,
+      after: result.client,
+    });
+
     return NextResponse.json({
       ...result.client,
+      ssn: result.client.ssn ? maskSSN(result.client.ssn) : null,
       user: result.user,
       fullName: `${result.client.firstName} ${result.client.lastName}`,
     });
@@ -385,6 +406,15 @@ export async function DELETE(request, { params }) {
           updatedAt: true,
         },
       });
+    });
+
+    await logAuditEvent({
+      action: 'DISCHARGE',
+      entity: 'Client',
+      entityId: client.id,
+      userId: session.user.id,
+      before: existing,
+      after: client,
     });
 
     return NextResponse.json({ message: 'Client discharged', client });

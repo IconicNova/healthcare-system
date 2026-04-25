@@ -165,7 +165,11 @@ function addDays(date, amount) {
 
 function addMonths(date, amount) {
   const next = new Date(date);
+  const dayOfMonth = next.getDate();
+  next.setDate(1);
   next.setMonth(next.getMonth() + amount);
+  const lastDayOfTargetMonth = new Date(next.getFullYear(), next.getMonth() + 1, 0).getDate();
+  next.setDate(Math.min(dayOfMonth, lastDayOfTargetMonth));
   return next;
 }
 
@@ -293,7 +297,11 @@ export function validateRecurrence(recurrence) {
     case 'DAILY':
       return recurrence.count >= 2 ? null : 'Daily recurrence requires a number of days';
     case 'WEEKLY':
-      return recurrence.weeks >= 2 || recurrence.count >= 2
+      if (recurrence.count !== undefined && recurrence.count !== null) {
+        return recurrence.count >= 2 ? null : 'Weekly recurrence requires a number of weeks';
+      }
+
+      return recurrence.weeks >= 2
         ? null
         : 'Weekly recurrence requires a number of weeks';
     case 'BI_WEEKLY':
@@ -316,7 +324,7 @@ export function getRecurrenceTotalVisits(recurrence) {
     case 'MONTHLY':
       return recurrence.count;
     case 'WEEKLY':
-      return recurrence.weeks || recurrence.count;
+      return recurrence.count || recurrence.weeks || 1;
     default:
       return 1;
   }

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import { SettingsServiceCreateSchema } from '@/lib/validations';
 
 export async function GET() {
   const session = await getServerSession(authOptions);
@@ -37,13 +38,27 @@ export async function POST(request) {
 
   try {
     const body = await request.json();
+    const normalizedBody = {
+      name: body.name,
+      description: body.description ?? null,
+      duration: body.duration === '' || body.duration === null || body.duration === undefined ? null : Number(body.duration),
+      baseRate: Number(body.baseRate),
+      status: body.status ?? true,
+    };
+    const validationResult = SettingsServiceCreateSchema.safeParse(normalizedBody);
+    if (!validationResult.success) {
+      return NextResponse.json(
+        { error: 'Invalid data', details: validationResult.error.format() },
+        { status: 400 }
+      );
+    }
 
     const service = await prisma.service.create({
       data: {
-        name: body.name,
-        description: body.description,
-        duration: body.duration,
-        baseRate: parseFloat(body.baseRate),
+        name: validationResult.data.name,
+        description: validationResult.data.description || null,
+        duration: validationResult.data.duration ?? null,
+        baseRate: validationResult.data.baseRate,
         organizationId: session.user.organizationId,
         status: true,
       },
