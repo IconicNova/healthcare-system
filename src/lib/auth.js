@@ -3,6 +3,31 @@ import bcrypt from 'bcryptjs';
 import prisma from './prisma';
 import { signIn as nextAuthSignIn, signOut as nextAuthSignOut } from 'next-auth/react';
 
+let loginSecuritySupportPromise;
+
+async function getLoginSecurityColumnSupport() {
+  if (!loginSecuritySupportPromise) {
+    loginSecuritySupportPromise = prisma.$queryRaw`
+      SELECT column_name
+      FROM information_schema.columns
+      WHERE table_schema = current_schema()
+        AND table_name = 'user'
+        AND column_name IN ('failedLoginAttempts', 'lockedUntil')
+    `.then((rows) => {
+      const names = new Set(rows.map((row) => row.column_name));
+      return {
+        failedLoginAttempts: names.has('failedLoginAttempts'),
+        lockedUntil: names.has('lockedUntil'),
+      };
+    }).catch(() => ({
+      failedLoginAttempts: false,
+      lockedUntil: false,
+    }));
+  }
+
+  return loginSecuritySupportPromise;
+}
+
 const NextAuthConfig = {
   providers: [
     CredentialsProvider({
@@ -16,17 +41,31 @@ const NextAuthConfig = {
           throw new Error('Invalid credentials');
         }
 
+        const email = credentials.email.trim().toLowerCase();
+        const loginSecurityColumns = await getLoginSecurityColumnSupport();
+
         // Use findMany instead of findUnique since email is no longer globally unique
         // Email uniqueness is now scoped to organization
         const users = await prisma.user.findMany({
           where: {
-            email: credentials.email,
+            email,
             status: true,
           },
-          include: {
-            staff: true,
-            client: true,
-            branch: true,
+          select: {
+            id: true,
+            email: true,
+            password: true,
+            firstName: true,
+            lastName: true,
+            role: true,
+            avatar: true,
+            branchId: true,
+            organizationId: true,
+            status: true,
+            ...(loginSecurityColumns.failedLoginAttempts
+              ? { failedLoginAttempts: true }
+              : {}),
+            ...(loginSecurityColumns.lockedUntil ? { lockedUntil: true } : {}),
           },
         });
 
@@ -46,7 +85,7 @@ const NextAuthConfig = {
           throw new Error('Invalid credentials');
         }
 
-        if (user.lockedUntil && new Date(user.lockedUntil) > new Date()) {
+        if (loginSecurityColumns.lockedUntil && user.lockedUntil && new Date(user.lockedUntil) > new Date()) {
           throw new Error('Account temporarily locked. Please try again later.');
         }
 
@@ -56,20 +95,22 @@ const NextAuthConfig = {
         );
 
         if (!isPasswordValid || !user.status) {
-          const failedLoginAttempts = (user.failedLoginAttempts || 0) + 1;
-          await prisma.user.update({
-            where: { id: user.id },
-            data: {
-              failedLoginAttempts,
-              lockedUntil: failedLoginAttempts >= 5
-                ? new Date(Date.now() + 15 * 60 * 1000)
-                : user.lockedUntil,
-            },
-          });
+          if (loginSecurityColumns.failedLoginAttempts && loginSecurityColumns.lockedUntil) {
+            const failedLoginAttempts = (user.failedLoginAttempts || 0) + 1;
+            await prisma.user.update({
+              where: { id: user.id },
+              data: {
+                failedLoginAttempts,
+                lockedUntil: failedLoginAttempts >= 5
+                  ? new Date(Date.now() + 15 * 60 * 1000)
+                  : user.lockedUntil,
+              },
+            });
+          }
           throw new Error('Invalid credentials');
         }
 
-        if (user.failedLoginAttempts || user.lockedUntil) {
+        if (loginSecurityColumns.failedLoginAttempts && loginSecurityColumns.lockedUntil && (user.failedLoginAttempts || user.lockedUntil)) {
           await prisma.user.update({
             where: { id: user.id },
             data: {

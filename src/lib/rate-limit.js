@@ -1,5 +1,6 @@
 const localRateLimitStore = globalThis.__homecareRateLimitStore ?? new Map();
 globalThis.__homecareRateLimitStore = localRateLimitStore;
+let warnedAboutMissingUpstashConfig = false;
 
 if (!globalThis.__homecareRateLimitCleanupStarted) {
   globalThis.__homecareRateLimitCleanupStarted = true;
@@ -68,12 +69,9 @@ function rateLimitLocal(key, { maxRequests, windowMs }) {
  */
 export async function rateLimit(key, { maxRequests = 5, windowMs = 15 * 60 * 1000 } = {}) {
   if (!hasUpstashConfig()) {
-    if (process.env.NODE_ENV === 'production') {
-      return {
-        success: false,
-        remaining: 0,
-        retryAfterMs: windowMs,
-      };
+    if (!warnedAboutMissingUpstashConfig) {
+      warnedAboutMissingUpstashConfig = true;
+      console.warn('Upstash rate limiting is not configured; using the local in-memory fallback.');
     }
 
     return rateLimitLocal(key, { maxRequests, windowMs });
