@@ -121,8 +121,6 @@ export default function CareDeliveryWorkspace({ params }) {
   };
 
   const handleEditVisit = (visit) => {
-    setEditVisit(visit);
-    setEditVisitTab('info');
     router.replace(buildCareDeliveryVisitPath(client.id, visit.id, 'info'), { scroll: false });
   };
 

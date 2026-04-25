@@ -7,6 +7,7 @@ import { normalizeVisitPayload, VALID_VISIT_STATUS_TRANSITIONS } from '@/lib/sch
 import { collectVisitConflicts, validateVisitBusinessRules } from '@/lib/visit-business-rules';
 import { requireOrgRole } from '@/lib/api-safety';
 import { logAuditEvent } from '@/lib/audit-log';
+import { VISIT_MANAGEMENT_ROLES } from '@/lib/visit-access';
 
 export async function GET(request, { params }) {
   try {
@@ -16,7 +17,7 @@ export async function GET(request, { params }) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const forbiddenResponse = requireOrgRole(session, ['STAFF']);
+    const forbiddenResponse = requireOrgRole(session, VISIT_MANAGEMENT_ROLES);
     if (forbiddenResponse) {
       return forbiddenResponse;
     }
@@ -128,7 +129,7 @@ export async function PATCH(request, { params }) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const forbiddenResponse = requireOrgRole(session, ['STAFF']);
+    const forbiddenResponse = requireOrgRole(session, VISIT_MANAGEMENT_ROLES);
     if (forbiddenResponse) {
       return forbiddenResponse;
     }
@@ -313,7 +314,7 @@ export async function DELETE(request, { params }) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const forbiddenResponse = requireOrgRole(session, ['STAFF']);
+    const forbiddenResponse = requireOrgRole(session, VISIT_MANAGEMENT_ROLES);
     if (forbiddenResponse) {
       return forbiddenResponse;
     }
