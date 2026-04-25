@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import { requireOrgRole } from '@/lib/api-safety';
+import { ClientMedicalInfoPatchSchema } from '@/lib/validations';
+import { logAuditEvent } from '@/lib/audit-log';
 
 export async function PATCH(request, { params }) {
   try {
@@ -11,8 +14,20 @@ export async function PATCH(request, { params }) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const forbiddenResponse = requireOrgRole(session, ['STAFF']);
+    if (forbiddenResponse) {
+      return forbiddenResponse;
+    }
+
     const { id } = params;
     const body = await request.json();
+    const validationResult = ClientMedicalInfoPatchSchema.safeParse(body);
+    if (!validationResult.success) {
+      return NextResponse.json(
+        { error: 'Invalid data', details: validationResult.error.format() },
+        { status: 400 }
+      );
+    }
 
     // Check if client exists
     const client = await prisma.client.findFirst({
@@ -26,7 +41,7 @@ export async function PATCH(request, { params }) {
       return NextResponse.json({ error: 'Client not found' }, { status: 404 });
     }
 
-    const { medications, medicalHistory } = body;
+    const { medications, medicalHistory } = validationResult.data;
 
     // Update medications
     if (medications) {
@@ -43,6 +58,12 @@ export async function PATCH(request, { params }) {
             name: med.name,
             dosage: med.dosage,
             frequency: med.frequency,
+            route: med.route || null,
+            administrationType: med.administrationType || null,
+            administrationTiming: med.administrationTiming || null,
+            status: med.status || null,
+            startDate: med.startDate ? new Date(med.startDate) : null,
+            endDate: med.endDate ? new Date(med.endDate) : null,
             notes: med.notes || null,
           })),
         });
@@ -96,6 +117,15 @@ export async function PATCH(request, { params }) {
           },
         },
       },
+    });
+
+    await logAuditEvent({
+      organizationId: session.user.organizationId,
+      action: 'UPDATE',
+      entity: 'ClientMedicalInfo',
+      entityId: id,
+      userId: session.user.id,
+      after: updatedClient,
     });
 
     return NextResponse.json(updatedClient);

@@ -69,13 +69,22 @@ const normalizedEmailSchema = z.string()
   .transform((value) => value.toLowerCase());
 
 const passwordSchema = z.string()
-  .min(8, 'Password must be at least 8 characters')
+  .min(12, 'Password must be at least 12 characters')
   .max(100, 'Password must be 100 characters or fewer')
   .refine((value) => /[A-Za-z]/.test(value), {
     message: 'Password must include at least one letter',
   })
+  .refine((value) => /[A-Z]/.test(value), {
+    message: 'Password must include at least one uppercase letter',
+  })
+  .refine((value) => /[a-z]/.test(value), {
+    message: 'Password must include at least one lowercase letter',
+  })
   .refine((value) => /\d/.test(value), {
     message: 'Password must include at least one number',
+  })
+  .refine((value) => /[^A-Za-z0-9]/.test(value), {
+    message: 'Password must include at least one symbol',
   })
   .refine((value) => !/\s/.test(value), {
     message: 'Password cannot contain spaces',
@@ -304,6 +313,67 @@ export const VisitReportSchema = z.object({
   notableEvents: z.string().max(2000).optional().nullable(),
   recommendations: z.string().max(2000).optional().nullable(),
   visitIds: z.array(z.string().uuid()).optional()
+});
+
+export const CarePlanServiceSchema = z.object({
+  serviceId: z.string().uuid('Service is required'),
+  frequency: z.enum(['DAILY', 'WEEKLY', 'BI_WEEKLY', 'MONTHLY', 'AS_NEEDED', 'CUSTOM']).optional(),
+  frequencyText: z.string().max(255).optional().nullable(),
+  instructions: z.string().max(1000).optional().nullable(),
+  order: z.number().int().min(0).optional(),
+}).strict();
+
+export const CarePlanCreateSchema = z.object({
+  name: z.string().trim().min(1).max(255),
+  description: optionalText(1000),
+  startDate: z.string().datetime().or(z.date()),
+  endDate: z.string().datetime().or(z.date()).optional().nullable(),
+  status: z.enum(['ACTIVE', 'ON_HOLD', 'COMPLETED', 'DISCHARGED', 'REVOKED', 'DRAFT']).optional(),
+  clientId: z.string().uuid('Client is required'),
+  staffId: z.string().uuid().optional().nullable(),
+  services: z.array(CarePlanServiceSchema).min(1, 'At least one service is required'),
+}).strict();
+
+export const CarePlanUpdateSchema = CarePlanCreateSchema.partial().extend({
+  services: z.array(CarePlanServiceSchema).optional(),
+}).strict().refine(patchHasAnyValue, {
+  message: 'At least one field is required',
+});
+
+export const MedicationSchema = z.object({
+  name: z.string().trim().min(1).max(255),
+  dosage: z.string().trim().min(1).max(255),
+  frequency: z.string().trim().min(1).max(255),
+  route: z.string().trim().max(100).optional().nullable(),
+  administrationType: z.string().trim().max(100).optional().nullable(),
+  administrationTiming: z.string().trim().max(100).optional().nullable(),
+  status: z.string().trim().max(50).optional().nullable(),
+  startDate: z.string().datetime().or(z.date()).optional().nullable(),
+  endDate: z.string().datetime().or(z.date()).optional().nullable(),
+  prescriberName: z.string().trim().max(100).optional().nullable(),
+  prescriberNPI: z.string().trim().max(20).optional().nullable(),
+  pharmacyName: z.string().trim().max(100).optional().nullable(),
+  pharmacyPhone: z.string().trim().max(20).optional().nullable(),
+  refillCount: z.number().int().min(0).optional().nullable(),
+  maxRefills: z.number().int().min(0).optional().nullable(),
+  notes: z.string().max(2000).optional().nullable(),
+}).strict();
+
+export const MedicationReconciliationSchema = z.object({
+  action: z.enum(['compare', 'merge']).default('compare'),
+  externalMedications: z.array(MedicationSchema).default([]),
+}).strict();
+
+export const ClientMedicalInfoPatchSchema = z.object({
+  medications: z.array(MedicationSchema).optional(),
+  medicalHistory: z.array(z.object({
+    condition: z.string().trim().min(1).max(255),
+    diagnosis: z.string().trim().max(255).optional().nullable(),
+    date: z.string().datetime().or(z.date()).optional().nullable(),
+    notes: z.string().max(2000).optional().nullable(),
+  }).strict()).optional(),
+}).strict().refine(patchHasAnyValue, {
+  message: 'At least one field is required',
 });
 
 export const MedicationOrderSchema = z.object({

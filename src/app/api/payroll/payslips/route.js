@@ -116,10 +116,31 @@ export async function GET(request) {
       const { staff, timesheets: staffTimesheets } = entry;
       const payRate = staff.hourlyRate || 0;
 
-      // Aggregate ALL hours across timesheets first, THEN apply overtime threshold
-      const totalHoursWorked = staffTimesheets.reduce((sum, ts) => sum + (ts.totalHours || 0), 0);
-      const totalRegularHours = Math.min(totalHoursWorked, OVERTIME_THRESHOLD);
-      const totalOvertimeHours = Math.max(0, totalHoursWorked - OVERTIME_THRESHOLD);
+        const weeklyHours = new Map();
+        for (const timesheet of staffTimesheets) {
+          if (Array.isArray(timesheet.timesheetEntries) && timesheet.timesheetEntries.length > 0) {
+            for (const entry of timesheet.timesheetEntries) {
+              const hours = Number(entry.hours) || 0;
+              if (hours <= 0) continue;
+              const entryDate = entry.date ? new Date(entry.date) : new Date(timesheet.startDate);
+              const weekKey = getPayrollWeekKey(entryDate);
+              weeklyHours.set(weekKey, (weeklyHours.get(weekKey) || 0) + hours);
+            }
+          } else {
+            const weekKey = getPayrollWeekKey(timesheet.startDate);
+            weeklyHours.set(weekKey, (weeklyHours.get(weekKey) || 0) + (timesheet.totalHours || 0));
+          }
+        }
+
+        const weeklyHourTotals = Array.from(weeklyHours.values());
+        const totalRegularHours = weeklyHourTotals.reduce(
+          (sum, hours) => sum + Math.min(hours, OVERTIME_THRESHOLD),
+          0
+        );
+        const totalOvertimeHours = weeklyHourTotals.reduce(
+          (sum, hours) => sum + Math.max(0, hours - OVERTIME_THRESHOLD),
+          0
+        );
 
       let regularPay = 0;
       let overtimePay = 0;
@@ -129,7 +150,7 @@ export async function GET(request) {
         overtimePay = totalOvertimeHours * payRate * OVERTIME_MULTIPLIER;
       } else if (staff.payType === 'SALARY') {
         // Weekly rate × number of weeks
-        const weekCount = staffTimesheets.length;
+        const weekCount = Math.max(weeklyHourTotals.length, 1);
         regularPay = (payRate / 52) * weekCount;
         overtimePay = 0;
       } else {
@@ -218,4 +239,17 @@ export async function GET(request) {
     console.error('Error computing payslips:', error);
     return NextResponse.json({ error: 'Failed to compute payslips' }, { status: 500 });
   }
+}
+
+function getPayrollWeekKey(date) {
+  const value = new Date(date);
+  if (Number.isNaN(value.getTime())) {
+    return 'invalid-week';
+  }
+
+  value.setHours(0, 0, 0, 0);
+  const dayOfWeek = value.getDay();
+  const offset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+  value.setDate(value.getDate() + offset);
+  return value.toISOString().slice(0, 10);
 }

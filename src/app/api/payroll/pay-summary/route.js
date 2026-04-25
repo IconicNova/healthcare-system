@@ -76,16 +76,36 @@ export async function GET(request) {
       staffTimesheetMap.get(key).timesheets.push(timesheet);
     }
 
-    // Calculate pay for each staff (aggregate hours THEN apply overtime threshold)
+    // Calculate pay for each staff using weekly overtime thresholds
     const paySummary = Array.from(staffTimesheetMap.values()).map((entry) => {
       const { staff, timesheets: staffTimesheets } = entry;
 
-      // Sum all hours across timesheets FIRST
-      const totalHours = staffTimesheets.reduce((sum, ts) => sum + (ts.totalHours || 0), 0);
+      const weeklyHours = new Map();
+      for (const timesheet of staffTimesheets) {
+        if (Array.isArray(timesheet.timesheetEntries) && timesheet.timesheetEntries.length > 0) {
+          for (const entry of timesheet.timesheetEntries) {
+            const hours = Number(entry.hours) || 0;
+            if (hours <= 0) continue;
+            const entryDate = entry.date ? new Date(entry.date) : new Date(timesheet.startDate);
+            const weekKey = getPayrollWeekKey(entryDate);
+            weeklyHours.set(weekKey, (weeklyHours.get(weekKey) || 0) + hours);
+          }
+        } else {
+          const weekKey = getPayrollWeekKey(timesheet.startDate);
+          weeklyHours.set(weekKey, (weeklyHours.get(weekKey) || 0) + (timesheet.totalHours || 0));
+        }
+      }
 
-      // THEN apply overtime threshold to the aggregate
-      const regularHours = Math.min(totalHours, 40);
-      const overtimeHours = Math.max(0, totalHours - 40);
+      const weeklyHourTotals = Array.from(weeklyHours.values());
+      const totalHours = weeklyHourTotals.reduce((sum, hours) => sum + hours, 0);
+      const regularHours = weeklyHourTotals.reduce(
+        (sum, hours) => sum + Math.min(hours, 40),
+        0
+      );
+      const overtimeHours = weeklyHourTotals.reduce(
+        (sum, hours) => sum + Math.max(0, hours - 40),
+        0
+      );
 
       // Get pay rate
       const payRate = staff.hourlyRate || 0;
@@ -102,7 +122,7 @@ export async function GET(request) {
       } else if (staff.payType === 'SALARY') {
         // For salary, use weekly rate (annual / 52)
         const weeklyRate = payRate / 52;
-        const weekCount = staffTimesheets.length;
+        const weekCount = Math.max(weeklyHourTotals.length, 1);
         regularPay = weeklyRate * weekCount;
         overtimePay = 0;
         grossPay = regularPay;
@@ -172,4 +192,17 @@ export async function GET(request) {
 // Helper function to format date
 function formatDate(date) {
   return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+function getPayrollWeekKey(date) {
+  const value = new Date(date);
+  if (Number.isNaN(value.getTime())) {
+    return 'invalid-week';
+  }
+
+  value.setHours(0, 0, 0, 0);
+  const dayOfWeek = value.getDay();
+  const offset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+  value.setDate(value.getDate() + offset);
+  return value.toISOString().slice(0, 10);
 }

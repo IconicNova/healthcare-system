@@ -16,7 +16,7 @@ export async function GET(request, { params }) {
     const status = searchParams.get('status') || '';
 
     // Verify staff belongs to organization
-    const staff = await prisma.staff.findUnique({
+    const staff = await prisma.staff.findFirst({
       where: {
         id,
         organizationId: session.user.organizationId,

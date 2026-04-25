@@ -15,7 +15,7 @@ export async function GET(request, { params }) {
     const { clientId } = await params;
 
     // Get client details
-    const client = await prisma.client.findUnique({
+    const client = await prisma.client.findFirst({
       where: {
         id: clientId,
         organizationId: session.user.organizationId,

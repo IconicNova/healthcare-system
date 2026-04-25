@@ -9,6 +9,7 @@ import {
   normalizeFormSchema,
   normalizeFormStatus,
 } from '@/lib/form-review';
+import { requireOrgRole } from '@/lib/api-safety';
 
 // GET - Fetch a single form with template and relations
 export async function GET(request, { params }) {
@@ -17,6 +18,11 @@ export async function GET(request, { params }) {
 
     if (!session || !session.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const forbiddenResponse = requireOrgRole(session, ['STAFF']);
+    if (forbiddenResponse) {
+      return forbiddenResponse;
     }
 
     const { id } = params;
@@ -130,6 +136,11 @@ export async function PATCH(request, { params }) {
 
     if (!session || !session.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const forbiddenResponse = requireOrgRole(session, ['STAFF']);
+    if (forbiddenResponse) {
+      return forbiddenResponse;
     }
 
     const { id } = params;

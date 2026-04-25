@@ -219,7 +219,8 @@ export default function SchedulingPageClient({ viewSlug }) {
         ]);
 
         if (visitsRes.ok) {
-          setVisits(await visitsRes.json());
+          const visitsData = await visitsRes.json();
+          setVisits(visitsData.visits || visitsData || []);
         } else {
           const payload = await parseApiPayload(visitsRes);
           toast('error', 'Visits unavailable', getApiErrorMessage(payload, 'Could not load visits.'));

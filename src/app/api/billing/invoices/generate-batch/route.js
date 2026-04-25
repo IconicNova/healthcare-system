@@ -209,6 +209,7 @@ export async function POST(request) {
 
     await Promise.all(
       generatedInvoices.map((invoice) => logAuditEvent({
+        organizationId: session.user.organizationId,
         action: 'CREATE',
         entity: 'Invoice',
         entityId: invoice.id,

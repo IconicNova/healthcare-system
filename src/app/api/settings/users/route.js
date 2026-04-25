@@ -119,6 +119,7 @@ export async function POST(request) {
     });
 
     await logAuditEvent({
+      organizationId: session.user.organizationId,
       action: 'CREATE',
       entity: 'User',
       entityId: user.id,

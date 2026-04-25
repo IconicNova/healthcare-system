@@ -72,6 +72,7 @@ export function buildAuditChanges(before, after) {
 }
 
 export async function logAuditEvent({
+  organizationId,
   action,
   entity,
   entityId = null,
@@ -80,7 +81,7 @@ export async function logAuditEvent({
   after,
   changes,
 }) {
-  if (!userId || !action || !entity) {
+  if (!organizationId || !userId || !action || !entity) {
     return null;
   }
 
@@ -89,6 +90,7 @@ export async function logAuditEvent({
 
     return await prisma.auditLog.create({
       data: {
+        organizationId,
         action,
         entity,
         entityId,

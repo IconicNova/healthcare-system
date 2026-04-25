@@ -46,13 +46,37 @@ const NextAuthConfig = {
           throw new Error('Invalid credentials');
         }
 
+        if (user.lockedUntil && new Date(user.lockedUntil) > new Date()) {
+          throw new Error('Account temporarily locked. Please try again later.');
+        }
+
         const isPasswordValid = await bcrypt.compare(
           credentials.password,
           user.password
         );
 
         if (!isPasswordValid || !user.status) {
+          const failedLoginAttempts = (user.failedLoginAttempts || 0) + 1;
+          await prisma.user.update({
+            where: { id: user.id },
+            data: {
+              failedLoginAttempts,
+              lockedUntil: failedLoginAttempts >= 5
+                ? new Date(Date.now() + 15 * 60 * 1000)
+                : user.lockedUntil,
+            },
+          });
           throw new Error('Invalid credentials');
+        }
+
+        if (user.failedLoginAttempts || user.lockedUntil) {
+          await prisma.user.update({
+            where: { id: user.id },
+            data: {
+              failedLoginAttempts: 0,
+              lockedUntil: null,
+            },
+          });
         }
 
         return {
@@ -105,6 +129,25 @@ const NextAuthConfig = {
   },
   secret: process.env.NEXTAUTH_SECRET,
 };
+
+export function getTrustedLoginIp(request) {
+  const trustedIp =
+    request.headers.get('x-vercel-forwarded-for')?.split(',')[0]?.trim() ||
+    request.headers.get('x-real-ip') ||
+    request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+    'unknown';
+
+  return trustedIp;
+}
+
+export function getNormalizedLoginEmail(credentials) {
+  const email = credentials?.email;
+  if (typeof email !== 'string') {
+    return '';
+  }
+
+  return email.trim().toLowerCase();
+}
 
 // Client-side hooks
 export const signIn = nextAuthSignIn;

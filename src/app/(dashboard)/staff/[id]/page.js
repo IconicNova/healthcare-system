@@ -16,7 +16,7 @@ export default async function StaffProfilePage({ params }) {
   }
 
   try {
-    const staff = await prisma.staff.findUnique({
+    const staff = await prisma.staff.findFirst({
       where: {
         id,
         organizationId: session.user.organizationId,

@@ -5,6 +5,8 @@ import prisma from '@/lib/prisma';
 import { ApiResponse } from '@/lib/api-response';
 import { normalizeVisitPayload, VALID_VISIT_STATUS_TRANSITIONS } from '@/lib/scheduling';
 import { collectVisitConflicts, validateVisitBusinessRules } from '@/lib/visit-business-rules';
+import { requireOrgRole } from '@/lib/api-safety';
+import { logAuditEvent } from '@/lib/audit-log';
 
 export async function GET(request, { params }) {
   try {
@@ -12,6 +14,11 @@ export async function GET(request, { params }) {
 
     if (!session || !session.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const forbiddenResponse = requireOrgRole(session, ['STAFF']);
+    if (forbiddenResponse) {
+      return forbiddenResponse;
     }
 
     const { id } = params;
@@ -119,6 +126,11 @@ export async function PATCH(request, { params }) {
 
     if (!session || !session.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const forbiddenResponse = requireOrgRole(session, ['STAFF']);
+    if (forbiddenResponse) {
+      return forbiddenResponse;
     }
 
     const { id } = params;
@@ -273,6 +285,16 @@ export async function PATCH(request, { params }) {
       },
     });
 
+    await logAuditEvent({
+      organizationId: session.user.organizationId,
+      action: 'UPDATE',
+      entity: 'Visit',
+      entityId: visit.id,
+      userId: session.user.id,
+      before: existing,
+      after: visit,
+    });
+
     return NextResponse.json({
       ...visit,
       warnings: businessValidation.warnings,
@@ -289,6 +311,11 @@ export async function DELETE(request, { params }) {
 
     if (!session || !session.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const forbiddenResponse = requireOrgRole(session, ['STAFF']);
+    if (forbiddenResponse) {
+      return forbiddenResponse;
     }
 
     const { id } = params;
@@ -315,6 +342,15 @@ export async function DELETE(request, { params }) {
 
     await prisma.visit.delete({
       where: { id },
+    });
+
+    await logAuditEvent({
+      organizationId: session.user.organizationId,
+      action: 'DELETE',
+      entity: 'Visit',
+      entityId: existing.id,
+      userId: session.user.id,
+      before: existing,
     });
 
     return NextResponse.json({ message: 'Visit deleted successfully' });

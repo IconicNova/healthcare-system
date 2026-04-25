@@ -133,8 +133,8 @@ export async function POST(request) {
     const organizationId = session.user.organizationId;
 
     // Get invoice and verify
-    const invoice = await prisma.invoice.findUnique({
-      where: { id: invoiceId },
+    const invoice = await prisma.invoice.findFirst({
+      where: { id: invoiceId, organizationId },
       include: {
         payments: true,
       },
@@ -207,6 +207,7 @@ export async function POST(request) {
     });
 
     await logAuditEvent({
+      organizationId: session.user.organizationId,
       action: 'CREATE',
       entity: 'Payment',
       entityId: payment.id,

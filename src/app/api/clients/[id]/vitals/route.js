@@ -4,6 +4,8 @@ import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { VitalSignSchema } from '@/lib/validations';
 import { parsePaginationParams } from '@/lib/api-safety';
+import { requireOrgRole } from '@/lib/api-safety';
+import { logAuditEvent } from '@/lib/audit-log';
 
 // GET - Fetch vitals for a client
 export async function GET(request, { params }) {
@@ -12,6 +14,11 @@ export async function GET(request, { params }) {
 
     if (!session || !session.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const forbiddenResponse = requireOrgRole(session, ['STAFF']);
+    if (forbiddenResponse) {
+      return forbiddenResponse;
     }
 
     const { id } = params;
@@ -67,6 +74,11 @@ export async function POST(request, { params }) {
 
     if (!session || !session.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const forbiddenResponse = requireOrgRole(session, ['STAFF']);
+    if (forbiddenResponse) {
+      return forbiddenResponse;
     }
 
     const { id } = params;
@@ -126,6 +138,15 @@ export async function POST(request, { params }) {
 
     const vital = await prisma.vitalSign.create({
       data: vitalData,
+    });
+
+    await logAuditEvent({
+      organizationId: session.user.organizationId,
+      action: 'CREATE',
+      entity: 'VitalSign',
+      entityId: vital.id,
+      userId: session.user.id,
+      after: vital,
     });
 
     return NextResponse.json(vital, { status: 201 });

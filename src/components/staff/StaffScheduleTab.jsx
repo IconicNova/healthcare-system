@@ -24,7 +24,7 @@ export default function StaffScheduleTab({ staffId }) {
 
       if (response.ok) {
         const data = await response.json();
-        setVisits(data);
+        setVisits(data.visits || data);
       }
     } catch (error) {
       console.error('Error fetching visits:', error);

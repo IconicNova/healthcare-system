@@ -23,7 +23,7 @@ export async function PATCH(request, { params }) {
     const body = await request.json();
 
     // Verify staff belongs to organization
-    const staff = await prisma.staff.findUnique({
+    const staff = await prisma.staff.findFirst({
       where: {
         id: staffId,
         organizationId: session.user.organizationId,
@@ -101,7 +101,7 @@ export async function DELETE(request, { params }) {
     const { id: staffId, certId } = params;
 
     // Verify staff belongs to organization
-    const staff = await prisma.staff.findUnique({
+    const staff = await prisma.staff.findFirst({
       where: {
         id: staffId,
         organizationId: session.user.organizationId,

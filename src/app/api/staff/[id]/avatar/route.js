@@ -29,12 +29,17 @@ export async function PUT(request, { params }) {
     }
 
     // Check if staff exists
-    const existing = await prisma.staff.findUnique({
+    const existing = await prisma.staff.findFirst({
       where: {
         id,
         organizationId: session.user.organizationId,
       },
-      include: { user: true },
+      select: {
+        id: true,
+        userId: true,
+        firstName: true,
+        lastName: true,
+      },
     });
 
     if (!existing) {
@@ -85,12 +90,17 @@ export async function DELETE(request, { params }) {
     const { id } = await params;
 
     // Check if staff exists
-    const existing = await prisma.staff.findUnique({
+    const existing = await prisma.staff.findFirst({
       where: {
         id,
         organizationId: session.user.organizationId,
       },
-      include: { user: true },
+      select: {
+        id: true,
+        userId: true,
+        firstName: true,
+        lastName: true,
+      },
     });
 
     if (!existing) {

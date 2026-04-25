@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { SettingsOrganizationPatchSchema } from '@/lib/validations';
+import { logAuditEvent } from '@/lib/audit-log';
 
 export async function GET() {
   const session = await getServerSession(authOptions);
@@ -54,6 +55,15 @@ export async function PATCH(request) {
         ...(validationResult.data.state !== undefined && { state: validationResult.data.state || null }),
         ...(validationResult.data.zipCode !== undefined && { zipCode: validationResult.data.zipCode || null }),
       },
+    });
+
+    await logAuditEvent({
+      organizationId: session.user.organizationId,
+      action: 'UPDATE',
+      entity: 'Organization',
+      entityId: organization.id,
+      userId: session.user.id,
+      after: organization,
     });
 
     return NextResponse.json(organization);

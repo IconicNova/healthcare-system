@@ -16,6 +16,14 @@ export function requireRole(session, allowedRoles) {
   return null;
 }
 
+export function requireOrgRole(session, allowedRoles) {
+  if (!session?.user?.organizationId) {
+    return Response.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  return requireRole(session, allowedRoles);
+}
+
 export function canManageStaffRole(actorRole, targetRole) {
   return STAFF_ROLE_TARGETS_BY_ACTOR[actorRole]?.has(targetRole) ?? false;
 }

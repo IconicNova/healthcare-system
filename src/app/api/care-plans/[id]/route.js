@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import { requireOrgRole } from '@/lib/api-safety';
+import { CarePlanUpdateSchema } from '@/lib/validations';
+import { logAuditEvent } from '@/lib/audit-log';
 
 export async function GET(request, { params }) {
   try {
@@ -78,8 +81,20 @@ export async function PATCH(request, { params }) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const forbiddenResponse = requireOrgRole(session, ['MANAGER']);
+    if (forbiddenResponse) {
+      return forbiddenResponse;
+    }
+
     const { id } = params;
     const body = await request.json();
+    const validationResult = CarePlanUpdateSchema.safeParse(body);
+    if (!validationResult.success) {
+      return NextResponse.json(
+        { error: 'Invalid data', details: validationResult.error.format() },
+        { status: 400 }
+      );
+    }
 
     const carePlan = await prisma.carePlan.findFirst({
       where: {
@@ -92,7 +107,35 @@ export async function PATCH(request, { params }) {
       return NextResponse.json({ error: 'Care plan not found' }, { status: 404 });
     }
 
-    const { name, description, startDate, endDate, status, clientId, staffId, services } = body;
+    const { name, description, startDate, endDate, status, clientId, staffId, services } = validationResult.data;
+
+    if (clientId !== undefined) {
+      const client = await prisma.client.findFirst({
+        where: {
+          id: clientId,
+          organizationId: session.user.organizationId,
+        },
+        select: { id: true },
+      });
+
+      if (!client) {
+        return NextResponse.json({ error: 'Selected client is invalid for this organization' }, { status: 400 });
+      }
+    }
+
+    if (staffId !== undefined && staffId !== null) {
+      const staff = await prisma.staff.findFirst({
+        where: {
+          id: staffId,
+          organizationId: session.user.organizationId,
+        },
+        select: { id: true },
+      });
+
+      if (!staff) {
+        return NextResponse.json({ error: 'Selected staff member is invalid for this organization' }, { status: 400 });
+      }
+    }
 
     const updateData = {};
     if (name !== undefined) updateData.name = name;
@@ -115,19 +158,18 @@ export async function PATCH(request, { params }) {
 
     // Validate services before any mutations
     if (services && services.length > 0) {
-      const invalidServices = services.filter(s => !s.serviceId);
-      if (invalidServices.length > 0) {
-        return NextResponse.json(
-          { error: 'All services must have a valid service selected' },
-          { status: 400 }
-        );
-      }
+      const serviceIds = [...new Set(services.map((s) => s.serviceId))];
+      const validServices = await prisma.service.findMany({
+        where: {
+          id: { in: serviceIds },
+          organizationId: session.user.organizationId,
+        },
+        select: { id: true },
+      });
 
-      // Check for duplicates
-      const serviceIdSet = new Set(services.map(s => s.serviceId));
-      if (serviceIdSet.size !== services.length) {
+      if (validServices.length !== serviceIds.length) {
         return NextResponse.json(
-          { error: 'Duplicate services are not allowed in a care plan' },
+          { error: 'All services must belong to this organization' },
           { status: 400 }
         );
       }
@@ -170,6 +212,16 @@ export async function PATCH(request, { params }) {
       });
     });
 
+    await logAuditEvent({
+      organizationId: session.user.organizationId,
+      action: 'UPDATE',
+      entity: 'CarePlan',
+      entityId: updatedCarePlan.id,
+      userId: session.user.id,
+      before: carePlan,
+      after: updatedCarePlan,
+    });
+
     return NextResponse.json(updatedCarePlan);
   } catch (error) {
     console.error('Error updating care plan:', error);
@@ -183,6 +235,11 @@ export async function DELETE(request, { params }) {
 
     if (!session || !session.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const forbiddenResponse = requireOrgRole(session, ['MANAGER']);
+    if (forbiddenResponse) {
+      return forbiddenResponse;
     }
 
     const { id } = params;
@@ -200,6 +257,15 @@ export async function DELETE(request, { params }) {
 
     await prisma.carePlan.delete({
       where: { id },
+    });
+
+    await logAuditEvent({
+      organizationId: session.user.organizationId,
+      action: 'DELETE',
+      entity: 'CarePlan',
+      entityId: id,
+      userId: session.user.id,
+      before: carePlan,
     });
 
     return NextResponse.json({ success: true });

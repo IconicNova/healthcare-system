@@ -4,12 +4,14 @@ import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { VisitSchema } from '@/lib/validations';
 import { ApiResponse } from '@/lib/api-response';
+import { parsePaginationParams, requireOrgRole } from '@/lib/api-safety';
 import { normalizeVisitPayload } from '@/lib/scheduling';
 import {
   buildRecurringVisitPayloads,
   collectVisitConflicts,
   validateVisitBusinessRules,
 } from '@/lib/visit-business-rules';
+import { logAuditEvent } from '@/lib/audit-log';
 
 export async function GET(request) {
   try {
@@ -26,6 +28,7 @@ export async function GET(request) {
     const clientId = searchParams.get('clientId');
     const status = searchParams.get('status');
     const branchId = searchParams.get('branchId');
+    const { page, limit, skip } = parsePaginationParams(searchParams, { defaultLimit: 100, maxLimit: 500 });
 
     const where = {
       organizationId: session.user.organizationId,
@@ -54,61 +57,74 @@ export async function GET(request) {
       where.branchId = branchId;
     }
 
-    const visits = await prisma.visit.findMany({
-      where,
-      include: {
-        client: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            address: true,
-            city: true,
-            state: true,
-            zipCode: true,
+    const [visits, total] = await Promise.all([
+      prisma.visit.findMany({
+        where,
+        skip,
+        take: limit,
+        include: {
+          client: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+              address: true,
+              city: true,
+              state: true,
+              zipCode: true,
+            },
           },
-        },
-        staff: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            phone: true,
+          staff: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+              phone: true,
+            },
           },
-        },
-        branch: {
-          select: {
-            id: true,
-            name: true,
+          branch: {
+            select: {
+              id: true,
+              name: true,
+            },
           },
-        },
-        carePlan: {
-          select: {
-            id: true,
-            name: true,
-            staffId: true,
-            staff: {
-              select: {
-                id: true,
-                firstName: true,
-                lastName: true,
+          carePlan: {
+            select: {
+              id: true,
+              name: true,
+              staffId: true,
+              staff: {
+                select: {
+                  id: true,
+                  firstName: true,
+                  lastName: true,
+                },
               },
             },
           },
-        },
-        service: {
-          select: {
-            id: true,
-            name: true,
-            duration: true,
-            baseRate: true,
+          service: {
+            select: {
+              id: true,
+              name: true,
+              duration: true,
+              baseRate: true,
+            },
           },
         },
-      },
-      orderBy: { startTime: 'asc' },
-    });
+        orderBy: { startTime: 'asc' },
+      }),
+      prisma.visit.count({ where }),
+    ]);
 
-    return NextResponse.json(visits);
+    return NextResponse.json({
+      visits,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
+    });
   } catch (error) {
     console.error('Error fetching visits:', error);
     return NextResponse.json({ error: 'Failed to fetch visits' }, { status: 500 });
@@ -121,6 +137,11 @@ export async function POST(request) {
 
     if (!session || !session.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const forbiddenResponse = requireOrgRole(session, ['STAFF']);
+    if (forbiddenResponse) {
+      return forbiddenResponse;
     }
 
     const rawBody = await request.json();
@@ -281,6 +302,15 @@ export async function POST(request) {
           },
         },
       },
+    });
+
+    await logAuditEvent({
+      organizationId: session.user.organizationId,
+      action: 'CREATE',
+      entity: 'Visit',
+      entityId: visit.id,
+      userId: session.user.id,
+      after: visit,
     });
 
     const occurrences = [];

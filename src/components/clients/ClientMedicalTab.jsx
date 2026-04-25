@@ -11,7 +11,22 @@ export default function ClientMedicalTab({ client }) {
   const toast = useToast();
   const [showMedForm, setShowMedForm] = useState(false);
   const [showHistoryForm, setShowHistoryForm] = useState(false);
-  const [medForm, setMedForm] = useState({ name: '', dosage: '', frequency: '', notes: '' });
+  const [medForm, setMedForm] = useState({
+    name: '',
+    dosage: '',
+    frequency: '',
+    route: '',
+    administrationType: '',
+    administrationTiming: '',
+    status: 'ACTIVE',
+    startDate: '',
+    endDate: '',
+    prescriberName: '',
+    pharmacyName: '',
+    refillCount: '',
+    maxRefills: '',
+    notes: '',
+  });
   const [historyForm, setHistoryForm] = useState({ condition: '', diagnosis: '', date: '', notes: '' });
   const [saving, setSaving] = useState(false);
   const [medications, setMedications] = useState(client.medications || []);
@@ -47,17 +62,38 @@ export default function ClientMedicalTab({ client }) {
 
     setSaving(true);
     try {
+      const payload = {
+        ...medForm,
+        refillCount: medForm.refillCount === '' ? null : Number(medForm.refillCount),
+        maxRefills: medForm.maxRefills === '' ? null : Number(medForm.maxRefills),
+      };
+
       const response = await fetch(`/api/clients/${client.id}/medications`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(medForm),
+        body: JSON.stringify(payload),
       });
 
       if (response.ok) {
         const newMedication = await response.json();
         setMedications(prev => [...prev, newMedication]);
         setShowMedForm(false);
-        setMedForm({ name: '', dosage: '', frequency: '', notes: '' });
+        setMedForm({
+          name: '',
+          dosage: '',
+          frequency: '',
+          route: '',
+          administrationType: '',
+          administrationTiming: '',
+          status: 'ACTIVE',
+          startDate: '',
+          endDate: '',
+          prescriberName: '',
+          pharmacyName: '',
+          refillCount: '',
+          maxRefills: '',
+          notes: '',
+        });
         toast('success', 'Added', 'Medication saved successfully');
       } else {
         const error = await response.json();
@@ -118,6 +154,67 @@ export default function ClientMedicalTab({ client }) {
                     onChange={(e) => setMedForm(prev => ({ ...prev, frequency: e.target.value }))}
                   />
                 </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px', marginBottom: '12px' }}>
+                  <Input
+                    label="Route"
+                    value={medForm.route}
+                    onChange={(e) => setMedForm(prev => ({ ...prev, route: e.target.value }))}
+                  />
+                  <Input
+                    label="Administration Type"
+                    value={medForm.administrationType}
+                    onChange={(e) => setMedForm(prev => ({ ...prev, administrationType: e.target.value }))}
+                  />
+                  <Input
+                    label="Timing"
+                    value={medForm.administrationTiming}
+                    onChange={(e) => setMedForm(prev => ({ ...prev, administrationTiming: e.target.value }))}
+                  />
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px', marginBottom: '12px' }}>
+                  <Input
+                    label="Start Date"
+                    type="date"
+                    value={medForm.startDate}
+                    onChange={(e) => setMedForm(prev => ({ ...prev, startDate: e.target.value }))}
+                  />
+                  <Input
+                    label="End Date"
+                    type="date"
+                    value={medForm.endDate}
+                    onChange={(e) => setMedForm(prev => ({ ...prev, endDate: e.target.value }))}
+                  />
+                  <Input
+                    label="Status"
+                    value={medForm.status}
+                    onChange={(e) => setMedForm(prev => ({ ...prev, status: e.target.value }))}
+                  />
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px', marginBottom: '12px' }}>
+                  <Input
+                    label="Prescriber"
+                    value={medForm.prescriberName}
+                    onChange={(e) => setMedForm(prev => ({ ...prev, prescriberName: e.target.value }))}
+                  />
+                  <Input
+                    label="Pharmacy"
+                    value={medForm.pharmacyName}
+                    onChange={(e) => setMedForm(prev => ({ ...prev, pharmacyName: e.target.value }))}
+                  />
+                  <Input
+                    label="Refills"
+                    type="number"
+                    value={medForm.refillCount}
+                    onChange={(e) => setMedForm(prev => ({ ...prev, refillCount: e.target.value }))}
+                  />
+                </div>
+                <Input
+                  label="Max Refills"
+                  type="number"
+                  value={medForm.maxRefills}
+                  onChange={(e) => setMedForm(prev => ({ ...prev, maxRefills: e.target.value }))}
+                  style={{ marginBottom: '12px' }}
+                />
                 <Input
                   label="Notes"
                   value={medForm.notes}

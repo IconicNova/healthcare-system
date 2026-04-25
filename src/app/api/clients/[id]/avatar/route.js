@@ -29,7 +29,7 @@ export async function PUT(request, { params }) {
     }
 
     // Check if client exists
-    const existing = await prisma.client.findUnique({
+    const existing = await prisma.client.findFirst({
       where: {
         id,
         organizationId: session.user.organizationId,
@@ -75,7 +75,7 @@ export async function DELETE(request, { params }) {
     const { id } = await params;
 
     // Check if client exists
-    const existing = await prisma.client.findUnique({
+    const existing = await prisma.client.findFirst({
       where: {
         id,
         organizationId: session.user.organizationId,

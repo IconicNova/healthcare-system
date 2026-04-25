@@ -6,6 +6,8 @@ import { parsePaginationParams } from '@/lib/api-safety';
 import { logAuditEvent } from '@/lib/audit-log';
 import { normalizeCarePlanStatus } from '@/lib/care-plan-status';
 import { rateLimit } from '@/lib/rate-limit';
+import { CarePlanCreateSchema } from '@/lib/validations';
+import { requireOrgRole } from '@/lib/api-safety';
 
 export async function GET(request) {
   try {
@@ -102,8 +104,21 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const forbiddenResponse = requireOrgRole(session, ['MANAGER']);
+    if (forbiddenResponse) {
+      return forbiddenResponse;
+    }
+
     const body = await request.json();
-    const { name, description, startDate, endDate, status, clientId, staffId, services } = body;
+    const validationResult = CarePlanCreateSchema.safeParse(body);
+    if (!validationResult.success) {
+      return NextResponse.json(
+        { error: 'Invalid data', details: validationResult.error.format() },
+        { status: 400 }
+      );
+    }
+
+    const { name, description, startDate, endDate, status, clientId, staffId, services } = validationResult.data;
 
     const rateLimitResult = await rateLimit(`care-plans:create:${session.user.id}`, {
       maxRequests: 30,
@@ -185,6 +200,7 @@ export async function POST(request) {
     });
 
     await logAuditEvent({
+      organizationId: session.user.organizationId,
       action: 'CREATE',
       entity: 'CarePlan',
       entityId: carePlan.id,

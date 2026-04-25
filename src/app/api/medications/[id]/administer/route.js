@@ -43,6 +43,7 @@ export async function POST(request, { params }) {
     }
 
     const { status, dosage, unit, reason, comment, visitId } = administrationData;
+    const { safetyChecks } = administrationData;
 
     // Verify the medication belongs to a client in the user's organization
     const medication = await prisma.medication.findFirst({
@@ -50,6 +51,21 @@ export async function POST(request, { params }) {
         id,
         client: {
           organizationId: session.user.organizationId,
+        },
+      },
+      include: {
+        client: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            medicalInfo: {
+              select: {
+                allergies: true,
+                conditions: true,
+              },
+            },
+          },
         },
       },
     });
@@ -97,6 +113,7 @@ export async function POST(request, { params }) {
         unit: unit || null,
         reason: reason || null,
         comment: comment || null,
+        safetyChecks,
       },
       include: {
         medication: {
@@ -127,6 +144,7 @@ export async function POST(request, { params }) {
     });
 
     await logAuditEvent({
+      organizationId: session.user.organizationId,
       action: 'ADMINISTER',
       entity: 'MedAdministration',
       entityId: administration.id,

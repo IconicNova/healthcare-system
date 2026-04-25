@@ -68,6 +68,14 @@ function rateLimitLocal(key, { maxRequests, windowMs }) {
  */
 export async function rateLimit(key, { maxRequests = 5, windowMs = 15 * 60 * 1000 } = {}) {
   if (!hasUpstashConfig()) {
+    if (process.env.NODE_ENV === 'production') {
+      return {
+        success: false,
+        remaining: 0,
+        retryAfterMs: windowMs,
+      };
+    }
+
     return rateLimitLocal(key, { maxRequests, windowMs });
   }
 

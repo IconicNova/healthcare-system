@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import NextAuth from 'next-auth';
-import authOptions from '@/lib/auth';
+import authOptions, { getNormalizedLoginEmail, getTrustedLoginIp } from '@/lib/auth';
 import { rateLimit } from '@/lib/rate-limit';
 
 const handler = NextAuth(authOptions);
@@ -9,12 +9,22 @@ export const GET = handler;
 
 // Rate-limit login attempts: 5 per 15 minutes per IP
 export async function POST(request, context) {
-  const ip =
-    request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
-    request.headers.get('x-real-ip') ||
-    'unknown';
+  const requestClone = request.clone();
+  let attemptEmail = '';
 
-  const { success, retryAfterMs } = await rateLimit(`auth:${ip}`, {
+  try {
+    const formData = await requestClone.formData();
+    attemptEmail = getNormalizedLoginEmail({
+      email: formData.get('email'),
+    });
+  } catch {
+    attemptEmail = '';
+  }
+
+  const ip = getTrustedLoginIp(request);
+  const rateLimitKey = attemptEmail ? `auth:${ip}:${attemptEmail}` : `auth:${ip}`;
+
+  const { success, retryAfterMs } = await rateLimit(rateLimitKey, {
     maxRequests: 5,
     windowMs: 15 * 60 * 1000,
   });

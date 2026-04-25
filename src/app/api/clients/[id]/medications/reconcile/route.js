@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import { requireOrgRole } from '@/lib/api-safety';
+import { MedicationReconciliationSchema } from '@/lib/validations';
+import { logAuditEvent } from '@/lib/audit-log';
 
 // POST - Medication reconciliation: compare and merge medication lists
 export async function POST(request, { params }) {
@@ -12,9 +15,22 @@ export async function POST(request, { params }) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const forbiddenResponse = requireOrgRole(session, ['STAFF']);
+    if (forbiddenResponse) {
+      return forbiddenResponse;
+    }
+
     const { id } = params;
     const body = await request.json();
-    const { externalMedications, action = 'compare' } = body;
+    const validationResult = MedicationReconciliationSchema.safeParse(body);
+    if (!validationResult.success) {
+      return NextResponse.json(
+        { error: 'Invalid data', details: validationResult.error.format() },
+        { status: 400 }
+      );
+    }
+
+    const { externalMedications, action } = validationResult.data;
 
     // Verify the client belongs to the user's organization
     const client = await prisma.client.findFirst({
@@ -39,6 +55,14 @@ export async function POST(request, { params }) {
     if (action === 'merge') {
       // Merge external medications into the system
       const merged = await mergeMedications(id, currentMedications, externalMedications, session.user.id);
+      await logAuditEvent({
+        organizationId: session.user.organizationId,
+        action: 'MERGE',
+        entity: 'MedicationReconciliation',
+        entityId: id,
+        userId: session.user.id,
+        after: merged,
+      });
       return NextResponse.json({
         action: 'merged',
         merged,
@@ -115,6 +139,10 @@ async function mergeMedications(clientId, current, external) {
           status: extMed.status || 'ACTIVE',
           startDate: extMed.startDate ? new Date(extMed.startDate) : null,
           endDate: extMed.endDate ? new Date(extMed.endDate) : null,
+          prescriberName: extMed.prescriberName || null,
+          prescriberNPI: extMed.prescriberNPI || null,
+          pharmacyName: extMed.pharmacyName || null,
+          pharmacyPhone: extMed.pharmacyPhone || null,
           notes: extMed.notes || null,
         },
       });
@@ -126,6 +154,16 @@ async function mergeMedications(clientId, current, external) {
         data: {
           dosage: extMed.dosage || '',
           frequency: extMed.frequency || '',
+          route: extMed.route || null,
+          administrationType: extMed.administrationType || null,
+          administrationTiming: extMed.administrationTiming || null,
+          status: extMed.status || existing.status || 'ACTIVE',
+          startDate: extMed.startDate ? new Date(extMed.startDate) : existing.startDate,
+          endDate: extMed.endDate ? new Date(extMed.endDate) : existing.endDate,
+          prescriberName: extMed.prescriberName || null,
+          prescriberNPI: extMed.prescriberNPI || null,
+          pharmacyName: extMed.pharmacyName || null,
+          pharmacyPhone: extMed.pharmacyPhone || null,
           notes: extMed.notes || existing.notes,
         },
       });

@@ -70,6 +70,15 @@ export async function GET(request, { params }) {
             status: true,
           },
         },
+        medicalInfo: {
+          select: {
+            allergies: true,
+            conditions: true,
+            primaryPhysician: true,
+            physicianPhone: true,
+            notes: true,
+          },
+        },
         branch: {
           select: {
             id: true,
@@ -134,7 +143,20 @@ export async function PATCH(request, { params }) {
         id,
         organizationId: session.user.organizationId,
       },
-      include: { user: true },
+      include: {
+        user: {
+          select: {
+            id: true,
+            email: true,
+            firstName: true,
+            lastName: true,
+            role: true,
+            status: true,
+            avatar: true,
+            branchId: true,
+          },
+        },
+      },
     });
 
     if (!existing) {
@@ -331,6 +353,7 @@ export async function PATCH(request, { params }) {
     });
 
     await logAuditEvent({
+      organizationId: session.user.organizationId,
       action: 'UPDATE',
       entity: 'Client',
       entityId: result.client.id,
@@ -409,6 +432,7 @@ export async function DELETE(request, { params }) {
     });
 
     await logAuditEvent({
+      organizationId: session.user.organizationId,
       action: 'DISCHARGE',
       entity: 'Client',
       entityId: client.id,

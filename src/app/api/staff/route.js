@@ -7,6 +7,7 @@ import { CreateStaffSchema } from '@/lib/validations';
 import { ApiResponse } from '@/lib/api-response';
 import { getUserStatusFromStaffStatus } from '@/lib/clients-staff-review.mjs';
 import { canManageStaffRole, parsePaginationParams, requireRole } from '@/lib/api-safety';
+import { logAuditEvent } from '@/lib/audit-log';
 
 const STAFF_MUTATION_ROLES = ['SUPER_ADMIN', 'ADMIN', 'MANAGER'];
 
@@ -274,6 +275,15 @@ export async function POST(request) {
       });
 
       return { user, staff };
+    });
+
+    await logAuditEvent({
+      organizationId: session.user.organizationId,
+      action: 'CREATE',
+      entity: 'Staff',
+      entityId: result.staff.id,
+      userId: session.user.id,
+      after: result.staff,
     });
 
     return NextResponse.json({

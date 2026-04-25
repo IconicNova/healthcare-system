@@ -83,10 +83,13 @@ export async function PATCH(request, { params }) {
       },
     });
 
+    if (!beforeUser) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
+
     const user = await prisma.user.update({
       where: {
-        id,
-        organizationId: session.user.organizationId,
+        id: beforeUser.id,
       },
       data: updateData,
       select: {
@@ -104,6 +107,7 @@ export async function PATCH(request, { params }) {
     });
 
     await logAuditEvent({
+      organizationId: session.user.organizationId,
       action: 'UPDATE',
       entity: 'User',
       entityId: user.id,

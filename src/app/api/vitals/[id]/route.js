@@ -4,6 +4,7 @@ import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { VitalSignPatchSchema } from '@/lib/validations';
 import { logAuditEvent } from '@/lib/audit-log';
+import { requireOrgRole } from '@/lib/api-safety';
 
 // GET - Fetch a single vital sign entry
 export async function GET(request, { params }) {
@@ -12,6 +13,11 @@ export async function GET(request, { params }) {
 
     if (!session || !session.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const forbiddenResponse = requireOrgRole(session, ['STAFF']);
+    if (forbiddenResponse) {
+      return forbiddenResponse;
     }
 
     const { id } = params;
@@ -58,6 +64,11 @@ export async function PATCH(request, { params }) {
 
     if (!session || !session.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const forbiddenResponse = requireOrgRole(session, ['STAFF']);
+    if (forbiddenResponse) {
+      return forbiddenResponse;
     }
 
     const { id } = params;
@@ -115,6 +126,7 @@ export async function PATCH(request, { params }) {
     });
 
     await logAuditEvent({
+      organizationId: session.user.organizationId,
       action: 'UPDATE',
       entity: 'VitalSign',
       entityId: updatedVital.id,
@@ -139,6 +151,11 @@ export async function DELETE(request, { params }) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const forbiddenResponse = requireOrgRole(session, ['STAFF']);
+    if (forbiddenResponse) {
+      return forbiddenResponse;
+    }
+
     const { id } = params;
 
     const vital = await prisma.vitalSign.findFirst({
@@ -159,6 +176,7 @@ export async function DELETE(request, { params }) {
     });
 
     await logAuditEvent({
+      organizationId: session.user.organizationId,
       action: 'DELETE',
       entity: 'VitalSign',
       entityId: vital.id,

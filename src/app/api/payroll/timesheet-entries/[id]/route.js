@@ -25,7 +25,20 @@ export async function PATCH(request, { params }) {
     // Get existing entry
     const existingEntry = await prisma.timesheetEntry.findUnique({
       where: { id },
-      include: { timesheet: true },
+      select: {
+        id: true,
+        hours: true,
+        notes: true,
+        billable: true,
+        timesheetId: true,
+        timesheet: {
+          select: {
+            id: true,
+            organizationId: true,
+            status: true,
+          },
+        },
+      },
     });
 
     if (!existingEntry) {
@@ -95,7 +108,20 @@ export async function DELETE(request, { params }) {
     // Get existing entry
     const existingEntry = await prisma.timesheetEntry.findUnique({
       where: { id },
-      include: { timesheet: true },
+      select: {
+        id: true,
+        hours: true,
+        notes: true,
+        billable: true,
+        timesheetId: true,
+        timesheet: {
+          select: {
+            id: true,
+            organizationId: true,
+            status: true,
+          },
+        },
+      },
     });
 
     if (!existingEntry) {

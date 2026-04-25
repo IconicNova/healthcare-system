@@ -17,7 +17,7 @@ export async function GET(
     const { id } = await params;
 
     // Verify client belongs to user's organization
-    const client = await prisma.client.findUnique({
+    const client = await prisma.client.findFirst({
       where: { id, organizationId: session.user.organizationId },
       select: { id: true },
     });
@@ -62,7 +62,7 @@ export async function POST(
     const { id } = await params;
 
     // Verify client belongs to user's organization
-    const client = await prisma.client.findUnique({
+    const client = await prisma.client.findFirst({
       where: { id, organizationId: session.user.organizationId },
       select: { id: true },
     });
@@ -110,7 +110,7 @@ export async function DELETE(
     const { id } = await params;
 
     // Verify client belongs to user's organization
-    const client = await prisma.client.findUnique({
+    const client = await prisma.client.findFirst({
       where: { id, organizationId: session.user.organizationId },
       select: { id: true },
     });

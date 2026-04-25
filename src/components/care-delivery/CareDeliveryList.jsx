@@ -80,7 +80,8 @@ export default function CareDeliveryList() {
         }
 
         if (visitsRes.ok) {
-          const visits = await visitsRes.json();
+          const visitsData = await visitsRes.json();
+          const visits = visitsData.visits || visitsData;
           const counts = visits.reduce((accumulator, visit) => {
             if (!ACTIVE_VISIT_STATUSES.has(visit.status)) {
               return accumulator;

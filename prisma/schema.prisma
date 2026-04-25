@@ -203,6 +203,8 @@ model User {
   avatar         String?
   organizationId String
   branchId       String?
+  failedLoginAttempts Int        @default(0)
+  lockedUntil    DateTime?
   createdAt      DateTime   @default(now())
   updatedAt      DateTime   @updatedAt
 
@@ -597,6 +599,7 @@ model MedAdministration {
   unit           String?
   reason         String?
   comment        String?
+  safetyChecks   Json?
   createdAt      DateTime                 @default(now())
 
   medication Medication @relation(fields: [medicationId], references: [id], onDelete: Restrict)
@@ -941,11 +944,14 @@ model Notification {
   message   String
   type      String
   read      Boolean  @default(false)
+  organizationId String
   userId    String
   createdAt DateTime @default(now())
 
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@index([organizationId, userId, createdAt])
   @@map("notification")
 }
 
@@ -954,11 +960,15 @@ model AuditLog {
   action    String
   entity    String
   entityId  String?
+  organizationId String
   userId    String
   changes   String?
   createdAt DateTime @default(now())
 
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   user User @relation(fields: [userId], references: [id], onDelete: Restrict)
 
+  @@index([organizationId, entity, entityId, createdAt])
+  @@index([organizationId, userId, createdAt])
   @@map("audit_log")
 }

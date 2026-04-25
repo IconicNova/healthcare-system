@@ -140,7 +140,22 @@ export async function POST(request, { params }) {
         id,
         organizationId: session.user.organizationId,
       },
-      include: { client: true },
+      include: {
+        client: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            dateOfBirth: true,
+            address: true,
+            city: true,
+            state: true,
+            zipCode: true,
+            phone: true,
+            email: true,
+          },
+        },
+      },
     });
 
     if (!visit) {

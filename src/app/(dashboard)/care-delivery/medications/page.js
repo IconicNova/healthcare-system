@@ -16,12 +16,23 @@ const STATUS_CONFIG = {
   NOT_GIVEN: { label: 'Not Given', color: '#6B7280', bg: '#6B728015' },
 };
 
+const SAFETY_CHECK_LABELS = {
+  rightPatient: 'Right patient',
+  rightMedication: 'Right medication',
+  rightDose: 'Right dose',
+  rightRoute: 'Right route',
+  rightTime: 'Right time',
+  allergyReviewed: 'Allergy reviewed',
+  doseConfirmed: 'Dose confirmed when different',
+};
+
 export default function MedicationsPage() {
   const router = useRouter();
   const [selectedClient, setSelectedClient] = useState(null);
   const [clients, setClients] = useState([]);
   const [medications, setMedications] = useState([]);
   const [clientVisits, setClientVisits] = useState([]);
+  const [selectedClientMedicalInfo, setSelectedClientMedicalInfo] = useState(null);
   const [selectedMedication, setSelectedMedication] = useState(null);
   const [showMedicationDetail, setShowMedicationDetail] = useState(false);
   const [showAdministerModal, setShowAdministerModal] = useState(false);
@@ -33,6 +44,17 @@ export default function MedicationsPage() {
     reason: '',
     comment: '',
     visitId: '',
+    expectedDosage: '',
+    expectedUnit: '',
+    safetyChecks: {
+      rightPatient: false,
+      rightMedication: false,
+      rightDose: false,
+      rightRoute: false,
+      rightTime: false,
+      allergyReviewed: false,
+      doseConfirmed: false,
+    },
   });
   const [loading, setLoading] = useState(true);
   const [medSearch, setMedSearch] = useState('');
@@ -69,11 +91,12 @@ export default function MedicationsPage() {
         if (medicationsResponse.ok) {
           const data = await medicationsResponse.json();
           setMedications(data.medications || []);
+          setSelectedClientMedicalInfo(data.client?.medicalInfo || null);
         }
 
         if (visitsResponse.ok) {
           const data = await visitsResponse.json();
-          setClientVisits(data.visits || []);
+          setClientVisits(data.visits || data || []);
         }
       } catch (error) {
         console.error('Error fetching client context:', error);
@@ -89,6 +112,7 @@ export default function MedicationsPage() {
     setSelectedClient(client);
     setMedications([]);
     setClientVisits([]);
+    setSelectedClientMedicalInfo(null);
     setSelectedMedication(null);
   };
 
@@ -114,6 +138,7 @@ export default function MedicationsPage() {
 
   const handleAdministerClick = () => {
     setAdministrationError('');
+    const expectedDosage = selectedMedication?.dosage || '';
     setAdministrationData({
       status: 'ADMINISTERED',
       dosage: selectedMedication?.dosage || '',
@@ -121,6 +146,17 @@ export default function MedicationsPage() {
       reason: '',
       comment: '',
       visitId: clientVisits[0]?.id || '',
+      expectedDosage,
+      expectedUnit: selectedMedication?.unit || '',
+      safetyChecks: {
+        rightPatient: false,
+        rightMedication: false,
+        rightDose: false,
+        rightRoute: false,
+        rightTime: false,
+        allergyReviewed: false,
+        doseConfirmed: false,
+      },
     });
     setShowAdministerModal(true);
   };
@@ -140,7 +176,11 @@ export default function MedicationsPage() {
     }
 
     try {
-      const payload = buildMedicationAdministrationPayload(administrationData);
+      const payload = buildMedicationAdministrationPayload({
+        ...administrationData,
+        expectedDosage: administrationData.expectedDosage || selectedMedication?.dosage || '',
+        expectedUnit: administrationData.expectedUnit || selectedMedication?.unit || '',
+      });
 
       const response = await fetch(`/api/medications/${selectedMedication.id}/administer`, {
         method: 'POST',
@@ -194,6 +234,29 @@ export default function MedicationsPage() {
       date: d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
       time: d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }),
     };
+  };
+
+  const enteredDoseLabel = [administrationData.dosage, administrationData.unit]
+    .filter(Boolean)
+    .join(' ')
+    .trim();
+  const expectedDoseLabel = (administrationData.expectedDosage || selectedMedication?.dosage || '')
+    .trim();
+  const hasDoseMismatch =
+    administrationData.status === 'ADMINISTERED' &&
+    enteredDoseLabel &&
+    expectedDoseLabel &&
+    enteredDoseLabel.toLowerCase() !== expectedDoseLabel.toLowerCase();
+
+  const updateSafetyCheck = (key, value) => {
+    setAdministrationError('');
+    setAdministrationData((prev) => ({
+      ...prev,
+      safetyChecks: {
+        ...(prev.safetyChecks || {}),
+        [key]: value,
+      },
+    }));
   };
 
   if (loading) {
@@ -394,6 +457,16 @@ export default function MedicationsPage() {
                 <span style={{ fontSize: '13px', color: 'var(--color-text-secondary)' }}>Client</span>
                 <span style={{ fontSize: '13px' }}>{selectedClient?.firstName} {selectedClient?.lastName}</span>
 
+                <span style={{ fontSize: '13px', color: 'var(--color-text-secondary)' }}>Allergies</span>
+                <span style={{ fontSize: '13px' }}>
+                  {selectedClientMedicalInfo?.allergies || 'No allergy record on file'}
+                </span>
+
+                <span style={{ fontSize: '13px', color: 'var(--color-text-secondary)' }}>Conditions</span>
+                <span style={{ fontSize: '13px' }}>
+                  {selectedClientMedicalInfo?.conditions || 'No active condition record'}
+                </span>
+
                 {selectedMedication.notes && (
                   <>
                     <span style={{ fontSize: '13px', color: 'var(--color-text-secondary)' }}>Notes</span>
@@ -586,6 +659,80 @@ export default function MedicationsPage() {
               Link each administration record to the visit where the event occurred.
             </p>
           </div>
+
+          {administrationData.status === 'ADMINISTERED' && (
+            <div style={{
+              padding: '12px 14px',
+              borderRadius: '10px',
+              border: '1px solid #FDE68A',
+              backgroundColor: '#FFFBEB',
+            }}>
+              <div style={{ fontSize: '13px', fontWeight: 600, marginBottom: '6px' }}>Medication safety review</div>
+              <div style={{ fontSize: '12px', color: '#92400E', lineHeight: 1.6 }}>
+                {selectedClientMedicalInfo?.allergies
+                  ? `Allergies on file: ${selectedClientMedicalInfo.allergies}`
+                  : 'No allergy record on file. Review the client chart before administering.'}
+              </div>
+              {selectedClientMedicalInfo?.conditions && (
+                <div style={{ fontSize: '12px', color: '#92400E', marginTop: '4px', lineHeight: 1.6 }}>
+                  Conditions on file: {selectedClientMedicalInfo.conditions}
+                </div>
+              )}
+            </div>
+          )}
+
+          {hasDoseMismatch && administrationData.status === 'ADMINISTERED' && (
+            <div style={{
+              padding: '12px 14px',
+              borderRadius: '10px',
+              border: '1px solid #FCA5A5',
+              backgroundColor: '#FEF2F2',
+            }}>
+              <div style={{ fontSize: '13px', fontWeight: 600, marginBottom: '6px', color: '#B91C1C' }}>
+                Dose confirmation required
+              </div>
+              <div style={{ fontSize: '12px', color: '#991B1B', lineHeight: 1.6 }}>
+                Entered dose &quot;{enteredDoseLabel}&quot; does not match the medication order &quot;{expectedDoseLabel}&quot;.
+              </div>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '10px', fontSize: '12px', color: '#991B1B' }}>
+                <input
+                  type="checkbox"
+                  checked={administrationData.safetyChecks?.doseConfirmed || false}
+                  onChange={(e) => updateSafetyCheck('doseConfirmed', e.target.checked)}
+                />
+                I confirm this dose is intentional and clinically appropriate
+              </label>
+            </div>
+          )}
+
+          {administrationData.status === 'ADMINISTERED' && (
+            <div style={{
+              display: 'grid',
+              gap: '10px',
+              gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+              padding: '12px 14px',
+              borderRadius: '10px',
+              border: '1px solid var(--color-border)',
+              backgroundColor: 'white',
+            }}>
+              {Object.entries(SAFETY_CHECK_LABELS).map(([key, label]) => (
+                <label key={key} style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  fontSize: '12px',
+                  color: 'var(--color-text)',
+                }}>
+                  <input
+                    type="checkbox"
+                    checked={administrationData.safetyChecks?.[key] || false}
+                    onChange={(e) => updateSafetyCheck(key, e.target.checked)}
+                  />
+                  {label}
+                </label>
+              ))}
+            </div>
+          )}
 
           {/* Reason for non-administration */}
           {administrationData.status !== 'ADMINISTERED' && (

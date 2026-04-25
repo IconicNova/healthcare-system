@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import { requireOrgRole } from '@/lib/api-safety';
+import { SettingsServiceCreateSchema } from '@/lib/validations';
 
 export async function GET() {
   try {
@@ -9,6 +11,11 @@ export async function GET() {
 
     if (!session || !session.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const forbiddenResponse = requireOrgRole(session, ['STAFF']);
+    if (forbiddenResponse) {
+      return forbiddenResponse;
     }
 
     const services = await prisma.service.findMany({
@@ -41,25 +48,21 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const forbiddenResponse = requireOrgRole(session, ['MANAGER']);
+    if (forbiddenResponse) {
+      return forbiddenResponse;
+    }
+
     const body = await request.json();
-
-    const { name, description, duration, baseRate } = body;
-
-    if (!name || !baseRate) {
+    const validationResult = SettingsServiceCreateSchema.safeParse(body);
+    if (!validationResult.success) {
       return NextResponse.json(
-        { error: 'Name and base rate are required' },
+        { error: 'Invalid data', details: validationResult.error.format() },
         { status: 400 }
       );
     }
 
-    // Validate base rate is a positive number
-    const parsedRate = parseFloat(baseRate);
-    if (isNaN(parsedRate) || parsedRate <= 0 || parsedRate > 10000) {
-      return NextResponse.json(
-        { error: 'Base rate must be a positive number (max $10,000)' },
-        { status: 400 }
-      );
-    }
+    const { name, description, duration, baseRate } = validationResult.data;
 
     const service = await prisma.service.create({
       data: {

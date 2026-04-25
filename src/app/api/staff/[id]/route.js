@@ -6,6 +6,7 @@ import bcrypt from 'bcryptjs';
 import { UpdateStaffSchema } from '@/lib/validations';
 import { getUserStatusFromStaffStatus } from '@/lib/clients-staff-review.mjs';
 import { canManageStaffRole, requireRole } from '@/lib/api-safety';
+import { logAuditEvent } from '@/lib/audit-log';
 
 const STAFF_MUTATION_ROLES = ['SUPER_ADMIN', 'ADMIN', 'MANAGER'];
 
@@ -150,7 +151,20 @@ export async function PATCH(request, { params }) {
         id,
         organizationId: session.user.organizationId,
       },
-      include: { user: true },
+      include: {
+        user: {
+          select: {
+            id: true,
+            email: true,
+            firstName: true,
+            lastName: true,
+            role: true,
+            status: true,
+            avatar: true,
+            branchId: true,
+          },
+        },
+      },
     });
 
     if (!existing) {
@@ -315,6 +329,16 @@ export async function PATCH(request, { params }) {
       return { user, staff };
     });
 
+    await logAuditEvent({
+      organizationId: session.user.organizationId,
+      action: 'UPDATE',
+      entity: 'Staff',
+      entityId: result.staff.id,
+      userId: session.user.id,
+      before: existing,
+      after: result.staff,
+    });
+
     return NextResponse.json({
       ...result.staff,
       user: result.user,
@@ -397,6 +421,15 @@ export async function DELETE(request, { params }) {
           where: { id },
         });
       }
+    });
+
+    await logAuditEvent({
+      organizationId: session.user.organizationId,
+      action: 'DELETE',
+      entity: 'Staff',
+      entityId: existing.id,
+      userId: session.user.id,
+      before: existing,
     });
 
     return NextResponse.json({ message: 'Staff member deleted successfully' });
