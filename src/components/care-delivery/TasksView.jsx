@@ -5,6 +5,7 @@ import { Clock, Calendar, User, ChevronRight, Users, History, AlertTriangle } fr
 import { STATUS_CONFIG as SHARED_STATUS_CONFIG } from '@/lib/visit-status-machine';
 import VisitCalendar from './VisitCalendar';
 import LoadingSkeleton from '@/components/ui/LoadingSkeleton';
+import { getVisitTimeDeviationWarning } from '@/lib/visit-time-deviation';
 
 export default function TasksView({ clientId, onEditVisit }) {
   const [visits, setVisits] = useState([]);
@@ -88,6 +89,7 @@ export default function TasksView({ clientId, onEditVisit }) {
     const statusColor = statusConf?.color || '#3B82F6';
     const statusBg = statusConf?.bgColor || '#DBEAFE';
     const statusLabel = statusConf?.label || visit.status;
+    const timeDeviationWarning = getVisitTimeDeviationWarning(visit);
 
     // Check if visit is overdue (Feature #3: Overdue alerts)
     const now = new Date();
@@ -156,6 +158,24 @@ export default function TasksView({ clientId, onEditVisit }) {
         {visit.actualStart && (
           <div style={{ marginTop: '12px', paddingTop: '12px', borderTop: '1px solid var(--color-border)', fontSize: '11px', color: 'var(--color-text-muted)' }}>
             Actual: {formatTime(visit.actualStart)} - {visit.actualEnd ? formatTime(visit.actualEnd) : 'In Progress...'}
+          </div>
+        )}
+
+        {timeDeviationWarning && (
+          <div style={{
+            marginTop: '12px',
+            display: 'flex',
+            alignItems: 'flex-start',
+            gap: '8px',
+            padding: '10px 12px',
+            borderRadius: '8px',
+            backgroundColor: '#FEF3C7',
+            color: '#92400E',
+            fontSize: '11px',
+            lineHeight: 1.4,
+          }}>
+            <AlertTriangle size={14} style={{ flexShrink: 0, marginTop: '1px' }} />
+            <span>{timeDeviationWarning.message}</span>
           </div>
         )}
       </div>

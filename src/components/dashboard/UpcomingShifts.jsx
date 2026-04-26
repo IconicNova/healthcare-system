@@ -46,7 +46,7 @@ export default function UpcomingShifts() {
       <div className="card">
         <div className="card-body">
           <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--color-text)', marginBottom: '16px' }}>
-            Upcoming Shifts
+            Upcoming Visits
           </h3>
           <div style={{ height: '200px', backgroundColor: '#f3f4f6', borderRadius: '8px' }} />
         </div>
@@ -59,7 +59,7 @@ export default function UpcomingShifts() {
       <div className="card-body">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
           <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--color-text)', margin: 0 }}>
-            Upcoming Shifts
+            Upcoming Visits
           </h3>
           <a
             href="/scheduling"
@@ -72,7 +72,7 @@ export default function UpcomingShifts() {
         {shifts.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '24px 0' }}>
             <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)', margin: 0 }}>
-              No upcoming shifts scheduled
+              No upcoming visits scheduled
             </p>
           </div>
         ) : (

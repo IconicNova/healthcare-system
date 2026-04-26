@@ -14,6 +14,7 @@ import {
   toIsoFromDatetimeLocalInputValue,
 } from '@/components/care-delivery/care-delivery.helpers';
 import { getValidNextStatuses, getStatusLabel, isTerminalStatus } from '@/lib/visit-status-machine';
+import { getVisitTimeDeviationWarning } from '@/lib/visit-time-deviation';
 
 
 
@@ -420,6 +421,11 @@ export default function EditVisitDialog({
     });
   };
 
+  const timeDeviationWarning = useMemo(
+    () => (visit ? getVisitTimeDeviationWarning(visit) : null),
+    [visit]
+  );
+
   if (!visit) return null;
 
   const isTerminal = isTerminalStatus(formData.status);
@@ -540,6 +546,23 @@ export default function EditVisitDialog({
         {formData.actualStart && formData.actualEnd && (
           <div style={{ marginTop: '10px', fontSize: '13px', color: 'var(--color-text-secondary)' }}>
             Duration: {formatDuration(formData.actualStart, formData.actualEnd)}
+          </div>
+        )}
+        {timeDeviationWarning && (
+          <div style={{
+            marginTop: '12px',
+            display: 'flex',
+            alignItems: 'flex-start',
+            gap: '8px',
+            padding: '10px 12px',
+            borderRadius: '8px',
+            backgroundColor: '#FEF3C7',
+            color: '#92400E',
+            fontSize: '12px',
+            lineHeight: 1.4,
+          }}>
+            <AlertTriangle size={14} style={{ flexShrink: 0, marginTop: '1px' }} />
+            <span>{timeDeviationWarning.message}</span>
           </div>
         )}
       </div>

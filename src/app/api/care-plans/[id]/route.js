@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { requireOrgRole } from '@/lib/api-safety';
+import { normalizeDisplayText } from '@/lib/display-text';
 import { CarePlanUpdateSchema } from '@/lib/validations';
 import { logAuditEvent } from '@/lib/audit-log';
 
@@ -139,7 +140,7 @@ export async function PATCH(request, { params }) {
 
     const updateData = {};
     if (name !== undefined) updateData.name = name;
-    if (description !== undefined) updateData.description = description;
+    if (description !== undefined) updateData.description = normalizeDisplayText(description);
     if (startDate !== undefined) updateData.startDate = new Date(startDate);
     if (endDate !== undefined) updateData.endDate = endDate ? new Date(endDate) : null;
     if (status !== undefined) updateData.status = status;
@@ -188,8 +189,8 @@ export async function PATCH(request, { params }) {
             carePlanId: id,
             serviceId: s.serviceId,
             frequency: s.frequency || 'AS_NEEDED',
-            frequencyText: s.frequencyText || null,
-            instructions: s.instructions || null,
+            frequencyText: normalizeDisplayText(s.frequencyText),
+            instructions: normalizeDisplayText(s.instructions),
             order: s.order || 0,
           })),
         });

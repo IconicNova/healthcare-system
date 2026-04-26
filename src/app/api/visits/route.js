@@ -6,6 +6,7 @@ import { VisitSchema } from '@/lib/validations';
 import { ApiResponse } from '@/lib/api-response';
 import { parsePaginationParams, requireOrgRole } from '@/lib/api-safety';
 import { normalizeVisitPayload } from '@/lib/scheduling';
+import { VISIT_MANAGEMENT_ROLES } from '@/lib/visit-access';
 import {
   buildRecurringVisitPayloads,
   collectVisitConflicts,
@@ -139,7 +140,7 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const forbiddenResponse = requireOrgRole(session, ['STAFF']);
+    const forbiddenResponse = requireOrgRole(session, VISIT_MANAGEMENT_ROLES);
     if (forbiddenResponse) {
       return forbiddenResponse;
     }

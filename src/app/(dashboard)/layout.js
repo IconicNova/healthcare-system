@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useSession } from '@/lib/auth';
 import { useRouter } from 'next/navigation';
 import { ToastProvider } from '@/components/ui/useToast';
+import { BreadcrumbLabelsProvider } from '@/components/layout/BreadcrumbLabelsContext';
 import Sidebar from '@/components/layout/Sidebar';
 import TopBar from '@/components/layout/TopBar';
 import LoadingSpinner from '@/components/layout/LoadingSpinner';
@@ -34,21 +35,23 @@ export default function DashboardLayout({ children }) {
   }
 
   return (
-    <ToastProvider>
-      <div className="dashboard-layout">
-        <Sidebar
-          mobileOpen={mobileMenuOpen}
-          onMobileClose={() => setMobileMenuOpen(false)}
-        />
-        <div className="dashboard-content">
-          <TopBar onMenuClick={() => setMobileMenuOpen(true)} />
-          <main className="page-container">
-            <ErrorBoundary>
-              {children}
-            </ErrorBoundary>
-          </main>
+    <BreadcrumbLabelsProvider>
+      <ToastProvider>
+        <div className="dashboard-layout">
+          <Sidebar
+            mobileOpen={mobileMenuOpen}
+            onMobileClose={() => setMobileMenuOpen(false)}
+          />
+          <div className="dashboard-content">
+            <TopBar onMenuClick={() => setMobileMenuOpen(true)} />
+            <main className="page-container">
+              <ErrorBoundary>
+                {children}
+              </ErrorBoundary>
+            </main>
+          </div>
         </div>
-      </div>
-    </ToastProvider>
+      </ToastProvider>
+    </BreadcrumbLabelsProvider>
   );
 }

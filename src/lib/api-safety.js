@@ -4,6 +4,14 @@ const STAFF_ROLE_TARGETS_BY_ACTOR = {
   MANAGER: new Set(['STAFF', 'SUPERVISOR']),
 };
 
+export const ORGANIZATION_MEMBER_ROLES = [
+  'SUPER_ADMIN',
+  'ADMIN',
+  'MANAGER',
+  'SUPERVISOR',
+  'STAFF',
+];
+
 export const AVATAR_VALIDATION_ERROR = 'Avatar must be a PNG, JPEG, or WebP data URL under 512 KB';
 const MAX_AVATAR_BYTES = 512 * 1024;
 const AVATAR_DATA_URL_PATTERN = /^data:image\/(png|jpeg|webp);base64,([A-Za-z0-9+/]+={0,2})$/;

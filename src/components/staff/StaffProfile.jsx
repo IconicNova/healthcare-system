@@ -14,6 +14,7 @@ import StaffScheduleTab from './StaffScheduleTab';
 import StaffTimesheetsTab from './StaffTimesheetsTab';
 import StaffForm from './StaffForm';
 import { getStaffPayRateUnit } from '@/lib/clients-staff-review.mjs';
+import { useBreadcrumbLabel } from '@/components/layout/BreadcrumbLabelsContext';
 
 const ROLE_VARIANTS = {
   MANAGER: 'info',
@@ -47,6 +48,7 @@ export default function StaffProfile({ staffData }) {
   const canTerminate = staffData?.status !== 'TERMINATED';
   const hasQuickActions = canSetInactive || canTerminate;
   const validTabIds = new Set(TABS.map(tab => tab.id));
+  useBreadcrumbLabel(`/staff/${staffData?.id}`, staffData?.fullName || '');
 
   const getResolvedTab = (tabValue) => (tabValue && validTabIds.has(tabValue) ? tabValue : 'overview');
 

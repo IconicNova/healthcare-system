@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import {
-  ResponsiveContainer,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -11,6 +10,7 @@ import {
   AreaChart,
   Area,
 } from 'recharts';
+import MeasuredChartFrame from './MeasuredChartFrame';
 
 export default function VisitChart() {
   const [loading, setLoading] = useState(true);
@@ -53,9 +53,9 @@ export default function VisitChart() {
         <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--color-text)', marginBottom: '16px' }}>
           Weekly Visits
         </h3>
-        <div className="dashboard-chart-frame" style={{ height: '250px' }}>
-          <ResponsiveContainer width="100%" height="100%" minWidth={280} minHeight={250}>
-            <AreaChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+        <MeasuredChartFrame className="dashboard-chart-frame" height={250}>
+          {({ width, height }) => (
+            <AreaChart width={width} height={height} data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
               <defs>
                 <linearGradient id="colorScheduled" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
@@ -108,8 +108,8 @@ export default function VisitChart() {
                 strokeWidth={2}
               />
             </AreaChart>
-          </ResponsiveContainer>
-        </div>
+          )}
+        </MeasuredChartFrame>
       </div>
     </div>
   );

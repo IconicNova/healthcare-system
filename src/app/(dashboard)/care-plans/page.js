@@ -11,6 +11,7 @@ import StatusBadge from '@/components/ui/StatusBadge';
 import Button from '@/components/ui/Button';
 import Modal from '@/components/ui/Modal';
 import CarePlanForm from '@/components/care-plans/CarePlanForm';
+import { getDisplayText } from '@/lib/display-text';
 
 const COLUMNS = [
   { key: 'name', label: 'Care Plan Name', sortable: true, width: '250px', headerContentWidth: '190px' },
@@ -110,7 +111,8 @@ export default function CarePlansPage() {
           </div>
           {plan.description && (
             <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginTop: '2px' }}>
-              {plan.description.substring(0, 50)}{plan.description.length > 50 ? '...' : ''}
+              {getDisplayText(plan.description).substring(0, 50)}
+              {getDisplayText(plan.description).length > 50 ? '...' : ''}
             </div>
           )}
         </div>

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Input from '@/components/ui/Input';
 import Select from '@/components/ui/Select';
 import Button from '@/components/ui/Button';
+import { normalizeDisplayText } from '@/lib/display-text';
 
 export default function CarePlanForm({ isOpen, onClose, onSubmit, clients = [], staff = [], services = [], carePlan = null, loading = false }) {
   const [formData, setFormData] = useState({
@@ -30,14 +31,18 @@ export default function CarePlanForm({ isOpen, onClose, onSubmit, clients = [], 
     if (carePlan) {
       setFormData({
         name: carePlan.name || '',
-        description: carePlan.description || '',
+        description: normalizeDisplayText(carePlan.description) || '',
         startDate: carePlan.startDate ? new Date(carePlan.startDate).toISOString().slice(0, 16) : new Date().toISOString().slice(0, 16),
         endDate: carePlan.endDate ? new Date(carePlan.endDate).toISOString().slice(0, 16) : '',
         status: carePlan.status ?? true,
         clientId: carePlan.clientId || '',
         staffId: carePlan.staffId || '',
         serviceIds: carePlan.services?.map(s => s.serviceId) || [],
-        serviceDetails: carePlan.services || [],
+        serviceDetails: carePlan.services?.map((service) => ({
+          ...service,
+          instructions: normalizeDisplayText(service.instructions) || '',
+          frequencyText: normalizeDisplayText(service.frequencyText) || '',
+        })) || [],
       });
     } else if (isOpen) {
       resetForm();
@@ -140,7 +145,7 @@ export default function CarePlanForm({ isOpen, onClose, onSubmit, clients = [], 
     try {
       const payload = {
         name: formData.name,
-        description: formData.description || null,
+        description: normalizeDisplayText(formData.description),
         startDate: new Date(formData.startDate).toISOString(),
         endDate: formData.endDate ? new Date(formData.endDate).toISOString() : null,
         status: formData.status,
@@ -149,8 +154,8 @@ export default function CarePlanForm({ isOpen, onClose, onSubmit, clients = [], 
         services: formData.serviceDetails.map(s => ({
           serviceId: s.serviceId,
           frequency: s.frequency,
-          frequencyText: s.frequencyText || null,
-          instructions: s.instructions || null,
+          frequencyText: normalizeDisplayText(s.frequencyText),
+          instructions: normalizeDisplayText(s.instructions),
           order: s.order,
         })),
       };

@@ -7,6 +7,7 @@ import { encrypt, getEncryptionConfigurationError, maskSSN } from '@/lib/encrypt
 import { requireRole } from '@/lib/api-safety';
 import { logAuditEvent } from '@/lib/audit-log';
 import { enforceRouteRateLimit } from '@/lib/route-rate-limit';
+import { CARE_PLAN_STATUSES } from '@/lib/care-plan-status';
 
 const CLIENT_MUTATION_ROLES = ['SUPER_ADMIN', 'ADMIN', 'MANAGER'];
 
@@ -36,6 +37,9 @@ export async function GET(request, { params }) {
           },
         },
         carePlans: {
+          where: {
+            status: { in: CARE_PLAN_STATUSES },
+          },
           select: {
             id: true,
             name: true,

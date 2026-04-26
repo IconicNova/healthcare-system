@@ -6,6 +6,8 @@ import { Edit2, Calendar, Clock, User, CheckCircle, Plus } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Modal from '@/components/ui/Modal';
 import CarePlanForm from '@/components/care-plans/CarePlanForm';
+import { getDisplayText } from '@/lib/display-text';
+import { useBreadcrumbLabel } from '@/components/layout/BreadcrumbLabelsContext';
 
 export default function CarePlanDetailPage({ params }) {
   const router = useRouter();
@@ -16,6 +18,7 @@ export default function CarePlanDetailPage({ params }) {
   const [staff, setStaff] = useState([]);
   const [services, setServices] = useState([]);
   const [showEditModal, setShowEditModal] = useState(false);
+  useBreadcrumbLabel(`/care-plans/${params.id}`, carePlan?.name);
 
   useEffect(() => {
     fetchData();
@@ -208,10 +211,10 @@ export default function CarePlanDetailPage({ params }) {
       </div>
 
       {/* Description */}
-      {carePlan.description && (
+      {getDisplayText(carePlan.description, '') && (
         <div style={{ marginBottom: '24px', padding: '20px', border: '1px solid var(--color-border)', borderRadius: '12px', backgroundColor: 'white' }}>
           <h3 style={{ fontSize: '16px', fontWeight: 600, marginBottom: '12px' }}>Description</h3>
-          <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)', margin: 0 }}>{carePlan.description}</p>
+          <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)', margin: 0 }}>{getDisplayText(carePlan.description)}</p>
         </div>
       )}
 
@@ -260,9 +263,9 @@ export default function CarePlanDetailPage({ params }) {
                   <div style={{ fontSize: '13px', fontWeight: 500, color: 'var(--color-text)' }}>
                     {service.frequency.replace('_', ' ')}
                   </div>
-                  {service.instructions && (
+                  {getDisplayText(service.instructions, '') && (
                     <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginTop: '4px' }}>
-                      {service.instructions}
+                      {getDisplayText(service.instructions)}
                     </div>
                   )}
                 </div>

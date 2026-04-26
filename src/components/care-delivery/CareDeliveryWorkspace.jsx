@@ -22,6 +22,7 @@ import {
   resolveCareDeliveryVisitTab,
   formatInitials,
 } from '@/components/care-delivery/care-delivery.helpers';
+import { useBreadcrumbLabel } from '@/components/layout/BreadcrumbLabelsContext';
 
 export default function CareDeliveryWorkspace({ params }) {
   const router = useRouter();
@@ -33,6 +34,7 @@ export default function CareDeliveryWorkspace({ params }) {
   const [editVisit, setEditVisit] = useState(null);
   const [editVisitTab, setEditVisitTab] = useState('info');
   const closingVisitIdRef = useRef('');
+  useBreadcrumbLabel(`/care-delivery/${clientId}`, client ? `${client.firstName} ${client.lastName}` : '');
 
   const activeTab = resolveCareDeliveryTab(searchParams.get('tab'));
   const visitContext = resolveCareDeliveryVisitContext(searchParams);

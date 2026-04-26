@@ -4,7 +4,8 @@ import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { parsePaginationParams } from '@/lib/api-safety';
 import { logAuditEvent } from '@/lib/audit-log';
-import { normalizeCarePlanStatus } from '@/lib/care-plan-status';
+import { CARE_PLAN_STATUSES, normalizeCarePlanStatus } from '@/lib/care-plan-status';
+import { normalizeDisplayText } from '@/lib/display-text';
 import { rateLimit } from '@/lib/rate-limit';
 import { CarePlanCreateSchema } from '@/lib/validations';
 import { requireOrgRole } from '@/lib/api-safety';
@@ -24,6 +25,7 @@ export async function GET(request) {
 
     const where = {
       organizationId: session.user.organizationId,
+      status: { in: CARE_PLAN_STATUSES },
     };
 
     if (search) {
@@ -171,7 +173,7 @@ export async function POST(request) {
     const carePlan = await prisma.carePlan.create({
       data: {
         name,
-        description: description || null,
+        description: normalizeDisplayText(description),
         startDate: new Date(startDate),
         endDate: endDate ? new Date(endDate) : null,
         status: normalizeCarePlanStatus(status),
@@ -182,8 +184,8 @@ export async function POST(request) {
           create: services.map(s => ({
             serviceId: s.serviceId,
             frequency: s.frequency || 'AS_NEEDED',
-            frequencyText: s.frequencyText || null,
-            instructions: s.instructions || null,
+            frequencyText: normalizeDisplayText(s.frequencyText),
+            instructions: normalizeDisplayText(s.instructions),
             order: s.order || 0,
           })),
         } : undefined,

@@ -5,6 +5,7 @@ import { X } from 'lucide-react';
 import Input from '@/components/ui/Input';
 import Select from '@/components/ui/Select';
 import Button from '@/components/ui/Button';
+import { getDisplayText } from '@/lib/display-text';
 
 export default function VisitForm({ isOpen, onClose, onSubmit, clients = [], staff = [], services = [], branches = [], carePlans = [], loading = false }) {
   const [formData, setFormData] = useState({
@@ -92,8 +93,9 @@ export default function VisitForm({ isOpen, onClose, onSubmit, clients = [], sta
               }
             }
             // Copy care plan description to notes if notes is empty
-            if (cp.description && !prev.notes) {
-              updated.notes = cp.description;
+            const carePlanDescription = getDisplayText(cp.description, '');
+            if (carePlanDescription && !prev.notes) {
+              updated.notes = carePlanDescription;
             }
           }
         } else {

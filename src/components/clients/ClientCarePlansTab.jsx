@@ -8,6 +8,7 @@ import StatusBadge from '@/components/ui/StatusBadge';
 import Input from '@/components/ui/Input';
 import { useToast } from '@/components/ui/useToast';
 import { Calendar, ChevronRight, Plus } from 'lucide-react';
+import { getDisplayText } from '@/lib/display-text';
 
 export default function ClientCarePlansTab({ clientId }) {
   const router = useRouter();
@@ -59,7 +60,7 @@ export default function ClientCarePlansTab({ clientId }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: createForm.name,
-          description: createForm.description || null,
+          description: getDisplayText(createForm.description, '') || null,
           startDate: createForm.startDate,
           endDate: createForm.endDate || null,
           clientId,
@@ -213,7 +214,7 @@ export default function ClientCarePlansTab({ clientId }) {
                       <StatusBadge status={statusBadge.label} variant={statusBadge.variant} />
                     </div>
                     <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)', marginTop: '4px' }}>
-                      {plan.description || 'No description provided'}
+                      {getDisplayText(plan.description, 'No description provided')}
                     </p>
                   </div>
                 </div>

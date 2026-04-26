@@ -16,6 +16,7 @@ import Button from '@/components/ui/Button';
 import Modal from '@/components/ui/Modal';
 import ClientForm from './ClientForm';
 import { useToast } from '@/components/ui/useToast';
+import { useBreadcrumbLabel } from '@/components/layout/BreadcrumbLabelsContext';
 
 const TABS = [
   { id: 'overview', label: 'Overview' },
@@ -50,6 +51,7 @@ export default function ClientProfilePage({ params }) {
   const [showDischargeModal, setShowDischargeModal] = useState(false);
   const [discharging, setDischarging] = useState(false);
   const validTabIds = new Set(TABS.map(tab => tab.id));
+  useBreadcrumbLabel(`/clients/${id}`, client ? `${client.firstName} ${client.lastName}` : '');
 
   const getResolvedTab = (tabValue) => (tabValue && validTabIds.has(tabValue) ? tabValue : 'overview');
 
